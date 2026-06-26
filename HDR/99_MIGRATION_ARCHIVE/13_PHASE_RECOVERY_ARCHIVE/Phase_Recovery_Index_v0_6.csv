@@ -1,0 +1,91 @@
+ID,Name,Phase,Category,Priority,Status,Path
+PH5-0001,Behavioral Engine,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0001_Behavioral_Engine.md
+PH5-0002,Command Chair Engine,Phase 4.0 → Phase 5.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0002_Command_Chair_Engine.md
+PH5-0003,Command Stability Model,Phase 4.0 → Phase 5.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0003_Command_Stability_Model.md
+PH5-0004,Behavioral Fingerprints,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0004_Behavioral_Fingerprints.md
+PH5-0005,Identity Drift Engine,Phase 4.0 → Phase 5.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0005_Identity_Drift_Engine.md
+PH5-0006,Identity Drift Compass Space,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0006_Identity_Drift_Compass_Space.md
+PH5-0007,Ghost Baseline Calibration,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0007_Ghost_Baseline_Calibration.md
+PH5-0008,Commander Evidence Threshold,Phase 4.0 → Phase 5.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0008_Commander_Evidence_Threshold.md
+PH5-0009,Commander Detects Never Predicts,Phase 4.0 → Phase 5.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0009_Commander_Detects_Never_Predicts.md
+PH5-0010,Decision Graph,Phase 4.0 → Phase 5.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0010_Decision_Graph.md
+PH5-0011,Behavioral Gravity,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0011_Behavioral_Gravity.md
+PH5-0012,Career Brain,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0012_Career_Brain.md
+PH5-0013,Mission Similarity Search,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0013_Mission_Similarity_Search.md
+PH5-0014,Future Identity Simulator,Phase 4.0 → Phase 5.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0014_Future_Identity_Simulator.md
+PH5-0015,Legacy Engine,Phase 4.0 → Phase 5.0,Legacy,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0015_Legacy_Engine.md
+PH5-0016,Behavioral Black Box,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0016_Behavioral_Black_Box.md
+PH5-0017,Black Box Final Sixty Minutes,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0017_Black_Box_Final_Sixty_Minutes.md
+PH5-0018,Mission Timeline,Phase 4.0 → Phase 5.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0018_Mission_Timeline.md
+PH5-0019,Invisible Timeline,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0019_Invisible_Timeline.md
+PH5-0020,Chain of Failure,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0020_Chain_of_Failure.md
+PH5-0021,Chain of Excellence,Phase 4.0 → Phase 5.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0021_Chain_of_Excellence.md
+PH5-0022,Butterfly Effect Engine,Phase 4.0 → Phase 5.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0022_Butterfly_Effect_Engine.md
+PH5-0023,Mission Forks,Phase 4.0 → Phase 5.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0023_Mission_Forks.md
+PH5-0024,Point of No Return Detector,Phase 4.0 → Phase 5.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0024_Point_of_No_Return_Detector.md
+PH5-0025,Intervention Ladder,Phase 4.0 → Phase 5.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0025_Intervention_Ladder.md
+PH5-0026,Mission Pulse,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0026_Mission_Pulse.md
+PH5-0027,Mission DNA,Phase 4.0 → Phase 5.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0027_Mission_DNA.md
+PH5-0028,Hall of Decisions,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0028_Hall_of_Decisions.md
+PH5-0029,Institutional Memory Engine,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0029_Institutional_Memory_Engine.md
+PH5-0030,Legacy Tree,Phase 4.0 → Phase 5.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0030_Legacy_Tree.md
+PH5-0031,Behavioral Cascade Engine,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0031_Behavioral_Cascade_Engine.md
+PH5-0032,Precursor Library,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0032_Precursor_Library.md
+PH5-0033,Project Chimera,Phase 4.0 → Phase 5.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0033_Project_Chimera.md
+PH5-0034,Behavioral Weather Forecast,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0034_Behavioral_Weather_Forecast.md
+PH5-0035,Emotional Pressure System,Phase 4.0 → Phase 5.0,Medical,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0035_Emotional_Pressure_System.md
+PH5-0036,Mission Momentum Engine,Phase 4.0 → Phase 5.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0036_Mission_Momentum_Engine.md
+PH5-0037,Cascade Predictor,Phase 4.0 → Phase 5.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0037_Cascade_Predictor.md
+PH5-0038,Operation Echoes,Phase 4.0 → Phase 5.0,Historian,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0038_Operation_Echoes.md
+PH5-0039,Ghost Evolution Engine,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0039_Ghost_Evolution_Engine.md
+PH5-0040,Ghost Comparison,Phase 4.0 → Phase 5.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0040_Ghost_Comparison.md
+PH5-0041,Legacy Projection Room,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0041_Legacy_Projection_Room.md
+PH5-0042,Guardian Protocol Level II,Phase 4.0 → Phase 5.0,Guardian,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0042_Guardian_Protocol_Level_II.md
+PH5-0043,Dangerous Phrase Library,Phase 4.0 → Phase 5.0,Internal Affairs,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0043_Dangerous_Phrase_Library.md
+PH5-0044,Recovery Signature,Phase 4.0 → Phase 5.0,Medical,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0044_Recovery_Signature.md
+PH5-0045,Strategy Chamber,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0045_Strategy_Chamber.md
+PH5-0046,AI Purpose Principle,Phase 4.0 → Phase 5.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0046_AI_Purpose_Principle.md
+PH5-0047,Decision Integrity Engine,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0047_Decision_Integrity_Engine.md
+PH5-0048,Decision Weighting,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0048_Decision_Weighting.md
+PH5-0049,Critical Decision Tree,Phase 4.0 → Phase 5.0,Debrief,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0049_Critical_Decision_Tree.md
+PH5-0050,Butterfly Room,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0050_Butterfly_Room.md
+PH5-0051,Decision Debt,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0051_Decision_Debt.md
+PH5-0052,Discipline Interest,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0052_Discipline_Interest.md
+PH5-0053,Tactical Compass,Phase 4.0 → Phase 5.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0053_Tactical_Compass.md
+PH5-0054,Headquarters Balance,Phase 4.0 → Phase 5.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0054_Headquarters_Balance.md
+PH5-0055,Decision Pressure Map,Phase 4.0 → Phase 5.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0055_Decision_Pressure_Map.md
+PH5-0056,Operations Sandbox,Phase 4.0 → Phase 5.0,Academy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0056_Operations_Sandbox.md
+PH5-0057,Guardian Protocol Level III,Phase 4.0 → Phase 5.0,Guardian,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0057_Guardian_Protocol_Level_III.md
+PH5-0058,Golden Week Protocol,Phase 4.0 → Phase 5.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0058_Golden_Week_Protocol.md
+PH5-0059,Operator Seasons,Phase 4.0 → Phase 5.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0059_Operator_Seasons.md
+PH5-0060,Mission Forecast Room,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0060_Mission_Forecast_Room.md
+PH5-0061,Career Constitution,Phase 4.0 → Phase 5.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0061_Career_Constitution.md
+PH5-0062,Operator Compass,Phase 4.0 → Phase 5.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0062_Operator_Compass.md
+PH5-0063,Behavioral Gyroscope,Phase 4.0 → Phase 5.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0063_Behavioral_Gyroscope.md
+PH5-0064,Artificial Horizon,Phase 4.0 → Phase 5.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0064_Artificial_Horizon.md
+PH5-0065,Psychological Wind Indicator,Phase 4.0 → Phase 5.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0065_Psychological_Wind_Indicator.md
+PH5-0066,Gravity Room,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0066_Gravity_Room.md
+PH5-0067,Technical Recorder,Phase 4.0 → Phase 5.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0067_Technical_Recorder.md
+PH5-0068,Behavioral Recorder,Phase 4.0 → Phase 5.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0068_Behavioral_Recorder.md
+PH5-0069,Five Engines Architecture,Phase 4.0 → Phase 5.0,HQOS,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0069_Five_Engines_Architecture.md
+PH5-0070,General Staff Model,Phase 4.0 → Phase 5.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0070_General_Staff_Model.md
+PH5-0071,Medical Officer Recovery Prompt,Phase 4.0 → Phase 5.0,Medical,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0071_Medical_Officer_Recovery_Prompt.md
+PH5-0072,Engineer Sunday Maintenance,Phase 4.0 → Phase 5.0,Engineering,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0072_Engineer_Sunday_Maintenance.md
+PH5-0073,Intelligence Officer Three Observations,Phase 4.0 → Phase 5.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0073_Intelligence_Officer_Three_Observations.md
+PH5-0074,Operations Officer Procedural Voice,Phase 4.0 → Phase 5.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0074_Operations_Officer_Procedural_Voice.md
+PH5-0075,Shift Changes,Phase 4.0 → Phase 5.0,HQOS,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0075_Shift_Changes.md
+PH5-0076,Campaign Table,Phase 4.0 → Phase 5.0,Building,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0076_Campaign_Table.md
+PH5-0077,Decision Radius,Phase 4.0 → Phase 5.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0077_Decision_Radius.md
+PH5-0078,Legacy Wall,Phase 4.0 → Phase 5.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0078_Legacy_Wall.md
+PH5-0079,Command Chair Floor Inscription,Phase 4.0 → Phase 5.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0079_Command_Chair_Floor_Inscription.md
+PH5-0080,Professional Operating Environment Principle,Phase 4.0 → Phase 5.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0080_Professional_Operating_Environment_Principle.md
+PH5-0081,Mission Control Comparison Principle,Phase 4.0 → Phase 5.0,Constitution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0081_Mission_Control_Comparison_Principle.md
+PH5-0082,Identity Stability Metric,Phase 4.0 → Phase 5.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0082_Identity_Stability_Metric.md
+PH5-0083,Professional Alignment Score,Phase 4.0 → Phase 5.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0083_Professional_Alignment_Score.md
+PH5-0084,Behavior Match Confidence,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0084_Behavior_Match_Confidence.md
+PH5-0085,Intervention Confidence Scoring,Phase 4.0 → Phase 5.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0085_Intervention_Confidence_Scoring.md
+PH5-0086,Mission Reconstruction View,Phase 4.0 → Phase 5.0,Debrief,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0086_Mission_Reconstruction_View.md
+PH5-0087,Alternative Timeline View,Phase 4.0 → Phase 5.0,Debrief,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0087_Alternative_Timeline_View.md
+PH5-0088,Decision Quality vs Execution Score,Phase 4.0 → Phase 5.0,Debrief,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0088_Decision_Quality_vs_Execution_Score.md
+PH5-0089,Outcome Separation Rule,Phase 4.0 → Phase 5.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0089_Outcome_Separation_Rule.md
+PH5-0090,Precursor Sequence Alert,Phase 4.0 → Phase 5.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0090_Precursor_Sequence_Alert.md

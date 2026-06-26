@@ -1,0 +1,101 @@
+ID,Name,Phase,Category,Priority,Status,Path
+PH6-0001,Doctrine Engine,Phase 5.0 to 6.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0001_Doctrine_Engine.md
+PH6-0002,Doctrine Levels,Phase 5.0 to 6.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0002_Doctrine_Levels.md
+PH6-0003,Evidence Collection Started State,Phase 5.0 to 6.0,Doctrine,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0003_Evidence_Collection_Started_State.md
+PH6-0004,Doctrine Printer Ceremony,Phase 5.0 to 6.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0004_Doctrine_Printer_Ceremony.md
+PH6-0005,Doctrine Chamber,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0005_Doctrine_Chamber.md
+PH6-0006,Rule Graveyard,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0006_Rule_Graveyard.md
+PH6-0007,Doctrine Wars,Phase 5.0 to 6.0,Research,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0007_Doctrine_Wars.md
+PH6-0008,Exceptional Authorization,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0008_Exceptional_Authorization.md
+PH6-0009,False Rule Detection,Phase 5.0 to 6.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0009_False_Rule_Detection.md
+PH6-0010,Myth Library,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0010_Myth_Library.md
+PH6-0011,Doctrine Confidence,Phase 5.0 to 6.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0011_Doctrine_Confidence.md
+PH6-0012,Living SOP,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0012_Living_SOP.md
+PH6-0013,Operational Doctrine Trees,Phase 5.0 to 6.0,Doctrine,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0013_Operational_Doctrine_Trees.md
+PH6-0014,Personal Laws of Nature,Phase 5.0 to 6.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0014_Personal_Laws_of_Nature.md
+PH6-0015,Complacency Division,Phase 5.0 to 6.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0015_Complacency_Division.md
+PH6-0016,Success Monitoring,Phase 5.0 to 6.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0016_Success_Monitoring.md
+PH6-0017,Success Drift,Phase 5.0 to 6.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0017_Success_Drift.md
+PH6-0018,Confidence Ceiling,Phase 5.0 to 6.0,Behavior,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0018_Confidence_Ceiling.md
+PH6-0019,Professional Paradox,Phase 5.0 to 6.0,Constitution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0019_Professional_Paradox.md
+PH6-0020,Guardian Phase II Humility Protection,Phase 5.0 to 6.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0020_Guardian_Phase_II_Humility_Protection.md
+PH6-0021,Trophy Room of Evidence,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0021_Trophy_Room_of_Evidence.md
+PH6-0022,Hall of Fallen Giants,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0022_Hall_of_Fallen_Giants.md
+PH6-0023,Success With Warning Classification,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0023_Success_With_Warning_Classification.md
+PH6-0024,Decay Engine,Phase 5.0 to 6.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0024_Decay_Engine.md
+PH6-0025,Skill Maintenance,Phase 5.0 to 6.0,Academy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0025_Skill_Maintenance.md
+PH6-0026,Identity Insurance Policy,Phase 5.0 to 6.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0026_Identity_Insurance_Policy.md
+PH6-0027,Hall of Future Operators,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0027_Hall_of_Future_Operators.md
+PH6-0028,Annual Review Council,Phase 5.0 to 6.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0028_Annual_Review_Council.md
+PH6-0029,Legacy Archive,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0029_Legacy_Archive.md
+PH6-0030,Headquarters Axiom Vote For Future,Phase 5.0 to 6.0,Constitution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0030_Headquarters_Axiom_Vote_For_Future.md
+PH6-0031,Professional Identity Management,Phase 5.0 to 6.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0031_Professional_Identity_Management.md
+PH6-0032,Headquarters Manifesto,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0032_Headquarters_Manifesto.md
+PH6-0033,No Manipulation Law,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0033_No_Manipulation_Law.md
+PH6-0034,No Shame Law,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0034_No_Shame_Law.md
+PH6-0035,Respect The Operator Law,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0035_Respect_The_Operator_Law.md
+PH6-0036,No Money Celebration Law,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0036_No_Money_Celebration_Law.md
+PH6-0037,Institutional Health,Phase 5.0 to 6.0,Engineering,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0037_Institutional_Health.md
+PH6-0038,Engineering Oath,Phase 5.0 to 6.0,Engineering,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0038_Engineering_Oath.md
+PH6-0039,Headquarters Minimalism,Phase 5.0 to 6.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0039_Headquarters_Minimalism.md
+PH6-0040,Three Second Screen Rule,Phase 5.0 to 6.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0040_Three_Second_Screen_Rule.md
+PH6-0041,No Decoration Rule,Phase 5.0 to 6.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0041_No_Decoration_Rule.md
+PH6-0042,Architectural Review Board,Phase 5.0 to 6.0,Engineering,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0042_Architectural_Review_Board.md
+PH6-0043,Founder Test,Phase 5.0 to 6.0,Legacy,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0043_Founder_Test.md
+PH6-0044,Archive of Removed Features,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0044_Archive_of_Removed_Features.md
+PH6-0045,Longevity Optimization,Phase 5.0 to 6.0,Engineering,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0045_Longevity_Optimization.md
+PH6-0046,Command Chair Test,Phase 5.0 to 6.0,Engineering,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0046_Command_Chair_Test.md
+PH6-0047,Chain of Command,Phase 5.0 to 6.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0047_Chain_of_Command.md
+PH6-0048,Command Authority Detection,Phase 5.0 to 6.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0048_Command_Authority_Detection.md
+PH6-0049,Acting Commander States,Phase 5.0 to 6.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0049_Acting_Commander_States.md
+PH6-0050,Emergency Succession,Phase 5.0 to 6.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0050_Emergency_Succession.md
+PH6-0051,Command Transfer Ceremony,Phase 5.0 to 6.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0051_Command_Transfer_Ceremony.md
+PH6-0052,Rules of Engagement,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0052_Rules_of_Engagement.md
+PH6-0053,Authority Levels,Phase 5.0 to 6.0,HQOS,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0053_Authority_Levels.md
+PH6-0054,Operations Journal,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0054_Operations_Journal.md
+PH6-0055,Situation Room,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0055_Situation_Room.md
+PH6-0056,Command Ledger,Phase 5.0 to 6.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0056_Command_Ledger.md
+PH6-0057,Operational Readiness Conditions,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0057_Operational_Readiness_Conditions.md
+PH6-0058,Permission To Deploy,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0058_Permission_To_Deploy.md
+PH6-0059,Chair Never Lies Symbol,Phase 5.0 to 6.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0059_Chair_Never_Lies_Symbol.md
+PH6-0060,Operator Passport,Phase 5.0 to 6.0,Operator,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0060_Operator_Passport.md
+PH6-0061,Monday Flag Raising Ceremony,Phase 5.0 to 6.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0061_Monday_Flag_Raising_Ceremony.md
+PH6-0062,Last Resort Protocol,Phase 5.0 to 6.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0062_Last_Resort_Protocol.md
+PH6-0063,Principle of Command,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0063_Principle_of_Command.md
+PH6-0064,Daily Command Chair Question,Phase 5.0 to 6.0,Debrief,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0064_Daily_Command_Chair_Question.md
+PH6-0065,Headquarters Exists When Market Closed,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0065_Headquarters_Exists_When_Market_Closed.md
+PH6-0066,Operations Calendar,Phase 5.0 to 6.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0066_Operations_Calendar.md
+PH6-0067,Ambient Department Activity,Phase 5.0 to 6.0,Building,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0067_Ambient_Department_Activity.md
+PH6-0068,Founders Office Locked Door,Phase 5.0 to 6.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0068_Founders_Office_Locked_Door.md
+PH6-0069,Silence As Approval,Phase 5.0 to 6.0,Experience,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0069_Silence_As_Approval.md
+PH6-0070,Observation Protocol,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0070_Observation_Protocol.md
+PH6-0071,Invisible Victories Recognition,Phase 5.0 to 6.0,Recognition,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0071_Invisible_Victories_Recognition.md
+PH6-0072,Doctrine Flame,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0072_Doctrine_Flame.md
+PH6-0073,Legacy Transfer,Phase 5.0 to 6.0,Legacy,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0073_Legacy_Transfer.md
+PH6-0074,Institutional Memory Core,Phase 5.0 to 6.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0074_Institutional_Memory_Core.md
+PH6-0075,Five Mission Artifacts,Phase 5.0 to 6.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0075_Five_Mission_Artifacts.md
+PH6-0076,Memory Pyramid,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0076_Memory_Pyramid.md
+PH6-0077,Campaign Books,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0077_Campaign_Books.md
+PH6-0078,Memory Importance Rating,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0078_Memory_Importance_Rating.md
+PH6-0079,Memory Graph,Phase 5.0 to 6.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0079_Memory_Graph.md
+PH6-0080,Historical Events,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0080_Historical_Events.md
+PH6-0081,Idea Family Trees,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0081_Idea_Family_Trees.md
+PH6-0082,Saved Missions Ledger,Phase 5.0 to 6.0,Guardian,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0082_Saved_Missions_Ledger.md
+PH6-0083,Hall of Recovery,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0083_Hall_of_Recovery.md
+PH6-0084,Historian Perspective Messages,Phase 5.0 to 6.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0084_Historian_Perspective_Messages.md
+PH6-0085,Living Museum,Phase 5.0 to 6.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0085_Living_Museum.md
+PH6-0086,Capsule Ceremony,Phase 5.0 to 6.0,Legacy,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0086_Capsule_Ceremony.md
+PH6-0087,Institutional Memory Principle,Phase 5.0 to 6.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0087_Institutional_Memory_Principle.md
+PH6-0088,Campaign Versioning,Phase 5.0 to 6.0,Engineering,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0088_Campaign_Versioning.md
+PH6-0089,Time Architecture,Phase 5.0 to 6.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0089_Time_Architecture.md
+PH6-0090,Three Clocks,Phase 5.0 to 6.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0090_Three_Clocks.md
+PH6-0091,Long War Perspective,Phase 5.0 to 6.0,Psychology,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0091_Long_War_Perspective.md
+PH6-0092,Operator Seasons,Phase 5.0 to 6.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0092_Operator_Seasons.md
+PH6-0093,Strategic Patience,Phase 5.0 to 6.0,Psychology,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0093_Strategic_Patience.md
+PH6-0094,Campaign Room,Phase 5.0 to 6.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0094_Campaign_Room.md
+PH6-0095,Mission Drift Detection,Phase 5.0 to 6.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0095_Mission_Drift_Detection.md
+PH6-0096,Future Archive Shelves,Phase 5.0 to 6.0,Building,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0096_Future_Archive_Shelves.md
+PH6-0097,Institutional Maturity Model,Phase 5.0 to 6.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0097_Institutional_Maturity_Model.md
+PH6-0098,Archives Terminology,Phase 5.0 to 6.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0098_Archives_Terminology.md
+PH6-0099,Memory Capital Principle,Phase 5.0 to 6.0,Constitution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0099_Memory_Capital_Principle.md
+PH6-0100,Headquarters Evolution Law,Phase 5.0 to 6.0,Legacy,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0100_Headquarters_Evolution_Law.md

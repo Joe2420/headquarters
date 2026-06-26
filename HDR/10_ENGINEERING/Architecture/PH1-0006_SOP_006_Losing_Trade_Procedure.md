@@ -1,0 +1,35 @@
+---
+normalized_from: 13_PHASE_RECOVERY/Phase_01_to_02/PH1-0006_SOP-006_Losing_Trade_Procedure.md
+normalized_version: HDR v1.0 Design Freeze Candidate
+normalized_at: 2026-06-26T11:21:55.209137Z
+canonical_path: 10_ENGINEERING/Architecture/PH1-0006_SOP_006_Losing_Trade_Procedure.md
+---
+
+# PH1-0006 — SOP-006 Losing Trade Procedure
+
+**Recovery Phase:** Phase 1.0–2.0  
+**Category:** SOP  
+**Priority:** CORE  
+**Status:** SPECIFIED  
+**Owner:** Headquarters Architecture
+
+## Purpose
+Separate good losses from bad losses immediately after closure.
+
+## Operator Experience
+Operator classifies direction, timing, execution, rule break, good/bad loss.
+
+## Engineering Implementation
+Trigger threat recalculation after losing trade.
+
+## Dependencies
+Debrief; Threat Engine
+
+## Acceptance Criteria
+- The feature can be identified in the Master Index.
+- The feature has a clear implementation path.
+- The feature supports disciplined execution rather than entertainment.
+- The feature can be tested through mission-state or UX acceptance checks.
+
+## Notes
+Recovered during the phase-by-phase design recovery pass from Phase 0.1 through Phase 2.0.

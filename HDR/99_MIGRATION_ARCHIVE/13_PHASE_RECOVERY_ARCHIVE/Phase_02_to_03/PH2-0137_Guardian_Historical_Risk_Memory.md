@@ -1,0 +1,28 @@
+# PH2-0137 — Guardian Historical Risk Memory
+
+**Recovery Phase:** Phase 2.0–3.0  
+**Category:** Guardian  
+**Priority:** CORE  
+**Status:** SPECIFIED  
+**Owner:** Headquarters Architecture
+
+## Purpose
+After target or drift, compare current situation to account failures.
+
+## Operator Experience
+Guardian can say historical risk profile elevated.
+
+## Engineering Implementation
+Implement historical similarity search and memory triggers.
+
+## Dependencies
+Historian; Guardian
+
+## Acceptance Criteria
+- The feature is registered with a permanent phase-recovery ID.
+- The feature has a clear implementation path.
+- The feature supports disciplined execution, institutional memory, operator protection, or professional identity.
+- The feature can be tested through state, UI, archive, AI, or UX acceptance checks.
+
+## Notes
+Recovered from Phase 2.0–3.0 architecture pass.

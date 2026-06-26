@@ -1,0 +1,35 @@
+---
+normalized_from: 13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0026_No_Market_Prediction_Law.md
+normalized_version: HDR v1.0 Design Freeze Candidate
+normalized_at: 2026-06-26T11:21:55.207124Z
+canonical_path: 01_CONSTITUTION/Principles/PH2-0026_No_Market_Prediction_Law.md
+---
+
+# PH2-0026 — No Market Prediction Law
+
+**Recovery Phase:** Phase 1.3–2.0  
+**Category:** Constitution  
+**Priority:** FOUNDATIONAL  
+**Status:** SPECIFIED  
+**Owner:** Headquarters Architecture
+
+## Purpose
+Headquarters never predicts market direction; it evaluates behavior and doctrine.
+
+## Operator Experience
+Operator retains responsibility for market decisions.
+
+## Engineering Implementation
+Apply to all AI prompt templates and UI labels.
+
+## Dependencies
+AI Bible; Constitution
+
+## Acceptance Criteria
+- The feature can be identified in the Master Index.
+- The feature has a clear implementation path.
+- The feature supports disciplined execution rather than entertainment.
+- The feature can be tested through mission-state or UX acceptance checks.
+
+## Notes
+Recovered during the phase-by-phase design recovery pass from Phase 0.1 through Phase 2.0.

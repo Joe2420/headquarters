@@ -1,0 +1,453 @@
+id,name,category,priority,volume,implementation_phase,status,dependencies,notes
+HQ-0001,Commander,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Strategic executive voice; speaks rarely; protects identity, doctrine, and capital; never predicts markets."
+HQ-0002,Guardian,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Protects capital, judgment, campaign integrity; stricter in Funded/Guardian mode."
+HQ-0003,Ghost,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Ideal-operator model built from highest-quality missions; compares current decisions to Professional Joe.
+HQ-0004,Historian,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Institutional memory; retrieves comparable operations and provides perspective.
+HQ-0005,Engineer,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Maintains HQOS, runs audits, Night Operations, and system improvement reviews."
+HQ-0006,Medical Officer,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Tracks operational readiness, fatigue, recovery, sleep, stress; never diagnoses."
+HQ-0007,Internal Affairs,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Investigates inconsistent reports, lucky wins, rule deviations; never shames."
+HQ-0008,Academy,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Turns weaknesses into courses, field exercises, simulations, certifications."
+HQ-0009,Operations Officer,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Procedural checklist/logistics authority for mission flow and readiness.
+HQ-0010,Intelligence Officer,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Finds patterns after missions; produces concise intelligence reports.
+HQ-0011,Recognition Office,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,"Recognizes restraint, quiet victories, invisible discipline; never rewards money."
+HQ-0012,Sentinel,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Emergency funded-capital protection; wakes only for catastrophic behavioral risk.
+HQ-0013,Complacency Division,Institution / Department,IMPORTANT,02_INSTITUTION,Bravo,REGISTERED,,"Monitors success drift, overconfidence phrases, golden-week risk, humility decay."
+HQ-0014,Quality Assurance,Institution / Department,IMPORTANT,02_INSTITUTION,Bravo,REGISTERED,,Audits Headquarters itself and admits unnecessary interventions.
+HQ-0015,Ethics Committee,Institution / Department,IMPORTANT,02_INSTITUTION,Bravo,REGISTERED,,Protects dignity; rejects manipulative/shaming features.
+HQ-0016,Research Division,Institution / Department,IMPORTANT,02_INSTITUTION,Bravo,REGISTERED,,Tests hypotheses and experimental playbooks in non-production contexts.
+HQ-0017,Red Team,Institution / Department,IMPORTANT,02_INSTITUTION,Bravo,REGISTERED,,Challenges assumptions and provides counterarguments before deployment.
+HQ-0018,Blue Team,Institution / Department,IMPORTANT,02_INSTITUTION,Bravo,REGISTERED,,Checks whether execution matched Headquarters standards.
+HQ-0019,Founder,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Origin philosophy; never appears directly; leaves questions and architectural intent.
+HQ-0020,Council,Institution / Department,CORE,02_INSTITUTION,Bravo,REGISTERED,,Institutional consensus layer connecting all departments.
+RM-0001,Security Checkpoint,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Identity verified, archives synchronized, departments online, Report for Duty."
+RM-0002,Blast Door Entrance,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Five-second hydraulic transition from civilian life to Headquarters.
+RM-0003,Transition Corridor,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,No UI; breathing/threshold corridor to slow the operator.
+RM-0004,Entrance Hall,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Crest, doctrine wall, campaign flags, department corridors."
+RM-0005,Command Center,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,"Mission Board, Command Chair, operations display."
+RM-0006,Command Chair,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,Symbolic control point; Professional Joe/Impatient Joe command authority.
+RM-0007,Mission Board,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,"Campaign, objective, condition, command authority; no PnL/charts."
+RM-0008,Ready Room,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,"Locker, oath, preparation, deployment countdown, unconscious breathing."
+RM-0009,Personal Locker,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Constitution, Guardian Seal, campaign orders, compass, oath."
+RM-0010,Briefing Table,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,War-table style daily mission preparation and abort conditions.
+RM-0011,War Room,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,"Tactical room with campaign map, authorization terminal, Ghost/Guardian positions."
+RM-0012,War Table / Campaign Table,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Holographic operational table; mission/campaign/debrief projections.
+RM-0013,Authorization Terminal,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,Secure console for Mission Authorization; mechanical stamp output.
+RM-0014,Observation Room,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,Minimal room rewarding no-action; observation timer; patience acknowledged.
+RM-0015,Observation Balcony,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Perspective view above Headquarters; recommended during drift.
+RM-0016,Thinking Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"No charts, no AI; lamp and notebook; separate thinking from execution."
+RM-0017,Execution Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Tactical silence; only mission-critical deployment information.
+RM-0018,Debrief Theater,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,"Mission replay; behavior first, charts second, PnL last."
+RM-0019,Mirror Room,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,Shows who is making decisions: Professional/Impatient/Greedy/Fearful Joe.
+RM-0020,AAR Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Headquarters-owned after action review with decision nodes.
+RM-0021,Internal Affairs Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"White lighting, evidence table, clarification requests."
+RM-0022,Council Chamber,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Hidden institutional deliberation room; operator never enters.
+RM-0023,Guardian Wing,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Funded protection wing; vaults, Guardian office, stewardship atmosphere."
+RM-0024,Guardian Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Small concrete protective room; no charts; sentence: Protecting capital is today’s victory.
+RM-0025,Capital Vault,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,Symbolic vault for entrusted funded capital; no decorative money focus.
+RM-0026,Judgment Reserve,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Protected vault representing cognitive judgment reserve.
+RM-0027,Trust Vault,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Symbolizes earned trust in Headquarters through correct recommendations.
+RM-0028,Steward’s Desk,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Funded-mode room emphasizing custodianship and responsibility.
+RM-0029,Hall of Custodians,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Plaques for protected funded accounts; no profit metrics.
+RM-0030,Hall of Restraint,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Celebrates disasters avoided and trades not taken.
+RM-0031,Hall of Quiet Victories,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Small plates for invisible discipline nobody else sees.
+RM-0032,Hall of Honor,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Campaign ribbons and discipline plaques.
+RM-0033,Hall of Fallen Missions,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Memorializes blown accounts and lost missions as lessons.
+RM-0034,Operation Cemetery,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Failed missions preserved for study, not shame."
+RM-0035,Fallen Comrades Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Documents rules ignored and their historical cost.
+RM-0036,Situation Wall,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Current enemy, impact, historical cost, last seen, countermeasure."
+RM-0037,Situation Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Operational status: operator, doctrine, Guardian, integrity, command, threat."
+RM-0038,Intelligence Center,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Pattern reports, leak reports, strengths, suggested actions."
+RM-0039,Archives,Building / Room,CORE,03_BUILDING,Bravo/Delta,REGISTERED,,"Mission books, campaign books, doctrine, black boxes, institutional memory."
+RM-0040,Quiet Archive,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Only career-defining moments; 30-50 entries over career.
+RM-0041,Historian Office,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Historical retrieval, case studies, context, perspective."
+RM-0042,Academy,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Professional education and training; not strategy tutorials.
+RM-0043,Simulation Chamber,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Historical replay and psychological drills; no broker required.
+RM-0044,Strategy Chamber,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Deep queries against career data; intelligence investigations.
+RM-0045,Operations Sandbox,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Practice saying no; fake opportunities, restraint training."
+RM-0046,Medical Office,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Recovery, fatigue, readiness, cognitive bandwidth."
+RM-0047,Recovery Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Warm, low-stimulus cooldown and judgment recovery."
+RM-0048,Engineering Department,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Maintenance, audits, doctrine validation, feature reviews."
+RM-0049,Systems Laboratory,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Experimental systems isolated from production doctrine.
+RM-0050,Research Division Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Hypothesis testing and evidence collection.
+RM-0051,Vault / Constitution Hall,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Immutable commandments and SOPs; not editable during combat.
+RM-0052,Founder’s Office,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Locked/read-only origin room; Founder questions and why Headquarters exists.
+RM-0053,Observatory,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Stars and long-term perspective; career over one mission.
+RM-0054,Legacy Vault,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Annual WHY HEADQUARTERS EXISTS document.
+RM-0055,Legacy Wall,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Yearly plates of professional development.
+RM-0056,Twenty-Year Wall,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Future years reserved, reminding operator of long horizon."
+RM-0057,Library,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Lesson books: Early Entries, Weekend Trading, Greed, Funded Psychology."
+RM-0058,Doctrine Chamber,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Validated rules engraved into pillars.
+RM-0059,Doctrine Cemetery,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Retired rules preserved with honors.
+RM-0060,Myth Library,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Unverified beliefs investigated and archived.
+RM-0061,Trophy Room,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Behavior evidence, not profit trophies."
+RM-0062,Hall of Fallen Giants,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Warnings that success requires maintenance.
+RM-0063,Hall of Future Operators,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Possible future selves: Professional, Undisciplined, Burned-out."
+RM-0064,Founder’s Wall,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Passed/lost funded accounts and lessons that funded Headquarters.
+RM-0065,Eternal Flame / Doctrine Flame,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Symbolizes truth and capital protection commitment.
+RM-0066,Empty Chair,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Represents the operator still being built.
+RM-0067,Empty Desk,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Reserved for the next lesson.
+RM-0068,Armory,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,"Preparation tools: Constitution, SOPs, playbooks, black box, recovery protocols."
+RM-0069,Ready Room Lockers,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Gear-up identity ritual for mission orders and equipment check.
+RM-0070,Last Door,Building / Room,IMPORTANT,03_BUILDING,Bravo/Delta,REGISTERED,,Return to Civilian Life exit sequence.
+SYS-0001,Professional Joe,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Primary target identity; disciplined operator in command.
+SYS-0002,Civilian Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Outside-HQ identity; separated by airlock/transition.
+SYS-0003,Impatient Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Identity drift state associated with early entries and rushing.
+SYS-0004,Greedy Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Identity drift state associated with overconfidence and success risk.
+SYS-0005,Fearful Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Identity drift state associated with hesitation and loss recovery.
+SYS-0006,Guardian Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Funded/custodian identity: hunter becomes guardian.
+SYS-0007,Observer Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Observation-only identity; no deployment pressure.
+SYS-0008,Research Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Experimenting only in simulation or paper contexts.
+SYS-0009,Instructor Joe,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Review/Academy identity for learning and teaching.
+SYS-0010,Command Authority Engine,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Determines who occupies Command Chair.
+SYS-0011,Identity Drift Engine,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Measures drift from Professional Joe toward other identities.
+SYS-0012,Operator Compass,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Behavioral compass/gyroscope pointing toward Professional Joe/Ghost.
+SYS-0013,Artificial Horizon,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Pilot-inspired stability line; tilts during behavioral instability.
+SYS-0014,Behavioral Gravity,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Detects pull toward repeating historical destructive behavior.
+SYS-0015,Decision DNA,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Behavioral fingerprint of decisions and tempo.
+SYS-0016,Mission DNA,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Mission-level composition: patience, preparation, execution, recovery."
+SYS-0017,Behavioral Cascades,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Domino chains leading to account danger.
+SYS-0018,Precursor Library,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Libraries of sequences that precede major success or failure.
+SYS-0019,Behavioral Black Box,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Reconstructs final 60 minutes before serious deviation/account loss.
+SYS-0020,Mission Timeline,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Decision-focused timeline of the whole operation.
+SYS-0021,Decision Nodes,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Important choice points classified as correct/deviation/learning.
+SYS-0022,Point of No Return,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Moment after which self-destruction probability exceeds threshold.
+SYS-0023,Intervention Ladder,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Observation → Awareness → Reminder → Guardian → Sentinel → Lockdown.
+SYS-0024,Operator Forecast,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Psychological weather report for patience, discipline, overconfidence, FOMO."
+SYS-0025,Operational Pressure,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Submarine-style pressure model; hull integrity metaphor.
+SYS-0026,Mission Momentum,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Protects rhythm; warns when momentum is compromised.
+SYS-0027,Confidence Ceiling,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Optimal confidence zone; maximum confidence is not desired.
+SYS-0028,Phrase Library,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Dangerous phrases like “just this once”, “I figured it out”."
+SYS-0029,Recovery Signature,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Learns how long Joe needs to regain clarity.
+SYS-0030,Decision Integrity Engine,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Grades decision quality independent of outcome.
+SYS-0031,Decision Debt,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Accumulated cost of poor decisions before visible damage.
+SYS-0032,Discipline Interest,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Compounding effect of disciplined mission sequences.
+SYS-0033,Decision Pressure Map,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Heatmap of psychological pressure by time/situation.
+SYS-0034,Judgment Reserve,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Tracks judgment as core asset; deposits/withdrawals.
+SYS-0035,Decision Latency,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Timing signature of professional vs emotional decisions.
+SYS-0036,Noise Floor,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Personal threshold where mental noise degrades decisions.
+SYS-0037,Mental Environment Monitor,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Classifies noise increasing / stable / calm.
+SYS-0038,Cognitive Bandwidth,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Available mental capacity across decisions.
+SYS-0039,Operational Load,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Workload model replacing generic stress.
+SYS-0040,Discipline Reserve,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Behavioral battery / reserve of control.
+SYS-0041,Patience Meter,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Hidden measure of comfort while waiting.
+SYS-0042,Synchronization System,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Environment nudges tempo/breathing toward calm.
+SYS-0043,Tactical Breathing,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Unconscious breathing guided by radar sweep/light pulse.
+SYS-0044,Mission Temperature,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Cold/calm/controlled vs rising/monitor behavior.
+SYS-0045,Trust Index,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Evidence-based self-trust through plan-following history.
+SYS-0046,Trust Vault Deposits,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Trust deposit/withdrawal model for self-relationship.
+SYS-0047,Stewardship Engine,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Entrusted capital / custodian mindset.
+SYS-0048,Capital Integrity,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Measures ethical protection of capital, not balance."
+SYS-0049,Guardian Integrity,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Funded-mode integrity and days since compromise.
+SYS-0050,Command Ledger,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Minutes Professional/Fear/Greed/Urgency were in command.
+SYS-0051,Headquarters Integrity,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Institutional integrity degraded by dishonesty/skipped reviews, not losses."
+SYS-0052,Mission Integrity,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Did operator follow mission plan regardless of PnL.
+SYS-0053,Operational Readiness Score,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Fit-to-trade readiness from sleep/stress/confidence/recent behavior.
+SYS-0054,Threat Level / DEFCON,Operator / Behavior System,CORE,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Green/Yellow/Orange/Red/Black behavior risk state.
+SYS-0055,Account Killer Score,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Detects history-linked account-destroying patterns.
+SYS-0056,Edge Quality Score,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Setup quality from doctrine evidence, not market prediction."
+SYS-0057,Execution XP,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,"Rewards process: good skips, debriefs, no-trade days."
+SYS-0058,Legacy Projection,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Shows career trajectory of repeated behaviors.
+SYS-0059,Career Constitution,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Evidence-written personal laws over years.
+SYS-0060,Personal Laws of Nature,Operator / Behavior System,IMPORTANT,04_OPERATOR / 06_INTELLIGENCE,Charlie,REGISTERED,,Long-term performance laws discovered after thousands of missions.
+OPS-0001,Mission Lifecycle,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Arrival → Preparation → Observation → Authorization → Deployment → Management → Return → Debrief → Archive → Recovery.
+OPS-0002,Campaign Lifecycle,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Weeks/months objectives such as Iron Patience or Guardian.
+OPS-0003,Funded Mode / Guardian Protocol,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Dark, stricter mode for entrusted capital and stewardship."
+OPS-0004,Success Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"After +2R/+3R/+5R, mission shifts from grow to protect."
+OPS-0005,Operation Sunset,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Return to Base after objective achieved; protect progress.
+OPS-0006,Golden Week Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"After exceptional streak/week, stricter rules to avoid giving back."
+OPS-0007,Weekend Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Funded Mode weekend deployment denied or locked.
+OPS-0008,Profit Defense Procedure,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Reduces aggression after wins; A+ only after thresholds.
+OPS-0009,Damage Control Procedure,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,1 loss slow down; 2 losses A+ only; 3 losses suspend/cooldown.
+OPS-0010,Drawdown Recovery Procedure,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Half risk, max one A+ trade, no chasing/re-entry."
+OPS-0011,Winning Streak Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"No size increase, max one more trade, no experimental setups."
+OPS-0012,Re-entry Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Requires material structure change and new authorization; 2-5 candle wait.
+OPS-0013,Missed Trade Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Trade missed = no action required; reward not chasing.
+OPS-0014,Observation Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Observation-only room/mode; no trading controls; patience recognized.
+OPS-0015,Authorization Protocol,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Evidence for/against, reason not to trade, score/approval."
+OPS-0016,Override Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Delay + typed operational justification; reviewed later.
+OPS-0017,Lockdown Mode,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Operations suspended with timer after high-risk behavior.
+OPS-0018,Red Button / Emergency Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Immediate 20-minute walk-away and revenge-trade reminder.
+OPS-0019,Return to Base,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,End mission / secure victory / civilian transition.
+OPS-0020,Shift Log,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"End-of-shift report: mission status, pending issues, next watch."
+OPS-0021,Night Operations,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Engineer/Historian/Academy background review after shutdown.
+OPS-0022,Airlock Protocol,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"30-second transition, phone/distraction silence, oath."
+OPS-0023,Daily Oath,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Short oath: protect capital, patience, accept missed trades."
+OPS-0024,Founder’s Oath,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Accepted once on first launch; truth, discipline cannot be outsourced."
+OPS-0025,Custodian Oath,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Funded Monday: capital entrusted, protection before growth."
+OPS-0026,Oath Renewal,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Annual responsibility renewal.
+OPS-0027,Equipment Check,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Constitution reviewed, news reviewed, HTF bias, limits, readiness."
+OPS-0028,Rules of Engagement,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Authority rules for deployment, Guardian veto, Sentinel emergency."
+OPS-0029,Exceptional Authorization,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Doctrine override is possible but requires justification and later review.
+OPS-0030,Internal Tribunal,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Serious violation review with evidence from departments.
+OPS-0031,Doctrine Validation,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Observation → Hypothesis → Field Test → Validated → Doctrine.
+OPS-0032,Doctrine Wars,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Conflicting doctrines trigger Research operation.
+OPS-0033,Doctrine Retirement,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Rules retire with honors into Doctrine Cemetery.
+OPS-0034,Myth Investigation,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Beliefs like Friday/Monday performance tested against evidence.
+OPS-0035,Quarterly Review,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Council review every 90 days.
+OPS-0036,Annual Stewardship Review,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Yearly review of stewardship, doctrine, recovery, integrity."
+OPS-0037,Graduation Test,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Silent week with no interventions to test internalization.
+OPS-0038,No Weekend Trading Commandment,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Immutable funded-mode law from account-loss history.
+OPS-0039,No Trade Without Invalidation,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Immutable safety rule.
+OPS-0040,Never Move Stop Emotionally,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Immutable doctrine.
+OPS-0041,Never Chase,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Immutable doctrine.
+OPS-0042,Winning Creates Responsibility,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Doctrine 014; success increases burden not freedom.
+OPS-0043,We Do Not Repeat Expensive Lessons,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Core institutional slogan.
+OPS-0044,Battlefield Independence,Operations / Protocol / Doctrine,CORE,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Headquarters does not execute trades; any broker/platform supported.
+OPS-0045,Mission Control Principle,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Headquarters monitors/advises/debriefs; broker/platform remains battlefield.
+OPS-0046,Second Screen Philosophy,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Headquarters on one screen, trading platform on another."
+OPS-0047,Manual Confirmation Fallback,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Works even without broker API: operator marks deployed/closed manually.
+OPS-0048,Tactical Overlay,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Optional always-on-top HUD with mission/threat/rule info.
+OPS-0049,Historical Replay Simulation,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,"Replays historical candles/mission scenarios, independent of broker."
+OPS-0050,Academy Field Exercises,Operations / Protocol / Doctrine,IMPORTANT,05_OPERATIONS / 01_CONSTITUTION,Bravo/Charlie,REGISTERED,,Assigned exercises such as Silent Morning or Iron Exit.
+UI-0001,Cold Boot Sequence,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Initializing Archives, Intelligence, Operator Profile, Integrity, Tactical Interface, READY."
+UI-0002,Security Checkpoint Screen,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Identity verified, archives synchronized, departments online, Report for Duty."
+UI-0003,Report For Duty Button,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Primary entry command; replaces login/start app.
+UI-0004,Hydraulic Door Transition,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Purposeful room-to-room transition; tiny hydraulic sound.
+UI-0005,Elevator / Room Transition,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Doors close/open; displays moving to next room.
+UI-0006,Tactical Silence,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"When active, non-critical UI disappears."
+UI-0007,Heartbeat Mode,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Subtle radar/pulse every 20-30 seconds.
+UI-0008,Radar Sweep,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Calm environmental rhythm and breathing guide.
+UI-0009,Building Breathing,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Almost imperceptible expansion/lighting pulse.
+UI-0010,Dynamic Backgrounds,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Green/Yellow/Orange/Red/Black mission-status atmospheres.
+UI-0011,Mission Backgrounds,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Room/background changes by mission phase.
+UI-0012,Operational Weather,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Clear/fog/storm market clarity and institutional weather.
+UI-0013,Lighting Profiles,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Command cool white, War blue, Standby dark green, Recovery warm, IA crisp white."
+UI-0014,Sound Bible,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Secure beep, denial tone, vault steel, printer, bell, hydraulics."
+UI-0015,Commander Voice,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Dangerously calm, deep, rare, deliberate pauses."
+UI-0016,Operations Officer Voice,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Procedural, faster, checklist/logistics tone."
+UI-0017,Mission Bell,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Rings only on high-integrity mission completion.
+UI-0018,Guardian Bell,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Deep funded-day bell for protected capital.
+UI-0019,Institutional Bell,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Rare annual/doctrine/campaign tone.
+UI-0020,Mechanical Printer,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Prints doctrine updates, Internal Affairs requests, Council notes."
+UI-0021,Command Light Alignment,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Overhead light shifts with command stability.
+UI-0022,Shadow Protocol,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Shadow aligns/separates with integrity/identity drift.
+UI-0023,Artificial Horizon UI,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Thin horizon line that tilts during behavior instability.
+UI-0024,Operator Compass UI,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Always-present compass to Professional Joe/Ghost.
+UI-0025,Tactical Compass,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Preparation/Execution/Recovery/Reflection balance.
+UI-0026,Situation Clock,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"NYSE Open T-/+, mission day, threat status."
+UI-0027,Analog Command Clock,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Precision institutional time object.
+UI-0028,Mission Patch / Campaign Ribbon,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Earned through discipline, not profit."
+UI-0029,Mission Seal,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Mission archived seal: honored/compromised.
+UI-0030,Command Seal,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Authorization seal stamped by Headquarters Command.
+UI-0031,Codename Generator,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Operation Iron Wolf, Silent Hawk, Black Horizon, Atlas, etc."
+UI-0032,Mission Banner,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Operation name, objective, status."
+UI-0033,Headquarters Crest,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Shield with direction/protection/doctrine/execution/star.
+UI-0034,Operations Flag,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,State of institution; still/lowered/half-mast based on standards.
+UI-0035,Personal Crest,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Operator motto and shield; process without compromise.
+UI-0036,Situation Wall UI,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Current enemy, impact, cost, last seen, countermeasure."
+UI-0037,Intelligence Wall UI,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Enemy, improving skill, leak, stability, next breakthrough."
+UI-0038,Living Map / Campaign Map,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Career as military campaign; waypoints and operations.
+UI-0039,Legacy Tree,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Doctrines, lessons, events as branching tree."
+UI-0040,Twenty-Year Wall UI,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Future years reserved and current year illuminated.
+UI-0041,Founders Notes,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Questions, not advice; slipped under door after milestones."
+UI-0042,70/20/10 Screen Principle,Interface / Environment / Audio,CORE,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"70% calm space, 20% information, 10% guidance/interaction."
+UI-0043,No Decoration Rule,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Every visual/sound must communicate or reinforce behavior.
+UI-0044,Silence Budget,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Departments have limits on interventions; forces messages to matter.
+UI-0045,One Sentence Rule,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,AI communications should be concise; maximum one sentence in most contexts.
+UI-0046,Three Second Rule,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Screen purpose must be clear within three seconds.
+UI-0047,Golden Ratio Attention Rule,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Only one dominant element per screen.
+UI-0048,No Dashboard Opening,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Headquarters opens where operator needs to be: Debrief/Mirror/Command Center.
+UI-0049,Dynamic Headquarters Aging,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,"Walls/archives/ribbons/history accumulate over years, not cosmetic unlocks."
+UI-0050,Founder Test,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Would this still matter in ten years?
+UI-0051,Would NASA Add This Test,Interface / Environment / Audio,IMPORTANT,09_INTERFACE / 03_BUILDING,Delta/Echo,REGISTERED,,Reject trend-chasing features that weaken mission control feel.
+MEM-0001,Mission Report Artifact,Archives / Academy / Engineering / Legacy,CORE,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Every mission creates report: what happened.
+MEM-0002,Behavior Report Artifact,Archives / Academy / Engineering / Legacy,CORE,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Who was in command and behavior quality.
+MEM-0003,Decision Report Artifact,Archives / Academy / Engineering / Legacy,CORE,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Critical decisions and integrity ratings.
+MEM-0004,Intelligence Report Artifact,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Patterns and lessons learned.
+MEM-0005,Doctrine Report Artifact,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Whether doctrine changed or evidence collected.
+MEM-0006,Memory Pyramid,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Mission → Campaign → Quarter → Year → Career → Institution.
+MEM-0007,Campaign Books,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Annual/campaign books with operations, doctrine, integrity."
+MEM-0008,Historical Events,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Great Weekend Incident, First Guardian Save, Retirement of Revenge Trading."
+MEM-0009,Family Trees of Ideas,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Rule 014 → Guardian → Success Protocol → Vault Lock etc.
+MEM-0010,Saved Missions Ledger,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Guardian interventions accepted and capital preserved.
+MEM-0011,Invisible Ledger,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Potential accounts lost vs actual accounts lost vs Guardian saves.
+MEM-0012,Capsule Ceremony,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,New Year time capsule sealed for five years.
+MEM-0013,Legacy Transfer,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Lessons left behind for future operators.
+MEM-0014,Academy Courses,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Weaknesses become assigned courses.
+MEM-0015,Academy Transcript,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Grades for patience, recovery, capital protection, etc."
+MEM-0016,Certifications,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Capital Guardian, Debrief Officer, Recovery Specialist, Observation Expert."
+MEM-0017,Oral Examination,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Explain why a doctrine exists.
+MEM-0018,Qualification Board,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Unlocks higher Guardian/clearance responsibility.
+MEM-0019,Mentor Protocol,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Would Ghost approve today’s lesson?
+MEM-0020,Medals of Restraint,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Awards for not trading, not moving stops, walking away."
+MEM-0021,Rank / Professional Rank,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Operator Candidate → Operator → Senior Operator → Mission Specialist → Doctrine Keeper.
+MEM-0022,Security Clearance,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Earned access to advanced analytics/intelligence based on discipline.
+MEM-0023,Maintenance Days,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Sunday mission: maintain Headquarters.
+MEM-0024,Headquarters Health,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Archives, doctrine, integrity, lessons, intelligence status."
+MEM-0025,Recommendation Ledger,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Auditable record of Headquarters recommendations and outcomes.
+MEM-0026,Institutional Trust Engine,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Headquarters earns Joe’s trust through consistent evidence.
+MEM-0027,Self Audit / Final Audit,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Does Headquarters still deserve operator trust?
+MEM-0028,Archive of Removed Features,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Profit fireworks, leaderboards, signals, social feeds rejected."
+MEM-0029,Anti-Feature List,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,What Headquarters must never become.
+MEM-0030,Knife Drawer,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Remove before adding engineering ritual.
+MEM-0031,Rule of Elegance,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Features must pass mission/identity/institution/longevity/silence gates.
+MEM-0032,Engineering Oath,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Build only what strengthens disciplined execution.
+MEM-0033,Founders Log,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Why decisions were made; intent preservation.
+MEM-0034,HQOS Event Bus,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Everything as events, not clicks."
+MEM-0035,HQOS Heartbeat,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Departments/operator/environment/mission update each pulse.
+MEM-0036,HQOS State Engine,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Single source of current state; rooms respond to state.
+MEM-0037,HQOS Background Services,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Historian indexing, Engineer audits, Academy drills, Archives backups."
+MEM-0038,Night Watch / Shift Change,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Institution remains on watch after app closes.
+MEM-0039,Error Handling as Engineering,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Operational anomaly detected, integrity maintained; no generic errors."
+MEM-0040,SQLite Archives,Archives / Academy / Engineering / Legacy,CORE,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Database is called Archives to operator; never “database”.
+MEM-0041,Data Integrity Checks,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Encrypted backups, verification, archive security."
+MEM-0042,Source/HDR/Assets Separation,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Repo separated into Design Repository, Source, Assets."
+MEM-0043,Master Index IDs,Archives / Academy / Engineering / Legacy,CORE,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Every object has permanent ID and status.
+MEM-0044,Specification Template,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Purpose, scope, dependencies, UX, engineering, acceptance criteria."
+MEM-0045,MVI Minimum Viable Institution,Archives / Academy / Engineering / Legacy,CORE,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Commander, Guardian, Archives, Mission Lifecycle, Mirror, Observation, Debrief, Black Box, Doctrine, Funded Mode."
+MEM-0046,Broker Independence Connectors,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"APIs, CSV, webhooks, OCR, manual confirmation possible later."
+MEM-0047,CSV Import with Exclusions,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Artificial/balance trades excluded from stats.
+MEM-0048,Account Autopsy,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Passed/failed account analysis and new rule creation.
+MEM-0049,Leak Report,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Top leaks/strengths and action recommendations.
+MEM-0050,Paper Trading Checklist,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"Daily self-check for preparation, authorization, review."
+MEM-0051,Personal Trading Handbook,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,"All issues, solutions, practices, win-streak control, funded caution."
+MEM-0052,Military Operating Manual,Archives / Academy / Engineering / Legacy,IMPORTANT,08_ARCHIVES / 10_ENGINEERING / 11_ACADEMY / 12_LEGACY,Alpha-Bravo,REGISTERED,,Operational manual derived from trading problems and rules.
+CULT-0001,Headquarters Culture,Constitution / Culture,CORE,01_CONSTITUTION,Alpha,REGISTERED,Constitution; Institution Principles,"Defines the shared behavioral norms of Headquarters: truth, discipline, responsibility, and continuous improvement. Culture is what remains when no department is speaking."
+CULT-0002,The Headquarters Way,Constitution / Culture,CORE,01_CONSTITUTION,Alpha,REGISTERED,Headquarters Culture,"Language and conduct standard where the Operator thinks in terms of missions, authorization, investigation, stewardship, and return to base."
+CULT-0003,Four Pillars of Headquarters,Constitution / Principles,CORE,01_CONSTITUTION,Alpha,REGISTERED,Headquarters Culture,"The four permanent pillars: Truth, Discipline, Responsibility, Continuous Improvement."
+CULT-0004,Institutional Vocabulary System,Constitution / Language,CORE,01_CONSTITUTION,Alpha,REGISTERED,Glossary; Interface Language,"Controls words used by Headquarters: variance over luck, evidence over hope, stand down over quit, assessment over feeling."
+CULT-0005,Daily Standard Statement,Constitution / Ritual Language,IMPORTANT,01_CONSTITUTION,Bravo,REGISTERED,Commander; Boot Sequence,A single daily sentence from Commander that reminds standards without motivation or hype.
+CULT-0006,Department Reputation Relationship,Institution / Culture,IMPORTANT,02_INSTITUTION,Charlie,REGISTERED,Departments; Operator Model,"Tracks the relationship between Operator and departments, such as Guardian trust, Historian confidence, and Internal Affairs frequency."
+CULT-0007,Honor System,Institution / Integrity,CORE,02_INSTITUTION,Bravo,REGISTERED,Internal Affairs; Archives,Headquarters assumes honesty; Internal Affairs protects against cognitive bias rather than malicious intent.
+CULT-0008,Institutional Handshake,Institution / Ceremony,IMPORTANT,12_LEGACY,Delta,REGISTERED,Guardian; Trust Engine,A quiet recognition when the Operator first trusts Headquarters and that trust protects a mission.
+CULT-0009,Hallway Status Displays,Building / Ambient Life,IMPORTANT,03_BUILDING,Delta,REGISTERED,Department Activity,"Glass displays in corridors showing small department activity: model recalibrated, archives synced, doctrine review scheduled."
+CULT-0010,No Panic Rule,Constitution / Behavior,CORE,01_CONSTITUTION,Alpha,REGISTERED,Commander Voice; Guardian,"Headquarters never panics regardless of market volatility, platform failure, or operator distress."
+CULT-0011,Commander Never Raises Voice,Constitution / AI Behavior,CORE,01_CONSTITUTION,Alpha,REGISTERED,Commander Voice,Absolute rule: Commander remains calm even after catastrophic loss or rule violation.
+CULT-0012,Headquarters Covenant,Constitution / Promise,CORE,01_CONSTITUTION,Alpha,REGISTERED,Constitution; Operator,Mutual promise: Headquarters tells truth and remembers; Operator reports honestly and returns to the work.
+CULT-0013,Wall of Responsibility,Building / Symbolism,IMPORTANT,03_BUILDING,Delta,REGISTERED,Entrance Hall,Concrete wall statement: The market owes Headquarters nothing; Headquarters owes the Operator everything.
+CULT-0014,Empty Hall Protocol,Building / Atmosphere,OPTIONAL,03_BUILDING,Echo,REGISTERED,Night Operations; Sunday Maintenance,"Off-hours atmosphere where Headquarters is quiet, dim, and waiting for duty, reinforcing ownership."
+CULT-0015,Return After Absence Protocol,Institution / Trust,IMPORTANT,02_INSTITUTION,Delta,REGISTERED,Trust Engine; Commander,"When the Operator returns after absence, Headquarters responds without guilt or streak punishment: the institution is ready when he is."
+CULT-0016,Reserved For The Next Lesson Desk,Building / Symbolism,IMPORTANT,03_BUILDING,Delta,REGISTERED,Continuous Improvement,"A permanently empty desk labeled Reserved for the next lesson, symbolizing institutional humility."
+PRES-0001,Presence Engine,Building / Atmosphere,CORE,03_BUILDING,Delta,REGISTERED,Dynamic Lighting; Audio; HQOS State,"Makes Headquarters feel like a place with weight, silence, rhythm, and institutional presence rather than a normal app."
+PRES-0002,Arrival Psychology,Building / UX,CORE,03_BUILDING,Bravo,REGISTERED,Blast Door Entrance; Transition Corridor,First 15 seconds after launch create the psychological transition from civilian life into operational identity.
+PRES-0003,Transition Zone,Building / Corridor,CORE,03_BUILDING,Bravo,REGISTERED,Blast Door Entrance,"A non-interactive corridor with no data, no UI, and only movement; intended to slow the Operator before command."
+PRES-0004,Weight of the Building,Building / Environmental Design,IMPORTANT,03_BUILDING,Delta,REGISTERED,Presence Engine,"Concrete, steel, silence, and heavy pacing communicate that failure was expensive and standards matter."
+PRES-0005,First Decision Ritual,Operator / Ritual,IMPORTANT,04_OPERATOR,Bravo,REGISTERED,Command Chair,"The first decision is walking to and assuming the Command Chair, not opening charts."
+PRES-0006,Slow System Pacing,Interface / Timing,CORE,09_INTERFACE,Delta,REGISTERED,Animation Timing; Silence,"Doors, documents, printer, and screen activation are deliberately paced to teach that there is time."
+PRES-0007,Operational Gravity,Building / Behavior,IMPORTANT,03_BUILDING,Delta,REGISTERED,Behavioral Gravity; Presence Engine,"When the Operator rushes, Headquarters does not speed up; the building refuses to match urgency."
+PRES-0008,Hallway of Campaign Flags,Building / Legacy,IMPORTANT,03_BUILDING,Echo,REGISTERED,Campaign System; Legacy Wall,Long corridor with yearly campaign flags so the Operator walks past his own career before missions.
+PRES-0009,Precision Command Clock,Building / Time Symbol,IMPORTANT,03_BUILDING,Delta,REGISTERED,Time Architecture,Analog-style institutional clock symbolizing respect for time and precision.
+PRES-0010,Industrial Sound Palette,Interface / Audio,CORE,09_INTERFACE,Delta,REGISTERED,Sound Bible,"Notification sounds are banned; sounds are mechanical confirmations: vault, stamp, latch, printer, page turn."
+PRES-0011,Command Chair Overhead Light,Building / Symbolism,IMPORTANT,03_BUILDING,Delta,REGISTERED,Command Chair; Identity Drift,Single overhead light above the Command Chair shifts subtly when identity drift appears.
+PRES-0012,Temperature Profile System,Building / Atmosphere,OPTIONAL,03_BUILDING,Echo,REGISTERED,Room Profiles,"Rooms imply different temperatures: Recovery warm, Observation cool, Internal Affairs crisp, War Room neutral."
+PRES-0013,Archive Sensory Imagination,Building / Storytelling,OPTIONAL,03_BUILDING,Echo,REGISTERED,Archives,"Archives should imply old paper, leather, wood, and history through sound and visuals even without literal smell."
+PRES-0014,Maintenance Crew Illusion,Building / Ambient Life,OPTIONAL,03_BUILDING,Echo,REGISTERED,Engineer; Department Activity,"Occasional messages that rooms are calibrating or archives synchronizing, making the building feel maintained."
+PRES-0015,Dawn Protocol,Building / Ritual,IMPORTANT,03_BUILDING,Delta,REGISTERED,Boot Sequence; Lighting,"Morning lights activate from entrance to Command Chair, creating a new operational day."
+PRES-0016,Night Protocol,Building / Ritual,IMPORTANT,03_BUILDING,Delta,REGISTERED,Shutdown; Night Operations,Departments power down in reverse order; Command Chair is last to deactivate.
+PRES-0017,Living Crest Evolution,Legacy / Identity,IMPORTANT,12_LEGACY,Echo,REGISTERED,Headquarters Crest; Legacy,"The crest is never redesigned, only subtly engraved with history over decades."
+PRES-0018,Founder Question Cards,Legacy / Founder,IMPORTANT,12_LEGACY,Echo,REGISTERED,Founder; Founder Office,"Founder leaves questions rather than answers, prompting thinking instead of obedience."
+PRES-0019,Ceiling Character Inscription,Building / Symbolism,IMPORTANT,03_BUILDING,Echo,REGISTERED,Command Chair,Engraved above Command Chair: Character is built in moments that leave no record on the chart.
+TRUST-0001,Trust Engine,Operator / Trust,CORE,04_OPERATOR,Charlie,REGISTERED,Recommendation Ledger; Archives,"Tracks how Headquarters earns credibility through consistent, truthful, evidence-backed recommendations."
+TRUST-0002,First Save Recognition,Trust / Milestone,IMPORTANT,12_LEGACY,Delta,REGISTERED,Guardian; Trust Engine,Quiet recognition when Guardian’s recommendation is accepted and later protects the account.
+TRUST-0003,Evidence Insufficient Response,AI / Communication,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Confidence System,Headquarters must explicitly say when evidence is insufficient instead of pretending certainty.
+TRUST-0004,Recommendation Confidence Display,AI / Transparency,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Confidence System; Council,"Recommendations expose confidence level, evidence quality, and when Operator judgment is required."
+TRUST-0005,Broken Trust Review,Institution / Self-Correction,IMPORTANT,10_ENGINEERING,Delta,REGISTERED,Engineer; Recommendation Ledger,"When Headquarters is wrong, Engineer schedules review and thresholds are adjusted openly."
+TRUST-0006,Headquarters Self Audit,Engineering / Trust,CORE,10_ENGINEERING,Delta,REGISTERED,Engineer; Trust Engine,"Monthly audit of interventions, communication frequency, Guardian effectiveness, and whether HQ has become noisy."
+TRUST-0007,Operator Listening Style Model,AI / Personalization,IMPORTANT,06_INTELLIGENCE,Echo,REGISTERED,Commander; Historian; Trust Engine,"Headquarters learns whether the Operator responds better to evidence, history, short commands, or perspective."
+TRUST-0008,Commander Silence Over Time,AI / Maturity,IMPORTANT,06_INTELLIGENCE,Echo,REGISTERED,Professional Joe; Trust Engine,"As Operator improves, Commander speaks less; silence becomes the highest compliment."
+TRUST-0009,Non-Dependence Principle,Constitution / Trust,CORE,01_CONSTITUTION,Alpha,REGISTERED,Graduation Test,"Headquarters must create independence, not dependency. The Operator should eventually think like Headquarters without it."
+TRUST-0010,Trust Equation,Constitution / Trust,IMPORTANT,01_CONSTITUTION,Alpha,REGISTERED,Trust Engine,Consistency + Truth + Humility + Evidence = Trust.
+TRUST-0011,Credibility Protection Rule,Engineering / Trust,CORE,10_ENGINEERING,Alpha,REGISTERED,Release Review,Headquarters should fear loss of credibility more than loss of impressive features.
+INTNET-0001,Intelligence Network,Intelligence / Architecture,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Departments; Event Bus,Internal secure network connecting all departments so recommendations feel institutional rather than isolated.
+INTNET-0002,Secure Department Network,Intelligence / Architecture,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Event Bus; Council,"Defines how Guardian, Historian, Medical, Engineer, Internal Affairs, and Commander exchange observations."
+INTNET-0003,Intelligence Feed,Intelligence / Messaging,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Secure Department Network,"Priority-based internal feed carrying behavior drift, fatigue, historical similarity, and system health signals."
+INTNET-0004,Institutional Consensus Response,AI / Council,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Council; Intelligence Feed,"Commander speaks only after relevant departments contribute, unless Sentinel emergency authority is active."
+INTNET-0005,Priority Messaging Levels,Intelligence / Protocol,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Intelligence Feed,"Priority White, Green, Amber, Red, Black for internal department communications."
+INTNET-0006,Silent Department Communication,Institution / Background,IMPORTANT,06_INTELLIGENCE,Delta,REGISTERED,Intelligence Network,"Departments can update courses, archives, or research without interrupting the Operator."
+INTNET-0007,Intelligence Case Lifecycle,Intelligence / Research,IMPORTANT,06_INTELLIGENCE,Delta,REGISTERED,Research Division; Historian,Evidence collection flow for recurring patterns before Commander receives conclusions.
+INTNET-0008,Founder Review Protocol,Legacy / Governance,CORE,12_LEGACY,Delta,REGISTERED,Council; Constitution,Major doctrine or identity changes require Founder Test: would this still matter in ten years?
+INTNET-0009,Request Traceability,Engineering / Audit,CORE,10_ENGINEERING,Charlie,REGISTERED,Event Bus; Archives,Every recommendation records which department initiated it and why.
+COG-0001,Cognitive Architecture,Intelligence / Brain,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Council; Operator Model,Headquarters thinks like a council of specialists rather than a single omniscient AI.
+COG-0002,Council Deliberation Delay,AI / Interaction,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Council; Authorization Terminal,"Authorization may pause briefly to feel like institutional deliberation, not loading or instant AI output."
+COG-0003,Memory Before Intelligence Rule,AI / Reasoning,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Historian; Archives,"Before recommending, Headquarters asks what has already been learned."
+COG-0004,Three Institutional Questions,AI / Reasoning,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Historian; Operations; Commander,Every recommendation asks: Has this happened before? What does doctrine say? Who is in command?
+COG-0005,Single Operator Model,AI / Data,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Behavior Engine; Archives,One continuously updated model of Joe; no department maintains a conflicting version.
+COG-0006,Ghost Simulation Principle,AI / Ghost,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Ghost; Operator Model,Ghost does not predict; Ghost simulates Professional Joe under current conditions.
+COG-0007,Historian Investigation Principle,AI / Historian,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Archives; Historian,Historian recovers operations and evidence rather than giving opinions.
+COG-0008,Guardian Negotiation Principle,AI / Guardian,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Guardian,Guardian asks whether the mission can be completed with less exposure rather than simply saying no.
+COG-0009,Working Memory,AI / Memory,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Mission State; HQOS,Temporary session context cleared or archived at mission end.
+COG-0010,Long Memory,AI / Memory,CORE,06_INTELLIGENCE,Charlie,REGISTERED,Archives,"Long-term campaigns, doctrine, historical missions, and identity evolution."
+COG-0011,Reflection Engine,AI / Night Operations,IMPORTANT,06_INTELLIGENCE,Delta,REGISTERED,Night Operations; Engineer; Historian,Nightly process asking what the institution learned today.
+COG-0012,Curiosity Engine,AI / Research,IMPORTANT,06_INTELLIGENCE,Echo,REGISTERED,Research Division; Historian,Opens research cases when patterns appear but evidence is not yet enough for doctrine.
+COG-0013,Wisdom Engine,AI / Philosophy,IMPORTANT,06_INTELLIGENCE,Echo,REGISTERED,Council; Commander,Values waiting and Operator reasoning over instant AI answers.
+HQOS-0001,Everything Is An Event,HQOS / Architecture,CORE,07_HQOS,Alpha,REGISTERED,Event Bus,"HQOS models all actions as institutional events: deployment requested, mission archived, operator returned to civilian life."
+HQOS-0002,Respond Not React Principle,HQOS / Behavior,CORE,07_HQOS,Alpha,REGISTERED,Council; Event Bus,Headquarters evaluates before responding; it does not impulsively react like normal apps.
+HQOS-0003,One Truth Architecture,HQOS / Data,CORE,07_HQOS,Alpha,REGISTERED,Operator Model; Mission State; Doctrine Library,"There is one source of truth for Operator Model, Mission State, Doctrine Library, and Archives."
+HQOS-0004,Context Awareness Layer,HQOS / Context,CORE,07_HQOS,Bravo,REGISTERED,Operator Model; Mission State,"HQOS knows time, campaign, operator condition, guardian status, capital mode, and season at startup."
+HQOS-0005,Mission Kernel,HQOS / State Machine,CORE,07_HQOS,Alpha,REGISTERED,Mission Lifecycle,"Every mission behaves like a process: created, active, complete, debrief pending, archived, closed."
+HQOS-0006,Consciousness Loop,HQOS / Loop,CORE,07_HQOS,Bravo,REGISTERED,Heartbeat; Event Bus,"Recurring loop: has anything changed, who needs to know, should anything happen, otherwise remain silent."
+HQOS-0007,Behavioral Resource Management,HQOS / Resources,IMPORTANT,07_HQOS,Charlie,REGISTERED,Operator Model,"Treats attention, patience, judgment, confidence, and mental noise as operational resources."
+HQOS-0008,Behavioral Threads,HQOS / Architecture,IMPORTANT,07_HQOS,Charlie,REGISTERED,Mission Kernel; Guardian; Campaign,"Parallel threads for mission, guardian, campaign, and recovery. Commander integrates them."
+HQOS-0009,Interrupt Handling,HQOS / Priority,CORE,07_HQOS,Charlie,REGISTERED,Sentinel; Priority Levels,Emergency events can interrupt normal flow; Sentinel has emergency authority.
+HQOS-0010,Background Services,HQOS / Services,CORE,07_HQOS,Bravo,REGISTERED,Night Operations,"Historian indexing, Engineer audits, Academy generation, Archive integrity checks."
+HQOS-0011,Operational Anomaly Handling,HQOS / Error Handling,CORE,07_HQOS,Bravo,REGISTERED,Engineer,"System errors are framed as operational anomalies, isolated by Engineering without breaking institutional tone."
+HQOS-0012,Department Bus,HQOS / Event Routing,CORE,07_HQOS,Alpha,REGISTERED,Event Bus; Departments,Departments subscribe to mission and system events; no brittle direct coupling.
+HQOS-0013,Core Loop,HQOS / Kernel,CORE,07_HQOS,Alpha,REGISTERED,Consciousness Loop,"Observe, understand, evaluate, decide, preserve, learn, repeat."
+TIME-0001,Time Architecture,Operations / Time,CORE,05_OPERATIONS,Bravo,REGISTERED,Mission Lifecycle; Campaigns,"Headquarters thinks in Mission Time, Campaign Time, and Career Time simultaneously."
+TIME-0002,Three Clocks,Interface / Time,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Time Architecture,"Displays mission day, campaign day/progress, and career year/mission count."
+TIME-0003,Long War Perspective,Operations / Psychology,CORE,05_OPERATIONS,Bravo,REGISTERED,Career Timeline,Frames bad weeks as campaign interruptions rather than career endings.
+TIME-0004,Career Timeline,Legacy / Time,IMPORTANT,12_LEGACY,Delta,REGISTERED,Archives; Campaign Books,"Vertical career progression from Recruit to Master Operator, showing campaigns, doctrine, and milestones."
+TIME-0005,Operator Seasons,Operations / Seasons,IMPORTANT,05_OPERATIONS,Delta,REGISTERED,Campaign System,"Learning, Execution, Guardian, Recovery, and Research seasons."
+TIME-0006,Campaign Objective System,Operations / Campaigns,CORE,05_OPERATIONS,Bravo,REGISTERED,Campaign Lifecycle,"Campaign objectives are behavior-based and controllable, e.g. increase average waiting time."
+TIME-0007,Three Forms of Patience,Operator / Psychology,IMPORTANT,04_OPERATOR,Charlie,REGISTERED,Patience Meter; Time Architecture,"Tactical patience, operational patience, strategic patience."
+TIME-0008,Campaign Room,Building / Strategy,IMPORTANT,03_BUILDING,Delta,REGISTERED,Campaign System,"Room for quarterly/monthly campaign objectives, pins, strings, and long-term mission view."
+TIME-0009,Mission Drift Detection,Operations / Detection,CORE,05_OPERATIONS,Charlie,REGISTERED,Campaign Objective System; Behavior Engine,Detects behavior that no longer supports current campaign objective.
+TIME-0010,Strategic Map,Interface / Legacy,IMPORTANT,09_INTERFACE,Echo,REGISTERED,Career Timeline; Campaign Map,"Zoomable map from day to year to career; market is not the story, Operator evolution is."
+TIME-0011,Future Archive Shelves,Legacy / Symbolism,OPTIONAL,12_LEGACY,Echo,REGISTERED,Archives,"Empty shelves labeled future campaigns, showing Headquarters expects the Operator to still be here."
+TIME-0012,Institutional Maturity Metric,Legacy / Institution,IMPORTANT,12_LEGACY,Echo,REGISTERED,Doctrine; Archives,"Measures institution maturity based on doctrine stability, campaign history, foundational laws, and behavioral confidence."
+TIME-0013,Archives Naming Doctrine,Archives / Language,CORE,08_ARCHIVES,Alpha,REGISTERED,SQLite Archives,Database is called Archives in all operator-facing language. Saves are archived; backups are archives secured.
+TIME-0014,First Debrief vs Current Debrief Reflection,Legacy / Experience,IMPORTANT,12_LEGACY,Echo,REGISTERED,Archives; Debrief,Years later compares first debrief with current debrief to show operator transformation.
+RHY-0001,Rhythm Engine,Operations / Rhythm,CORE,05_OPERATIONS,Charlie,REGISTERED,Time Architecture; HQOS Heartbeat,"Creates institutional cadence: daily, weekly, monthly, annual rhythms."
+RHY-0002,Daily Operational Rhythm,Operations / Routine,CORE,05_OPERATIONS,Bravo,REGISTERED,Rhythm Engine,"Morning briefing, execution window, evening debrief, night operations."
+RHY-0003,Weekly Operational Rhythm,Operations / Routine,IMPORTANT,05_OPERATIONS,Delta,REGISTERED,Rhythm Engine; Campaigns,"Monday launch, midweek doctrine review, Friday campaign assessment, weekend Academy/maintenance."
+RHY-0004,Monday Ceremony,Ceremony / Weekly,IMPORTANT,05_OPERATIONS,Delta,REGISTERED,Campaign Flags; Weekly Rhythm,"Campaign banners unfurl, weekly board appears, previous outcomes archived."
+RHY-0005,Friday Campaign Closure,Ceremony / Weekly,IMPORTANT,05_OPERATIONS,Delta,REGISTERED,Weekly Rhythm,Week concludes with quiet flag lowering and archive transition.
+RHY-0006,Monthly Council Review,Ceremony / Monthly,IMPORTANT,05_OPERATIONS,Delta,REGISTERED,Council; Rhythm Engine,Last Friday monthly institutional review from departments.
+RHY-0007,Seasonal Headquarters Changes,Building / Seasonality,OPTIONAL,03_BUILDING,Echo,REGISTERED,Rhythm Engine,Subtle seasonal atmosphere shifts across the year.
+RHY-0008,Annual Review Ceremony,Ceremony / Annual,IMPORTANT,12_LEGACY,Echo,REGISTERED,Annual Stewardship Review,Full-year review by institution and operator without profit as the central metric.
+RHY-0009,Scheduled Silence,Operations / Silence,IMPORTANT,05_OPERATIONS,Delta,REGISTERED,Silence Budget; Strategic Silence,Planned periods where Headquarters intentionally says nothing.
+RHY-0010,Institutional Bell Policy,Interface / Sound,IMPORTANT,09_INTERFACE,Echo,REGISTERED,Institutional Bell,"Bell rings rarely for doctrine becoming foundational, campaign end, major recovery, or long preservation milestone."
+ELEG-0001,Five Gates Review,Engineering / Review,CORE,10_ENGINEERING,Alpha,REGISTERED,Rule of Elegance,"Every feature passes Mission, Identity, Institution, Longevity, and Silence gates."
+ELEG-0002,Museum Test,Engineering / Longevity,IMPORTANT,10_ENGINEERING,Alpha,REGISTERED,Founder Test,Would the feature make sense in a 2050 museum exhibit about Headquarters?
+ELEG-0003,Uniform Rule,Design / Meaning,IMPORTANT,09_INTERFACE,Delta,REGISTERED,No Decoration Rule,Every visual element functions like a uniform badge: it means something or is removed.
+ELEG-0004,Empty Space Confidence Rule,Design / Simplicity,CORE,09_INTERFACE,Alpha,REGISTERED,70/20/10 Principle,Empty space is not unfinished; it communicates confidence.
+ELEG-0005,Wall Test,Design / Simplicity,IMPORTANT,09_INTERFACE,Alpha,REGISTERED,Rule of Elegance,"For any wall or screen, remove until only the essential remains."
+ELEG-0006,One Purpose Per Room,Building / Simplicity,CORE,03_BUILDING,Bravo,REGISTERED,Room Registry,"If a room develops two primary purposes, split it."
+ELEG-0007,Architecture Does Not Explain Itself,Design / Experience,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Presence Engine,"Rooms should be understood through experience, not tutorial narration."
+ELEG-0008,Mental Weight Rule,Design / Attention,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Attention Protection,Every feature has mental weight; high-weight features must be rare and meaningful.
+ELEG-0009,Feature Retirement Ceremony,Engineering / Evolution,IMPORTANT,10_ENGINEERING,Echo,REGISTERED,Evolution Doctrine,Systems can retire when they have fulfilled their purpose.
+ELEG-0010,Engineering Restraint Rule,Engineering / Culture,CORE,10_ENGINEERING,Alpha,REGISTERED,Engineering Oath,Developers must practice the restraint that Headquarters asks of the Operator.
+ELEG-0011,Attention Protection Doctrine,Design / Attention,CORE,09_INTERFACE,Alpha,REGISTERED,Silence; No Decoration,Every design decision asks whether it deserves seconds of the Operator’s life.
+ELEG-0012,Thirty Year Test,Engineering / Longevity,CORE,10_ENGINEERING,Alpha,REGISTERED,Founder Test; Evolution Doctrine,"Build only what remains aligned in 2030, 2040, 2050, 2060."
+ELEG-0013,Zero Onboarding Discovery,Experience / Onboarding,OPTIONAL,09_INTERFACE,Echo,REGISTERED,Academy; Interface,"Headquarters should be discovered like joining an institution, not explained through a generic tutorial."
+EVOL-0001,Evolution Doctrine,Legacy / Evolution,CORE,12_LEGACY,Alpha,REGISTERED,Constitution; Archives,"Headquarters evolves in generations, not ordinary software versions."
+EVOL-0002,Doctrine Updates Instead of Feature Updates,Legacy / Versioning,CORE,12_LEGACY,Alpha,REGISTERED,Evolution Doctrine,Software updates are framed as doctrine updates or campaigns with evidence and institutional reasoning.
+EVOL-0003,Update Story Requirement,Legacy / Versioning,IMPORTANT,12_LEGACY,Alpha,REGISTERED,Doctrine Updates,Every major update explains why it exists and what institutional evidence led to it.
+EVOL-0004,History Never Deleted Rule,Archives / Preservation,CORE,08_ARCHIVES,Alpha,REGISTERED,Archives; Doctrine Retirement,"Deprecated items are retired and archived, never deleted."
+EVOL-0005,Archive Security Doctrine,Archives / Integrity,CORE,08_ARCHIVES,Alpha,REGISTERED,SQLite Archives; Backups,"Archives are treated like national archives: encrypted backups, verification, integrity checks."
+EVOL-0006,Headquarters Promotion System,Legacy / Institution,IMPORTANT,12_LEGACY,Echo,REGISTERED,Institutional Maturity,Headquarters itself can be promoted as its doctrine and history mature.
+EVOL-0007,Constitutional Amendment Process,Constitution / Governance,CORE,01_CONSTITUTION,Alpha,REGISTERED,Constitution; Council,"Constitution is never casually edited, only amended through evidence and review."
+EVOL-0008,Foundational Cases,Archives / Case Law,IMPORTANT,08_ARCHIVES,Delta,REGISTERED,Historian; Doctrine,"Famous missions that shaped doctrine, studied like legal or military cases."
+EVOL-0009,Institutional Myths,Legacy / Culture,IMPORTANT,12_LEGACY,Echo,REGISTERED,Foundational Cases; Myth Library,Symbolic true stories that become shorthand for lessons.
+EVOL-0010,Self-Correcting Institution,Engineering / Feedback,CORE,10_ENGINEERING,Charlie,REGISTERED,Engineer; Historian; Doctrine Validation,Headquarters flags weakening doctrine and initiates research without ego.
+EVOL-0011,Wisdom Threshold,Doctrine / Evidence,CORE,08_ARCHIVES,Charlie,REGISTERED,Doctrine Validation,Rules require large evidence base before becoming official doctrine.
+EVOL-0012,Living Doctrine Pages,Archives / Doctrine,CORE,08_ARCHIVES,Charlie,REGISTERED,Doctrine Library,"Each doctrine page tracks creation, evidence base, support, review, and confidence."
+EVOL-0013,Hall of Architects,Engineering / Legacy,IMPORTANT,10_ENGINEERING,Echo,REGISTERED,Founders Journal,Builder-facing room/document preserving why design decisions were made.
+EVOL-0014,Technology Serves Doctrine Rule,Engineering / Longevity,CORE,10_ENGINEERING,Alpha,REGISTERED,Thirty Year Test,New technology is adopted only if it strengthens disciplined execution.
+EVOL-0015,Legacy Clock,Legacy / Continuity,OPTIONAL,12_LEGACY,Echo,REGISTERED,Evolution Doctrine,Displays how long the institution has been operational.
+EVOL-0016,Founder Never Replaced Rule,Legacy / Founder,CORE,12_LEGACY,Alpha,REGISTERED,Founder,Origins are honored; future architects add chapters but never rewrite the first page.
+EVOL-0017,Outlive Creator Principle,Legacy / Institution,IMPORTANT,12_LEGACY,Echo,REGISTERED,Evolution Doctrine,Headquarters should make sense beyond Joe because it is built around professionalism.
+EVOL-0018,Why Headquarters Exists Document,Legacy / Annual,IMPORTANT,12_LEGACY,Echo,REGISTERED,Legacy Vault,Annual document updated to deepen understanding of the institution’s purpose.
+REPO-0001,Headquarters Design Repository,Project / Repository,CORE,00_PROJECT,Alpha,REGISTERED,Master Index,"HDR is the canonical source of truth; chat is discussion, HDR is law."
+REPO-0002,Headquarters Knowledge Base,Project / Repository,CORE,00_PROJECT,Alpha,REGISTERED,HDR,HKB is the body of knowledge within the HDR that future AI agents and developers can reference.
+REPO-0003,Atomic Specification Files,Project / Repository,CORE,00_PROJECT,Alpha,REGISTERED,Master Index IDs,Each concept receives its own maintainable spec file rather than being buried in giant prose documents.
+REPO-0004,Document Locking Process,Project / Governance,IMPORTANT,00_PROJECT,Alpha,REGISTERED,Version Control,Documents can be locked and amended through version control rather than silently rewritten.
+REPO-0005,Repository Completion Statistics,Project / Tracking,IMPORTANT,00_PROJECT,Bravo,REGISTERED,Master Index,"Repository tracks number of objects, files, specs, and completion percentage."
+EXP-0001,Room Emotional Targets,Experience / UX,CORE,09_INTERFACE,Bravo,REGISTERED,Building Registry,"Each room defines what the Operator should feel: safe, alert, accountable, reflective, protected, or relieved."
+EXP-0002,Entrance Hall Experience,Experience / UX,CORE,09_INTERFACE,Bravo,REGISTERED,Entrance Hall; Presence Engine,"High ceiling, concrete, steel, crest, silence, and doctrine sentence create institutional transition."
+EXP-0003,Observation Reward Experience,Experience / Psychology,CORE,09_INTERFACE,Bravo,REGISTERED,Observation Room; Patience Meter,Waiting is validated through restraint acknowledgement without gamifying it.
+EXP-0004,Authorization Stamp Experience,Experience / Interaction,CORE,09_INTERFACE,Bravo,REGISTERED,Authorization Terminal; Council Deliberation,Authorization produces a mechanical institutional stamp rather than a generic approval message.
+EXP-0005,Mission Management Silence,Experience / Execution,CORE,09_INTERFACE,Bravo,REGISTERED,Deployment; Tactical Silence,"During active mission, Headquarters removes distractions and trusts the Operator."
+EXP-0006,Target Hit Return Experience,Experience / Guardian,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Operation Sunset; Return to Base,"After target, lighting warms and Guardian recommends Return to Base rather than celebration."
+EXP-0007,Archive Stamping Experience,Experience / Memory,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Archives; Mission Archive Ceremony,"Mission is placed into Archives and stamped, making completion feel permanent."
+EXP-0008,Exit To Civilian Life Experience,Experience / Shutdown,IMPORTANT,09_INTERFACE,Delta,REGISTERED,Last Door; Shutdown Sequence,"Commander final sentence, doors close, user returns to ordinary life with institution carried internally."

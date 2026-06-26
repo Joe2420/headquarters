@@ -1,0 +1,10 @@
+ID,Name,Category,Priority,Path
+HIG-0001,HIG README,Process,CORE,HIG/README.md
+HIG-0002,Engineering Task Rules,Process,CORE,HIG/00_PROCESS/Engineering_Task_Rules.md
+HIG-0003,Approval Gate,Process,CORE,HIG/00_PROCESS/Approval_Gate.md
+HIG-0004,Sprint 1 Foundation Backlog,Backlog,CORE,HIG/01_TASK_BACKLOG/Sprint_1_Foundation_Backlog.md
+HIG-0005,Sprint 2 Mission Core Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_2_Mission_Core_Backlog.md
+HIG-0006,Codex Task Prompt Template,Codex,CORE,HIG/02_CODEX_PROMPTS/Codex_Task_Prompt_Template.md
+HIG-0007,Task Acceptance Checklist,Acceptance,CORE,HIG/03_ACCEPTANCE/Task_Acceptance_Checklist.md
+HIG-0008,Implementation Change Control,Change Control,CORE,HIG/04_CHANGE_CONTROL/Implementation_Change_Control.md
+HIG-0009,HDR HTB HIG Usage Guide,Process,CORE,HIG/05_INTERFACE_WITH_HDR_HTB/How_To_Use_HDR_HTB_HIG.md

@@ -1,0 +1,53 @@
+---
+normalized_from: 13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0722_Operator_Model_Single_Truth.md
+normalized_version: HDR v1.0 Design Freeze Candidate
+normalized_at: 2026-06-26T11:21:55.402333Z
+canonical_path: 04_OPERATOR/Behavioral_Systems/REC-0722_Operator_Model_Single_Truth.md
+---
+
+# REC-0722 — Operator Model Single Truth
+
+**Recovery Slice:** Phase 6.0 → Phase 7.x  
+**Category:** Intelligence  
+**Priority:** P0  
+**Owner:** Intelligence Officer  
+**Status:** Recovered / Specification Draft  
+**Target Volume:** 06_INTELLIGENCE
+
+---
+
+## Purpose
+One shared model of Joe used by all departments.
+
+## Experience Objective
+Headquarters becomes coherent, quiet, and institutionally mature instead of a collection of features.
+
+## Functional Specification
+Operator Model Single Truth must be represented as a first-class architectural object and linked to registry, tests, and implementation milestones.
+
+## Engineering Implementation Notes
+Implement with metadata-driven docs, event-sourced architecture, state machines, and repository normalization tooling.
+
+## Dependencies
+- HQOS
+- Master Index
+- Archives
+- Council
+- Repository Standards
+
+## Events / State Hooks
+- event.published
+- doc.generated
+- audit.started
+- release.reviewed
+
+## Acceptance Criteria
+- Specification contains purpose, UX intent, engineering notes, dependencies, and acceptance criteria.
+- Object is registered in the phase recovery index.
+- Object has a clear migration target for repository normalization.
+
+## Future Expansion
+Can later power automated documentation checks, dependency graphs, and Codex implementation prompts.
+
+## Migration Target
+During normalization this file should move from `13_PHASE_RECOVERY/Phase_06_to_07x/` into `06_INTELLIGENCE/Operator_Model_Single_Truth.md`.

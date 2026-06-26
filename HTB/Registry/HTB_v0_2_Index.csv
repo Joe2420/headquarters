@@ -1,0 +1,14 @@
+ID,Name,Category,Status,Path
+HTB-DB-001,SQLite Detailed Schema,Database,Engineering Ready,05_DATABASE/Schema/SQLite_Detailed_Schema_v0_2.md
+HTB-MIG-001,Initial SQLite Migration,Database,Engineering Ready,19_MIGRATIONS/0001_initial_schema.sql
+HTB-EV-001,Event Contracts,Events,Specified,06_EVENTS/Contracts/Event_Contracts_v0_2.md
+HTB-HQOS-001,Event Bus Architecture,HQOS,Specified,04_HQOS/Event_Bus/Event_Bus_Architecture_v0_2.md
+HTB-SM-001,Mission State Machine Diagram,State Machine,Specified,07_STATE_MACHINES/Diagrams/Mission_State_Machine_Diagram.md
+HTB-SM-002,Operator State Machine Diagram,State Machine,Specified,07_STATE_MACHINES/Diagrams/Operator_State_Machine_Diagram.md
+HTB-SM-003,Guardian State Machine Diagram,State Machine,Specified,07_STATE_MACHINES/Diagrams/Guardian_State_Machine_Diagram.md
+HTB-SM-004,Campaign State Machine Diagram,State Machine,Specified,07_STATE_MACHINES/Diagrams/Campaign_State_Machine_Diagram.md
+HTB-SM-005,Archive State Machine Diagram,State Machine,Specified,07_STATE_MACHINES/Diagrams/Archive_State_Machine_Diagram.md
+HTB-SVC-001,Core Service Contracts,Services,Specified,08_SERVICES/Contracts/Core_Service_Contracts_v0_2.md
+HTB-AI-001,AI Department Contracts,AI Runtime,Specified,09_AI_RUNTIME/Contracts/AI_Department_Contracts_v0_2.md
+HTB-UI-001,Core Component Specs,UI,Specified,10_UI_COMPONENTS/Component_Specs/Core_Component_Specs_v0_2.md
+HTB-QA-001,Milestone 1 Acceptance Criteria,QA,Specified,20_ACCEPTANCE_CRITERIA/Milestone_1_Foundation_Acceptance_v0_2.md

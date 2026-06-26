@@ -1,0 +1,305 @@
+id,name,phase,category,priority,status,path
+PH0-0001,Decision Operating System Identity,Phase 0.1–1.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0001_Decision_Operating_System_Identity.md
+PH0-0002,Chief Risk Officer Mission,Phase 0.1–1.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0002_Chief_Risk_Officer_Mission.md
+PH0-0003,TradingView After Authorization Principle,Phase 0.1–1.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0003_TradingView_After_Authorization_Principle.md
+PH0-0004,Operational Readiness Score,Phase 0.1–1.0,Behavior System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0004_Operational_Readiness_Score.md
+PH0-0005,Mission Integrity Score,Phase 0.1–1.0,Behavior System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0005_Mission_Integrity_Score.md
+PH0-0006,Threat Level System,Phase 0.1–1.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0006_Threat_Level_System.md
+PH0-0007,Execution XP,Phase 0.1–1.0,Behavior System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0007_Execution_XP.md
+PH0-0008,Account Killer Score,Phase 0.1–1.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0008_Account_Killer_Score.md
+PH0-0009,Edge Quality Score,Phase 0.1–1.0,Authorization,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0009_Edge_Quality_Score.md
+PH0-0010,Outcome vs Execution Separation,Phase 0.1–1.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0010_Outcome_vs_Execution_Separation.md
+PH0-0011,Mission State Machine,Phase 0.1–1.0,HQOS,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0011_Mission_State_Machine.md
+PH0-0012,Mission History Not Trade History,Phase 0.1–1.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0012_Mission_History_Not_Trade_History.md
+PH0-0013,Operation Codename Generator,Phase 0.1–1.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0013_Operation_Codename_Generator.md
+PH0-0014,Learning Loop Weekly Review,Phase 0.1–1.0,Academy,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0014_Learning_Loop_Weekly_Review.md
+PH1-0001,SOP-001 Mission Start Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0001_SOP-001_Mission_Start_Procedure.md
+PH1-0002,SOP-002 Market Preparation Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0002_SOP-002_Market_Preparation_Procedure.md
+PH1-0003,SOP-003 Standby Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0003_SOP-003_Standby_Procedure.md
+PH1-0004,SOP-004 Mission Authorization,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0004_SOP-004_Mission_Authorization.md
+PH1-0005,SOP-005 Trade Management,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0005_SOP-005_Trade_Management.md
+PH1-0006,SOP-006 Losing Trade Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0006_SOP-006_Losing_Trade_Procedure.md
+PH1-0007,SOP-007 Winning Trade Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0007_SOP-007_Winning_Trade_Procedure.md
+PH1-0008,SOP-008 Profit Defense Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0008_SOP-008_Profit_Defense_Procedure.md
+PH1-0009,SOP-009 Damage Control Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0009_SOP-009_Damage_Control_Procedure.md
+PH1-0010,SOP-010 Weekend Protocol,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0010_SOP-010_Weekend_Protocol.md
+PH1-0011,SOP-011 Drawdown Recovery Procedure,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0011_SOP-011_Drawdown_Recovery_Procedure.md
+PH1-0012,SOP-012 Winning Streak Protocol,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0012_SOP-012_Winning_Streak_Protocol.md
+PH1-0013,SOP-013 Re-entry Protocol,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0013_SOP-013_Re-entry_Protocol.md
+PH1-0014,SOP-014 Missed Trade Protocol,Phase 1.0–2.0,SOP,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0014_SOP-014_Missed_Trade_Protocol.md
+PH1-0015,SOP Versioning,Phase 1.0–2.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0015_SOP_Versioning.md
+PH1-0016,Rule Provenance,Phase 1.0–2.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0016_Rule_Provenance.md
+PH1-0017,Rule Book Living Operations Manual,Phase 1.0–2.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0017_Rule_Book_Living_Operations_Manual.md
+PH2-0001,Cold Boot Sequence,Phase 1.3–2.0,Experience,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0001_Cold_Boot_Sequence.md
+PH2-0002,Operator Identity File,Phase 1.3–2.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0002_Operator_Identity_File.md
+PH2-0003,Theater System,Phase 1.3–2.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0003_Theater_System.md
+PH2-0004,Tactical Silence,Phase 1.3–2.0,Experience,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0004_Tactical_Silence.md
+PH2-0005,Background State Changes,Phase 1.3–2.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0005_Background_State_Changes.md
+PH2-0006,Room-Based Navigation,Phase 1.3–2.0,Building,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0006_Room-Based_Navigation.md
+PH2-0007,Secure Door Transition,Phase 1.3–2.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0007_Secure_Door_Transition.md
+PH2-0008,Commander Voice Profile,Phase 1.3–2.0,Audio/AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0008_Commander_Voice_Profile.md
+PH2-0009,Operations Officer Voice Profile,Phase 1.3–2.0,Audio/AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0009_Operations_Officer_Voice_Profile.md
+PH2-0010,Commander Message Rarity,Phase 1.3–2.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0010_Commander_Message_Rarity.md
+PH2-0011,Mirror Room,Phase 1.3–2.0,Room/Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0011_Mirror_Room.md
+PH2-0012,Airlock Countdown,Phase 1.3–2.0,Ritual,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0012_Airlock_Countdown.md
+PH2-0013,Daily Operator Oath,Phase 1.3–2.0,Ritual,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0013_Daily_Operator_Oath.md
+PH2-0014,Mission Clock,Phase 1.3–2.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0014_Mission_Clock.md
+PH2-0015,Heartbeat Mode,Phase 1.3–2.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0015_Heartbeat_Mode.md
+PH2-0016,Situation Wall,Phase 1.3–2.0,Room,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0016_Situation_Wall.md
+PH2-0017,Psychological Decompression,Phase 1.3–2.0,Ritual,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0017_Psychological_Decompression.md
+PH2-0018,Dynamic Headquarters Threat Atmosphere,Phase 1.3–2.0,Environment,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0018_Dynamic_Headquarters_Threat_Atmosphere.md
+PH2-0019,Mission Patches,Phase 1.3–2.0,Recognition,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0019_Mission_Patches.md
+PH2-0020,Hall of Fallen Missions,Phase 1.3–2.0,Archive/Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0020_Hall_of_Fallen_Missions.md
+PH2-0021,Eternal Rules Wall,Phase 1.3–2.0,Constitution/Room,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0021_Eternal_Rules_Wall.md
+PH2-0022,Founder Oath,Phase 1.3–2.0,Ritual,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0022_Founder_Oath.md
+PH2-0023,Commander Career Memory,Phase 1.3–2.0,AI/Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0023_Commander_Career_Memory.md
+PH2-0024,Headquarters Remembers Line,Phase 1.3–2.0,Culture,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0024_Headquarters_Remembers_Line.md
+PH2-0025,Founder Notes and Questions,Phase 1.3–2.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0025_Founder_Notes_and_Questions.md
+PH2-0026,No Market Prediction Law,Phase 1.3–2.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0026_No_Market_Prediction_Law.md
+PH2-0001,Four Command Structure,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0001_Four_Command_Structure.md
+PH2-0002,Commander Strategic Role,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0002_Commander_Strategic_Role.md
+PH2-0003,Operations Officer Procedural Role,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0003_Operations_Officer_Procedural_Role.md
+PH2-0004,Intelligence Officer Pattern Role,2.0-3.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0004_Intelligence_Officer_Pattern_Role.md
+PH2-0005,Medical Officer Recovery Role,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0005_Medical_Officer_Recovery_Role.md
+PH2-0006,Historian Memory Role,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0006_Historian_Memory_Role.md
+PH2-0007,Archives Structure,2.0-3.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0007_Archives_Structure.md
+PH2-0008,Dispatches Instead of Notifications,2.0-3.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0008_Dispatches_Instead_of_Notifications.md
+PH2-0009,Mission Report,2.0-3.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0009_Mission_Report.md
+PH2-0010,Self-Aware Headquarters,2.0-3.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0010_Self-Aware_Headquarters.md
+PH2-0011,Dynamic Doctrine Retirement,2.0-3.0,Doctrine,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0011_Dynamic_Doctrine_Retirement.md
+PH2-0012,Preserve Professional Joe Mission,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0012_Preserve_Professional_Joe_Mission.md
+PH2-0013,Headquarters Has Weight,2.0-3.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0013_Headquarters_Has_Weight.md
+PH2-0014,Headquarters Exists Without You,2.0-3.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0014_Headquarters_Exists_Without_You.md
+PH2-0015,Shift Change Ritual,2.0-3.0,Ceremony,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0015_Shift_Change_Ritual.md
+PH2-0016,Watch Floor,2.0-3.0,Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0016_Watch_Floor.md
+PH2-0017,Capital Deployment Language,2.0-3.0,Language,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0017_Capital_Deployment_Language.md
+PH2-0018,Mission Capital Terminology,2.0-3.0,Language,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0018_Mission_Capital_Terminology.md
+PH2-0019,Situation Clock,2.0-3.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0019_Situation_Clock.md
+PH2-0020,Operator Presence Detection,2.0-3.0,Behavior,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0020_Operator_Presence_Detection.md
+PH2-0021,Environmental Psychology State,2.0-3.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0021_Environmental_Psychology_State.md
+PH2-0022,Headquarters Never Panics,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0022_Headquarters_Never_Panics.md
+PH2-0023,Tactical Corridor Doctrines,2.0-3.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0023_Tactical_Corridor_Doctrines.md
+PH2-0024,No Good Luck Rule,2.0-3.0,Language,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0024_No_Good_Luck_Rule.md
+PH2-0025,Cost of Breaking Doctrine Display,2.0-3.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0025_Cost_of_Breaking_Doctrine_Display.md
+PH2-0026,Operator Shadow,2.0-3.0,Experience,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0026_Operator_Shadow.md
+PH2-0027,Morning Arrival Ritual,2.0-3.0,Ceremony,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0027_Morning_Arrival_Ritual.md
+PH2-0028,Mission Readiness Report,2.0-3.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0028_Mission_Readiness_Report.md
+PH2-0029,Deployment Ritual,2.0-3.0,Ceremony,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0029_Deployment_Ritual.md
+PH2-0030,Unconscious Tactical Breathing,2.0-3.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0030_Unconscious_Tactical_Breathing.md
+PH2-0031,Patience Acknowledgement,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0031_Patience_Acknowledgement.md
+PH2-0032,Discipline Ledger,2.0-3.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0032_Discipline_Ledger.md
+PH2-0033,Mission Temperature,2.0-3.0,Behavior,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0033_Mission_Temperature.md
+PH2-0034,Ready Chair Identity Question,2.0-3.0,Identity,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0034_Ready_Chair_Identity_Question.md
+PH2-0035,Future Operator,2.0-3.0,Identity,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0035_Future_Operator.md
+PH2-0036,Legacy Scale,2.0-3.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0036_Legacy_Scale.md
+PH2-0037,Mission Seal,2.0-3.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0037_Mission_Seal.md
+PH2-0038,Courage Documented,2.0-3.0,Recognition,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0038_Courage_Documented.md
+PH2-0039,Uphold The Institution Question,2.0-3.0,Debrief,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0039_Uphold_The_Institution_Question.md
+PH2-0040,Founders Office Origin Plaque,2.0-3.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0040_Founders_Office_Origin_Plaque.md
+PH2-0041,Headquarters Preamble,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0041_Headquarters_Preamble.md
+PH2-0042,Calm Reinforcement Messages,2.0-3.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0042_Calm_Reinforcement_Messages.md
+PH2-0043,Patience Meter Internal,2.0-3.0,Behavior,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0043_Patience_Meter_Internal.md
+PH2-0044,Pulse System,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0044_Pulse_System.md
+PH2-0045,Synchronization Moment,2.0-3.0,Experience,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0045_Synchronization_Moment.md
+PH2-0046,Mission Friction,2.0-3.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0046_Mission_Friction.md
+PH2-0047,Reverse Countdown Override,2.0-3.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0047_Reverse_Countdown_Override.md
+PH2-0048,Operational Tempo Detection,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0048_Operational_Tempo_Detection.md
+PH2-0049,Environmental Drift,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0049_Environmental_Drift.md
+PH2-0050,Welcome Home Return,2.0-3.0,Ceremony,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0050_Welcome_Home_Return.md
+PH2-0051,Mission Bell,2.0-3.0,Audio,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0051_Mission_Bell.md
+PH2-0052,Quiet Victory Recognition,2.0-3.0,Recognition,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0052_Quiet_Victory_Recognition.md
+PH2-0053,Silence As Approval,2.0-3.0,Experience,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0053_Silence_As_Approval.md
+PH2-0054,Headquarters As Nervous System,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0054_Headquarters_As_Nervous_System.md
+PH2-0055,Headquarters Established Splash,2.0-3.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0055_Headquarters_Established_Splash.md
+PH2-0056,Founding Principles Wall,2.0-3.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0056_Founding_Principles_Wall.md
+PH2-0057,Founding Story,2.0-3.0,Legacy,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0057_Founding_Story.md
+PH2-0058,Founder Wall Lost Accounts,2.0-3.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0058_Founder_Wall_Lost_Accounts.md
+PH2-0059,Eternal Flame,2.0-3.0,Building,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0059_Eternal_Flame.md
+PH2-0060,Founders Oath,2.0-3.0,Ceremony,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0060_Founders_Oath.md
+PH2-0061,Commander Never Says Goodbye,2.0-3.0,Language,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0061_Commander_Never_Says_Goodbye.md
+PH2-0062,Night Watch,2.0-3.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0062_Night_Watch.md
+PH2-0063,Doctrine Not Editable During Combat,2.0-3.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0063_Doctrine_Not_Editable_During_Combat.md
+PH2-0064,Negotiation Detection,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0064_Negotiation_Detection.md
+PH2-0065,Internal Tribunal,2.0-3.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0065_Internal_Tribunal.md
+PH2-0066,We Do Not Repeat Expensive Lessons,2.0-3.0,Doctrine,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0066_We_Do_Not_Repeat_Expensive_Lessons.md
+PH2-0067,Institutional Trust,2.0-3.0,Trust,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0067_Institutional_Trust.md
+PH2-0068,Professionalism Standards Entrance,2.0-3.0,Culture,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0068_Professionalism_Standards_Entrance.md
+PH2-0069,Entrance Hall Crest And Motto,2.0-3.0,Building,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0069_Entrance_Hall_Crest_And_Motto.md
+PH2-0070,Headquarters Crest Quadrants,2.0-3.0,Brand,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0070_Headquarters_Crest_Quadrants.md
+PH2-0071,Latin Motto Options,2.0-3.0,Brand,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0071_Latin_Motto_Options.md
+PH2-0072,Headquarters Standards,2.0-3.0,Culture,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0072_Headquarters_Standards.md
+PH2-0073,Headquarters Library,2.0-3.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0073_Headquarters_Library.md
+PH2-0074,Doctrine Printer,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0074_Doctrine_Printer.md
+PH2-0075,Headquarters Seasons,2.0-3.0,Environment,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0075_Headquarters_Seasons.md
+PH2-0076,Observatory Strategic Room,2.0-3.0,Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0076_Observatory_Strategic_Room.md
+PH2-0077,Institutional Calendar,2.0-3.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0077_Institutional_Calendar.md
+PH2-0078,Empty Chair,2.0-3.0,Identity,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0078_Empty_Chair.md
+PH2-0079,Habit Retirement Ceremony,2.0-3.0,Ceremony,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0079_Habit_Retirement_Ceremony.md
+PH2-0080,Enemy Intelligence Board,2.0-3.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0080_Enemy_Intelligence_Board.md
+PH2-0081,Hall Of Quiet Victories,2.0-3.0,Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0081_Hall_Of_Quiet_Victories.md
+PH2-0082,Environment As Discipline Carrier,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0082_Environment_As_Discipline_Carrier.md
+PH2-0083,Passive Observation,2.0-3.0,HQOS,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0083_Passive_Observation.md
+PH2-0084,Operational Load,2.0-3.0,Medical,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0084_Operational_Load.md
+PH2-0085,Cognitive Bandwidth,2.0-3.0,Medical,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0085_Cognitive_Bandwidth.md
+PH2-0086,Recovery Window,2.0-3.0,Recovery,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0086_Recovery_Window.md
+PH2-0087,Mission Fatigue,2.0-3.0,Medical,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0087_Mission_Fatigue.md
+PH2-0088,Shift Log,2.0-3.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0088_Shift_Log.md
+PH2-0089,Emergency Lighting,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0089_Emergency_Lighting.md
+PH2-0090,Situation Report,2.0-3.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0090_Situation_Report.md
+PH2-0091,Observation Is Not Inactivity,2.0-3.0,Culture,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0091_Observation_Is_Not_Inactivity.md
+PH2-0092,War Room Glass Wall,2.0-3.0,Environment,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0092_War_Room_Glass_Wall.md
+PH2-0093,Tactical Journal,2.0-3.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0093_Tactical_Journal.md
+PH2-0094,Living Constitution,2.0-3.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0094_Living_Constitution.md
+PH2-0095,Operations Flag,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0095_Operations_Flag.md
+PH2-0096,Return To Civilian Life Door,2.0-3.0,Ceremony,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0096_Return_To_Civilian_Life_Door.md
+PH2-0097,Conditions For Discipline Axiom,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0097_Conditions_For_Discipline_Axiom.md
+PH2-0098,Account Three Design Test,2.0-3.0,Engineering,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0098_Account_Three_Design_Test.md
+PH2-0099,Opening Of Doors Tradition,2.0-3.0,Ceremony,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0099_Opening_Of_Doors_Tradition.md
+PH2-0100,Take Command Tradition,2.0-3.0,Ceremony,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0100_Take_Command_Tradition.md
+PH2-0101,Lights Activation Order,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0101_Lights_Activation_Order.md
+PH2-0102,Commanders Clock,2.0-3.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0102_Commanders_Clock.md
+PH2-0103,Armory,2.0-3.0,Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0103_Armory.md
+PH2-0104,Equipment Check,2.0-3.0,Operations,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0104_Equipment_Check.md
+PH2-0105,Institutional Weather,2.0-3.0,Environment,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0105_Institutional_Weather.md
+PH2-0106,Headquarters Integrity,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0106_Headquarters_Integrity.md
+PH2-0107,Intelligence Wall,2.0-3.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0107_Intelligence_Wall.md
+PH2-0108,Mission Archive Room,2.0-3.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0108_Mission_Archive_Room.md
+PH2-0109,Engineering Department,2.0-3.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0109_Engineering_Department.md
+PH2-0110,Research Division,2.0-3.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0110_Research_Division.md
+PH2-0111,Red Team,2.0-3.0,Intelligence,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0111_Red_Team.md
+PH2-0112,Blue Team,2.0-3.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0112_Blue_Team.md
+PH2-0113,Mission Simulation,2.0-3.0,Academy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0113_Mission_Simulation.md
+PH2-0114,Debrief Theater,2.0-3.0,Room,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0114_Debrief_Theater.md
+PH2-0115,Ordinary Decisions Automatic Lesson,2.0-3.0,Academy,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0115_Ordinary_Decisions_Automatic_Lesson.md
+PH2-0116,Confidence Versus Trust Wall,2.0-3.0,Trust,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0116_Confidence_Versus_Trust_Wall.md
+PH2-0117,Trust Vault,2.0-3.0,Trust,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0117_Trust_Vault.md
+PH2-0118,Bargaining Language Detection,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0118_Bargaining_Language_Detection.md
+PH2-0119,Decision DNA,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0119_Decision_DNA.md
+PH2-0120,Identity Drift Curve,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0120_Identity_Drift_Curve.md
+PH2-0121,Anchor Sentence,2.0-3.0,Constitution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0121_Anchor_Sentence.md
+PH2-0122,Personal Battlefield,2.0-3.0,Behavior,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0122_Personal_Battlefield.md
+PH2-0123,Tactical Mirror,2.0-3.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0123_Tactical_Mirror.md
+PH2-0124,Identity Engine Roles,2.0-3.0,Identity,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0124_Identity_Engine_Roles.md
+PH2-0125,Guardian Mode,2.0-3.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0125_Guardian_Mode.md
+PH2-0126,Guardian Statistics,2.0-3.0,Guardian,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0126_Guardian_Statistics.md
+PH2-0127,Safe/Vault Capital Visualization,2.0-3.0,Guardian,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0127_Safe_Vault_Capital_Visualization.md
+PH2-0128,Success Protocol,2.0-3.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0128_Success_Protocol.md
+PH2-0129,Operation Sunset,2.0-3.0,Ceremony,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0129_Operation_Sunset.md
+PH2-0130,Doctrine 014 Winning Creates Responsibility,2.0-3.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0130_Doctrine_014_Winning_Creates_Responsibility.md
+PH2-0131,Training Headquarters Versus Guardian Headquarters,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0131_Training_Headquarters_Versus_Guardian_Headquarters.md
+PH2-0132,Entrusted Capital Principle,2.0-3.0,Stewardship,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0132_Entrusted_Capital_Principle.md
+PH2-0133,Vault Opening Ritual,2.0-3.0,Ceremony,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0133_Vault_Opening_Ritual.md
+PH2-0134,Guardian Language Set,2.0-3.0,Language,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0134_Guardian_Language_Set.md
+PH2-0135,Guardian Lighting And Seal,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0135_Guardian_Lighting_And_Seal.md
+PH2-0136,Capital Status Not PnL Hero,2.0-3.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0136_Capital_Status_Not_PnL_Hero.md
+PH2-0137,Guardian Historical Risk Memory,2.0-3.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0137_Guardian_Historical_Risk_Memory.md
+PH2-0138,Guardian Shadow,2.0-3.0,Environment,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0138_Guardian_Shadow.md
+PH2-0139,Sentinel,2.0-3.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0139_Sentinel.md
+PH2-0140,Guardian Lock,2.0-3.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0140_Guardian_Lock.md
+PH2-0141,Guardian Unlock Procedure,2.0-3.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0141_Guardian_Unlock_Procedure.md
+PH2-0142,Guardian Integrity,2.0-3.0,Guardian,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0142_Guardian_Integrity.md
+PH2-0143,Guardian Bell,2.0-3.0,Audio,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0143_Guardian_Bell.md
+PH2-0144,Guardian Room,2.0-3.0,Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0144_Guardian_Room.md
+PH2-0145,Legacy Protocol,2.0-3.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0145_Legacy_Protocol.md
+PH2-0146,Career Projection,2.0-3.0,Legacy,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0146_Career_Projection.md
+PH2-0147,Votes For Identity,2.0-3.0,Identity,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0147_Votes_For_Identity.md
+PH2-0148,Internal Affairs Integrity Protection,2.0-3.0,Internal Affairs,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0148_Internal_Affairs_Integrity_Protection.md
+PH3-0001,Design Constitution,2.0-3.0,Constitution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0001_Design_Constitution.md
+PH3-0002,Expensive Not Luxurious,2.0-3.0,Design,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0002_Expensive_Not_Luxurious.md
+PH3-0003,Information Hierarchy,2.0-3.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0003_Information_Hierarchy.md
+PH3-0004,One Objective Per Screen,2.0-3.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0004_One_Objective_Per_Screen.md
+PH3-0005,Motion Has Meaning,2.0-3.0,Animation,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0005_Motion_Has_Meaning.md
+PH3-0006,Color Earns Existence,2.0-3.0,Design,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0006_Color_Earns_Existence.md
+PH3-0007,Sound Has Purpose,2.0-3.0,Audio,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0007_Sound_Has_Purpose.md
+PH3-0008,Attention Respect Law,2.0-3.0,Interface,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0008_Attention_Respect_Law.md
+PH3-0009,Headquarters Language Dictionary,2.0-3.0,Language,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0009_Headquarters_Language_Dictionary.md
+PH3-0010,Typography Direction,2.0-3.0,Design,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0010_Typography_Direction.md
+PH3-0011,Room Soundtracks,2.0-3.0,Audio,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0011_Room_Soundtracks.md
+PH3-0012,Lighting Engine,2.0-3.0,Environment,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0012_Lighting_Engine.md
+PH3-0013,Chair As Control Symbol,2.0-3.0,Identity,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0013_Chair_As_Control_Symbol.md
+PH3-0014,Dynamic Opening Room,2.0-3.0,HQOS,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0014_Dynamic_Opening_Room.md
+PH3-0015,Central Holographic Table,2.0-3.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0015_Central_Holographic_Table.md
+PH3-0016,Commander No Avatar,2.0-3.0,AI,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0016_Commander_No_Avatar.md
+PH3-0017,Headquarters Heartbeat,2.0-3.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0017_Headquarters_Heartbeat.md
+PH3-0018,Fictional Institution Real Behavioral Value,2.0-3.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0018_Fictional_Institution_Real_Behavioral_Value.md
+PH3-0019,Project Naming Evolution,2.0-3.0,Legacy,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0019_Project_Naming_Evolution.md
+PH4-0001,Design Constitution,3.0-4.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0001_Design_Constitution.md
+PH4-0002,Expensive Minimalism,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0002_Expensive_Minimalism.md
+PH4-0003,Silence Priority Principle,3.0-4.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0003_Silence_Priority_Principle.md
+PH4-0004,Information Hierarchy Law,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0004_Information_Hierarchy_Law.md
+PH4-0005,One Objective Per Screen,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0005_One_Objective_Per_Screen.md
+PH4-0006,Motion Has Meaning,3.0-4.0,Animation,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0006_Motion_Has_Meaning.md
+PH4-0007,Color Meaning System,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0007_Color_Meaning_System.md
+PH4-0008,Sound Purpose System,3.0-4.0,Audio,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0008_Sound_Purpose_System.md
+PH4-0009,Attention Respect Law,3.0-4.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0009_Attention_Respect_Law.md
+PH4-0010,Headquarters Terminology Replacement,3.0-4.0,Culture,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0010_Headquarters_Terminology_Replacement.md
+PH4-0011,Mission Control Typography,3.0-4.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0011_Mission_Control_Typography.md
+PH4-0012,Room Soundtracks,3.0-4.0,Audio,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0012_Room_Soundtracks.md
+PH4-0013,Lighting Engine,3.0-4.0,Environment,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0013_Lighting_Engine.md
+PH4-0014,Command Chair Control Symbol,3.0-4.0,Identity,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0014_Command_Chair_Control_Symbol.md
+PH4-0015,Dynamic Initial Room Selection,3.0-4.0,HQOS,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0015_Dynamic_Initial_Room_Selection.md
+PH4-0016,Central Holographic Table Function,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0016_Central_Holographic_Table_Function.md
+PH4-0017,No Commander Avatar Rule,3.0-4.0,AI,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0017_No_Commander_Avatar_Rule.md
+PH4-0018,Institutional Heartbeat,3.0-4.0,Environment,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0018_Institutional_Heartbeat.md
+PH4-0019,Fictional Institution Real Psychology,3.0-4.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0019_Fictional_Institution_Real_Psychology.md
+PH4-0020,Headquarters Naming Evolution,3.0-4.0,Legacy,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0020_Headquarters_Naming_Evolution.md
+PH4-0021,Internal Affairs Department,3.0-4.0,Institution,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0021_Internal_Affairs_Department.md
+PH4-0022,Internal Affairs Room,3.0-4.0,Room,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0022_Internal_Affairs_Room.md
+PH4-0023,Statement Inconsistency Detection,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0023_Statement_Inconsistency_Detection.md
+PH4-0024,Report Reliability Score,3.0-4.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0024_Report_Reliability_Score.md
+PH4-0025,Operation Cover-Up Case File,3.0-4.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0025_Operation_Cover_Up_Case_File.md
+PH4-0026,Evidence Wall,3.0-4.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0026_Evidence_Wall.md
+PH4-0027,Institutional Witness System,3.0-4.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0027_Institutional_Witness_System.md
+PH4-0028,No Accusation Rule,3.0-4.0,Culture,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0028_No_Accusation_Rule.md
+PH4-0029,Lucky Win Investigation,3.0-4.0,Intelligence,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0029_Lucky_Win_Investigation.md
+PH4-0030,Outcome Not Supported By Doctrine Classification,3.0-4.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0030_Outcome_Not_Supported_By_Doctrine_Classification.md
+PH4-0031,Quality Assurance Department,3.0-4.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0031_Quality_Assurance_Department.md
+PH4-0032,Institution Admits Mistakes,3.0-4.0,Trust,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0032_Institution_Admits_Mistakes.md
+PH4-0033,Ethics Committee,3.0-4.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0033_Ethics_Committee.md
+PH4-0034,Constitutional Court,3.0-4.0,Institution,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0034_Constitutional_Court.md
+PH4-0035,Doctrine Does Not Negotiate With Emotion,3.0-4.0,Doctrine,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0035_Doctrine_Does_Not_Negotiate_With_Emotion.md
+PH4-0036,Engineering Philosophy,3.0-4.0,Engineering,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0036_Engineering_Philosophy.md
+PH4-0037,Friction Is A Feature,3.0-4.0,Engineering,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0037_Friction_Is_A_Feature.md
+PH4-0038,Every Screen Lowers Cortisol,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0038_Every_Screen_Lowers_Cortisol.md
+PH4-0039,Operator Is Never Rushed,3.0-4.0,Constitution,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0039_Operator_Is_Never_Rushed.md
+PH4-0040,Rule Of One Thought,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0040_Rule_Of_One_Thought.md
+PH4-0041,Commander Three Responsibilities,3.0-4.0,AI,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0041_Commander_Three_Responsibilities.md
+PH4-0042,Ninety Five Percent Silence Rule,3.0-4.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0042_Ninety_Five_Percent_Silence_Rule.md
+PH4-0043,AI Feels Experienced Not Intelligent,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0043_AI_Feels_Experienced_Not_Intelligent.md
+PH4-0044,Institutional Language Ban List,3.0-4.0,Culture,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0044_Institutional_Language_Ban_List.md
+PH4-0045,No Flattery Rule,3.0-4.0,AI,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0045_No_Flattery_Rule.md
+PH4-0046,Discipline Reserve,3.0-4.0,Operator,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0046_Discipline_Reserve.md
+PH4-0047,Mission Recorder,3.0-4.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0047_Mission_Recorder.md
+PH4-0048,Archive Vault,3.0-4.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0048_Archive_Vault.md
+PH4-0049,Maintenance Days,3.0-4.0,Operations,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0049_Maintenance_Days.md
+PH4-0050,Headquarters Health,3.0-4.0,Engineering,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0050_Headquarters_Health.md
+PH4-0051,Living Campaign Map,3.0-4.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0051_Living_Campaign_Map.md
+PH4-0052,Founder Engineering Creed,3.0-4.0,Legacy,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0052_Founder_Engineering_Creed.md
+PH4-0053,Behavioral Engine,3.0-4.0,System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0053_Behavioral_Engine.md
+PH4-0054,Command Chair Engine,3.0-4.0,System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0054_Command_Chair_Engine.md
+PH4-0055,Behavioral Fingerprints,3.0-4.0,System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0055_Behavioral_Fingerprints.md
+PH4-0056,Identity Drift Algorithm,3.0-4.0,System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0056_Identity_Drift_Algorithm.md
+PH4-0057,Identity Drift Vector Model,3.0-4.0,System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0057_Identity_Drift_Vector_Model.md
+PH4-0058,Ghost Baseline Calibration,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0058_Ghost_Baseline_Calibration.md
+PH4-0059,Evidence Threshold For Interventions,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0059_Evidence_Threshold_For_Interventions.md
+PH4-0060,Commander Detects Not Predicts,3.0-4.0,AI,FOUNDATIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0060_Commander_Detects_Not_Predicts.md
+PH4-0061,Decision Graph,3.0-4.0,System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0061_Decision_Graph.md
+PH4-0062,Behavioral Gravity,3.0-4.0,System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0062_Behavioral_Gravity.md
+PH4-0063,Career Brain,3.0-4.0,System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0063_Career_Brain.md
+PH4-0064,Mission Similarity Search,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0064_Mission_Similarity_Search.md
+PH4-0065,Future Identity Simulator,3.0-4.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0065_Future_Identity_Simulator.md
+PH4-0066,Legacy Engine,3.0-4.0,System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0066_Legacy_Engine.md
+PH4-0067,Institution Reputation,3.0-4.0,System,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0067_Institution_Reputation.md
+PH4-0068,Behavioral Black Box,3.0-4.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0068_Behavioral_Black_Box.md
+PH4-0069,Accident Chain Reconstruction,3.0-4.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0069_Accident_Chain_Reconstruction.md
+PH4-0070,Precursor Library,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0070_Precursor_Library.md
+PH4-0071,Mission Timeline,3.0-4.0,Interface,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0071_Mission_Timeline.md
+PH4-0072,Chain Of Failure,3.0-4.0,Archives,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0072_Chain_Of_Failure.md
+PH4-0073,Chain Of Excellence,3.0-4.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0073_Chain_Of_Excellence.md
+PH4-0074,Butterfly Effect Engine,3.0-4.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0074_Butterfly_Effect_Engine.md
+PH4-0075,Point Of No Return Detection,3.0-4.0,AI,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0075_Point_Of_No_Return_Detection.md
+PH4-0076,Intervention Ladder,3.0-4.0,AI,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0076_Intervention_Ladder.md
+PH4-0077,Mission Pulse,3.0-4.0,Interface,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0077_Mission_Pulse.md
+PH4-0078,Mission DNA,3.0-4.0,Archives,IMPORTANT,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0078_Mission_DNA.md
+PH4-0079,Hall Of Decisions,3.0-4.0,Room,OPTIONAL,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0079_Hall_Of_Decisions.md
+PH4-0080,Behavioral Cascade Detection,3.0-4.0,System,CORE,SPECIFIED,HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0080_Behavioral_Cascade_Detection.md

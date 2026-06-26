@@ -1,0 +1,23 @@
+{
+    "name":  "@headquarters/database",
+    "version":  "0.1.0",
+    "private":  true,
+    "type":  "module",
+    "main":  "dist/index.js",
+    "types":  "dist/index.d.ts",
+    "scripts":  {
+                    "build":  "tsc -p tsconfig.json",
+                    "typecheck":  "tsc -p tsconfig.json --noEmit",
+                    "lint":  "eslint src scripts",
+                    "test":  "vitest run --passWithNoTests",
+                    "migrate":  "node ./scripts/migrate.mjs"
+                },
+    "dependencies":  {
+                         "@headquarters/shared":  "workspace:*",
+                         "better-sqlite3":  "^11.5.0"
+                     },
+    "devDependencies":  {
+                            "@types/better-sqlite3":  "^7.6.11",
+                            "typescript":  "^5.6.3"
+                        }
+}

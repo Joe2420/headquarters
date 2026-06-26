@@ -1,0 +1,140 @@
+id,title,current_path,target_volume,declared_target_path
+REC-0600,REC-0600 — Headquarters Manifesto,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0600_Headquarters_Manifesto.md,01_CONSTITUTION,01_CONSTITUTION/Headquarters_Manifesto.md
+REC-0602,REC-0602 — Command Chair Test,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0602_Command_Chair_Test.md,01_CONSTITUTION,01_CONSTITUTION/Command_Chair_Test.md
+REC-0660,REC-0660 — Headquarters Culture,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0660_Headquarters_Culture.md,01_CONSTITUTION,05_OPERATIONS/Cycle_and_Trust/Headquarters_Culture.md
+REC-0661,REC-0661 — Headquarters Covenant,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0661_Headquarters_Covenant.md,01_CONSTITUTION,05_OPERATIONS/Cycle_and_Trust/Headquarters_Covenant.md
+REC-0662,REC-0662 — Four Pillars Truth Discipline Responsibility Improvement,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0662_Four_Pillars_Truth_Discipline_Responsibility_Improvement.md,01_CONSTITUTION,05_OPERATIONS/Cycle_and_Trust/Four_Pillars_Truth_Discipline_Responsibility_Improvement.md
+REC-0750,REC-0750 — Rule of Elegance,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0750_Rule_of_Elegance.md,01_CONSTITUTION,01_CONSTITUTION/Rule_of_Elegance.md
+REC-0751,REC-0751 — Five Gates Feature Review,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0751_Five_Gates_Feature_Review.md,01_CONSTITUTION,01_CONSTITUTION/Five_Gates_Feature_Review.md
+REC-0752,REC-0752 — Anti Feature List,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0752_Anti_Feature_List.md,01_CONSTITUTION,01_CONSTITUTION/Anti_Feature_List.md
+REC-0601,REC-0601 — Minimum Viable Institution,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0601_Minimum_Viable_Institution.md,10_ENGINEERING,10_ENGINEERING/Minimum_Viable_Institution.md
+REC-0770,REC-0770 — HDR Repository Process,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0770_HDR_Repository_Process.md,10_ENGINEERING,10_ENGINEERING/HDR_Repository_Process.md
+REC-0771,REC-0771 — Recovery To Normalization Workflow,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0771_Recovery_To_Normalization_Workflow.md,10_ENGINEERING,10_ENGINEERING/Recovery_To_Normalization_Workflow.md
+REC-0772,REC-0772 — Master Index Generation,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0772_Master_Index_Generation.md,10_ENGINEERING,10_ENGINEERING/Master_Index_Generation.md
+REC-0773,REC-0773 — Design Freeze Audit,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0773_Design_Freeze_Audit.md,10_ENGINEERING,10_ENGINEERING/Design_Freeze_Audit.md
+REC-0796,REC-0796 — Engineering Oath,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0796_Engineering_Oath.md,10_ENGINEERING,13_PHASE_RECOVERY/Normalization_Targets/Engineering_Oath.md
+REC-0797,REC-0797 — PR Founder Review Template,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0797_PR_Founder_Review_Template.md,10_ENGINEERING,13_PHASE_RECOVERY/Normalization_Targets/PR_Founder_Review_Template.md
+REC-0799,REC-0799 — Broker Independence Principle,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0799_Broker_Independence_Principle.md,10_ENGINEERING,13_PHASE_RECOVERY/Normalization_Targets/Broker_Independence_Principle.md
+REC-0610,REC-0610 — Chain of Command,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0610_Chain_of_Command.md,04_OPERATOR,04_OPERATOR/Command/Chain_of_Command.md
+REC-0611,REC-0611 — Acting Commander States,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0611_Acting_Commander_States.md,04_OPERATOR,04_OPERATOR/Command/Acting_Commander_States.md
+REC-0612,REC-0612 — Command Transfer Ceremony,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0612_Command_Transfer_Ceremony.md,04_OPERATOR,04_OPERATOR/Command/Command_Transfer_Ceremony.md
+REC-0613,REC-0613 — Emergency Succession,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0613_Emergency_Succession.md,04_OPERATOR,04_OPERATOR/Command/Emergency_Succession.md
+REC-0614,REC-0614 — Rules of Engagement,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0614_Rules_of_Engagement.md,04_OPERATOR,04_OPERATOR/Command/Rules_of_Engagement.md
+REC-0615,REC-0615 — Authority Levels,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0615_Authority_Levels.md,04_OPERATOR,04_OPERATOR/Command/Authority_Levels.md
+REC-0616,REC-0616 — Command Ledger,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0616_Command_Ledger.md,04_OPERATOR,04_OPERATOR/Command/Command_Ledger.md
+REC-0617,REC-0617 — Operational Readiness Conditions,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0617_Operational_Readiness_Conditions.md,04_OPERATOR,04_OPERATOR/Command/Operational_Readiness_Conditions.md
+REC-0618,REC-0618 — Chair Never Lies Indicator,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0618_Chair_Never_Lies_Indicator.md,04_OPERATOR,04_OPERATOR/Command/Chair_Never_Lies_Indicator.md
+REC-0619,REC-0619 — Last Resort Protocol,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0619_Last_Resort_Protocol.md,04_OPERATOR,04_OPERATOR/Command/Last_Resort_Protocol.md
+REC-0620,REC-0620 — Headquarters Exists When Market Closed,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0620_Headquarters_Exists_When_Market_Closed.md,05_OPERATIONS,05_OPERATIONS/Institutional_Rhythm/Headquarters_Exists_When_Market_Closed.md
+REC-0621,REC-0621 — Operations Calendar,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0621_Operations_Calendar.md,05_OPERATIONS,05_OPERATIONS/Institutional_Rhythm/Operations_Calendar.md
+REC-0624,REC-0624 — Observation Protocol,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0624_Observation_Protocol.md,05_OPERATIONS,05_OPERATIONS/Institutional_Rhythm/Observation_Protocol.md
+REC-0650,REC-0650 — Operational Cycle,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0650_Operational_Cycle.md,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Operational_Cycle.md
+REC-0651,REC-0651 — Arrival Report,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0651_Arrival_Report.md,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Arrival_Report.md
+REC-0652,REC-0652 — Operational State Classification,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0652_Operational_State_Classification.md,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Operational_State_Classification.md
+REC-0653,REC-0653 — Deployment Window,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0653_Deployment_Window.md,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Deployment_Window.md
+REC-0655,REC-0655 — Command Seal,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0655_Command_Seal.md,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Command_Seal.md
+REC-0740,REC-0740 — Rhythm Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0740_Rhythm_Engine.md,05_OPERATIONS,05_OPERATIONS/Rhythm_Engine.md
+REC-0741,REC-0741 — Monday Campaign Ceremony,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0741_Monday_Campaign_Ceremony.md,05_OPERATIONS,05_OPERATIONS/Monday_Campaign_Ceremony.md
+REC-0742,REC-0742 — Monthly Council Review,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0742_Monthly_Council_Review.md,05_OPERATIONS,05_OPERATIONS/Monthly_Council_Review.md
+REC-0743,REC-0743 — Annual Stewardship Review,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0743_Annual_Stewardship_Review.md,05_OPERATIONS,05_OPERATIONS/Annual_Stewardship_Review.md
+REC-0802,REC-0802 — Manual Mission Deploy Fallback,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0802_Manual_Mission_Deploy_Fallback.md,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Manual_Mission_Deploy_Fallback.md
+REC-0622,REC-0622 — Department Ambient Activity,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0622_Department_Ambient_Activity.md,03_BUILDING,05_OPERATIONS/Institutional_Rhythm/Department_Ambient_Activity.md
+REC-0626,REC-0626 — Doctrine Flame,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0626_Doctrine_Flame.md,03_BUILDING,05_OPERATIONS/Institutional_Rhythm/Doctrine_Flame.md
+REC-0628,REC-0628 — Exit Wall Inscription,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0628_Exit_Wall_Inscription.md,03_BUILDING,05_OPERATIONS/Institutional_Rhythm/Exit_Wall_Inscription.md
+REC-0654,REC-0654 — Ready Room Lockers,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0654_Ready_Room_Lockers.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Ready_Room_Lockers.md
+REC-0670,REC-0670 — Presence Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0670_Presence_Engine.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Presence_Engine.md
+REC-0671,REC-0671 — Transition Zone,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0671_Transition_Zone.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Transition_Zone.md
+REC-0672,REC-0672 — Command Light Alignment,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0672_Command_Light_Alignment.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Command_Light_Alignment.md
+REC-0673,REC-0673 — Shadow Protocol,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0673_Shadow_Protocol.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Shadow_Protocol.md
+REC-0674,REC-0674 — Dawn Protocol,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0674_Dawn_Protocol.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Dawn_Protocol.md
+REC-0675,REC-0675 — Night Protocol,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0675_Night_Protocol.md,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Night_Protocol.md
+REC-0792,REC-0792 — Campaign Flags Corridor,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0792_Campaign_Flags_Corridor.md,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Campaign_Flags_Corridor.md
+REC-0623,REC-0623 — Founder Locked Office,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0623_Founder_Locked_Office.md,12_LEGACY,05_OPERATIONS/Institutional_Rhythm/Founder_Locked_Office.md
+REC-0627,REC-0627 — Legacy Transfer,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0627_Legacy_Transfer.md,12_LEGACY,05_OPERATIONS/Institutional_Rhythm/Legacy_Transfer.md
+REC-0753,REC-0753 — Archive of Removed Features,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0753_Archive_of_Removed_Features.md,12_LEGACY,12_LEGACY/Archive_of_Removed_Features.md
+REC-0760,REC-0760 — Evolution Doctrine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0760_Evolution_Doctrine.md,12_LEGACY,12_LEGACY/Evolution_Doctrine.md
+REC-0761,REC-0761 — Constitutional Amendments,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0761_Constitutional_Amendments.md,12_LEGACY,12_LEGACY/Constitutional_Amendments.md
+REC-0762,REC-0762 — Foundational Cases,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0762_Foundational_Cases.md,12_LEGACY,12_LEGACY/Foundational_Cases.md
+REC-0763,REC-0763 — Wisdom Threshold,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0763_Wisdom_Threshold.md,12_LEGACY,12_LEGACY/Wisdom_Threshold.md
+REC-0793,REC-0793 — Twenty Year Wall,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0793_Twenty_Year_Wall.md,12_LEGACY,13_PHASE_RECOVERY/Normalization_Targets/Twenty_Year_Wall.md
+REC-0794,REC-0794 — Founder Questions,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0794_Founder_Questions.md,12_LEGACY,13_PHASE_RECOVERY/Normalization_Targets/Founder_Questions.md
+REC-0795,REC-0795 — Founders Journal,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0795_Founders_Journal.md,12_LEGACY,13_PHASE_RECOVERY/Normalization_Targets/Founders_Journal.md
+REC-0625,REC-0625 — Recognition Office Invisible Victories,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0625_Recognition_Office_Invisible_Victories.md,02_INSTITUTION,05_OPERATIONS/Institutional_Rhythm/Recognition_Office_Invisible_Victories.md
+REC-0680,REC-0680 — Trust Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0680_Trust_Engine.md,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/Trust_Engine.md
+REC-0681,REC-0681 — Recommendation Ledger,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0681_Recommendation_Ledger.md,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/Recommendation_Ledger.md
+REC-0682,REC-0682 — Silence Budget,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0682_Silence_Budget.md,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/Silence_Budget.md
+REC-0683,REC-0683 — One Sentence Rule,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0683_One_Sentence_Rule.md,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/One_Sentence_Rule.md
+REC-0630,REC-0630 — Institutional Memory Core,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0630_Institutional_Memory_Core.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Institutional_Memory_Core.md
+REC-0631,REC-0631 — Five Mission Artifacts,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0631_Five_Mission_Artifacts.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Five_Mission_Artifacts.md
+REC-0632,REC-0632 — Memory Pyramid,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0632_Memory_Pyramid.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Memory_Pyramid.md
+REC-0633,REC-0633 — Campaign Books,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0633_Campaign_Books.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Campaign_Books.md
+REC-0634,REC-0634 — Memory Graph,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0634_Memory_Graph.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Memory_Graph.md
+REC-0635,REC-0635 — Saved Missions Ledger,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0635_Saved_Missions_Ledger.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Saved_Missions_Ledger.md
+REC-0636,REC-0636 — Time Capsule Ceremony,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0636_Time_Capsule_Ceremony.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Time_Capsule_Ceremony.md
+REC-0637,REC-0637 — Memory Confidence,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0637_Memory_Confidence.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Memory_Confidence.md
+REC-0640,REC-0640 — Time Architecture,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0640_Time_Architecture.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Time_Architecture.md
+REC-0641,REC-0641 — Three Clocks,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0641_Three_Clocks.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Three_Clocks.md
+REC-0642,REC-0642 — Career Status Campaign Interrupted Career Continues,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0642_Career_Status_Campaign_Interrupted_Career_Continues.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Career_Status_Campaign_Interrupted_Career_Continues.md
+REC-0643,REC-0643 — Operator Seasons,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0643_Operator_Seasons.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Operator_Seasons.md
+REC-0644,REC-0644 — Strategic Patience,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0644_Strategic_Patience.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Strategic_Patience.md
+REC-0645,REC-0645 — Future Archive Shelves,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0645_Future_Archive_Shelves.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Future_Archive_Shelves.md
+REC-0646,REC-0646 — Institutional Maturity,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0646_Institutional_Maturity.md,04_OPERATOR,08_ARCHIVES/Memory_Core/Institutional_Maturity.md
+REC-0647,REC-0647 — Archives Naming Doctrine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0647_Archives_Naming_Doctrine.md,08_ARCHIVES,08_ARCHIVES/Memory_Core/Archives_Naming_Doctrine.md
+REC-0684,REC-0684 — Graduation Test,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Academy/REC-0684_Graduation_Test.md,11_ACADEMY,05_OPERATIONS/Cycle_and_Trust/Graduation_Test.md
+REC-0803,REC-0803 — Simulation Without Broker,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Academy/REC-0803_Simulation_Without_Broker.md,11_ACADEMY,13_PHASE_RECOVERY/Normalization_Targets/Simulation_Without_Broker.md
+REC-0806,REC-0806 — Research Division Isolation,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Academy/REC-0806_Research_Division_Isolation.md,11_ACADEMY,13_PHASE_RECOVERY/Normalization_Targets/Research_Division_Isolation.md
+REC-0690,REC-0690 — Stewardship Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0690_Stewardship_Engine.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Stewardship_Engine.md
+REC-0691,REC-0691 — Capital Under Protection Language,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0691_Capital_Under_Protection_Language.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Capital_Under_Protection_Language.md
+REC-0692,REC-0692 — Stewards Desk,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0692_Stewards_Desk.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Stewards_Desk.md
+REC-0693,REC-0693 — Vault Walk,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0693_Vault_Walk.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Vault_Walk.md
+REC-0694,REC-0694 — Custodian Oath,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0694_Custodian_Oath.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Custodian_Oath.md
+REC-0695,REC-0695 — Capital Integrity,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0695_Capital_Integrity.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Capital_Integrity.md
+REC-0696,REC-0696 — Success Burden,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0696_Success_Burden.md,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Success_Burden.md
+REC-0700,REC-0700 — Judgment Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0700_Judgment_Engine.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Judgment_Engine.md
+REC-0701,REC-0701 — Judgment Reserve,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0701_Judgment_Reserve.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Judgment_Reserve.md
+REC-0702,REC-0702 — Decision Fatigue Counter,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0702_Decision_Fatigue_Counter.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Decision_Fatigue_Counter.md
+REC-0703,REC-0703 — Decision Precision,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0703_Decision_Precision.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Decision_Precision.md
+REC-0704,REC-0704 — Mental Noise Detector,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0704_Mental_Noise_Detector.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Mental_Noise_Detector.md
+REC-0705,REC-0705 — Noise Floor,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0705_Noise_Floor.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Noise_Floor.md
+REC-0706,REC-0706 — Decision Latency Graph,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0706_Decision_Latency_Graph.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Decision_Latency_Graph.md
+REC-0707,REC-0707 — Thinking Room Protocol,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0707_Thinking_Room_Protocol.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Thinking_Room_Protocol.md
+REC-0708,REC-0708 — Judgment Echoes,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0708_Judgment_Echoes.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Judgment_Echoes.md
+REC-0709,REC-0709 — Hall of Restraint,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0709_Hall_of_Restraint.md,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Hall_of_Restraint.md
+REC-0710,REC-0710 — Intelligence Network,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0710_Intelligence_Network.md,06_INTELLIGENCE,06_INTELLIGENCE/Intelligence_Network.md
+REC-0711,REC-0711 — Department Bus Priority Levels,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0711_Department_Bus_Priority_Levels.md,06_INTELLIGENCE,06_INTELLIGENCE/Department_Bus_Priority_Levels.md
+REC-0712,REC-0712 — Institutional Consensus,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0712_Institutional_Consensus.md,06_INTELLIGENCE,06_INTELLIGENCE/Institutional_Consensus.md
+REC-0713,REC-0713 — Intelligence Cases,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0713_Intelligence_Cases.md,06_INTELLIGENCE,06_INTELLIGENCE/Intelligence_Cases.md
+REC-0720,REC-0720 — Cognitive Architecture,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0720_Cognitive_Architecture.md,06_INTELLIGENCE,06_INTELLIGENCE/Cognitive_Architecture.md
+REC-0721,REC-0721 — Council Chamber Deliberation,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0721_Council_Chamber_Deliberation.md,06_INTELLIGENCE,06_INTELLIGENCE/Council_Chamber_Deliberation.md
+REC-0722,REC-0722 — Operator Model Single Truth,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0722_Operator_Model_Single_Truth.md,06_INTELLIGENCE,06_INTELLIGENCE/Operator_Model_Single_Truth.md
+REC-0723,REC-0723 — Working Memory and Long Memory,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0723_Working_Memory_and_Long_Memory.md,06_INTELLIGENCE,06_INTELLIGENCE/Working_Memory_and_Long_Memory.md
+REC-0724,REC-0724 — Reflection Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0724_Reflection_Engine.md,06_INTELLIGENCE,06_INTELLIGENCE/Reflection_Engine.md
+REC-0725,REC-0725 — Curiosity Engine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0725_Curiosity_Engine.md,06_INTELLIGENCE,06_INTELLIGENCE/Curiosity_Engine.md
+REC-0804,REC-0804 — Red Team Counterargument,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0804_Red_Team_Counterargument.md,06_INTELLIGENCE,13_PHASE_RECOVERY/Normalization_Targets/Red_Team_Counterargument.md
+REC-0805,REC-0805 — Blue Team Doctrine QA,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0805_Blue_Team_Doctrine_QA.md,06_INTELLIGENCE,13_PHASE_RECOVERY/Normalization_Targets/Blue_Team_Doctrine_QA.md
+REC-0730,REC-0730 — HQOS Kernel,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0730_HQOS_Kernel.md,07_HQOS,07_HQOS/HQOS_Kernel.md
+REC-0731,REC-0731 — Everything Is An Event,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0731_Everything_Is_An_Event.md,07_HQOS,07_HQOS/Everything_Is_An_Event.md
+REC-0732,REC-0732 — Mission Kernel,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0732_Mission_Kernel.md,07_HQOS,07_HQOS/Mission_Kernel.md
+REC-0733,REC-0733 — Department Event Bus,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0733_Department_Event_Bus.md,07_HQOS,07_HQOS/Department_Event_Bus.md
+REC-0734,REC-0734 — HQOS Heartbeat,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0734_HQOS_Heartbeat.md,07_HQOS,07_HQOS/HQOS_Heartbeat.md
+REC-0735,REC-0735 — Night Operations Service,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0735_Night_Operations_Service.md,07_HQOS,07_HQOS/Night_Operations_Service.md
+REC-0736,REC-0736 — Operational Anomaly Handling,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0736_Operational_Anomaly_Handling.md,07_HQOS,07_HQOS/Operational_Anomaly_Handling.md
+REC-0780,REC-0780 — Boot Sequence Identity Check,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0780_Boot_Sequence_Identity_Check.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Boot_Sequence_Identity_Check.md
+REC-0781,REC-0781 — Shutdown Conclude Operations,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0781_Shutdown_Conclude_Operations.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Shutdown_Conclude_Operations.md
+REC-0782,REC-0782 — Security Checkpoint Login Replacement,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0782_Security_Checkpoint_Login_Replacement.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Security_Checkpoint_Login_Replacement.md
+REC-0783,REC-0783 — Report For Duty Command,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0783_Report_For_Duty_Command.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Report_For_Duty_Command.md
+REC-0800,REC-0800 — Second Screen Philosophy,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0800_Second_Screen_Philosophy.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Second_Screen_Philosophy.md
+REC-0801,REC-0801 — Tactical Overlay Future,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0801_Tactical_Overlay_Future.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Tactical_Overlay_Future.md
+REC-0784,REC-0784 — Hydraulic Door Transition,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Animation_Sound/REC-0784_Hydraulic_Door_Transition.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Hydraulic_Door_Transition.md
+REC-0785,REC-0785 — Mechanical Archive Stamp,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Animation_Sound/REC-0785_Mechanical_Archive_Stamp.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Mechanical_Archive_Stamp.md
+REC-0786,REC-0786 — Vault Lock Acoustic,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Sound/REC-0786_Vault_Lock_Acoustic.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Vault_Lock_Acoustic.md
+REC-0787,REC-0787 — Institutional Bell,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Sound/REC-0787_Institutional_Bell.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Institutional_Bell.md
+REC-0788,REC-0788 — Radar Sweep Ambient,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Sound_Motion/REC-0788_Radar_Sweep_Ambient.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Radar_Sweep_Ambient.md
+REC-0789,REC-0789 — Building Breathing,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Environmental/REC-0789_Building_Breathing.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Building_Breathing.md
+REC-0790,REC-0790 — Operational Weather,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Environmental/REC-0790_Operational_Weather.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Operational_Weather.md
+REC-0791,REC-0791 — Seasonal Headquarters,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Environmental/REC-0791_Seasonal_Headquarters.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Seasonal_Headquarters.md
+REC-0798,REC-0798 — SQLite Archive Doctrine,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives/REC-0798_SQLite_Archive_Doctrine.md,08_ARCHIVES,13_PHASE_RECOVERY/Normalization_Targets/SQLite_Archive_Doctrine.md
+REC-0807,REC-0807 — Doctrine Wars,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Doctrine/REC-0807_Doctrine_Wars.md,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Doctrine_Wars.md
+REC-0808,REC-0808 — Myth Library,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Doctrine/REC-0808_Myth_Library.md,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Myth_Library.md
+REC-0809,REC-0809 — Doctrine Cemetery,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Doctrine/REC-0809_Doctrine_Cemetery.md,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Doctrine_Cemetery.md
+REC-0810,REC-0810 — Doctrine Printer,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Environmental_Doctrine/REC-0810_Doctrine_Printer.md,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Doctrine_Printer.md

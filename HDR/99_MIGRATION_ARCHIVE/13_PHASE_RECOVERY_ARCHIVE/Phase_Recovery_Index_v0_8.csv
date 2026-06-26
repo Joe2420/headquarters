@@ -1,0 +1,140 @@
+id,name,category,priority,owner,volume,target_path
+REC-0600,Headquarters Manifesto,Constitution,P0,Founder,01_CONSTITUTION,01_CONSTITUTION/Headquarters_Manifesto.md
+REC-0601,Minimum Viable Institution,Engineering,P0,Engineer,10_ENGINEERING,10_ENGINEERING/Minimum_Viable_Institution.md
+REC-0602,Command Chair Test,Constitution,P0,Founder,01_CONSTITUTION,01_CONSTITUTION/Command_Chair_Test.md
+REC-0610,Chain of Command,Operator / Command,P0,Commander,04_OPERATOR,04_OPERATOR/Command/Chain_of_Command.md
+REC-0611,Acting Commander States,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Acting_Commander_States.md
+REC-0612,Command Transfer Ceremony,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Command_Transfer_Ceremony.md
+REC-0613,Emergency Succession,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Emergency_Succession.md
+REC-0614,Rules of Engagement,Operator / Command,P0,Commander,04_OPERATOR,04_OPERATOR/Command/Rules_of_Engagement.md
+REC-0615,Authority Levels,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Authority_Levels.md
+REC-0616,Command Ledger,Operator / Command,P0,Commander,04_OPERATOR,04_OPERATOR/Command/Command_Ledger.md
+REC-0617,Operational Readiness Conditions,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Operational_Readiness_Conditions.md
+REC-0618,Chair Never Lies Indicator,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Chair_Never_Lies_Indicator.md
+REC-0619,Last Resort Protocol,Operator / Command,P1,Commander,04_OPERATOR,04_OPERATOR/Command/Last_Resort_Protocol.md
+REC-0620,Headquarters Exists When Market Closed,Operations,P1,Operations,05_OPERATIONS,05_OPERATIONS/Institutional_Rhythm/Headquarters_Exists_When_Market_Closed.md
+REC-0621,Operations Calendar,Operations,P1,Operations,05_OPERATIONS,05_OPERATIONS/Institutional_Rhythm/Operations_Calendar.md
+REC-0622,Department Ambient Activity,Building,P1,Operations,03_BUILDING,05_OPERATIONS/Institutional_Rhythm/Department_Ambient_Activity.md
+REC-0623,Founder Locked Office,Legacy,P1,Historian,12_LEGACY,05_OPERATIONS/Institutional_Rhythm/Founder_Locked_Office.md
+REC-0624,Observation Protocol,Operations,P1,Operations,05_OPERATIONS,05_OPERATIONS/Institutional_Rhythm/Observation_Protocol.md
+REC-0625,Recognition Office Invisible Victories,Institution,P1,Operations,02_INSTITUTION,05_OPERATIONS/Institutional_Rhythm/Recognition_Office_Invisible_Victories.md
+REC-0626,Doctrine Flame,Building,P1,Operations,03_BUILDING,05_OPERATIONS/Institutional_Rhythm/Doctrine_Flame.md
+REC-0627,Legacy Transfer,Legacy,P1,Historian,12_LEGACY,05_OPERATIONS/Institutional_Rhythm/Legacy_Transfer.md
+REC-0628,Exit Wall Inscription,Building,P1,Operations,03_BUILDING,05_OPERATIONS/Institutional_Rhythm/Exit_Wall_Inscription.md
+REC-0630,Institutional Memory Core,Archives / Time,P0,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Institutional_Memory_Core.md
+REC-0631,Five Mission Artifacts,Archives / Time,P0,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Five_Mission_Artifacts.md
+REC-0632,Memory Pyramid,Archives / Time,P0,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Memory_Pyramid.md
+REC-0633,Campaign Books,Archives / Time,P1,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Campaign_Books.md
+REC-0634,Memory Graph,Archives / Time,P1,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Memory_Graph.md
+REC-0635,Saved Missions Ledger,Archives / Time,P1,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Saved_Missions_Ledger.md
+REC-0636,Time Capsule Ceremony,Archives / Time,P2,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Time_Capsule_Ceremony.md
+REC-0637,Memory Confidence,Archives / Time,P0,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Memory_Confidence.md
+REC-0640,Time Architecture,Archives / Time,P0,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Time_Architecture.md
+REC-0641,Three Clocks,Archives / Time,P1,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Three_Clocks.md
+REC-0642,Career Status Campaign Interrupted Career Continues,Archives / Time,P1,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Career_Status_Campaign_Interrupted_Career_Continues.md
+REC-0643,Operator Seasons,Archives / Time,P1,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Operator_Seasons.md
+REC-0644,Strategic Patience,Archives / Time,P1,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Strategic_Patience.md
+REC-0645,Future Archive Shelves,Archives / Time,P2,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Future_Archive_Shelves.md
+REC-0646,Institutional Maturity,Archives / Time,P1,Historian,04_OPERATOR,08_ARCHIVES/Memory_Core/Institutional_Maturity.md
+REC-0647,Archives Naming Doctrine,Archives / Time,P0,Historian,08_ARCHIVES,08_ARCHIVES/Memory_Core/Archives_Naming_Doctrine.md
+REC-0650,Operational Cycle,Operations,P0,Commander,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Operational_Cycle.md
+REC-0651,Arrival Report,Operations,P0,Commander,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Arrival_Report.md
+REC-0652,Operational State Classification,Operations,P0,Commander,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Operational_State_Classification.md
+REC-0653,Deployment Window,Operations,P0,Commander,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Deployment_Window.md
+REC-0654,Ready Room Lockers,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Ready_Room_Lockers.md
+REC-0655,Command Seal,Operations,P1,Commander,05_OPERATIONS,05_OPERATIONS/Cycle_and_Trust/Command_Seal.md
+REC-0660,Headquarters Culture,Constitution,P0,Commander,01_CONSTITUTION,05_OPERATIONS/Cycle_and_Trust/Headquarters_Culture.md
+REC-0661,Headquarters Covenant,Constitution,P0,Commander,01_CONSTITUTION,05_OPERATIONS/Cycle_and_Trust/Headquarters_Covenant.md
+REC-0662,Four Pillars Truth Discipline Responsibility Improvement,Constitution,P0,Commander,01_CONSTITUTION,05_OPERATIONS/Cycle_and_Trust/Four_Pillars_Truth_Discipline_Responsibility_Improvement.md
+REC-0670,Presence Engine,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Presence_Engine.md
+REC-0671,Transition Zone,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Transition_Zone.md
+REC-0672,Command Light Alignment,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Command_Light_Alignment.md
+REC-0673,Shadow Protocol,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Shadow_Protocol.md
+REC-0674,Dawn Protocol,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Dawn_Protocol.md
+REC-0675,Night Protocol,Building,P1,Engineer,03_BUILDING,05_OPERATIONS/Cycle_and_Trust/Night_Protocol.md
+REC-0680,Trust Engine,Institution,P0,Engineer,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/Trust_Engine.md
+REC-0681,Recommendation Ledger,Institution,P0,Engineer,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/Recommendation_Ledger.md
+REC-0682,Silence Budget,Institution,P1,Engineer,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/Silence_Budget.md
+REC-0683,One Sentence Rule,Institution,P1,Engineer,02_INSTITUTION,05_OPERATIONS/Cycle_and_Trust/One_Sentence_Rule.md
+REC-0684,Graduation Test,Academy,P2,Engineer,11_ACADEMY,05_OPERATIONS/Cycle_and_Trust/Graduation_Test.md
+REC-0690,Stewardship Engine,Stewardship / Judgment,P0,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Stewardship_Engine.md
+REC-0691,Capital Under Protection Language,Stewardship / Judgment,P0,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Capital_Under_Protection_Language.md
+REC-0692,Stewards Desk,Stewardship / Judgment,P1,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Stewards_Desk.md
+REC-0693,Vault Walk,Stewardship / Judgment,P1,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Vault_Walk.md
+REC-0694,Custodian Oath,Stewardship / Judgment,P0,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Custodian_Oath.md
+REC-0695,Capital Integrity,Stewardship / Judgment,P0,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Capital_Integrity.md
+REC-0696,Success Burden,Stewardship / Judgment,P0,Guardian,05_OPERATIONS,04_OPERATOR/Judgment_and_Stewardship/Success_Burden.md
+REC-0700,Judgment Engine,Stewardship / Judgment,P0,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Judgment_Engine.md
+REC-0701,Judgment Reserve,Stewardship / Judgment,P0,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Judgment_Reserve.md
+REC-0702,Decision Fatigue Counter,Stewardship / Judgment,P0,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Decision_Fatigue_Counter.md
+REC-0703,Decision Precision,Stewardship / Judgment,P0,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Decision_Precision.md
+REC-0704,Mental Noise Detector,Stewardship / Judgment,P1,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Mental_Noise_Detector.md
+REC-0705,Noise Floor,Stewardship / Judgment,P1,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Noise_Floor.md
+REC-0706,Decision Latency Graph,Stewardship / Judgment,P1,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Decision_Latency_Graph.md
+REC-0707,Thinking Room Protocol,Stewardship / Judgment,P1,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Thinking_Room_Protocol.md
+REC-0708,Judgment Echoes,Stewardship / Judgment,P2,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Judgment_Echoes.md
+REC-0709,Hall of Restraint,Stewardship / Judgment,P1,Medical Officer,04_OPERATOR,04_OPERATOR/Judgment_and_Stewardship/Hall_of_Restraint.md
+REC-0710,Intelligence Network,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Intelligence_Network.md
+REC-0711,Department Bus Priority Levels,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Department_Bus_Priority_Levels.md
+REC-0712,Institutional Consensus,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Institutional_Consensus.md
+REC-0713,Intelligence Cases,Intelligence,P1,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Intelligence_Cases.md
+REC-0720,Cognitive Architecture,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Cognitive_Architecture.md
+REC-0721,Council Chamber Deliberation,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Council_Chamber_Deliberation.md
+REC-0722,Operator Model Single Truth,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Operator_Model_Single_Truth.md
+REC-0723,Working Memory and Long Memory,Intelligence,P0,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Working_Memory_and_Long_Memory.md
+REC-0724,Reflection Engine,Intelligence,P1,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Reflection_Engine.md
+REC-0725,Curiosity Engine,Intelligence,P1,Intelligence Officer,06_INTELLIGENCE,06_INTELLIGENCE/Curiosity_Engine.md
+REC-0730,HQOS Kernel,HQOS,P0,Engineer,07_HQOS,07_HQOS/HQOS_Kernel.md
+REC-0731,Everything Is An Event,HQOS,P0,Engineer,07_HQOS,07_HQOS/Everything_Is_An_Event.md
+REC-0732,Mission Kernel,HQOS,P0,Engineer,07_HQOS,07_HQOS/Mission_Kernel.md
+REC-0733,Department Event Bus,HQOS,P0,Engineer,07_HQOS,07_HQOS/Department_Event_Bus.md
+REC-0734,HQOS Heartbeat,HQOS,P0,Engineer,07_HQOS,07_HQOS/HQOS_Heartbeat.md
+REC-0735,Night Operations Service,HQOS,P1,Engineer,07_HQOS,07_HQOS/Night_Operations_Service.md
+REC-0736,Operational Anomaly Handling,HQOS,P1,Engineer,07_HQOS,07_HQOS/Operational_Anomaly_Handling.md
+REC-0740,Rhythm Engine,Operations,P0,Operations,05_OPERATIONS,05_OPERATIONS/Rhythm_Engine.md
+REC-0741,Monday Campaign Ceremony,Operations,P1,Operations,05_OPERATIONS,05_OPERATIONS/Monday_Campaign_Ceremony.md
+REC-0742,Monthly Council Review,Operations,P1,Operations,05_OPERATIONS,05_OPERATIONS/Monthly_Council_Review.md
+REC-0743,Annual Stewardship Review,Operations,P1,Operations,05_OPERATIONS,05_OPERATIONS/Annual_Stewardship_Review.md
+REC-0750,Rule of Elegance,Constitution,P0,Founder,01_CONSTITUTION,01_CONSTITUTION/Rule_of_Elegance.md
+REC-0751,Five Gates Feature Review,Constitution,P0,Founder,01_CONSTITUTION,01_CONSTITUTION/Five_Gates_Feature_Review.md
+REC-0752,Anti Feature List,Constitution,P0,Founder,01_CONSTITUTION,01_CONSTITUTION/Anti_Feature_List.md
+REC-0753,Archive of Removed Features,Legacy,P2,Founder,12_LEGACY,12_LEGACY/Archive_of_Removed_Features.md
+REC-0760,Evolution Doctrine,Legacy,P0,Founder,12_LEGACY,12_LEGACY/Evolution_Doctrine.md
+REC-0761,Constitutional Amendments,Legacy,P0,Founder,12_LEGACY,12_LEGACY/Constitutional_Amendments.md
+REC-0762,Foundational Cases,Legacy,P1,Founder,12_LEGACY,12_LEGACY/Foundational_Cases.md
+REC-0763,Wisdom Threshold,Legacy,P0,Founder,12_LEGACY,12_LEGACY/Wisdom_Threshold.md
+REC-0770,HDR Repository Process,Engineering,P0,Engineer,10_ENGINEERING,10_ENGINEERING/HDR_Repository_Process.md
+REC-0771,Recovery To Normalization Workflow,Engineering,P0,Engineer,10_ENGINEERING,10_ENGINEERING/Recovery_To_Normalization_Workflow.md
+REC-0772,Master Index Generation,Engineering,P0,Engineer,10_ENGINEERING,10_ENGINEERING/Master_Index_Generation.md
+REC-0773,Design Freeze Audit,Engineering,P0,Engineer,10_ENGINEERING,10_ENGINEERING/Design_Freeze_Audit.md
+REC-0780,Boot Sequence Identity Check,Interface,P0,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Boot_Sequence_Identity_Check.md
+REC-0781,Shutdown Conclude Operations,Interface,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Shutdown_Conclude_Operations.md
+REC-0782,Security Checkpoint Login Replacement,Interface,P0,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Security_Checkpoint_Login_Replacement.md
+REC-0783,Report For Duty Command,Interface,P0,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Report_For_Duty_Command.md
+REC-0784,Hydraulic Door Transition,Animation / Sound,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Hydraulic_Door_Transition.md
+REC-0785,Mechanical Archive Stamp,Animation / Sound,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Mechanical_Archive_Stamp.md
+REC-0786,Vault Lock Acoustic,Sound,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Vault_Lock_Acoustic.md
+REC-0787,Institutional Bell,Sound,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Institutional_Bell.md
+REC-0788,Radar Sweep Ambient,Sound / Motion,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Radar_Sweep_Ambient.md
+REC-0789,Building Breathing,Environmental,P2,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Building_Breathing.md
+REC-0790,Operational Weather,Environmental,P2,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Operational_Weather.md
+REC-0791,Seasonal Headquarters,Environmental,P2,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Seasonal_Headquarters.md
+REC-0792,Campaign Flags Corridor,Building,P1,Engineer,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Campaign_Flags_Corridor.md
+REC-0793,Twenty Year Wall,Legacy,P2,Engineer,12_LEGACY,13_PHASE_RECOVERY/Normalization_Targets/Twenty_Year_Wall.md
+REC-0794,Founder Questions,Legacy,P1,Engineer,12_LEGACY,13_PHASE_RECOVERY/Normalization_Targets/Founder_Questions.md
+REC-0795,Founders Journal,Legacy,P0,Engineer,12_LEGACY,13_PHASE_RECOVERY/Normalization_Targets/Founders_Journal.md
+REC-0796,Engineering Oath,Engineering,P0,Engineer,10_ENGINEERING,13_PHASE_RECOVERY/Normalization_Targets/Engineering_Oath.md
+REC-0797,PR Founder Review Template,Engineering,P1,Engineer,10_ENGINEERING,13_PHASE_RECOVERY/Normalization_Targets/PR_Founder_Review_Template.md
+REC-0798,SQLite Archive Doctrine,Archives,P0,Engineer,08_ARCHIVES,13_PHASE_RECOVERY/Normalization_Targets/SQLite_Archive_Doctrine.md
+REC-0799,Broker Independence Principle,Engineering,P0,Engineer,10_ENGINEERING,13_PHASE_RECOVERY/Normalization_Targets/Broker_Independence_Principle.md
+REC-0800,Second Screen Philosophy,Interface,P1,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Second_Screen_Philosophy.md
+REC-0801,Tactical Overlay Future,Interface,P2,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Tactical_Overlay_Future.md
+REC-0802,Manual Mission Deploy Fallback,Operations,P0,Engineer,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Manual_Mission_Deploy_Fallback.md
+REC-0803,Simulation Without Broker,Academy,P1,Engineer,11_ACADEMY,13_PHASE_RECOVERY/Normalization_Targets/Simulation_Without_Broker.md
+REC-0804,Red Team Counterargument,Intelligence,P1,Engineer,06_INTELLIGENCE,13_PHASE_RECOVERY/Normalization_Targets/Red_Team_Counterargument.md
+REC-0805,Blue Team Doctrine QA,Intelligence,P1,Engineer,06_INTELLIGENCE,13_PHASE_RECOVERY/Normalization_Targets/Blue_Team_Doctrine_QA.md
+REC-0806,Research Division Isolation,Academy,P1,Engineer,11_ACADEMY,13_PHASE_RECOVERY/Normalization_Targets/Research_Division_Isolation.md
+REC-0807,Doctrine Wars,Doctrine,P2,Engineer,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Doctrine_Wars.md
+REC-0808,Myth Library,Doctrine,P1,Engineer,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Myth_Library.md
+REC-0809,Doctrine Cemetery,Doctrine,P1,Engineer,01_CONSTITUTION,13_PHASE_RECOVERY/Normalization_Targets/Doctrine_Cemetery.md
+REC-0810,Doctrine Printer,Environmental / Doctrine,P2,Engineer,09_INTERFACE,13_PHASE_RECOVERY/Normalization_Targets/Doctrine_Printer.md

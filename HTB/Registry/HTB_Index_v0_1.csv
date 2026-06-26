@@ -1,0 +1,12 @@
+id,name,file,priority,status
+HTB-0001,HTB Scope,00_OVERVIEW/HTB_Scope.md,Core,Engineering Ready
+HTB-0100,Technology Stack,01_TECH_STACK/Technology_Stack.md,Core,Engineering Ready
+HTB-0200,Monorepo Structure,02_MONOREPO/Monorepo_Structure.md,Core,Engineering Ready
+HTB-0400,HQOS Kernel,04_HQOS/HQOS_Kernel.md,Core,Engineering Ready
+HTB-0500,SQLite Schema v1,05_DATABASE/SQLite_Schema_v1.md,Core,Draft
+HTB-0600,Event Catalog v1,06_EVENTS/Event_Catalog_v1.md,Core,Draft
+HTB-0700,Mission State Machine,07_STATE_MACHINES/Mission_State_Machine.md,Core,Engineering Ready
+HTB-0800,Service Inventory,08_SERVICES/Service_Inventory.md,Core,Draft
+HTB-0900,AI Department Runtime,09_AI_RUNTIME/AI_Department_Runtime.md,Core,Draft
+HTB-1000,Component Inventory,10_UI_COMPONENTS/Component_Inventory.md,Core,Draft
+HTB-1600,Sprint Roadmap,16_IMPLEMENTATION_ROADMAP/Sprint_Roadmap.md,Core,Draft

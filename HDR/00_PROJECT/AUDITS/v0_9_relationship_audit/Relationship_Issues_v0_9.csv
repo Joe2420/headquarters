@@ -1,0 +1,1196 @@
+path,issue_type,details
+HDR/00_PROJECT/README.md,LOW_CONTENT,Only 37 words
+HDR/00_PROJECT/README.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Vision.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Engineering_Decisions.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Roadmap.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Glossary.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG.md,LOW_CONTENT,Only 33 words
+HDR/00_PROJECT/CHANGELOG.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_2.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG_v0_2.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_3.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG_v0_3.md,LOW_CONTENT,Only 43 words
+HDR/00_PROJECT/CHANGELOG_v0_3.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG_v0_4.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_4_Phase_0_2.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_4_Phase_2_3.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG_v0_5.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_5_Phase_3_4.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_7_corrected_Phase_5_6.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG_v0_7_corrected.md,LOW_CONTENT,Only 76 words
+HDR/00_PROJECT/CHANGELOG_v0_7_corrected.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Master_Index_Supplement_v0_8.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/Coverage_Audit_v0_8_Phase_6_7x.md,MISSING_ID,Missing required metadata
+HDR/00_PROJECT/CHANGELOG_v0_8.md,LOW_CONTENT,Only 44 words
+HDR/00_PROJECT/CHANGELOG_v0_8.md,MISSING_ID,Missing required metadata
+HDR/01_CONSTITUTION/Constitution.md,MISSING_ID,Missing required metadata
+HDR/01_CONSTITUTION/Engineering_Commandments.md,MISSING_ID,Missing required metadata
+HDR/01_CONSTITUTION/Rule_of_Elegance.md,MISSING_ID,Missing required metadata
+HDR/01_CONSTITUTION/Founders_Principles.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/README.md,LOW_CONTENT,Only 14 words
+HDR/02_INSTITUTION/README.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Chain_of_Command.md,LOW_CONTENT,Only 62 words
+HDR/02_INSTITUTION/Chain_of_Command.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Headquarters.md,MISSING_ID,Missing required metadata
+HDR/04_OPERATOR/Operator_Model.md,LOW_CONTENT,Only 49 words
+HDR/04_OPERATOR/Operator_Model.md,MISSING_ID,Missing required metadata
+HDR/04_OPERATOR/Professional_Joe.md,LOW_CONTENT,Only 52 words
+HDR/04_OPERATOR/Professional_Joe.md,MISSING_ID,Missing required metadata
+HDR/04_OPERATOR/Behavioral_Systems.md,LOW_CONTENT,Only 58 words
+HDR/04_OPERATOR/Behavioral_Systems.md,MISSING_ID,Missing required metadata
+HDR/04_OPERATOR/Stewardship.md,LOW_CONTENT,Only 36 words
+HDR/04_OPERATOR/Stewardship.md,MISSING_ID,Missing required metadata
+HDR/05_OPERATIONS/Mission_Lifecycle.md,LOW_CONTENT,Only 52 words
+HDR/05_OPERATIONS/Mission_Lifecycle.md,MISSING_ID,Missing required metadata
+HDR/05_OPERATIONS/Guardian_Protocol.md,MISSING_ID,Missing required metadata
+HDR/05_OPERATIONS/Authorization.md,LOW_CONTENT,Only 56 words
+HDR/05_OPERATIONS/Authorization.md,MISSING_ID,Missing required metadata
+HDR/05_OPERATIONS/Debrief.md,LOW_CONTENT,Only 45 words
+HDR/05_OPERATIONS/Debrief.md,MISSING_ID,Missing required metadata
+HDR/05_OPERATIONS/Campaigns.md,LOW_CONTENT,Only 37 words
+HDR/05_OPERATIONS/Campaigns.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Cognitive_Architecture.md,LOW_CONTENT,Only 43 words
+HDR/06_INTELLIGENCE/Cognitive_Architecture.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/AI_Systems.md,LOW_CONTENT,Only 42 words
+HDR/06_INTELLIGENCE/AI_Systems.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Behavioral_Black_Box.md,LOW_CONTENT,Only 64 words
+HDR/06_INTELLIGENCE/Behavioral_Black_Box.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Ghost.md,LOW_CONTENT,Only 48 words
+HDR/06_INTELLIGENCE/Ghost.md,MISSING_ID,Missing required metadata
+HDR/07_HQOS/HQOS.md,LOW_CONTENT,Only 53 words
+HDR/07_HQOS/HQOS.md,MISSING_ID,Missing required metadata
+HDR/07_HQOS/Event_Bus.md,LOW_CONTENT,Only 30 words
+HDR/07_HQOS/Event_Bus.md,MISSING_ID,Missing required metadata
+HDR/07_HQOS/State_Engine.md,LOW_CONTENT,Only 39 words
+HDR/07_HQOS/State_Engine.md,MISSING_ID,Missing required metadata
+HDR/08_ARCHIVES/Archives.md,LOW_CONTENT,Only 46 words
+HDR/08_ARCHIVES/Archives.md,MISSING_ID,Missing required metadata
+HDR/08_ARCHIVES/SQLite_Schema_Draft.md,LOW_CONTENT,Only 42 words
+HDR/08_ARCHIVES/SQLite_Schema_Draft.md,MISSING_ID,Missing required metadata
+HDR/09_INTERFACE/Interface_Principles.md,LOW_CONTENT,Only 40 words
+HDR/09_INTERFACE/Interface_Principles.md,MISSING_ID,Missing required metadata
+HDR/10_ENGINEERING/Architecture.md,LOW_CONTENT,Only 58 words
+HDR/10_ENGINEERING/Architecture.md,MISSING_ID,Missing required metadata
+HDR/10_ENGINEERING/Implementation_Order.md,LOW_CONTENT,Only 67 words
+HDR/10_ENGINEERING/Implementation_Order.md,MISSING_ID,Missing required metadata
+HDR/11_ACADEMY/Academy.md,LOW_CONTENT,Only 49 words
+HDR/11_ACADEMY/Academy.md,MISSING_ID,Missing required metadata
+HDR/11_ACADEMY/Simulations.md,LOW_CONTENT,Only 37 words
+HDR/11_ACADEMY/Simulations.md,MISSING_ID,Missing required metadata
+HDR/12_LEGACY/Founders_Journal.md,LOW_CONTENT,Only 74 words
+HDR/12_LEGACY/Founders_Journal.md,MISSING_ID,Missing required metadata
+HDR/12_LEGACY/Evolution.md,LOW_CONTENT,Only 39 words
+HDR/12_LEGACY/Evolution.md,MISSING_ID,Missing required metadata
+HDR/Registry/Master_Index.md,MISSING_ID,Missing required metadata
+HDR/Registry/Master_Index_v0_2.md,MISSING_ID,Missing required metadata
+HDR/Registry/Master_Index_v0_3.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/README.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/README.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/README.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/README.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Coverage_Audit_v0_6_Phase_4_5.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Coverage_Audit_v0_6_Phase_4_5.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Coverage_Audit_v0_6_Phase_4_5.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Coverage_Audit_v0_6_Phase_4_5.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/CHANGELOG_v0_6.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/CHANGELOG_v0_6.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/CHANGELOG_v0_6.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/CHANGELOG_v0_6.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_6.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_6.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_6.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_6.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_7_corrected.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_7_corrected.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_7_corrected.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Master_Index_Supplement_v0_7_corrected.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0001_Decision_Operating_System_Identity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0001_Decision_Operating_System_Identity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0002_Chief_Risk_Officer_Mission.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0002_Chief_Risk_Officer_Mission.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0003_TradingView_After_Authorization_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0003_TradingView_After_Authorization_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0004_Operational_Readiness_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0004_Operational_Readiness_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0005_Mission_Integrity_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0005_Mission_Integrity_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0006_Threat_Level_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0006_Threat_Level_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0007_Execution_XP.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0007_Execution_XP.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0008_Account_Killer_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0008_Account_Killer_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0009_Edge_Quality_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0009_Edge_Quality_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0010_Outcome_vs_Execution_Separation.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0010_Outcome_vs_Execution_Separation.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0011_Mission_State_Machine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0011_Mission_State_Machine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0012_Mission_History_Not_Trade_History.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0012_Mission_History_Not_Trade_History.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0013_Operation_Codename_Generator.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0013_Operation_Codename_Generator.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0014_Learning_Loop_Weekly_Review.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/PH0-0014_Learning_Loop_Weekly_Review.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/Phase_00_to_01_Summary.md,LOW_CONTENT,Only 71 words
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/Phase_00_to_01_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/Phase_00_to_01_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/Phase_00_to_01_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_00_to_01/Phase_00_to_01_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0001_SOP-001_Mission_Start_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0002_SOP-002_Market_Preparation_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0003_SOP-003_Standby_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0004_SOP-004_Mission_Authorization.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0005_SOP-005_Trade_Management.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0006_SOP-006_Losing_Trade_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0007_SOP-007_Winning_Trade_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0008_SOP-008_Profit_Defense_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0009_SOP-009_Damage_Control_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0010_SOP-010_Weekend_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0011_SOP-011_Drawdown_Recovery_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0012_SOP-012_Winning_Streak_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0013_SOP-013_Re-entry_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0014_SOP-014_Missed_Trade_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0015_SOP_Versioning.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0015_SOP_Versioning.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0016_Rule_Provenance.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0016_Rule_Provenance.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0017_Rule_Book_Living_Operations_Manual.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/PH1-0017_Rule_Book_Living_Operations_Manual.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Phase_01_to_02_Summary.md,LOW_CONTENT,Only 69 words
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Phase_01_to_02_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Phase_01_to_02_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Phase_01_to_02_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Phase_01_to_02_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0001_Four_Command_Structure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0001_Four_Command_Structure.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0002_Commander_Strategic_Role.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0002_Commander_Strategic_Role.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0003_Operations_Officer_Procedural_Role.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0003_Operations_Officer_Procedural_Role.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0004_Intelligence_Officer_Pattern_Role.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0004_Intelligence_Officer_Pattern_Role.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0005_Medical_Officer_Recovery_Role.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0005_Medical_Officer_Recovery_Role.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0006_Historian_Memory_Role.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0006_Historian_Memory_Role.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0007_Archives_Structure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0007_Archives_Structure.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0008_Dispatches_Instead_of_Notifications.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0008_Dispatches_Instead_of_Notifications.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0009_Mission_Report.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0009_Mission_Report.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0010_Self-Aware_Headquarters.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0010_Self-Aware_Headquarters.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0011_Dynamic_Doctrine_Retirement.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0011_Dynamic_Doctrine_Retirement.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0012_Preserve_Professional_Joe_Mission.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0012_Preserve_Professional_Joe_Mission.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0013_Headquarters_Has_Weight.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0013_Headquarters_Has_Weight.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0014_Headquarters_Exists_Without_You.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0014_Headquarters_Exists_Without_You.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0015_Shift_Change_Ritual.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0015_Shift_Change_Ritual.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0016_Watch_Floor.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0016_Watch_Floor.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0017_Capital_Deployment_Language.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0017_Capital_Deployment_Language.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0018_Mission_Capital_Terminology.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0018_Mission_Capital_Terminology.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0019_Situation_Clock.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0019_Situation_Clock.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0020_Operator_Presence_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0020_Operator_Presence_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0021_Environmental_Psychology_State.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0021_Environmental_Psychology_State.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0022_Headquarters_Never_Panics.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0022_Headquarters_Never_Panics.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0023_Tactical_Corridor_Doctrines.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0023_Tactical_Corridor_Doctrines.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0024_No_Good_Luck_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0024_No_Good_Luck_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0025_Cost_of_Breaking_Doctrine_Display.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0025_Cost_of_Breaking_Doctrine_Display.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0026_Operator_Shadow.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0026_Operator_Shadow.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0027_Morning_Arrival_Ritual.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0027_Morning_Arrival_Ritual.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0028_Mission_Readiness_Report.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0028_Mission_Readiness_Report.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0029_Deployment_Ritual.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0029_Deployment_Ritual.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0030_Unconscious_Tactical_Breathing.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0030_Unconscious_Tactical_Breathing.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0031_Patience_Acknowledgement.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0031_Patience_Acknowledgement.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0032_Discipline_Ledger.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0032_Discipline_Ledger.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0033_Mission_Temperature.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0033_Mission_Temperature.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0034_Ready_Chair_Identity_Question.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0034_Ready_Chair_Identity_Question.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0035_Future_Operator.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0035_Future_Operator.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0036_Legacy_Scale.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0036_Legacy_Scale.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0037_Mission_Seal.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0037_Mission_Seal.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0038_Courage_Documented.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0038_Courage_Documented.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0039_Uphold_The_Institution_Question.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0039_Uphold_The_Institution_Question.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0040_Founders_Office_Origin_Plaque.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0040_Founders_Office_Origin_Plaque.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0041_Headquarters_Preamble.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0041_Headquarters_Preamble.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0042_Calm_Reinforcement_Messages.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0042_Calm_Reinforcement_Messages.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0043_Patience_Meter_Internal.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0043_Patience_Meter_Internal.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0044_Pulse_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0044_Pulse_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0045_Synchronization_Moment.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0045_Synchronization_Moment.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0046_Mission_Friction.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0046_Mission_Friction.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0047_Reverse_Countdown_Override.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0047_Reverse_Countdown_Override.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0048_Operational_Tempo_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0048_Operational_Tempo_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0049_Environmental_Drift.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0049_Environmental_Drift.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0050_Welcome_Home_Return.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0050_Welcome_Home_Return.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0051_Mission_Bell.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0051_Mission_Bell.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0052_Quiet_Victory_Recognition.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0052_Quiet_Victory_Recognition.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0053_Silence_As_Approval.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0053_Silence_As_Approval.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0054_Headquarters_As_Nervous_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0054_Headquarters_As_Nervous_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0055_Headquarters_Established_Splash.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0055_Headquarters_Established_Splash.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0056_Founding_Principles_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0056_Founding_Principles_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0057_Founding_Story.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0057_Founding_Story.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0058_Founder_Wall_Lost_Accounts.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0058_Founder_Wall_Lost_Accounts.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0059_Eternal_Flame.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0059_Eternal_Flame.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0060_Founders_Oath.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0060_Founders_Oath.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0061_Commander_Never_Says_Goodbye.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0061_Commander_Never_Says_Goodbye.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0062_Night_Watch.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0062_Night_Watch.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0063_Doctrine_Not_Editable_During_Combat.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0063_Doctrine_Not_Editable_During_Combat.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0064_Negotiation_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0064_Negotiation_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0065_Internal_Tribunal.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0065_Internal_Tribunal.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0066_We_Do_Not_Repeat_Expensive_Lessons.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0066_We_Do_Not_Repeat_Expensive_Lessons.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0067_Institutional_Trust.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0067_Institutional_Trust.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0068_Professionalism_Standards_Entrance.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0068_Professionalism_Standards_Entrance.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0069_Entrance_Hall_Crest_And_Motto.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0069_Entrance_Hall_Crest_And_Motto.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0070_Headquarters_Crest_Quadrants.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0070_Headquarters_Crest_Quadrants.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0071_Latin_Motto_Options.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0071_Latin_Motto_Options.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0072_Headquarters_Standards.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0072_Headquarters_Standards.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0073_Headquarters_Library.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0073_Headquarters_Library.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0074_Doctrine_Printer.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0074_Doctrine_Printer.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0075_Headquarters_Seasons.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0075_Headquarters_Seasons.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0076_Observatory_Strategic_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0076_Observatory_Strategic_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0077_Institutional_Calendar.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0077_Institutional_Calendar.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0078_Empty_Chair.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0078_Empty_Chair.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0079_Habit_Retirement_Ceremony.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0079_Habit_Retirement_Ceremony.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0080_Enemy_Intelligence_Board.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0080_Enemy_Intelligence_Board.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0081_Hall_Of_Quiet_Victories.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0081_Hall_Of_Quiet_Victories.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0082_Environment_As_Discipline_Carrier.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0082_Environment_As_Discipline_Carrier.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0083_Passive_Observation.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0083_Passive_Observation.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0084_Operational_Load.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0084_Operational_Load.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0085_Cognitive_Bandwidth.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0085_Cognitive_Bandwidth.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0086_Recovery_Window.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0086_Recovery_Window.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0087_Mission_Fatigue.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0087_Mission_Fatigue.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0088_Shift_Log.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0088_Shift_Log.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0089_Emergency_Lighting.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0089_Emergency_Lighting.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0090_Situation_Report.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0090_Situation_Report.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0091_Observation_Is_Not_Inactivity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0091_Observation_Is_Not_Inactivity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0092_War_Room_Glass_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0092_War_Room_Glass_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0093_Tactical_Journal.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0093_Tactical_Journal.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0094_Living_Constitution.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0094_Living_Constitution.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0095_Operations_Flag.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0095_Operations_Flag.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0096_Return_To_Civilian_Life_Door.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0096_Return_To_Civilian_Life_Door.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0097_Conditions_For_Discipline_Axiom.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0097_Conditions_For_Discipline_Axiom.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0098_Account_Three_Design_Test.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0098_Account_Three_Design_Test.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0099_Opening_Of_Doors_Tradition.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0099_Opening_Of_Doors_Tradition.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0100_Take_Command_Tradition.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0100_Take_Command_Tradition.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0101_Lights_Activation_Order.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0101_Lights_Activation_Order.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0102_Commanders_Clock.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0102_Commanders_Clock.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0103_Armory.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0103_Armory.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0104_Equipment_Check.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0104_Equipment_Check.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0105_Institutional_Weather.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0105_Institutional_Weather.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0106_Headquarters_Integrity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0106_Headquarters_Integrity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0107_Intelligence_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0107_Intelligence_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0108_Mission_Archive_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0108_Mission_Archive_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0109_Engineering_Department.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0109_Engineering_Department.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0110_Research_Division.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0110_Research_Division.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0111_Red_Team.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0111_Red_Team.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0112_Blue_Team.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0112_Blue_Team.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0113_Mission_Simulation.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0113_Mission_Simulation.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0114_Debrief_Theater.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0114_Debrief_Theater.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0115_Ordinary_Decisions_Automatic_Lesson.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0115_Ordinary_Decisions_Automatic_Lesson.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0116_Confidence_Versus_Trust_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0116_Confidence_Versus_Trust_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0117_Trust_Vault.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0117_Trust_Vault.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0118_Bargaining_Language_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0118_Bargaining_Language_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0119_Decision_DNA.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0119_Decision_DNA.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0120_Identity_Drift_Curve.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0120_Identity_Drift_Curve.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0121_Anchor_Sentence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0121_Anchor_Sentence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0122_Personal_Battlefield.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0122_Personal_Battlefield.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0123_Tactical_Mirror.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0123_Tactical_Mirror.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0124_Identity_Engine_Roles.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0124_Identity_Engine_Roles.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0125_Guardian_Mode.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0125_Guardian_Mode.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0126_Guardian_Statistics.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0126_Guardian_Statistics.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0127_Safe_Vault_Capital_Visualization.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0127_Safe_Vault_Capital_Visualization.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0128_Success_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0128_Success_Protocol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0129_Operation_Sunset.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0129_Operation_Sunset.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0130_Doctrine_014_Winning_Creates_Responsibility.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0130_Doctrine_014_Winning_Creates_Responsibility.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0131_Training_Headquarters_Versus_Guardian_Headquarters.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0131_Training_Headquarters_Versus_Guardian_Headquarters.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0132_Entrusted_Capital_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0132_Entrusted_Capital_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0133_Vault_Opening_Ritual.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0133_Vault_Opening_Ritual.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0134_Guardian_Language_Set.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0134_Guardian_Language_Set.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0135_Guardian_Lighting_And_Seal.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0135_Guardian_Lighting_And_Seal.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0136_Capital_Status_Not_PnL_Hero.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0136_Capital_Status_Not_PnL_Hero.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0137_Guardian_Historical_Risk_Memory.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0137_Guardian_Historical_Risk_Memory.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0138_Guardian_Shadow.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0138_Guardian_Shadow.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0139_Sentinel.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0139_Sentinel.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0140_Guardian_Lock.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0140_Guardian_Lock.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0141_Guardian_Unlock_Procedure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0141_Guardian_Unlock_Procedure.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0142_Guardian_Integrity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0142_Guardian_Integrity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0143_Guardian_Bell.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0143_Guardian_Bell.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0144_Guardian_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0144_Guardian_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0145_Legacy_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0145_Legacy_Protocol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0146_Career_Projection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0146_Career_Projection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0147_Votes_For_Identity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0147_Votes_For_Identity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0148_Internal_Affairs_Integrity_Protection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH2-0148_Internal_Affairs_Integrity_Protection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0001_Design_Constitution.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0001_Design_Constitution.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0002_Expensive_Not_Luxurious.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0002_Expensive_Not_Luxurious.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0003_Information_Hierarchy.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0003_Information_Hierarchy.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0004_One_Objective_Per_Screen.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0004_One_Objective_Per_Screen.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0005_Motion_Has_Meaning.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0005_Motion_Has_Meaning.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0006_Color_Earns_Existence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0006_Color_Earns_Existence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0007_Sound_Has_Purpose.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0007_Sound_Has_Purpose.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0008_Attention_Respect_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0008_Attention_Respect_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0009_Headquarters_Language_Dictionary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0009_Headquarters_Language_Dictionary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0010_Typography_Direction.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0010_Typography_Direction.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0011_Room_Soundtracks.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0011_Room_Soundtracks.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0012_Lighting_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0012_Lighting_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0013_Chair_As_Control_Symbol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0013_Chair_As_Control_Symbol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0014_Dynamic_Opening_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0014_Dynamic_Opening_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0015_Central_Holographic_Table.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0015_Central_Holographic_Table.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0016_Commander_No_Avatar.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0016_Commander_No_Avatar.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0017_Headquarters_Heartbeat.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0017_Headquarters_Heartbeat.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0018_Fictional_Institution_Real_Behavioral_Value.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0018_Fictional_Institution_Real_Behavioral_Value.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0019_Project_Naming_Evolution.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/PH3-0019_Project_Naming_Evolution.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/Phase_02_to_03_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/Phase_02_to_03_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/Phase_02_to_03_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_02_to_03/Phase_02_to_03_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0001_Design_Constitution.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0001_Design_Constitution.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0002_Expensive_Minimalism.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0002_Expensive_Minimalism.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0003_Silence_Priority_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0003_Silence_Priority_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0004_Information_Hierarchy_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0004_Information_Hierarchy_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0005_One_Objective_Per_Screen.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0005_One_Objective_Per_Screen.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0006_Motion_Has_Meaning.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0006_Motion_Has_Meaning.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0007_Color_Meaning_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0007_Color_Meaning_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0008_Sound_Purpose_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0008_Sound_Purpose_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0009_Attention_Respect_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0009_Attention_Respect_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0010_Headquarters_Terminology_Replacement.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0010_Headquarters_Terminology_Replacement.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0011_Mission_Control_Typography.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0011_Mission_Control_Typography.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0012_Room_Soundtracks.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0012_Room_Soundtracks.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0013_Lighting_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0013_Lighting_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0014_Command_Chair_Control_Symbol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0014_Command_Chair_Control_Symbol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0015_Dynamic_Initial_Room_Selection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0015_Dynamic_Initial_Room_Selection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0016_Central_Holographic_Table_Function.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0016_Central_Holographic_Table_Function.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0017_No_Commander_Avatar_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0017_No_Commander_Avatar_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0018_Institutional_Heartbeat.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0018_Institutional_Heartbeat.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0019_Fictional_Institution_Real_Psychology.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0019_Fictional_Institution_Real_Psychology.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0020_Headquarters_Naming_Evolution.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0020_Headquarters_Naming_Evolution.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0021_Internal_Affairs_Department.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0021_Internal_Affairs_Department.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0022_Internal_Affairs_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0022_Internal_Affairs_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0023_Statement_Inconsistency_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0023_Statement_Inconsistency_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0024_Report_Reliability_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0024_Report_Reliability_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0025_Operation_Cover_Up_Case_File.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0025_Operation_Cover_Up_Case_File.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0026_Evidence_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0026_Evidence_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0027_Institutional_Witness_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0027_Institutional_Witness_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0028_No_Accusation_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0028_No_Accusation_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0029_Lucky_Win_Investigation.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0029_Lucky_Win_Investigation.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0030_Outcome_Not_Supported_By_Doctrine_Classification.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0030_Outcome_Not_Supported_By_Doctrine_Classification.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0031_Quality_Assurance_Department.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0031_Quality_Assurance_Department.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0032_Institution_Admits_Mistakes.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0032_Institution_Admits_Mistakes.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0033_Ethics_Committee.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0033_Ethics_Committee.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0034_Constitutional_Court.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0034_Constitutional_Court.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0035_Doctrine_Does_Not_Negotiate_With_Emotion.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0035_Doctrine_Does_Not_Negotiate_With_Emotion.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0036_Engineering_Philosophy.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0036_Engineering_Philosophy.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0037_Friction_Is_A_Feature.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0037_Friction_Is_A_Feature.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0038_Every_Screen_Lowers_Cortisol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0038_Every_Screen_Lowers_Cortisol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0039_Operator_Is_Never_Rushed.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0039_Operator_Is_Never_Rushed.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0040_Rule_Of_One_Thought.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0040_Rule_Of_One_Thought.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0041_Commander_Three_Responsibilities.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0041_Commander_Three_Responsibilities.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0042_Ninety_Five_Percent_Silence_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0042_Ninety_Five_Percent_Silence_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0043_AI_Feels_Experienced_Not_Intelligent.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0043_AI_Feels_Experienced_Not_Intelligent.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0044_Institutional_Language_Ban_List.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0044_Institutional_Language_Ban_List.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0045_No_Flattery_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0045_No_Flattery_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0046_Discipline_Reserve.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0046_Discipline_Reserve.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0047_Mission_Recorder.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0047_Mission_Recorder.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0048_Archive_Vault.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0048_Archive_Vault.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0049_Maintenance_Days.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0049_Maintenance_Days.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0050_Headquarters_Health.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0050_Headquarters_Health.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0051_Living_Campaign_Map.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0051_Living_Campaign_Map.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0052_Founder_Engineering_Creed.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0052_Founder_Engineering_Creed.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0053_Behavioral_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0053_Behavioral_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0054_Command_Chair_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0054_Command_Chair_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0055_Behavioral_Fingerprints.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0055_Behavioral_Fingerprints.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0056_Identity_Drift_Algorithm.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0056_Identity_Drift_Algorithm.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0057_Identity_Drift_Vector_Model.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0057_Identity_Drift_Vector_Model.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0058_Ghost_Baseline_Calibration.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0058_Ghost_Baseline_Calibration.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0059_Evidence_Threshold_For_Interventions.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0059_Evidence_Threshold_For_Interventions.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0060_Commander_Detects_Not_Predicts.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0060_Commander_Detects_Not_Predicts.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0061_Decision_Graph.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0061_Decision_Graph.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0062_Behavioral_Gravity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0062_Behavioral_Gravity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0063_Career_Brain.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0063_Career_Brain.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0064_Mission_Similarity_Search.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0064_Mission_Similarity_Search.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0065_Future_Identity_Simulator.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0065_Future_Identity_Simulator.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0066_Legacy_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0066_Legacy_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0067_Institution_Reputation.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0067_Institution_Reputation.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0068_Behavioral_Black_Box.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0068_Behavioral_Black_Box.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0069_Accident_Chain_Reconstruction.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0069_Accident_Chain_Reconstruction.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0070_Precursor_Library.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0070_Precursor_Library.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0071_Mission_Timeline.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0071_Mission_Timeline.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0072_Chain_Of_Failure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0072_Chain_Of_Failure.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0073_Chain_Of_Excellence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0073_Chain_Of_Excellence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0074_Butterfly_Effect_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0074_Butterfly_Effect_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0075_Point_Of_No_Return_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0075_Point_Of_No_Return_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0076_Intervention_Ladder.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0076_Intervention_Ladder.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0077_Mission_Pulse.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0077_Mission_Pulse.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0078_Mission_DNA.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0078_Mission_DNA.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0079_Hall_Of_Decisions.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0079_Hall_Of_Decisions.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0080_Behavioral_Cascade_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/PH4-0080_Behavioral_Cascade_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/Phase_03_to_04_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/Phase_03_to_04_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/Phase_03_to_04_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_03_to_04/Phase_03_to_04_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0001_Behavioral_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0001_Behavioral_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0002_Command_Chair_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0002_Command_Chair_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0003_Command_Stability_Model.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0003_Command_Stability_Model.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0004_Behavioral_Fingerprints.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0004_Behavioral_Fingerprints.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0005_Identity_Drift_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0005_Identity_Drift_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0006_Identity_Drift_Compass_Space.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0006_Identity_Drift_Compass_Space.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0007_Ghost_Baseline_Calibration.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0007_Ghost_Baseline_Calibration.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0008_Commander_Evidence_Threshold.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0008_Commander_Evidence_Threshold.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0009_Commander_Detects_Never_Predicts.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0009_Commander_Detects_Never_Predicts.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0010_Decision_Graph.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0010_Decision_Graph.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0011_Behavioral_Gravity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0011_Behavioral_Gravity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0012_Career_Brain.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0012_Career_Brain.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0013_Mission_Similarity_Search.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0013_Mission_Similarity_Search.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0014_Future_Identity_Simulator.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0014_Future_Identity_Simulator.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0015_Legacy_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0015_Legacy_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0016_Behavioral_Black_Box.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0016_Behavioral_Black_Box.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0017_Black_Box_Final_Sixty_Minutes.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0017_Black_Box_Final_Sixty_Minutes.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0018_Mission_Timeline.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0018_Mission_Timeline.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0019_Invisible_Timeline.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0019_Invisible_Timeline.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0020_Chain_of_Failure.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0020_Chain_of_Failure.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0021_Chain_of_Excellence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0021_Chain_of_Excellence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0022_Butterfly_Effect_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0022_Butterfly_Effect_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0023_Mission_Forks.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0023_Mission_Forks.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0024_Point_of_No_Return_Detector.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0024_Point_of_No_Return_Detector.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0025_Intervention_Ladder.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0025_Intervention_Ladder.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0026_Mission_Pulse.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0026_Mission_Pulse.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0027_Mission_DNA.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0027_Mission_DNA.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0028_Hall_of_Decisions.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0028_Hall_of_Decisions.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0029_Institutional_Memory_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0029_Institutional_Memory_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0030_Legacy_Tree.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0030_Legacy_Tree.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0031_Behavioral_Cascade_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0031_Behavioral_Cascade_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0032_Precursor_Library.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0032_Precursor_Library.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0033_Project_Chimera.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0033_Project_Chimera.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0034_Behavioral_Weather_Forecast.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0034_Behavioral_Weather_Forecast.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0035_Emotional_Pressure_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0035_Emotional_Pressure_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0036_Mission_Momentum_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0036_Mission_Momentum_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0037_Cascade_Predictor.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0037_Cascade_Predictor.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0038_Operation_Echoes.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0038_Operation_Echoes.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0039_Ghost_Evolution_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0039_Ghost_Evolution_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0040_Ghost_Comparison.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0040_Ghost_Comparison.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0041_Legacy_Projection_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0041_Legacy_Projection_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0042_Guardian_Protocol_Level_II.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0042_Guardian_Protocol_Level_II.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0043_Dangerous_Phrase_Library.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0043_Dangerous_Phrase_Library.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0044_Recovery_Signature.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0044_Recovery_Signature.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0045_Strategy_Chamber.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0045_Strategy_Chamber.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0046_AI_Purpose_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0046_AI_Purpose_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0047_Decision_Integrity_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0047_Decision_Integrity_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0048_Decision_Weighting.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0048_Decision_Weighting.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0049_Critical_Decision_Tree.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0049_Critical_Decision_Tree.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0050_Butterfly_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0050_Butterfly_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0051_Decision_Debt.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0051_Decision_Debt.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0052_Discipline_Interest.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0052_Discipline_Interest.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0053_Tactical_Compass.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0053_Tactical_Compass.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0054_Headquarters_Balance.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0054_Headquarters_Balance.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0055_Decision_Pressure_Map.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0055_Decision_Pressure_Map.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0056_Operations_Sandbox.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0056_Operations_Sandbox.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0057_Guardian_Protocol_Level_III.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0057_Guardian_Protocol_Level_III.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0058_Golden_Week_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0058_Golden_Week_Protocol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0059_Operator_Seasons.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0059_Operator_Seasons.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0060_Mission_Forecast_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0060_Mission_Forecast_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0061_Career_Constitution.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0061_Career_Constitution.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0062_Operator_Compass.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0062_Operator_Compass.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0063_Behavioral_Gyroscope.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0063_Behavioral_Gyroscope.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0064_Artificial_Horizon.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0064_Artificial_Horizon.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0065_Psychological_Wind_Indicator.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0065_Psychological_Wind_Indicator.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0066_Gravity_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0066_Gravity_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0067_Technical_Recorder.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0067_Technical_Recorder.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0068_Behavioral_Recorder.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0068_Behavioral_Recorder.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0069_Five_Engines_Architecture.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0069_Five_Engines_Architecture.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0070_General_Staff_Model.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0070_General_Staff_Model.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0071_Medical_Officer_Recovery_Prompt.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0071_Medical_Officer_Recovery_Prompt.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0072_Engineer_Sunday_Maintenance.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0072_Engineer_Sunday_Maintenance.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0073_Intelligence_Officer_Three_Observations.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0073_Intelligence_Officer_Three_Observations.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0074_Operations_Officer_Procedural_Voice.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0074_Operations_Officer_Procedural_Voice.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0075_Shift_Changes.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0075_Shift_Changes.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0076_Campaign_Table.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0076_Campaign_Table.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0077_Decision_Radius.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0077_Decision_Radius.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0078_Legacy_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0078_Legacy_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0079_Command_Chair_Floor_Inscription.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0079_Command_Chair_Floor_Inscription.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0080_Professional_Operating_Environment_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0080_Professional_Operating_Environment_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0081_Mission_Control_Comparison_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0081_Mission_Control_Comparison_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0082_Identity_Stability_Metric.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0082_Identity_Stability_Metric.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0083_Professional_Alignment_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0083_Professional_Alignment_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0084_Behavior_Match_Confidence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0084_Behavior_Match_Confidence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0085_Intervention_Confidence_Scoring.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0085_Intervention_Confidence_Scoring.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0086_Mission_Reconstruction_View.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0086_Mission_Reconstruction_View.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0087_Alternative_Timeline_View.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0087_Alternative_Timeline_View.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0088_Decision_Quality_vs_Execution_Score.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0088_Decision_Quality_vs_Execution_Score.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0089_Outcome_Separation_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0089_Outcome_Separation_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0090_Precursor_Sequence_Alert.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/PH5-0090_Precursor_Sequence_Alert.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/Phase_04_to_05_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/Phase_04_to_05_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/Phase_04_to_05_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_04_to_05/Phase_04_to_05_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0001_Doctrine_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0001_Doctrine_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0002_Doctrine_Levels.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0002_Doctrine_Levels.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0003_Evidence_Collection_Started_State.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0003_Evidence_Collection_Started_State.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0004_Doctrine_Printer_Ceremony.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0004_Doctrine_Printer_Ceremony.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0005_Doctrine_Chamber.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0005_Doctrine_Chamber.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0006_Rule_Graveyard.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0006_Rule_Graveyard.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0007_Doctrine_Wars.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0007_Doctrine_Wars.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0008_Exceptional_Authorization.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0008_Exceptional_Authorization.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0009_False_Rule_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0009_False_Rule_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0010_Myth_Library.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0010_Myth_Library.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0011_Doctrine_Confidence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0011_Doctrine_Confidence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0012_Living_SOP.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0012_Living_SOP.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0013_Operational_Doctrine_Trees.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0013_Operational_Doctrine_Trees.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0014_Personal_Laws_of_Nature.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0014_Personal_Laws_of_Nature.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0015_Complacency_Division.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0015_Complacency_Division.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0016_Success_Monitoring.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0016_Success_Monitoring.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0017_Success_Drift.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0017_Success_Drift.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0018_Confidence_Ceiling.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0018_Confidence_Ceiling.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0019_Professional_Paradox.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0019_Professional_Paradox.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0020_Guardian_Phase_II_Humility_Protection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0020_Guardian_Phase_II_Humility_Protection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0021_Trophy_Room_of_Evidence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0021_Trophy_Room_of_Evidence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0022_Hall_of_Fallen_Giants.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0022_Hall_of_Fallen_Giants.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0023_Success_With_Warning_Classification.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0023_Success_With_Warning_Classification.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0024_Decay_Engine.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0024_Decay_Engine.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0025_Skill_Maintenance.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0025_Skill_Maintenance.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0026_Identity_Insurance_Policy.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0026_Identity_Insurance_Policy.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0027_Hall_of_Future_Operators.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0027_Hall_of_Future_Operators.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0028_Annual_Review_Council.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0028_Annual_Review_Council.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0029_Legacy_Archive.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0029_Legacy_Archive.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0030_Headquarters_Axiom_Vote_For_Future.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0030_Headquarters_Axiom_Vote_For_Future.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0031_Professional_Identity_Management.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0031_Professional_Identity_Management.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0032_Headquarters_Manifesto.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0032_Headquarters_Manifesto.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0033_No_Manipulation_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0033_No_Manipulation_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0034_No_Shame_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0034_No_Shame_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0035_Respect_The_Operator_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0035_Respect_The_Operator_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0036_No_Money_Celebration_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0036_No_Money_Celebration_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0037_Institutional_Health.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0037_Institutional_Health.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0038_Engineering_Oath.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0038_Engineering_Oath.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0039_Headquarters_Minimalism.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0039_Headquarters_Minimalism.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0040_Three_Second_Screen_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0040_Three_Second_Screen_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0041_No_Decoration_Rule.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0041_No_Decoration_Rule.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0042_Architectural_Review_Board.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0042_Architectural_Review_Board.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0043_Founder_Test.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0043_Founder_Test.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0044_Archive_of_Removed_Features.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0044_Archive_of_Removed_Features.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0045_Longevity_Optimization.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0045_Longevity_Optimization.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0046_Command_Chair_Test.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0046_Command_Chair_Test.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0047_Chain_of_Command.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0047_Chain_of_Command.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0048_Command_Authority_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0048_Command_Authority_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0049_Acting_Commander_States.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0049_Acting_Commander_States.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0050_Emergency_Succession.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0050_Emergency_Succession.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0051_Command_Transfer_Ceremony.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0051_Command_Transfer_Ceremony.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0052_Rules_of_Engagement.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0052_Rules_of_Engagement.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0053_Authority_Levels.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0053_Authority_Levels.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0054_Operations_Journal.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0054_Operations_Journal.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0055_Situation_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0055_Situation_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0056_Command_Ledger.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0056_Command_Ledger.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0057_Operational_Readiness_Conditions.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0057_Operational_Readiness_Conditions.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0058_Permission_To_Deploy.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0058_Permission_To_Deploy.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0059_Chair_Never_Lies_Symbol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0059_Chair_Never_Lies_Symbol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0060_Operator_Passport.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0060_Operator_Passport.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0061_Monday_Flag_Raising_Ceremony.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0061_Monday_Flag_Raising_Ceremony.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0062_Last_Resort_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0062_Last_Resort_Protocol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0063_Principle_of_Command.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0063_Principle_of_Command.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0064_Daily_Command_Chair_Question.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0064_Daily_Command_Chair_Question.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0065_Headquarters_Exists_When_Market_Closed.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0065_Headquarters_Exists_When_Market_Closed.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0066_Operations_Calendar.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0066_Operations_Calendar.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0067_Ambient_Department_Activity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0067_Ambient_Department_Activity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0068_Founders_Office_Locked_Door.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0068_Founders_Office_Locked_Door.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0069_Silence_As_Approval.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0069_Silence_As_Approval.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0070_Observation_Protocol.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0070_Observation_Protocol.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0071_Invisible_Victories_Recognition.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0071_Invisible_Victories_Recognition.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0072_Doctrine_Flame.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0072_Doctrine_Flame.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0073_Legacy_Transfer.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0073_Legacy_Transfer.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0074_Institutional_Memory_Core.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0074_Institutional_Memory_Core.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0075_Five_Mission_Artifacts.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0075_Five_Mission_Artifacts.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0076_Memory_Pyramid.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0076_Memory_Pyramid.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0077_Campaign_Books.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0077_Campaign_Books.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0078_Memory_Importance_Rating.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0078_Memory_Importance_Rating.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0079_Memory_Graph.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0079_Memory_Graph.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0080_Historical_Events.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0080_Historical_Events.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0081_Idea_Family_Trees.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0081_Idea_Family_Trees.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0082_Saved_Missions_Ledger.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0082_Saved_Missions_Ledger.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0083_Hall_of_Recovery.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0083_Hall_of_Recovery.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0084_Historian_Perspective_Messages.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0084_Historian_Perspective_Messages.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0085_Living_Museum.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0085_Living_Museum.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0086_Capsule_Ceremony.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0086_Capsule_Ceremony.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0087_Institutional_Memory_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0087_Institutional_Memory_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0088_Campaign_Versioning.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0088_Campaign_Versioning.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0089_Time_Architecture.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0089_Time_Architecture.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0090_Three_Clocks.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0090_Three_Clocks.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0091_Long_War_Perspective.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0091_Long_War_Perspective.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0092_Operator_Seasons.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0092_Operator_Seasons.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0093_Strategic_Patience.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0093_Strategic_Patience.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0094_Campaign_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0094_Campaign_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0095_Mission_Drift_Detection.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0095_Mission_Drift_Detection.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0096_Future_Archive_Shelves.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0096_Future_Archive_Shelves.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0097_Institutional_Maturity_Model.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0097_Institutional_Maturity_Model.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0098_Archives_Terminology.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0098_Archives_Terminology.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0099_Memory_Capital_Principle.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0099_Memory_Capital_Principle.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0100_Headquarters_Evolution_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/PH6-0100_Headquarters_Evolution_Law.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/Phase_05_to_06_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/Phase_05_to_06_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/Phase_05_to_06_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_05_to_06/Phase_05_to_06_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Phase_06_to_07x_Summary.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Phase_06_to_07x_Summary.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Phase_06_to_07x_Summary.md,MISSING_DEPENDENCIES,Recovery spec lacks dependencies
+HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Phase_06_to_07x_Summary.md,MISSING_ACCEPTANCE,Recovery spec lacks acceptance criteria
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0001_Cold_Boot_Sequence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0001_Cold_Boot_Sequence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0002_Operator_Identity_File.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0002_Operator_Identity_File.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0003_Theater_System.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0003_Theater_System.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0004_Tactical_Silence.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0004_Tactical_Silence.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0005_Background_State_Changes.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0005_Background_State_Changes.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0006_Room-Based_Navigation.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0006_Room-Based_Navigation.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0007_Secure_Door_Transition.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0007_Secure_Door_Transition.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0008_Commander_Voice_Profile.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0008_Commander_Voice_Profile.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0009_Operations_Officer_Voice_Profile.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0009_Operations_Officer_Voice_Profile.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0010_Commander_Message_Rarity.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0010_Commander_Message_Rarity.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0011_Mirror_Room.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0011_Mirror_Room.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0012_Airlock_Countdown.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0012_Airlock_Countdown.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0013_Daily_Operator_Oath.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0013_Daily_Operator_Oath.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0014_Mission_Clock.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0014_Mission_Clock.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0015_Heartbeat_Mode.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0015_Heartbeat_Mode.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0016_Situation_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0016_Situation_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0017_Psychological_Decompression.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0017_Psychological_Decompression.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0018_Dynamic_Headquarters_Threat_Atmosphere.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0018_Dynamic_Headquarters_Threat_Atmosphere.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0019_Mission_Patches.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0019_Mission_Patches.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0020_Hall_of_Fallen_Missions.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0020_Hall_of_Fallen_Missions.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0021_Eternal_Rules_Wall.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0021_Eternal_Rules_Wall.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0022_Founder_Oath.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0022_Founder_Oath.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0023_Commander_Career_Memory.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0023_Commander_Career_Memory.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0024_Headquarters_Remembers_Line.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0024_Headquarters_Remembers_Line.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0025_Founder_Notes_and_Questions.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0025_Founder_Notes_and_Questions.md,MISSING_ID,Missing required metadata
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0026_No_Market_Prediction_Law.md,MISSING_MIGRATION_TARGET,Recovery item lacks Migration Target
+HDR/13_PHASE_RECOVERY/Phase_01_to_02/Immersion/PH2-0026_No_Market_Prediction_Law.md,MISSING_ID,Missing required metadata
+HDR/09_INTERFACE/Screens/Core_Screens.md,LOW_CONTENT,Only 36 words
+HDR/09_INTERFACE/Screens/Core_Screens.md,MISSING_ID,Missing required metadata
+HDR/09_INTERFACE/Audio/Audio_Bible.md,LOW_CONTENT,Only 43 words
+HDR/09_INTERFACE/Audio/Audio_Bible.md,MISSING_ID,Missing required metadata
+HDR/09_INTERFACE/Lighting/Lighting_Bible.md,LOW_CONTENT,Only 44 words
+HDR/09_INTERFACE/Lighting/Lighting_Bible.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0001_Intelligence_Network.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0002_Secure_Department_Network.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0003_Intelligence_Feed.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0004_Institutional_Consensus_Response.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0005_Priority_Messaging_Levels.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0006_Silent_Department_Communication.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0007_Intelligence_Case_Lifecycle.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0008_Founder_Review_Protocol.md,MISSING_ID,Missing required metadata
+HDR/06_INTELLIGENCE/Network/INTNET-0009_Request_Traceability.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Command_Center.md,LOW_CONTENT,Only 40 words
+HDR/03_BUILDING/Rooms/Command_Center.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Ready_Room.md,LOW_CONTENT,Only 36 words
+HDR/03_BUILDING/Rooms/Ready_Room.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Observation_Room.md,LOW_CONTENT,Only 34 words
+HDR/03_BUILDING/Rooms/Observation_Room.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/War_Room.md,LOW_CONTENT,Only 37 words
+HDR/03_BUILDING/Rooms/War_Room.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Guardian_Wing.md,LOW_CONTENT,Only 37 words
+HDR/03_BUILDING/Rooms/Guardian_Wing.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Mirror_Room.md,LOW_CONTENT,Only 38 words
+HDR/03_BUILDING/Rooms/Mirror_Room.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Debrief_Theater.md,LOW_CONTENT,Only 31 words
+HDR/03_BUILDING/Rooms/Debrief_Theater.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Archives.md,LOW_CONTENT,Only 33 words
+HDR/03_BUILDING/Rooms/Archives.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Academy.md,LOW_CONTENT,Only 29 words
+HDR/03_BUILDING/Rooms/Academy.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Engineering.md,LOW_CONTENT,Only 33 words
+HDR/03_BUILDING/Rooms/Engineering.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Internal_Affairs_Room.md,LOW_CONTENT,Only 36 words
+HDR/03_BUILDING/Rooms/Internal_Affairs_Room.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Medical_Office.md,LOW_CONTENT,Only 32 words
+HDR/03_BUILDING/Rooms/Medical_Office.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Founders_Office.md,LOW_CONTENT,Only 37 words
+HDR/03_BUILDING/Rooms/Founders_Office.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Observatory.md,LOW_CONTENT,Only 30 words
+HDR/03_BUILDING/Rooms/Observatory.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Hall_of_Restraint.md,LOW_CONTENT,Only 35 words
+HDR/03_BUILDING/Rooms/Hall_of_Restraint.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Hall_of_Quiet_Victories.md,LOW_CONTENT,Only 31 words
+HDR/03_BUILDING/Rooms/Hall_of_Quiet_Victories.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Hall_of_Custodians.md,LOW_CONTENT,Only 32 words
+HDR/03_BUILDING/Rooms/Hall_of_Custodians.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Capital_Vault.md,LOW_CONTENT,Only 33 words
+HDR/03_BUILDING/Rooms/Capital_Vault.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Judgment_Reserve.md,LOW_CONTENT,Only 35 words
+HDR/03_BUILDING/Rooms/Judgment_Reserve.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Thinking_Room.md,LOW_CONTENT,Only 34 words
+HDR/03_BUILDING/Rooms/Thinking_Room.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Observation_Balcony.md,LOW_CONTENT,Only 32 words
+HDR/03_BUILDING/Rooms/Observation_Balcony.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Quiet_Archive.md,LOW_CONTENT,Only 28 words
+HDR/03_BUILDING/Rooms/Quiet_Archive.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Council_Chamber.md,LOW_CONTENT,Only 30 words
+HDR/03_BUILDING/Rooms/Council_Chamber.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Rooms/Legacy_Vault.md,LOW_CONTENT,Only 29 words
+HDR/03_BUILDING/Rooms/Legacy_Vault.md,MISSING_ID,Missing required metadata
+HDR/03_BUILDING/Environmental_Systems/Environmental_Systems.md,LOW_CONTENT,Only 53 words
+HDR/03_BUILDING/Environmental_Systems/Environmental_Systems.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Commander.md,LOW_CONTENT,Only 47 words
+HDR/02_INSTITUTION/Departments/Commander.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Guardian.md,LOW_CONTENT,Only 47 words
+HDR/02_INSTITUTION/Departments/Guardian.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Ghost.md,LOW_CONTENT,Only 45 words
+HDR/02_INSTITUTION/Departments/Ghost.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Historian.md,LOW_CONTENT,Only 40 words
+HDR/02_INSTITUTION/Departments/Historian.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Engineer.md,LOW_CONTENT,Only 40 words
+HDR/02_INSTITUTION/Departments/Engineer.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Medical_Officer.md,LOW_CONTENT,Only 44 words
+HDR/02_INSTITUTION/Departments/Medical_Officer.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Internal_Affairs.md,LOW_CONTENT,Only 44 words
+HDR/02_INSTITUTION/Departments/Internal_Affairs.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Academy.md,LOW_CONTENT,Only 38 words
+HDR/02_INSTITUTION/Departments/Academy.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Council.md,LOW_CONTENT,Only 50 words
+HDR/02_INSTITUTION/Departments/Council.md,MISSING_ID,Missing required metadata
+HDR/02_INSTITUTION/Departments/Recognition_Office.md,LOW_CONTENT,Only 45 words
+HDR/02_INSTITUTION/Departments/Recognition_Office.md,MISSING_ID,Missing required metadata

@@ -1,0 +1,104 @@
+# Master Index Supplement v0.7 Corrected — Phase 5.0 to 6.0
+
+Total corrected recovered objects: 100
+
+- **PH6-0001** — Doctrine Engine | Intelligence | CORE
+- **PH6-0002** — Doctrine Levels | Doctrine | CORE
+- **PH6-0003** — Evidence Collection Started State | Doctrine | IMPORTANT
+- **PH6-0004** — Doctrine Printer Ceremony | Experience | IMPORTANT
+- **PH6-0005** — Doctrine Chamber | Building | IMPORTANT
+- **PH6-0006** — Rule Graveyard | Archives | IMPORTANT
+- **PH6-0007** — Doctrine Wars | Research | IMPORTANT
+- **PH6-0008** — Exceptional Authorization | Operations | CORE
+- **PH6-0009** — False Rule Detection | Intelligence | IMPORTANT
+- **PH6-0010** — Myth Library | Archives | IMPORTANT
+- **PH6-0011** — Doctrine Confidence | Doctrine | CORE
+- **PH6-0012** — Living SOP | Operations | CORE
+- **PH6-0013** — Operational Doctrine Trees | Doctrine | IMPORTANT
+- **PH6-0014** — Personal Laws of Nature | Intelligence | IMPORTANT
+- **PH6-0015** — Complacency Division | Institution | CORE
+- **PH6-0016** — Success Monitoring | Guardian | CORE
+- **PH6-0017** — Success Drift | Behavior | CORE
+- **PH6-0018** — Confidence Ceiling | Behavior | IMPORTANT
+- **PH6-0019** — Professional Paradox | Constitution | IMPORTANT
+- **PH6-0020** — Guardian Phase II Humility Protection | Guardian | CORE
+- **PH6-0021** — Trophy Room of Evidence | Building | IMPORTANT
+- **PH6-0022** — Hall of Fallen Giants | Building | IMPORTANT
+- **PH6-0023** — Success With Warning Classification | Archives | IMPORTANT
+- **PH6-0024** — Decay Engine | Behavior | CORE
+- **PH6-0025** — Skill Maintenance | Academy | IMPORTANT
+- **PH6-0026** — Identity Insurance Policy | Operator | IMPORTANT
+- **PH6-0027** — Hall of Future Operators | Building | IMPORTANT
+- **PH6-0028** — Annual Review Council | Operations | IMPORTANT
+- **PH6-0029** — Legacy Archive | Archives | IMPORTANT
+- **PH6-0030** — Headquarters Axiom Vote For Future | Constitution | IMPORTANT
+- **PH6-0031** — Professional Identity Management | Operator | CORE
+- **PH6-0032** — Headquarters Manifesto | Constitution | CORE
+- **PH6-0033** — No Manipulation Law | Constitution | CORE
+- **PH6-0034** — No Shame Law | Constitution | CORE
+- **PH6-0035** — Respect The Operator Law | Constitution | CORE
+- **PH6-0036** — No Money Celebration Law | Constitution | CORE
+- **PH6-0037** — Institutional Health | Engineering | IMPORTANT
+- **PH6-0038** — Engineering Oath | Engineering | CORE
+- **PH6-0039** — Headquarters Minimalism | Interface | CORE
+- **PH6-0040** — Three Second Screen Rule | Interface | IMPORTANT
+- **PH6-0041** — No Decoration Rule | Interface | CORE
+- **PH6-0042** — Architectural Review Board | Engineering | IMPORTANT
+- **PH6-0043** — Founder Test | Legacy | CORE
+- **PH6-0044** — Archive of Removed Features | Archives | IMPORTANT
+- **PH6-0045** — Longevity Optimization | Engineering | CORE
+- **PH6-0046** — Command Chair Test | Engineering | CORE
+- **PH6-0047** — Chain of Command | Institution | CORE
+- **PH6-0048** — Command Authority Detection | Operator | CORE
+- **PH6-0049** — Acting Commander States | Operator | IMPORTANT
+- **PH6-0050** — Emergency Succession | Guardian | CORE
+- **PH6-0051** — Command Transfer Ceremony | Experience | IMPORTANT
+- **PH6-0052** — Rules of Engagement | Operations | CORE
+- **PH6-0053** — Authority Levels | HQOS | IMPORTANT
+- **PH6-0054** — Operations Journal | Archives | IMPORTANT
+- **PH6-0055** — Situation Room | Building | IMPORTANT
+- **PH6-0056** — Command Ledger | Archives | CORE
+- **PH6-0057** — Operational Readiness Conditions | Operations | CORE
+- **PH6-0058** — Permission To Deploy | Operations | CORE
+- **PH6-0059** — Chair Never Lies Symbol | Interface | IMPORTANT
+- **PH6-0060** — Operator Passport | Operator | IMPORTANT
+- **PH6-0061** — Monday Flag Raising Ceremony | Experience | IMPORTANT
+- **PH6-0062** — Last Resort Protocol | Guardian | CORE
+- **PH6-0063** — Principle of Command | Constitution | CORE
+- **PH6-0064** — Daily Command Chair Question | Debrief | IMPORTANT
+- **PH6-0065** — Headquarters Exists When Market Closed | Operations | CORE
+- **PH6-0066** — Operations Calendar | Operations | IMPORTANT
+- **PH6-0067** — Ambient Department Activity | Building | OPTIONAL
+- **PH6-0068** — Founders Office Locked Door | Legacy | IMPORTANT
+- **PH6-0069** — Silence As Approval | Experience | CORE
+- **PH6-0070** — Observation Protocol | Operations | CORE
+- **PH6-0071** — Invisible Victories Recognition | Recognition | CORE
+- **PH6-0072** — Doctrine Flame | Building | IMPORTANT
+- **PH6-0073** — Legacy Transfer | Legacy | OPTIONAL
+- **PH6-0074** — Institutional Memory Core | Archives | CORE
+- **PH6-0075** — Five Mission Artifacts | Archives | CORE
+- **PH6-0076** — Memory Pyramid | Archives | IMPORTANT
+- **PH6-0077** — Campaign Books | Archives | IMPORTANT
+- **PH6-0078** — Memory Importance Rating | Archives | IMPORTANT
+- **PH6-0079** — Memory Graph | Archives | CORE
+- **PH6-0080** — Historical Events | Archives | IMPORTANT
+- **PH6-0081** — Idea Family Trees | Archives | IMPORTANT
+- **PH6-0082** — Saved Missions Ledger | Guardian | IMPORTANT
+- **PH6-0083** — Hall of Recovery | Building | IMPORTANT
+- **PH6-0084** — Historian Perspective Messages | AI | IMPORTANT
+- **PH6-0085** — Living Museum | Archives | IMPORTANT
+- **PH6-0086** — Capsule Ceremony | Legacy | OPTIONAL
+- **PH6-0087** — Institutional Memory Principle | Constitution | CORE
+- **PH6-0088** — Campaign Versioning | Engineering | IMPORTANT
+- **PH6-0089** — Time Architecture | Operations | CORE
+- **PH6-0090** — Three Clocks | Interface | IMPORTANT
+- **PH6-0091** — Long War Perspective | Psychology | CORE
+- **PH6-0092** — Operator Seasons | Operations | IMPORTANT
+- **PH6-0093** — Strategic Patience | Psychology | IMPORTANT
+- **PH6-0094** — Campaign Room | Building | IMPORTANT
+- **PH6-0095** — Mission Drift Detection | Behavior | CORE
+- **PH6-0096** — Future Archive Shelves | Building | OPTIONAL
+- **PH6-0097** — Institutional Maturity Model | Legacy | IMPORTANT
+- **PH6-0098** — Archives Terminology | Archives | CORE
+- **PH6-0099** — Memory Capital Principle | Constitution | IMPORTANT
+- **PH6-0100** — Headquarters Evolution Law | Legacy | CORE

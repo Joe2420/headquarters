@@ -1,0 +1,1183 @@
+id,title,path,volume,category,priority,status
+,00_PROJECT,00_PROJECT/README.md,00_PROJECT,,,
+,Vision,00_PROJECT/Vision.md,00_PROJECT,,,
+,Engineering Decisions,00_PROJECT/Engineering_Decisions.md,00_PROJECT,,,
+,Roadmap,00_PROJECT/Roadmap.md,00_PROJECT,,,
+,Glossary,00_PROJECT/Glossary.md,00_PROJECT,,,
+,Changelog,00_PROJECT/CHANGELOG.md,00_PROJECT,,,
+,Coverage Audit v0.2,00_PROJECT/Coverage_Audit_v0_2.md,00_PROJECT,,,
+,CHANGELOG v0.2,00_PROJECT/CHANGELOG_v0_2.md,00_PROJECT,,,
+,Coverage Audit v0.3,00_PROJECT/Coverage_Audit_v0_3.md,00_PROJECT,,,
+,HDR Changelog v0.3,00_PROJECT/CHANGELOG_v0_3.md,00_PROJECT,,,
+,CHANGELOG — HDR v0.4 Phase Recovery Release,00_PROJECT/CHANGELOG_v0_4.md,00_PROJECT,,,
+,Coverage Audit — v0.4 Phase 0.1 through 2.0,00_PROJECT/Coverage_Audit_v0_4_Phase_0_2.md,00_PROJECT,,,
+,Coverage Audit v0.4 — Phase 2.0–3.0,00_PROJECT/Coverage_Audit_v0_4_Phase_2_3.md,00_PROJECT,,,COMPLETE
+,CHANGELOG — HDR v0.5 Phase 0–4,00_PROJECT/CHANGELOG_v0_5.md,00_PROJECT,,,
+,Coverage Audit — HDR v0.5 Phase 3.0 → 4.0,00_PROJECT/Coverage_Audit_v0_5_Phase_3_4.md,00_PROJECT,,,
+,Coverage Audit v0.7 Corrected — Phase 5.0 to Phase 6.0,00_PROJECT/Coverage_Audit_v0_7_corrected_Phase_5_6.md,00_PROJECT,,,
+,CHANGELOG — HDR v0.7 Corrected,00_PROJECT/CHANGELOG_v0_7_corrected.md,00_PROJECT,,,
+,Master Index Supplement v0.8 — Phase 6.0 to 7.x,00_PROJECT/Master_Index_Supplement_v0_8.md,00_PROJECT,,,
+,Coverage Audit v0.8 — Phase 6.0 to 7.x,00_PROJECT/Coverage_Audit_v0_8_Phase_6_7x.md,00_PROJECT,,,Recovery pass complete
+,CHANGELOG v0.8,00_PROJECT/CHANGELOG_v0_8.md,00_PROJECT,,,
+,CHANGELOG v0.9,00_PROJECT/CHANGELOG_v0_9.md,00_PROJECT,,,
+,Headquarters Constitution,01_CONSTITUTION/Constitution.md,01_CONSTITUTION,,,
+,Engineering Commandments,01_CONSTITUTION/Engineering_Commandments.md,01_CONSTITUTION,,,
+,Rule of Elegance,01_CONSTITUTION/Rule_of_Elegance.md,01_CONSTITUTION,,,
+,Founder's Principles,01_CONSTITUTION/Founders_Principles.md,01_CONSTITUTION,,,
+,02_INSTITUTION,02_INSTITUTION/README.md,02_INSTITUTION,,,
+,Chain of Command,02_INSTITUTION/Chain_of_Command.md,02_INSTITUTION,,,
+,Headquarters Building,03_BUILDING/Headquarters.md,03_BUILDING,,,
+,Operator Model,04_OPERATOR/Operator_Model.md,04_OPERATOR,,,
+,Professional Joe,04_OPERATOR/Professional_Joe.md,04_OPERATOR,,,
+,Behavioral Systems,04_OPERATOR/Behavioral_Systems.md,04_OPERATOR,,,
+,Stewardship,04_OPERATOR/Stewardship.md,04_OPERATOR,,,
+,Mission Lifecycle,05_OPERATIONS/Mission_Lifecycle.md,05_OPERATIONS,,,
+,Guardian Protocol,05_OPERATIONS/Guardian_Protocol.md,05_OPERATIONS,,,
+,Mission Authorization,05_OPERATIONS/Authorization.md,05_OPERATIONS,,,
+,Debrief,05_OPERATIONS/Debrief.md,05_OPERATIONS,,,
+,Campaigns,05_OPERATIONS/Campaigns.md,05_OPERATIONS,,,
+,Cognitive Architecture,06_INTELLIGENCE/Cognitive_Architecture.md,06_INTELLIGENCE,,,
+,AI Systems,06_INTELLIGENCE/AI_Systems.md,06_INTELLIGENCE,,,
+,Behavioral Black Box,06_INTELLIGENCE/Behavioral_Black_Box.md,06_INTELLIGENCE,,,
+,Ghost,06_INTELLIGENCE/Ghost.md,06_INTELLIGENCE,,,
+,Headquarters Operating System,07_HQOS/HQOS.md,07_HQOS,,,
+,Event Bus,07_HQOS/Event_Bus.md,07_HQOS,,,
+,State Engine,07_HQOS/State_Engine.md,07_HQOS,,,
+,Archives,08_ARCHIVES/Archives.md,08_ARCHIVES,,,
+,SQLite Schema Draft,08_ARCHIVES/SQLite_Schema_Draft.md,08_ARCHIVES,,,
+,Interface Principles,09_INTERFACE/Interface_Principles.md,09_INTERFACE,,,
+,Engineering Architecture,10_ENGINEERING/Architecture.md,10_ENGINEERING,,,
+,Implementation Order,10_ENGINEERING/Implementation_Order.md,10_ENGINEERING,,,
+,Academy,11_ACADEMY/Academy.md,11_ACADEMY,,,
+,Simulations,11_ACADEMY/Simulations.md,11_ACADEMY,,,
+,Founder's Journal,12_LEGACY/Founders_Journal.md,12_LEGACY,,,
+,Evolution,12_LEGACY/Evolution.md,12_LEGACY,,,
+,Master Index,Registry/Master_Index.md,Registry,,,
+,Headquarters Master Index v0.2,Registry/Master_Index_v0_2.md,Registry,,,
+,Headquarters Master Index v0.3,Registry/Master_Index_v0_3.md,Registry,,,
+EVOL-0001,EVOL-0001 — Evolution Doctrine,12_LEGACY/Evolution_Doctrine/EVOL-0001_Evolution_Doctrine.md,12_LEGACY,Legacy / Evolution,CORE,Registered
+EVOL-0002,EVOL-0002 — Doctrine Updates Instead of Feature Updates,12_LEGACY/Evolution_Doctrine/EVOL-0002_Doctrine_Updates_Instead_of_Feature_Updates.md,12_LEGACY,Legacy / Versioning,CORE,Registered
+EVOL-0003,EVOL-0003 — Update Story Requirement,12_LEGACY/Evolution_Doctrine/EVOL-0003_Update_Story_Requirement.md,12_LEGACY,Legacy / Versioning,IMPORTANT,Registered
+EVOL-0004,EVOL-0004 — History Never Deleted Rule,12_LEGACY/Evolution_Doctrine/EVOL-0004_History_Never_Deleted_Rule.md,12_LEGACY,Archives / Preservation,CORE,Registered
+EVOL-0005,EVOL-0005 — Archive Security Doctrine,12_LEGACY/Evolution_Doctrine/EVOL-0005_Archive_Security_Doctrine.md,12_LEGACY,Archives / Integrity,CORE,Registered
+EVOL-0006,EVOL-0006 — Headquarters Promotion System,12_LEGACY/Evolution_Doctrine/EVOL-0006_Headquarters_Promotion_System.md,12_LEGACY,Legacy / Institution,IMPORTANT,Registered
+EVOL-0007,EVOL-0007 — Constitutional Amendment Process,12_LEGACY/Evolution_Doctrine/EVOL-0007_Constitutional_Amendment_Process.md,12_LEGACY,Constitution / Governance,CORE,Registered
+EVOL-0008,EVOL-0008 — Foundational Cases,12_LEGACY/Evolution_Doctrine/EVOL-0008_Foundational_Cases.md,12_LEGACY,Archives / Case Law,IMPORTANT,Registered
+EVOL-0009,EVOL-0009 — Institutional Myths,12_LEGACY/Evolution_Doctrine/EVOL-0009_Institutional_Myths.md,12_LEGACY,Legacy / Culture,IMPORTANT,Registered
+EVOL-0010,EVOL-0010 — Self-Correcting Institution,12_LEGACY/Evolution_Doctrine/EVOL-0010_Self_Correcting_Institution.md,12_LEGACY,Engineering / Feedback,CORE,Registered
+EVOL-0011,EVOL-0011 — Wisdom Threshold,12_LEGACY/Evolution_Doctrine/EVOL-0011_Wisdom_Threshold.md,12_LEGACY,Doctrine / Evidence,CORE,Registered
+EVOL-0012,EVOL-0012 — Living Doctrine Pages,12_LEGACY/Evolution_Doctrine/EVOL-0012_Living_Doctrine_Pages.md,12_LEGACY,Archives / Doctrine,CORE,Registered
+EVOL-0013,EVOL-0013 — Hall of Architects,12_LEGACY/Evolution_Doctrine/EVOL-0013_Hall_of_Architects.md,12_LEGACY,Engineering / Legacy,IMPORTANT,Registered
+EVOL-0014,EVOL-0014 — Technology Serves Doctrine Rule,12_LEGACY/Evolution_Doctrine/EVOL-0014_Technology_Serves_Doctrine_Rule.md,12_LEGACY,Engineering / Longevity,CORE,Registered
+EVOL-0015,EVOL-0015 — Legacy Clock,12_LEGACY/Evolution_Doctrine/EVOL-0015_Legacy_Clock.md,12_LEGACY,Legacy / Continuity,OPTIONAL,Registered
+EVOL-0016,EVOL-0016 — Founder Never Replaced Rule,12_LEGACY/Evolution_Doctrine/EVOL-0016_Founder_Never_Replaced_Rule.md,12_LEGACY,Legacy / Founder,CORE,Registered
+EVOL-0017,EVOL-0017 — Outlive Creator Principle,12_LEGACY/Evolution_Doctrine/EVOL-0017_Outlive_Creator_Principle.md,12_LEGACY,Legacy / Institution,IMPORTANT,Registered
+EVOL-0018,EVOL-0018 — Why Headquarters Exists Document,12_LEGACY/Evolution_Doctrine/EVOL-0018_Why_Headquarters_Exists_Document.md,12_LEGACY,Legacy / Annual,IMPORTANT,Registered
+PH2-0022,PH2-0022 — Founder Oath,12_LEGACY/Founder/PH2-0022_Founder_Oath.md,12_LEGACY,Ritual,FOUNDATIONAL,SPECIFIED
+PH2-0025,PH2-0025 — Founder Notes and Questions,12_LEGACY/Founder/PH2-0025_Founder_Notes_and_Questions.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH2-0058,PH2-0058 — Founder Wall Lost Accounts,12_LEGACY/Founder/PH2-0058_Founder_Wall_Lost_Accounts.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH2-0060,PH2-0060 — Founders Oath,12_LEGACY/Founder/PH2-0060_Founders_Oath.md,12_LEGACY,Ceremony,CORE,SPECIFIED
+REC-0794,REC-0794 — Founder Questions,12_LEGACY/Founder/REC-0794_Founder_Questions.md,12_LEGACY,Legacy,P1,Recovered / Specification Draft
+REC-0795,REC-0795 — Founders Journal,12_LEGACY/Founder/REC-0795_Founders_Journal.md,12_LEGACY,Legacy,P0,Recovered / Specification Draft
+PH3-0019,PH3-0019 — Project Naming Evolution,12_LEGACY/Evolution/PH3-0019_Project_Naming_Evolution.md,12_LEGACY,Legacy,OPTIONAL,SPECIFIED
+PH4-0020,PH4-0020 — Headquarters Naming Evolution,12_LEGACY/Evolution/PH4-0020_Headquarters_Naming_Evolution.md,12_LEGACY,Legacy,OPTIONAL,SPECIFIED
+PH6-0100,PH6-0100 — Headquarters Evolution Law,12_LEGACY/Evolution/PH6-0100_Headquarters_Evolution_Law.md,12_LEGACY,Legacy,CORE,SPECIFIED
+PH2-0036,PH2-0036 — Legacy Scale,12_LEGACY/Long_Term/PH2-0036_Legacy_Scale.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH2-0057,PH2-0057 — Founding Story,12_LEGACY/Long_Term/PH2-0057_Founding_Story.md,12_LEGACY,Legacy,CORE,SPECIFIED
+PH2-0145,PH2-0145 — Legacy Protocol,12_LEGACY/Long_Term/PH2-0145_Legacy_Protocol.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH2-0146,PH2-0146 — Career Projection,12_LEGACY/Long_Term/PH2-0146_Career_Projection.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH4-0066,PH4-0066 — Legacy Engine,12_LEGACY/Long_Term/PH4-0066_Legacy_Engine.md,12_LEGACY,System,IMPORTANT,SPECIFIED
+PH5-0015,PH5-0015 — Legacy Engine,12_LEGACY/Long_Term/PH5-0015_Legacy_Engine.md,12_LEGACY,Legacy,CORE,SPECIFIED
+PH5-0030,PH5-0030 — Legacy Tree,12_LEGACY/Long_Term/PH5-0030_Legacy_Tree.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH5-0078,PH5-0078 — Legacy Wall,12_LEGACY/Long_Term/PH5-0078_Legacy_Wall.md,12_LEGACY,Legacy,IMPORTANT,SPECIFIED
+PH6-0073,PH6-0073 — Legacy Transfer,12_LEGACY/Long_Term/PH6-0073_Legacy_Transfer.md,12_LEGACY,Legacy,OPTIONAL,SPECIFIED
+PH6-0086,PH6-0086 — Capsule Ceremony,12_LEGACY/Long_Term/PH6-0086_Capsule_Ceremony.md,12_LEGACY,Legacy,OPTIONAL,SPECIFIED
+REC-0627,REC-0627 — Legacy Transfer,12_LEGACY/Long_Term/REC-0627_Legacy_Transfer.md,12_LEGACY,Legacy,P1,Recovered / Specification Draft
+REC-0762,REC-0762 — Foundational Cases,12_LEGACY/Long_Term/REC-0762_Foundational_Cases.md,12_LEGACY,Legacy,P1,Recovered / Specification Draft
+REC-0763,REC-0763 — Wisdom Threshold,12_LEGACY/Long_Term/REC-0763_Wisdom_Threshold.md,12_LEGACY,Legacy,P0,Recovered / Specification Draft
+REC-0793,REC-0793 — Twenty Year Wall,12_LEGACY/Long_Term/REC-0793_Twenty_Year_Wall.md,12_LEGACY,Legacy,P2,Recovered / Specification Draft
+REC-0803,REC-0803 — Simulation Without Broker,11_ACADEMY/Simulations/REC-0803_Simulation_Without_Broker.md,11_ACADEMY,Academy,P1,Recovered / Specification Draft
+PH0-0014,PH0-0014 — Learning Loop Weekly Review,11_ACADEMY/Training_Protocols/PH0-0014_Learning_Loop_Weekly_Review.md,11_ACADEMY,Academy,CORE,SPECIFIED
+PH5-0056,PH5-0056 — Operations Sandbox,11_ACADEMY/Training_Protocols/PH5-0056_Operations_Sandbox.md,11_ACADEMY,Academy,IMPORTANT,SPECIFIED
+REC-0806,REC-0806 — Research Division Isolation,11_ACADEMY/Training_Protocols/REC-0806_Research_Division_Isolation.md,11_ACADEMY,Academy,P1,Recovered / Specification Draft
+ELEG-0001,ELEG-0001 — Five Gates Review,10_ENGINEERING/Elegance/ELEG-0001_Five_Gates_Review.md,10_ENGINEERING,Engineering / Review,CORE,Registered
+ELEG-0002,ELEG-0002 — Museum Test,10_ENGINEERING/Elegance/ELEG-0002_Museum_Test.md,10_ENGINEERING,Engineering / Longevity,IMPORTANT,Registered
+ELEG-0003,ELEG-0003 — Uniform Rule,10_ENGINEERING/Elegance/ELEG-0003_Uniform_Rule.md,10_ENGINEERING,Design / Meaning,IMPORTANT,Registered
+ELEG-0004,ELEG-0004 — Empty Space Confidence Rule,10_ENGINEERING/Elegance/ELEG-0004_Empty_Space_Confidence_Rule.md,10_ENGINEERING,Design / Simplicity,CORE,Registered
+ELEG-0005,ELEG-0005 — Wall Test,10_ENGINEERING/Elegance/ELEG-0005_Wall_Test.md,10_ENGINEERING,Design / Simplicity,IMPORTANT,Registered
+ELEG-0006,ELEG-0006 — One Purpose Per Room,10_ENGINEERING/Elegance/ELEG-0006_One_Purpose_Per_Room.md,10_ENGINEERING,Building / Simplicity,CORE,Registered
+ELEG-0007,ELEG-0007 — Architecture Does Not Explain Itself,10_ENGINEERING/Elegance/ELEG-0007_Architecture_Does_Not_Explain_Itself.md,10_ENGINEERING,Design / Experience,IMPORTANT,Registered
+ELEG-0008,ELEG-0008 — Mental Weight Rule,10_ENGINEERING/Elegance/ELEG-0008_Mental_Weight_Rule.md,10_ENGINEERING,Design / Attention,IMPORTANT,Registered
+ELEG-0009,ELEG-0009 — Feature Retirement Ceremony,10_ENGINEERING/Elegance/ELEG-0009_Feature_Retirement_Ceremony.md,10_ENGINEERING,Engineering / Evolution,IMPORTANT,Registered
+ELEG-0010,ELEG-0010 — Engineering Restraint Rule,10_ENGINEERING/Elegance/ELEG-0010_Engineering_Restraint_Rule.md,10_ENGINEERING,Engineering / Culture,CORE,Registered
+ELEG-0011,ELEG-0011 — Attention Protection Doctrine,10_ENGINEERING/Elegance/ELEG-0011_Attention_Protection_Doctrine.md,10_ENGINEERING,Design / Attention,CORE,Registered
+ELEG-0012,ELEG-0012 — Thirty Year Test,10_ENGINEERING/Elegance/ELEG-0012_Thirty_Year_Test.md,10_ENGINEERING,Engineering / Longevity,CORE,Registered
+ELEG-0013,ELEG-0013 — Zero Onboarding Discovery,10_ENGINEERING/Elegance/ELEG-0013_Zero_Onboarding_Discovery.md,10_ENGINEERING,Experience / Onboarding,OPTIONAL,Registered
+PH0-0010,PH0-0010 — Outcome vs Execution Separation,10_ENGINEERING/Architecture/PH0-0010_Outcome_vs_Execution_Separation.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH0-0013,PH0-0013 — Operation Codename Generator,10_ENGINEERING/Architecture/PH0-0013_Operation_Codename_Generator.md,10_ENGINEERING,Experience,IMPORTANT,SPECIFIED
+PH2-0003,PH2-0003 — Theater System,10_ENGINEERING/Architecture/PH2-0003_Theater_System.md,10_ENGINEERING,Operations,IMPORTANT,SPECIFIED
+PH2-0004,PH2-0004 — Tactical Silence,10_ENGINEERING/Architecture/PH2-0004_Tactical_Silence.md,10_ENGINEERING,Experience,CORE,SPECIFIED
+PH2-0005,PH2-0005 — Background State Changes,10_ENGINEERING/Architecture/PH2-0005_Background_State_Changes.md,10_ENGINEERING,Environment,IMPORTANT,SPECIFIED
+PH2-0017,PH2-0017 — Psychological Decompression,10_ENGINEERING/Architecture/PH2-0017_Psychological_Decompression.md,10_ENGINEERING,Ritual,IMPORTANT,SPECIFIED
+PH2-0018,PH2-0018 — Dynamic Headquarters Threat Atmosphere,10_ENGINEERING/Architecture/PH2-0018_Dynamic_Headquarters_Threat_Atmosphere.md,10_ENGINEERING,Environment,CORE,SPECIFIED
+PH1-0002,PH1-0002 — SOP-002 Market Preparation Procedure,10_ENGINEERING/Architecture/PH1-0002_SOP_002_Market_Preparation_Procedure.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0003,PH1-0003 — SOP-003 Standby Procedure,10_ENGINEERING/Architecture/PH1-0003_SOP_003_Standby_Procedure.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0005,PH1-0005 — SOP-005 Trade Management,10_ENGINEERING/Architecture/PH1-0005_SOP_005_Trade_Management.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0006,PH1-0006 — SOP-006 Losing Trade Procedure,10_ENGINEERING/Architecture/PH1-0006_SOP_006_Losing_Trade_Procedure.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0007,PH1-0007 — SOP-007 Winning Trade Procedure,10_ENGINEERING/Architecture/PH1-0007_SOP_007_Winning_Trade_Procedure.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0008,PH1-0008 — SOP-008 Profit Defense Procedure,10_ENGINEERING/Architecture/PH1-0008_SOP_008_Profit_Defense_Procedure.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0009,PH1-0009 — SOP-009 Damage Control Procedure,10_ENGINEERING/Architecture/PH1-0009_SOP_009_Damage_Control_Procedure.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0010,PH1-0010 — SOP-010 Weekend Protocol,10_ENGINEERING/Architecture/PH1-0010_SOP_010_Weekend_Protocol.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0012,PH1-0012 — SOP-012 Winning Streak Protocol,10_ENGINEERING/Architecture/PH1-0012_SOP_012_Winning_Streak_Protocol.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0013,PH1-0013 — SOP-013 Re-entry Protocol,10_ENGINEERING/Architecture/PH1-0013_SOP_013_Re_entry_Protocol.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH1-0014,PH1-0014 — SOP-014 Missed Trade Protocol,10_ENGINEERING/Architecture/PH1-0014_SOP_014_Missed_Trade_Protocol.md,10_ENGINEERING,SOP,CORE,SPECIFIED
+PH2-0013,PH2-0013 — Headquarters Has Weight,10_ENGINEERING/Architecture/PH2-0013_Headquarters_Has_Weight.md,10_ENGINEERING,Experience,IMPORTANT,SPECIFIED
+PH2-0014,PH2-0014 — Headquarters Exists Without You,10_ENGINEERING/Architecture/PH2-0014_Headquarters_Exists_Without_You.md,10_ENGINEERING,Experience,IMPORTANT,SPECIFIED
+PH2-0015,PH2-0015 — Shift Change Ritual,10_ENGINEERING/Architecture/PH2-0015_Shift_Change_Ritual.md,10_ENGINEERING,Ceremony,IMPORTANT,SPECIFIED
+PH2-0024,PH2-0024 — No Good Luck Rule,10_ENGINEERING/Architecture/PH2-0024_No_Good_Luck_Rule.md,10_ENGINEERING,Language,FOUNDATIONAL,SPECIFIED
+PH2-0027,PH2-0027 — Morning Arrival Ritual,10_ENGINEERING/Architecture/PH2-0027_Morning_Arrival_Ritual.md,10_ENGINEERING,Ceremony,CORE,SPECIFIED
+PH2-0032,PH2-0032 — Discipline Ledger,10_ENGINEERING/Architecture/PH2-0032_Discipline_Ledger.md,10_ENGINEERING,Operations,IMPORTANT,SPECIFIED
+PH2-0038,PH2-0038 — Courage Documented,10_ENGINEERING/Architecture/PH2-0038_Courage_Documented.md,10_ENGINEERING,Recognition,IMPORTANT,SPECIFIED
+PH2-0044,PH2-0044 — Pulse System,10_ENGINEERING/Architecture/PH2-0044_Pulse_System.md,10_ENGINEERING,Environment,IMPORTANT,SPECIFIED
+PH2-0045,PH2-0045 — Synchronization Moment,10_ENGINEERING/Architecture/PH2-0045_Synchronization_Moment.md,10_ENGINEERING,Experience,IMPORTANT,SPECIFIED
+PH2-0047,PH2-0047 — Reverse Countdown Override,10_ENGINEERING/Architecture/PH2-0047_Reverse_Countdown_Override.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH2-0050,PH2-0050 — Welcome Home Return,10_ENGINEERING/Architecture/PH2-0050_Welcome_Home_Return.md,10_ENGINEERING,Ceremony,IMPORTANT,SPECIFIED
+PH2-0053,PH2-0053 — Silence As Approval,10_ENGINEERING/Architecture/PH2-0053_Silence_As_Approval.md,10_ENGINEERING,Experience,FOUNDATIONAL,SPECIFIED
+PH2-0062,PH2-0062 — Night Watch,10_ENGINEERING/Architecture/PH2-0062_Night_Watch.md,10_ENGINEERING,Operations,IMPORTANT,SPECIFIED
+PH2-0070,PH2-0070 — Headquarters Crest Quadrants,10_ENGINEERING/Architecture/PH2-0070_Headquarters_Crest_Quadrants.md,10_ENGINEERING,Brand,IMPORTANT,SPECIFIED
+PH2-0071,PH2-0071 — Latin Motto Options,10_ENGINEERING/Architecture/PH2-0071_Latin_Motto_Options.md,10_ENGINEERING,Brand,OPTIONAL,SPECIFIED
+PH2-0075,PH2-0075 — Headquarters Seasons,10_ENGINEERING/Architecture/PH2-0075_Headquarters_Seasons.md,10_ENGINEERING,Environment,OPTIONAL,SPECIFIED
+PH2-0079,PH2-0079 — Habit Retirement Ceremony,10_ENGINEERING/Architecture/PH2-0079_Habit_Retirement_Ceremony.md,10_ENGINEERING,Ceremony,IMPORTANT,SPECIFIED
+PH2-0088,PH2-0088 — Shift Log,10_ENGINEERING/Architecture/PH2-0088_Shift_Log.md,10_ENGINEERING,Operations,IMPORTANT,SPECIFIED
+PH2-0090,PH2-0090 — Situation Report,10_ENGINEERING/Architecture/PH2-0090_Situation_Report.md,10_ENGINEERING,Operations,IMPORTANT,SPECIFIED
+PH2-0095,PH2-0095 — Operations Flag,10_ENGINEERING/Architecture/PH2-0095_Operations_Flag.md,10_ENGINEERING,Environment,IMPORTANT,SPECIFIED
+PH2-0100,PH2-0100 — Take Command Tradition,10_ENGINEERING/Architecture/PH2-0100_Take_Command_Tradition.md,10_ENGINEERING,Ceremony,CORE,SPECIFIED
+PH2-0101,PH2-0101 — Lights Activation Order,10_ENGINEERING/Architecture/PH2-0101_Lights_Activation_Order.md,10_ENGINEERING,Environment,IMPORTANT,SPECIFIED
+PH3-0002,PH3-0002 — Expensive Not Luxurious,10_ENGINEERING/Architecture/PH3-0002_Expensive_Not_Luxurious.md,10_ENGINEERING,Design,IMPORTANT,SPECIFIED
+PH3-0009,PH3-0009 — Headquarters Language Dictionary,10_ENGINEERING/Architecture/PH3-0009_Headquarters_Language_Dictionary.md,10_ENGINEERING,Language,CORE,SPECIFIED
+PH6-0012,PH6-0012 — Living SOP,10_ENGINEERING/Architecture/PH6-0012_Living_SOP.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH6-0051,PH6-0051 — Command Transfer Ceremony,10_ENGINEERING/Architecture/PH6-0051_Command_Transfer_Ceremony.md,10_ENGINEERING,Experience,IMPORTANT,SPECIFIED
+PH6-0052,PH6-0052 — Rules of Engagement,10_ENGINEERING/Architecture/PH6-0052_Rules_of_Engagement.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH6-0057,PH6-0057 — Operational Readiness Conditions,10_ENGINEERING/Architecture/PH6-0057_Operational_Readiness_Conditions.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH6-0065,PH6-0065 — Headquarters Exists When Market Closed,10_ENGINEERING/Architecture/PH6-0065_Headquarters_Exists_When_Market_Closed.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH6-0066,PH6-0066 — Operations Calendar,10_ENGINEERING/Architecture/PH6-0066_Operations_Calendar.md,10_ENGINEERING,Operations,IMPORTANT,SPECIFIED
+PH6-0069,PH6-0069 — Silence As Approval,10_ENGINEERING/Architecture/PH6-0069_Silence_As_Approval.md,10_ENGINEERING,Experience,CORE,SPECIFIED
+PH6-0070,PH6-0070 — Observation Protocol,10_ENGINEERING/Architecture/PH6-0070_Observation_Protocol.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH6-0071,PH6-0071 — Invisible Victories Recognition,10_ENGINEERING/Architecture/PH6-0071_Invisible_Victories_Recognition.md,10_ENGINEERING,Recognition,CORE,SPECIFIED
+PH6-0089,PH6-0089 — Time Architecture,10_ENGINEERING/Architecture/PH6-0089_Time_Architecture.md,10_ENGINEERING,Operations,CORE,SPECIFIED
+PH6-0091,PH6-0091 — Long War Perspective,10_ENGINEERING/Architecture/PH6-0091_Long_War_Perspective.md,10_ENGINEERING,Psychology,CORE,SPECIFIED
+PH6-0093,PH6-0093 — Strategic Patience,10_ENGINEERING/Architecture/PH6-0093_Strategic_Patience.md,10_ENGINEERING,Psychology,IMPORTANT,SPECIFIED
+REC-0620,REC-0620 — Headquarters Exists When Market Closed,10_ENGINEERING/Architecture/REC-0620_Headquarters_Exists_When_Market_Closed.md,10_ENGINEERING,Operations,P1,Recovered / Specification Draft
+REC-0621,REC-0621 — Operations Calendar,10_ENGINEERING/Architecture/REC-0621_Operations_Calendar.md,10_ENGINEERING,Operations,P1,Recovered / Specification Draft
+REC-0624,REC-0624 — Observation Protocol,10_ENGINEERING/Architecture/REC-0624_Observation_Protocol.md,10_ENGINEERING,Operations,P1,Recovered / Specification Draft
+REC-0651,REC-0651 — Arrival Report,10_ENGINEERING/Architecture/REC-0651_Arrival_Report.md,10_ENGINEERING,Operations,P0,Recovered / Specification Draft
+REC-0652,REC-0652 — Operational State Classification,10_ENGINEERING/Architecture/REC-0652_Operational_State_Classification.md,10_ENGINEERING,Operations,P0,Recovered / Specification Draft
+REC-0655,REC-0655 — Command Seal,10_ENGINEERING/Architecture/REC-0655_Command_Seal.md,10_ENGINEERING,Operations,P1,Recovered / Specification Draft
+REC-0740,REC-0740 — Rhythm Engine,10_ENGINEERING/Architecture/REC-0740_Rhythm_Engine.md,10_ENGINEERING,Operations,P0,Recovered / Specification Draft
+PH6-0043,PH6-0043 — Founder Test,10_ENGINEERING/Testing/PH6-0043_Founder_Test.md,10_ENGINEERING,Legacy,CORE,SPECIFIED
+REC-0684,REC-0684 — Graduation Test,10_ENGINEERING/Testing/REC-0684_Graduation_Test.md,10_ENGINEERING,Academy,P2,Recovered / Specification Draft
+,Core Screens,09_INTERFACE/Screens/Core_Screens.md,09_INTERFACE,,,
+PH2-0008,PH2-0008 — Dispatches Instead of Notifications,09_INTERFACE/Screens/PH2-0008_Dispatches_Instead_of_Notifications.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH2-0019,PH2-0019 — Situation Clock,09_INTERFACE/Screens/PH2-0019_Situation_Clock.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH2-0052,PH2-0052 — Quiet Victory Recognition,09_INTERFACE/Screens/PH2-0052_Quiet_Victory_Recognition.md,09_INTERFACE,Recognition,IMPORTANT,SPECIFIED
+PH2-0055,PH2-0055 — Headquarters Established Splash,09_INTERFACE/Screens/PH2-0055_Headquarters_Established_Splash.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH2-0104,PH2-0104 — Equipment Check,09_INTERFACE/Screens/PH2-0104_Equipment_Check.md,09_INTERFACE,Operations,CORE,SPECIFIED
+PH2-0123,PH2-0123 — Tactical Mirror,09_INTERFACE/Screens/PH2-0123_Tactical_Mirror.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH2-0136,PH2-0136 — Capital Status Not PnL Hero,09_INTERFACE/Screens/PH2-0136_Capital_Status_Not_PnL_Hero.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH3-0003,PH3-0003 — Information Hierarchy,09_INTERFACE/Screens/PH3-0003_Information_Hierarchy.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH3-0004,PH3-0004 — One Objective Per Screen,09_INTERFACE/Screens/PH3-0004_One_Objective_Per_Screen.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH3-0008,PH3-0008 — Attention Respect Law,09_INTERFACE/Screens/PH3-0008_Attention_Respect_Law.md,09_INTERFACE,Interface,FOUNDATIONAL,SPECIFIED
+PH3-0010,PH3-0010 — Typography Direction,09_INTERFACE/Screens/PH3-0010_Typography_Direction.md,09_INTERFACE,Design,IMPORTANT,SPECIFIED
+PH3-0015,PH3-0015 — Central Holographic Table,09_INTERFACE/Screens/PH3-0015_Central_Holographic_Table.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH4-0002,PH4-0002 — Expensive Minimalism,09_INTERFACE/Screens/PH4-0002_Expensive_Minimalism.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH4-0004,PH4-0004 — Information Hierarchy Law,09_INTERFACE/Screens/PH4-0004_Information_Hierarchy_Law.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH4-0005,PH4-0005 — One Objective Per Screen,09_INTERFACE/Screens/PH4-0005_One_Objective_Per_Screen.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH4-0016,PH4-0016 — Central Holographic Table Function,09_INTERFACE/Screens/PH4-0016_Central_Holographic_Table_Function.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH4-0026,PH4-0026 — Evidence Wall,09_INTERFACE/Screens/PH4-0026_Evidence_Wall.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH4-0038,PH4-0038 — Every Screen Lowers Cortisol,09_INTERFACE/Screens/PH4-0038_Every_Screen_Lowers_Cortisol.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH4-0040,PH4-0040 — Rule Of One Thought,09_INTERFACE/Screens/PH4-0040_Rule_Of_One_Thought.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH5-0065,PH5-0065 — Psychological Wind Indicator,09_INTERFACE/Screens/PH5-0065_Psychological_Wind_Indicator.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH5-0077,PH5-0077 — Decision Radius,09_INTERFACE/Screens/PH5-0077_Decision_Radius.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH6-0039,PH6-0039 — Headquarters Minimalism,09_INTERFACE/Screens/PH6-0039_Headquarters_Minimalism.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH6-0040,PH6-0040 — Three Second Screen Rule,09_INTERFACE/Screens/PH6-0040_Three_Second_Screen_Rule.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+PH6-0041,PH6-0041 — No Decoration Rule,09_INTERFACE/Screens/PH6-0041_No_Decoration_Rule.md,09_INTERFACE,Interface,CORE,SPECIFIED
+PH6-0090,PH6-0090 — Three Clocks,09_INTERFACE/Screens/PH6-0090_Three_Clocks.md,09_INTERFACE,Interface,IMPORTANT,SPECIFIED
+REC-0782,REC-0782 — Security Checkpoint Login Replacement,09_INTERFACE/Screens/REC-0782_Security_Checkpoint_Login_Replacement.md,09_INTERFACE,Interface,P0,Recovered / Specification Draft
+REC-0783,REC-0783 — Report For Duty Command,09_INTERFACE/Screens/REC-0783_Report_For_Duty_Command.md,09_INTERFACE,Interface,P0,Recovered / Specification Draft
+REC-0800,REC-0800 — Second Screen Philosophy,09_INTERFACE/Screens/REC-0800_Second_Screen_Philosophy.md,09_INTERFACE,Interface,P1,Recovered / Specification Draft
+REC-0801,REC-0801 — Tactical Overlay Future,09_INTERFACE/Screens/REC-0801_Tactical_Overlay_Future.md,09_INTERFACE,Interface,P2,Recovered / Specification Draft
+,Audio Bible,09_INTERFACE/Audio/Audio_Bible.md,09_INTERFACE,,,
+PH3-0007,PH3-0007 — Sound Has Purpose,09_INTERFACE/Audio/PH3-0007_Sound_Has_Purpose.md,09_INTERFACE,Audio,CORE,SPECIFIED
+PH4-0008,PH4-0008 — Sound Purpose System,09_INTERFACE/Audio/PH4-0008_Sound_Purpose_System.md,09_INTERFACE,Audio,CORE,SPECIFIED
+,Lighting Bible,09_INTERFACE/Lighting/Lighting_Bible.md,09_INTERFACE,,,
+PH3-0006,PH3-0006 — Color Earns Existence,09_INTERFACE/Lighting/PH3-0006_Color_Earns_Existence.md,09_INTERFACE,Design,CORE,SPECIFIED
+PH4-0007,PH4-0007 — Color Meaning System,09_INTERFACE/Lighting/PH4-0007_Color_Meaning_System.md,09_INTERFACE,Interface,CORE,SPECIFIED
+UI-0001,UI-0001 — Cold Boot Sequence,09_INTERFACE/Elements/UI-0001_Cold_Boot_Sequence.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0002,UI-0002 — Security Checkpoint Screen,09_INTERFACE/Elements/UI-0002_Security_Checkpoint_Screen.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0003,UI-0003 — Report For Duty Button,09_INTERFACE/Elements/UI-0003_Report_For_Duty_Button.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0004,UI-0004 — Hydraulic Door Transition,09_INTERFACE/Elements/UI-0004_Hydraulic_Door_Transition.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0005,UI-0005 — Elevator / Room Transition,09_INTERFACE/Elements/UI-0005_Elevator_Room_Transition.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0006,UI-0006 — Tactical Silence,09_INTERFACE/Elements/UI-0006_Tactical_Silence.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0007,UI-0007 — Heartbeat Mode,09_INTERFACE/Elements/UI-0007_Heartbeat_Mode.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0008,UI-0008 — Radar Sweep,09_INTERFACE/Elements/UI-0008_Radar_Sweep.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0009,UI-0009 — Building Breathing,09_INTERFACE/Elements/UI-0009_Building_Breathing.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0010,UI-0010 — Dynamic Backgrounds,09_INTERFACE/Elements/UI-0010_Dynamic_Backgrounds.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0011,UI-0011 — Mission Backgrounds,09_INTERFACE/Elements/UI-0011_Mission_Backgrounds.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0012,UI-0012 — Operational Weather,09_INTERFACE/Elements/UI-0012_Operational_Weather.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0013,UI-0013 — Lighting Profiles,09_INTERFACE/Elements/UI-0013_Lighting_Profiles.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0014,UI-0014 — Sound Bible,09_INTERFACE/Elements/UI-0014_Sound_Bible.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0015,UI-0015 — Commander Voice,09_INTERFACE/Elements/UI-0015_Commander_Voice.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0016,UI-0016 — Operations Officer Voice,09_INTERFACE/Elements/UI-0016_Operations_Officer_Voice.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0017,UI-0017 — Mission Bell,09_INTERFACE/Elements/UI-0017_Mission_Bell.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0018,UI-0018 — Guardian Bell,09_INTERFACE/Elements/UI-0018_Guardian_Bell.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0019,UI-0019 — Institutional Bell,09_INTERFACE/Elements/UI-0019_Institutional_Bell.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0020,UI-0020 — Mechanical Printer,09_INTERFACE/Elements/UI-0020_Mechanical_Printer.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0021,UI-0021 — Command Light Alignment,09_INTERFACE/Elements/UI-0021_Command_Light_Alignment.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0022,UI-0022 — Shadow Protocol,09_INTERFACE/Elements/UI-0022_Shadow_Protocol.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0023,UI-0023 — Artificial Horizon UI,09_INTERFACE/Elements/UI-0023_Artificial_Horizon_UI.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0024,UI-0024 — Operator Compass UI,09_INTERFACE/Elements/UI-0024_Operator_Compass_UI.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0025,UI-0025 — Tactical Compass,09_INTERFACE/Elements/UI-0025_Tactical_Compass.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0026,UI-0026 — Situation Clock,09_INTERFACE/Elements/UI-0026_Situation_Clock.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0027,UI-0027 — Analog Command Clock,09_INTERFACE/Elements/UI-0027_Analog_Command_Clock.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0028,UI-0028 — Mission Patch / Campaign Ribbon,09_INTERFACE/Elements/UI-0028_Mission_Patch_Campaign_Ribbon.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0029,UI-0029 — Mission Seal,09_INTERFACE/Elements/UI-0029_Mission_Seal.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0030,UI-0030 — Command Seal,09_INTERFACE/Elements/UI-0030_Command_Seal.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0031,UI-0031 — Codename Generator,09_INTERFACE/Elements/UI-0031_Codename_Generator.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0032,UI-0032 — Mission Banner,09_INTERFACE/Elements/UI-0032_Mission_Banner.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0033,UI-0033 — Headquarters Crest,09_INTERFACE/Elements/UI-0033_Headquarters_Crest.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0034,UI-0034 — Operations Flag,09_INTERFACE/Elements/UI-0034_Operations_Flag.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0035,UI-0035 — Personal Crest,09_INTERFACE/Elements/UI-0035_Personal_Crest.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0036,UI-0036 — Situation Wall UI,09_INTERFACE/Elements/UI-0036_Situation_Wall_UI.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0037,UI-0037 — Intelligence Wall UI,09_INTERFACE/Elements/UI-0037_Intelligence_Wall_UI.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0038,UI-0038 — Living Map / Campaign Map,09_INTERFACE/Elements/UI-0038_Living_Map_Campaign_Map.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0039,UI-0039 — Legacy Tree,09_INTERFACE/Elements/UI-0039_Legacy_Tree.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0040,UI-0040 — Twenty-Year Wall UI,09_INTERFACE/Elements/UI-0040_Twenty_Year_Wall_UI.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0041,UI-0041 — Founders Notes,09_INTERFACE/Elements/UI-0041_Founders_Notes.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0042,UI-0042 — 70/20/10 Screen Principle,09_INTERFACE/Elements/UI-0042_70_20_10_Screen_Principle.md,09_INTERFACE,Interface / Environment / Audio,CORE,Registered / Specification Draft
+UI-0043,UI-0043 — No Decoration Rule,09_INTERFACE/Elements/UI-0043_No_Decoration_Rule.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0044,UI-0044 — Silence Budget,09_INTERFACE/Elements/UI-0044_Silence_Budget.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0045,UI-0045 — One Sentence Rule,09_INTERFACE/Elements/UI-0045_One_Sentence_Rule.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0046,UI-0046 — Three Second Rule,09_INTERFACE/Elements/UI-0046_Three_Second_Rule.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0047,UI-0047 — Golden Ratio Attention Rule,09_INTERFACE/Elements/UI-0047_Golden_Ratio_Attention_Rule.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0048,UI-0048 — No Dashboard Opening,09_INTERFACE/Elements/UI-0048_No_Dashboard_Opening.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0049,UI-0049 — Dynamic Headquarters Aging,09_INTERFACE/Elements/UI-0049_Dynamic_Headquarters_Aging.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0050,UI-0050 — Founder Test,09_INTERFACE/Elements/UI-0050_Founder_Test.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+UI-0051,UI-0051 — Would NASA Add This Test,09_INTERFACE/Elements/UI-0051_Would_NASA_Add_This_Test.md,09_INTERFACE,Interface / Environment / Audio,IMPORTANT,Registered / Specification Draft
+EXP-0001,EXP-0001 — Room Emotional Targets,09_INTERFACE/Experience/EXP-0001_Room_Emotional_Targets.md,09_INTERFACE,Experience / UX,CORE,Registered
+EXP-0002,EXP-0002 — Entrance Hall Experience,09_INTERFACE/Experience/EXP-0002_Entrance_Hall_Experience.md,09_INTERFACE,Experience / UX,CORE,Registered
+EXP-0003,EXP-0003 — Observation Reward Experience,09_INTERFACE/Experience/EXP-0003_Observation_Reward_Experience.md,09_INTERFACE,Experience / Psychology,CORE,Registered
+EXP-0004,EXP-0004 — Authorization Stamp Experience,09_INTERFACE/Experience/EXP-0004_Authorization_Stamp_Experience.md,09_INTERFACE,Experience / Interaction,CORE,Registered
+EXP-0005,EXP-0005 — Mission Management Silence,09_INTERFACE/Experience/EXP-0005_Mission_Management_Silence.md,09_INTERFACE,Experience / Execution,CORE,Registered
+EXP-0006,EXP-0006 — Target Hit Return Experience,09_INTERFACE/Experience/EXP-0006_Target_Hit_Return_Experience.md,09_INTERFACE,Experience / Guardian,IMPORTANT,Registered
+EXP-0007,EXP-0007 — Archive Stamping Experience,09_INTERFACE/Experience/EXP-0007_Archive_Stamping_Experience.md,09_INTERFACE,Experience / Memory,IMPORTANT,Registered
+EXP-0008,EXP-0008 — Exit To Civilian Life Experience,09_INTERFACE/Experience/EXP-0008_Exit_To_Civilian_Life_Experience.md,09_INTERFACE,Experience / Shutdown,IMPORTANT,Registered
+PH3-0005,PH3-0005 — Motion Has Meaning,09_INTERFACE/Motion/PH3-0005_Motion_Has_Meaning.md,09_INTERFACE,Animation,CORE,SPECIFIED
+PH4-0006,PH4-0006 — Motion Has Meaning,09_INTERFACE/Motion/PH4-0006_Motion_Has_Meaning.md,09_INTERFACE,Animation,CORE,SPECIFIED
+MEM-0001,MEM-0001 — Mission Report Artifact,08_ARCHIVES/Memory_Objects/MEM-0001_Mission_Report_Artifact.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,CORE,Registered / Specification Draft
+MEM-0002,MEM-0002 — Behavior Report Artifact,08_ARCHIVES/Memory_Objects/MEM-0002_Behavior_Report_Artifact.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,CORE,Registered / Specification Draft
+MEM-0003,MEM-0003 — Decision Report Artifact,08_ARCHIVES/Memory_Objects/MEM-0003_Decision_Report_Artifact.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,CORE,Registered / Specification Draft
+MEM-0004,MEM-0004 — Intelligence Report Artifact,08_ARCHIVES/Memory_Objects/MEM-0004_Intelligence_Report_Artifact.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0005,MEM-0005 — Doctrine Report Artifact,08_ARCHIVES/Memory_Objects/MEM-0005_Doctrine_Report_Artifact.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0006,MEM-0006 — Memory Pyramid,08_ARCHIVES/Memory_Objects/MEM-0006_Memory_Pyramid.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0007,MEM-0007 — Campaign Books,08_ARCHIVES/Memory_Objects/MEM-0007_Campaign_Books.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0008,MEM-0008 — Historical Events,08_ARCHIVES/Memory_Objects/MEM-0008_Historical_Events.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0009,MEM-0009 — Family Trees of Ideas,08_ARCHIVES/Memory_Objects/MEM-0009_Family_Trees_of_Ideas.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0010,MEM-0010 — Saved Missions Ledger,08_ARCHIVES/Memory_Objects/MEM-0010_Saved_Missions_Ledger.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0011,MEM-0011 — Invisible Ledger,08_ARCHIVES/Memory_Objects/MEM-0011_Invisible_Ledger.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0012,MEM-0012 — Capsule Ceremony,08_ARCHIVES/Memory_Objects/MEM-0012_Capsule_Ceremony.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0013,MEM-0013 — Legacy Transfer,08_ARCHIVES/Memory_Objects/MEM-0013_Legacy_Transfer.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0014,MEM-0014 — Academy Courses,08_ARCHIVES/Memory_Objects/MEM-0014_Academy_Courses.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0015,MEM-0015 — Academy Transcript,08_ARCHIVES/Memory_Objects/MEM-0015_Academy_Transcript.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0016,MEM-0016 — Certifications,08_ARCHIVES/Memory_Objects/MEM-0016_Certifications.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0017,MEM-0017 — Oral Examination,08_ARCHIVES/Memory_Objects/MEM-0017_Oral_Examination.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0018,MEM-0018 — Qualification Board,08_ARCHIVES/Memory_Objects/MEM-0018_Qualification_Board.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0019,MEM-0019 — Mentor Protocol,08_ARCHIVES/Memory_Objects/MEM-0019_Mentor_Protocol.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0020,MEM-0020 — Medals of Restraint,08_ARCHIVES/Memory_Objects/MEM-0020_Medals_of_Restraint.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0021,MEM-0021 — Rank / Professional Rank,08_ARCHIVES/Memory_Objects/MEM-0021_Rank_Professional_Rank.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0022,MEM-0022 — Security Clearance,08_ARCHIVES/Memory_Objects/MEM-0022_Security_Clearance.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0023,MEM-0023 — Maintenance Days,08_ARCHIVES/Memory_Objects/MEM-0023_Maintenance_Days.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0024,MEM-0024 — Headquarters Health,08_ARCHIVES/Memory_Objects/MEM-0024_Headquarters_Health.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0025,MEM-0025 — Recommendation Ledger,08_ARCHIVES/Memory_Objects/MEM-0025_Recommendation_Ledger.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0026,MEM-0026 — Institutional Trust Engine,08_ARCHIVES/Memory_Objects/MEM-0026_Institutional_Trust_Engine.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0027,MEM-0027 — Self Audit / Final Audit,08_ARCHIVES/Memory_Objects/MEM-0027_Self_Audit_Final_Audit.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0028,MEM-0028 — Archive of Removed Features,08_ARCHIVES/Memory_Objects/MEM-0028_Archive_of_Removed_Features.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0029,MEM-0029 — Anti-Feature List,08_ARCHIVES/Memory_Objects/MEM-0029_Anti_Feature_List.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0030,MEM-0030 — Knife Drawer,08_ARCHIVES/Memory_Objects/MEM-0030_Knife_Drawer.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0031,MEM-0031 — Rule of Elegance,08_ARCHIVES/Memory_Objects/MEM-0031_Rule_of_Elegance.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0032,MEM-0032 — Engineering Oath,08_ARCHIVES/Memory_Objects/MEM-0032_Engineering_Oath.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0033,MEM-0033 — Founders Log,08_ARCHIVES/Memory_Objects/MEM-0033_Founders_Log.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0034,MEM-0034 — HQOS Event Bus,08_ARCHIVES/Memory_Objects/MEM-0034_HQOS_Event_Bus.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0035,MEM-0035 — HQOS Heartbeat,08_ARCHIVES/Memory_Objects/MEM-0035_HQOS_Heartbeat.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0036,MEM-0036 — HQOS State Engine,08_ARCHIVES/Memory_Objects/MEM-0036_HQOS_State_Engine.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0037,MEM-0037 — HQOS Background Services,08_ARCHIVES/Memory_Objects/MEM-0037_HQOS_Background_Services.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0038,MEM-0038 — Night Watch / Shift Change,08_ARCHIVES/Memory_Objects/MEM-0038_Night_Watch_Shift_Change.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0039,MEM-0039 — Error Handling as Engineering,08_ARCHIVES/Memory_Objects/MEM-0039_Error_Handling_as_Engineering.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0040,MEM-0040 — SQLite Archives,08_ARCHIVES/Memory_Objects/MEM-0040_SQLite_Archives.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,CORE,Registered / Specification Draft
+MEM-0041,MEM-0041 — Data Integrity Checks,08_ARCHIVES/Memory_Objects/MEM-0041_Data_Integrity_Checks.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0042,MEM-0042 — Source/HDR/Assets Separation,08_ARCHIVES/Memory_Objects/MEM-0042_Source_HDR_Assets_Separation.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0043,MEM-0043 — Master Index IDs,08_ARCHIVES/Memory_Objects/MEM-0043_Master_Index_IDs.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,CORE,Registered / Specification Draft
+MEM-0044,MEM-0044 — Specification Template,08_ARCHIVES/Memory_Objects/MEM-0044_Specification_Template.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0045,MEM-0045 — MVI Minimum Viable Institution,08_ARCHIVES/Memory_Objects/MEM-0045_MVI_Minimum_Viable_Institution.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,CORE,Registered / Specification Draft
+MEM-0046,MEM-0046 — Broker Independence Connectors,08_ARCHIVES/Memory_Objects/MEM-0046_Broker_Independence_Connectors.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0047,MEM-0047 — CSV Import with Exclusions,08_ARCHIVES/Memory_Objects/MEM-0047_CSV_Import_with_Exclusions.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0048,MEM-0048 — Account Autopsy,08_ARCHIVES/Memory_Objects/MEM-0048_Account_Autopsy.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0049,MEM-0049 — Leak Report,08_ARCHIVES/Memory_Objects/MEM-0049_Leak_Report.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0050,MEM-0050 — Paper Trading Checklist,08_ARCHIVES/Memory_Objects/MEM-0050_Paper_Trading_Checklist.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0051,MEM-0051 — Personal Trading Handbook,08_ARCHIVES/Memory_Objects/MEM-0051_Personal_Trading_Handbook.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+MEM-0052,MEM-0052 — Military Operating Manual,08_ARCHIVES/Memory_Objects/MEM-0052_Military_Operating_Manual.md,08_ARCHIVES,Archives / Academy / Engineering / Legacy,IMPORTANT,Registered / Specification Draft
+PH2-0007,PH2-0007 — Archives Structure,08_ARCHIVES/Memory_Objects/PH2-0007_Archives_Structure.md,08_ARCHIVES,Archives,CORE,SPECIFIED
+PH2-0073,PH2-0073 — Headquarters Library,08_ARCHIVES/Memory_Objects/PH2-0073_Headquarters_Library.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH2-0093,PH2-0093 — Tactical Journal,08_ARCHIVES/Memory_Objects/PH2-0093_Tactical_Journal.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH2-0115,PH2-0115 — Ordinary Decisions Automatic Lesson,08_ARCHIVES/Memory_Objects/PH2-0115_Ordinary_Decisions_Automatic_Lesson.md,08_ARCHIVES,Academy,FOUNDATIONAL,SPECIFIED
+PH4-0024,PH4-0024 — Report Reliability Score,08_ARCHIVES/Memory_Objects/PH4-0024_Report_Reliability_Score.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH4-0025,PH4-0025 — Operation Cover-Up Case File,08_ARCHIVES/Memory_Objects/PH4-0025_Operation_Cover_Up_Case_File.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH5-0019,PH5-0019 — Invisible Timeline,08_ARCHIVES/Memory_Objects/PH5-0019_Invisible_Timeline.md,08_ARCHIVES,Archives,CORE,SPECIFIED
+PH5-0067,PH5-0067 — Technical Recorder,08_ARCHIVES/Memory_Objects/PH5-0067_Technical_Recorder.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0010,PH6-0010 — Myth Library,08_ARCHIVES/Memory_Objects/PH6-0010_Myth_Library.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0023,PH6-0023 — Success With Warning Classification,08_ARCHIVES/Memory_Objects/PH6-0023_Success_With_Warning_Classification.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0044,PH6-0044 — Archive of Removed Features,08_ARCHIVES/Memory_Objects/PH6-0044_Archive_of_Removed_Features.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0054,PH6-0054 — Operations Journal,08_ARCHIVES/Memory_Objects/PH6-0054_Operations_Journal.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0056,PH6-0056 — Command Ledger,08_ARCHIVES/Memory_Objects/PH6-0056_Command_Ledger.md,08_ARCHIVES,Archives,CORE,SPECIFIED
+PH6-0076,PH6-0076 — Memory Pyramid,08_ARCHIVES/Memory_Objects/PH6-0076_Memory_Pyramid.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0078,PH6-0078 — Memory Importance Rating,08_ARCHIVES/Memory_Objects/PH6-0078_Memory_Importance_Rating.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0079,PH6-0079 — Memory Graph,08_ARCHIVES/Memory_Objects/PH6-0079_Memory_Graph.md,08_ARCHIVES,Archives,CORE,SPECIFIED
+PH6-0081,PH6-0081 — Idea Family Trees,08_ARCHIVES/Memory_Objects/PH6-0081_Idea_Family_Trees.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0085,PH6-0085 — Living Museum,08_ARCHIVES/Memory_Objects/PH6-0085_Living_Museum.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0098,PH6-0098 — Archives Terminology,08_ARCHIVES/Memory_Objects/PH6-0098_Archives_Terminology.md,08_ARCHIVES,Archives,CORE,SPECIFIED
+REC-0785,REC-0785 — Mechanical Archive Stamp,08_ARCHIVES/Memory_Objects/REC-0785_Mechanical_Archive_Stamp.md,08_ARCHIVES,Animation / Sound,P1,Recovered / Specification Draft
+REC-0632,REC-0632 — Memory Pyramid,08_ARCHIVES/Memory_Objects/REC-0632_Memory_Pyramid.md,08_ARCHIVES,Archives / Time,P0,Recovered / Specification Draft
+REC-0634,REC-0634 — Memory Graph,08_ARCHIVES/Memory_Objects/REC-0634_Memory_Graph.md,08_ARCHIVES,Archives / Time,P1,Recovered / Specification Draft
+REC-0637,REC-0637 — Memory Confidence,08_ARCHIVES/Memory_Objects/REC-0637_Memory_Confidence.md,08_ARCHIVES,Archives / Time,P0,Recovered / Specification Draft
+REC-0640,REC-0640 — Time Architecture,08_ARCHIVES/Memory_Objects/REC-0640_Time_Architecture.md,08_ARCHIVES,Archives / Time,P0,Recovered / Specification Draft
+REC-0641,REC-0641 — Three Clocks,08_ARCHIVES/Memory_Objects/REC-0641_Three_Clocks.md,08_ARCHIVES,Archives / Time,P1,Recovered / Specification Draft
+REC-0644,REC-0644 — Strategic Patience,08_ARCHIVES/Memory_Objects/REC-0644_Strategic_Patience.md,08_ARCHIVES,Archives / Time,P1,Recovered / Specification Draft
+REC-0645,REC-0645 — Future Archive Shelves,08_ARCHIVES/Memory_Objects/REC-0645_Future_Archive_Shelves.md,08_ARCHIVES,Archives / Time,P2,Recovered / Specification Draft
+PH1-0015,PH1-0015 — SOP Versioning,08_ARCHIVES/Doctrine/PH1-0015_SOP_Versioning.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH1-0016,PH1-0016 — Rule Provenance,08_ARCHIVES/Doctrine/PH1-0016_Rule_Provenance.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH1-0017,PH1-0017 — Rule Book Living Operations Manual,08_ARCHIVES/Doctrine/PH1-0017_Rule_Book_Living_Operations_Manual.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH2-0011,PH2-0011 — Dynamic Doctrine Retirement,08_ARCHIVES/Doctrine/PH2-0011_Dynamic_Doctrine_Retirement.md,08_ARCHIVES,Doctrine,IMPORTANT,SPECIFIED
+PH2-0025,PH2-0025 — Cost of Breaking Doctrine Display,08_ARCHIVES/Doctrine/PH2-0025_Cost_of_Breaking_Doctrine_Display.md,08_ARCHIVES,Interface,IMPORTANT,SPECIFIED
+PH2-0063,PH2-0063 — Doctrine Not Editable During Combat,08_ARCHIVES/Doctrine/PH2-0063_Doctrine_Not_Editable_During_Combat.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH2-0066,PH2-0066 — We Do Not Repeat Expensive Lessons,08_ARCHIVES/Doctrine/PH2-0066_We_Do_Not_Repeat_Expensive_Lessons.md,08_ARCHIVES,Doctrine,FOUNDATIONAL,SPECIFIED
+PH2-0074,PH2-0074 — Doctrine Printer,08_ARCHIVES/Doctrine/PH2-0074_Doctrine_Printer.md,08_ARCHIVES,Environment,IMPORTANT,SPECIFIED
+PH2-0130,PH2-0130 — Doctrine 014 Winning Creates Responsibility,08_ARCHIVES/Doctrine/PH2-0130_Doctrine_014_Winning_Creates_Responsibility.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH4-0030,PH4-0030 — Outcome Not Supported By Doctrine Classification,08_ARCHIVES/Doctrine/PH4-0030_Outcome_Not_Supported_By_Doctrine_Classification.md,08_ARCHIVES,Operations,IMPORTANT,SPECIFIED
+PH4-0035,PH4-0035 — Doctrine Does Not Negotiate With Emotion,08_ARCHIVES/Doctrine/PH4-0035_Doctrine_Does_Not_Negotiate_With_Emotion.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH6-0002,PH6-0002 — Doctrine Levels,08_ARCHIVES/Doctrine/PH6-0002_Doctrine_Levels.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH6-0003,PH6-0003 — Evidence Collection Started State,08_ARCHIVES/Doctrine/PH6-0003_Evidence_Collection_Started_State.md,08_ARCHIVES,Doctrine,IMPORTANT,SPECIFIED
+PH6-0004,PH6-0004 — Doctrine Printer Ceremony,08_ARCHIVES/Doctrine/PH6-0004_Doctrine_Printer_Ceremony.md,08_ARCHIVES,Experience,IMPORTANT,SPECIFIED
+PH6-0006,PH6-0006 — Rule Graveyard,08_ARCHIVES/Doctrine/PH6-0006_Rule_Graveyard.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+PH6-0007,PH6-0007 — Doctrine Wars,08_ARCHIVES/Doctrine/PH6-0007_Doctrine_Wars.md,08_ARCHIVES,Research,IMPORTANT,SPECIFIED
+PH6-0011,PH6-0011 — Doctrine Confidence,08_ARCHIVES/Doctrine/PH6-0011_Doctrine_Confidence.md,08_ARCHIVES,Doctrine,CORE,SPECIFIED
+PH6-0013,PH6-0013 — Operational Doctrine Trees,08_ARCHIVES/Doctrine/PH6-0013_Operational_Doctrine_Trees.md,08_ARCHIVES,Doctrine,IMPORTANT,SPECIFIED
+REC-0798,REC-0798 — SQLite Archive Doctrine,08_ARCHIVES/Doctrine/REC-0798_SQLite_Archive_Doctrine.md,08_ARCHIVES,Archives,P0,Recovered / Specification Draft
+REC-0647,REC-0647 — Archives Naming Doctrine,08_ARCHIVES/Doctrine/REC-0647_Archives_Naming_Doctrine.md,08_ARCHIVES,Archives / Time,P0,Recovered / Specification Draft
+REC-0807,REC-0807 — Doctrine Wars,08_ARCHIVES/Doctrine/REC-0807_Doctrine_Wars.md,08_ARCHIVES,Doctrine,P2,Recovered / Specification Draft
+REC-0808,REC-0808 — Myth Library,08_ARCHIVES/Doctrine/REC-0808_Myth_Library.md,08_ARCHIVES,Doctrine,P1,Recovered / Specification Draft
+REC-0809,REC-0809 — Doctrine Cemetery,08_ARCHIVES/Doctrine/REC-0809_Doctrine_Cemetery.md,08_ARCHIVES,Doctrine,P1,Recovered / Specification Draft
+REC-0760,REC-0760 — Evolution Doctrine,08_ARCHIVES/Doctrine/REC-0760_Evolution_Doctrine.md,08_ARCHIVES,Legacy,P0,Recovered / Specification Draft
+PH6-0029,PH6-0029 — Legacy Archive,08_ARCHIVES/Legacy/PH6-0029_Legacy_Archive.md,08_ARCHIVES,Archives,IMPORTANT,SPECIFIED
+REC-0636,REC-0636 — Time Capsule Ceremony,08_ARCHIVES/Legacy/REC-0636_Time_Capsule_Ceremony.md,08_ARCHIVES,Archives / Time,P2,Recovered / Specification Draft
+REC-0753,REC-0753 — Archive of Removed Features,08_ARCHIVES/Legacy/REC-0753_Archive_of_Removed_Features.md,08_ARCHIVES,Legacy,P2,Recovered / Specification Draft
+HQOS-0001,HQOS-0001 — Everything Is An Event,07_HQOS/Kernel/HQOS-0001_Everything_Is_An_Event.md,07_HQOS,HQOS / Architecture,CORE,Registered
+HQOS-0002,HQOS-0002 — Respond Not React Principle,07_HQOS/Kernel/HQOS-0002_Respond_Not_React_Principle.md,07_HQOS,HQOS / Behavior,CORE,Registered
+HQOS-0003,HQOS-0003 — One Truth Architecture,07_HQOS/Kernel/HQOS-0003_One_Truth_Architecture.md,07_HQOS,HQOS / Data,CORE,Registered
+HQOS-0004,HQOS-0004 — Context Awareness Layer,07_HQOS/Kernel/HQOS-0004_Context_Awareness_Layer.md,07_HQOS,HQOS / Context,CORE,Registered
+HQOS-0005,HQOS-0005 — Mission Kernel,07_HQOS/Kernel/HQOS-0005_Mission_Kernel.md,07_HQOS,HQOS / State Machine,CORE,Registered
+HQOS-0006,HQOS-0006 — Consciousness Loop,07_HQOS/Kernel/HQOS-0006_Consciousness_Loop.md,07_HQOS,HQOS / Loop,CORE,Registered
+HQOS-0007,HQOS-0007 — Behavioral Resource Management,07_HQOS/Kernel/HQOS-0007_Behavioral_Resource_Management.md,07_HQOS,HQOS / Resources,IMPORTANT,Registered
+HQOS-0008,HQOS-0008 — Behavioral Threads,07_HQOS/Kernel/HQOS-0008_Behavioral_Threads.md,07_HQOS,HQOS / Architecture,IMPORTANT,Registered
+HQOS-0009,HQOS-0009 — Interrupt Handling,07_HQOS/Kernel/HQOS-0009_Interrupt_Handling.md,07_HQOS,HQOS / Priority,CORE,Registered
+HQOS-0010,HQOS-0010 — Background Services,07_HQOS/Kernel/HQOS-0010_Background_Services.md,07_HQOS,HQOS / Services,CORE,Registered
+HQOS-0011,HQOS-0011 — Operational Anomaly Handling,07_HQOS/Kernel/HQOS-0011_Operational_Anomaly_Handling.md,07_HQOS,HQOS / Error Handling,CORE,Registered
+HQOS-0012,HQOS-0012 — Department Bus,07_HQOS/Kernel/HQOS-0012_Department_Bus.md,07_HQOS,HQOS / Event Routing,CORE,Registered
+HQOS-0013,HQOS-0013 — Core Loop,07_HQOS/Kernel/HQOS-0013_Core_Loop.md,07_HQOS,HQOS / Kernel,CORE,Registered
+PH2-0001,PH2-0001 — Cold Boot Sequence,07_HQOS/Kernel/PH2-0001_Cold_Boot_Sequence.md,07_HQOS,Experience,CORE,SPECIFIED
+PH2-0083,PH2-0083 — Passive Observation,07_HQOS/Kernel/PH2-0083_Passive_Observation.md,07_HQOS,HQOS,CORE,SPECIFIED
+PH5-0069,PH5-0069 — Five Engines Architecture,07_HQOS/Kernel/PH5-0069_Five_Engines_Architecture.md,07_HQOS,HQOS,CORE,SPECIFIED
+PH5-0075,PH5-0075 — Shift Changes,07_HQOS/Kernel/PH5-0075_Shift_Changes.md,07_HQOS,HQOS,IMPORTANT,SPECIFIED
+PH6-0053,PH6-0053 — Authority Levels,07_HQOS/Kernel/PH6-0053_Authority_Levels.md,07_HQOS,HQOS,IMPORTANT,SPECIFIED
+REC-0730,REC-0730 — HQOS Kernel,07_HQOS/Kernel/REC-0730_HQOS_Kernel.md,07_HQOS,HQOS,P0,Recovered / Specification Draft
+REC-0736,REC-0736 — Operational Anomaly Handling,07_HQOS/Kernel/REC-0736_Operational_Anomaly_Handling.md,07_HQOS,HQOS,P1,Recovered / Specification Draft
+REC-0781,REC-0781 — Shutdown Conclude Operations,07_HQOS/Kernel/REC-0781_Shutdown_Conclude_Operations.md,07_HQOS,Interface,P1,Recovered / Specification Draft
+PH6-0080,PH6-0080 — Historical Events,07_HQOS/Event_Bus/PH6-0080_Historical_Events.md,07_HQOS,Archives,IMPORTANT,SPECIFIED
+REC-0731,REC-0731 — Everything Is An Event,07_HQOS/Event_Bus/REC-0731_Everything_Is_An_Event.md,07_HQOS,HQOS,P0,Recovered / Specification Draft
+REC-0735,REC-0735 — Night Operations Service,07_HQOS/Background_Services/REC-0735_Night_Operations_Service.md,07_HQOS,HQOS,P1,Recovered / Specification Draft
+INTNET-0001,INTNET-0001 — Intelligence Network,06_INTELLIGENCE/Network/INTNET-0001_Intelligence_Network.md,06_INTELLIGENCE,Intelligence / Architecture,CORE,Registered
+INTNET-0002,INTNET-0002 — Secure Department Network,06_INTELLIGENCE/Network/INTNET-0002_Secure_Department_Network.md,06_INTELLIGENCE,Intelligence / Architecture,CORE,Registered
+INTNET-0003,INTNET-0003 — Intelligence Feed,06_INTELLIGENCE/Network/INTNET-0003_Intelligence_Feed.md,06_INTELLIGENCE,Intelligence / Messaging,CORE,Registered
+INTNET-0004,INTNET-0004 — Institutional Consensus Response,06_INTELLIGENCE/Network/INTNET-0004_Institutional_Consensus_Response.md,06_INTELLIGENCE,AI / Council,CORE,Registered
+INTNET-0005,INTNET-0005 — Priority Messaging Levels,06_INTELLIGENCE/Network/INTNET-0005_Priority_Messaging_Levels.md,06_INTELLIGENCE,Intelligence / Protocol,CORE,Registered
+INTNET-0006,INTNET-0006 — Silent Department Communication,06_INTELLIGENCE/Network/INTNET-0006_Silent_Department_Communication.md,06_INTELLIGENCE,Institution / Background,IMPORTANT,Registered
+INTNET-0007,INTNET-0007 — Intelligence Case Lifecycle,06_INTELLIGENCE/Network/INTNET-0007_Intelligence_Case_Lifecycle.md,06_INTELLIGENCE,Intelligence / Research,IMPORTANT,Registered
+INTNET-0008,INTNET-0008 — Founder Review Protocol,06_INTELLIGENCE/Network/INTNET-0008_Founder_Review_Protocol.md,06_INTELLIGENCE,Legacy / Governance,CORE,Registered
+INTNET-0009,INTNET-0009 — Request Traceability,06_INTELLIGENCE/Network/INTNET-0009_Request_Traceability.md,06_INTELLIGENCE,Engineering / Audit,CORE,Registered
+COG-0001,COG-0001 — Cognitive Architecture,06_INTELLIGENCE/Cognition/COG-0001_Cognitive_Architecture.md,06_INTELLIGENCE,Intelligence / Brain,CORE,Registered
+COG-0002,COG-0002 — Council Deliberation Delay,06_INTELLIGENCE/Cognition/COG-0002_Council_Deliberation_Delay.md,06_INTELLIGENCE,AI / Interaction,IMPORTANT,Registered
+COG-0003,COG-0003 — Memory Before Intelligence Rule,06_INTELLIGENCE/Cognition/COG-0003_Memory_Before_Intelligence_Rule.md,06_INTELLIGENCE,AI / Reasoning,CORE,Registered
+COG-0004,COG-0004 — Three Institutional Questions,06_INTELLIGENCE/Cognition/COG-0004_Three_Institutional_Questions.md,06_INTELLIGENCE,AI / Reasoning,CORE,Registered
+COG-0005,COG-0005 — Single Operator Model,06_INTELLIGENCE/Cognition/COG-0005_Single_Operator_Model.md,06_INTELLIGENCE,AI / Data,CORE,Registered
+COG-0006,COG-0006 — Ghost Simulation Principle,06_INTELLIGENCE/Cognition/COG-0006_Ghost_Simulation_Principle.md,06_INTELLIGENCE,AI / Ghost,CORE,Registered
+COG-0007,COG-0007 — Historian Investigation Principle,06_INTELLIGENCE/Cognition/COG-0007_Historian_Investigation_Principle.md,06_INTELLIGENCE,AI / Historian,CORE,Registered
+COG-0008,COG-0008 — Guardian Negotiation Principle,06_INTELLIGENCE/Cognition/COG-0008_Guardian_Negotiation_Principle.md,06_INTELLIGENCE,AI / Guardian,CORE,Registered
+COG-0009,COG-0009 — Working Memory,06_INTELLIGENCE/Cognition/COG-0009_Working_Memory.md,06_INTELLIGENCE,AI / Memory,CORE,Registered
+COG-0010,COG-0010 — Long Memory,06_INTELLIGENCE/Cognition/COG-0010_Long_Memory.md,06_INTELLIGENCE,AI / Memory,CORE,Registered
+COG-0011,COG-0011 — Reflection Engine,06_INTELLIGENCE/Cognition/COG-0011_Reflection_Engine.md,06_INTELLIGENCE,AI / Night Operations,IMPORTANT,Registered
+COG-0012,COG-0012 — Curiosity Engine,06_INTELLIGENCE/Cognition/COG-0012_Curiosity_Engine.md,06_INTELLIGENCE,AI / Research,IMPORTANT,Registered
+COG-0013,COG-0013 — Wisdom Engine,06_INTELLIGENCE/Cognition/COG-0013_Wisdom_Engine.md,06_INTELLIGENCE,AI / Philosophy,IMPORTANT,Registered
+PH2-0012,PH2-0012 — Airlock Countdown,06_INTELLIGENCE/Behavior_Analysis/PH2-0012_Airlock_Countdown.md,06_INTELLIGENCE,Ritual,CORE,SPECIFIED
+PH2-0042,PH2-0042 — Calm Reinforcement Messages,06_INTELLIGENCE/Behavior_Analysis/PH2-0042_Calm_Reinforcement_Messages.md,06_INTELLIGENCE,AI,IMPORTANT,SPECIFIED
+PH2-0080,PH2-0080 — Enemy Intelligence Board,06_INTELLIGENCE/Behavior_Analysis/PH2-0080_Enemy_Intelligence_Board.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH2-0107,PH2-0107 — Intelligence Wall,06_INTELLIGENCE/Behavior_Analysis/PH2-0107_Intelligence_Wall.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH2-0111,PH2-0111 — Red Team,06_INTELLIGENCE/Behavior_Analysis/PH2-0111_Red_Team.md,06_INTELLIGENCE,Intelligence,IMPORTANT,SPECIFIED
+PH4-0023,PH4-0023 — Statement Inconsistency Detection,06_INTELLIGENCE/Behavior_Analysis/PH4-0023_Statement_Inconsistency_Detection.md,06_INTELLIGENCE,AI,CORE,SPECIFIED
+PH4-0029,PH4-0029 — Lucky Win Investigation,06_INTELLIGENCE/Behavior_Analysis/PH4-0029_Lucky_Win_Investigation.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH4-0042,PH4-0042 — Ninety Five Percent Silence Rule,06_INTELLIGENCE/Behavior_Analysis/PH4-0042_Ninety_Five_Percent_Silence_Rule.md,06_INTELLIGENCE,AI,IMPORTANT,SPECIFIED
+PH4-0043,PH4-0043 — AI Feels Experienced Not Intelligent,06_INTELLIGENCE/Behavior_Analysis/PH4-0043_AI_Feels_Experienced_Not_Intelligent.md,06_INTELLIGENCE,AI,CORE,SPECIFIED
+PH4-0045,PH4-0045 — No Flattery Rule,06_INTELLIGENCE/Behavior_Analysis/PH4-0045_No_Flattery_Rule.md,06_INTELLIGENCE,AI,FOUNDATIONAL,SPECIFIED
+PH4-0049,PH4-0049 — Maintenance Days,06_INTELLIGENCE/Behavior_Analysis/PH4-0049_Maintenance_Days.md,06_INTELLIGENCE,Operations,IMPORTANT,SPECIFIED
+PH4-0059,PH4-0059 — Evidence Threshold For Interventions,06_INTELLIGENCE/Behavior_Analysis/PH4-0059_Evidence_Threshold_For_Interventions.md,06_INTELLIGENCE,AI,CORE,SPECIFIED
+PH4-0061,PH4-0061 — Decision Graph,06_INTELLIGENCE/Behavior_Analysis/PH4-0061_Decision_Graph.md,06_INTELLIGENCE,System,IMPORTANT,SPECIFIED
+PH4-0063,PH4-0063 — Career Brain,06_INTELLIGENCE/Behavior_Analysis/PH4-0063_Career_Brain.md,06_INTELLIGENCE,System,IMPORTANT,SPECIFIED
+PH4-0069,PH4-0069 — Accident Chain Reconstruction,06_INTELLIGENCE/Behavior_Analysis/PH4-0069_Accident_Chain_Reconstruction.md,06_INTELLIGENCE,Archives,CORE,SPECIFIED
+PH4-0072,PH4-0072 — Chain Of Failure,06_INTELLIGENCE/Behavior_Analysis/PH4-0072_Chain_Of_Failure.md,06_INTELLIGENCE,Archives,CORE,SPECIFIED
+PH4-0073,PH4-0073 — Chain Of Excellence,06_INTELLIGENCE/Behavior_Analysis/PH4-0073_Chain_Of_Excellence.md,06_INTELLIGENCE,Archives,IMPORTANT,SPECIFIED
+PH4-0074,PH4-0074 — Butterfly Effect Engine,06_INTELLIGENCE/Behavior_Analysis/PH4-0074_Butterfly_Effect_Engine.md,06_INTELLIGENCE,AI,IMPORTANT,SPECIFIED
+PH4-0075,PH4-0075 — Point Of No Return Detection,06_INTELLIGENCE/Behavior_Analysis/PH4-0075_Point_Of_No_Return_Detection.md,06_INTELLIGENCE,AI,IMPORTANT,SPECIFIED
+PH4-0076,PH4-0076 — Intervention Ladder,06_INTELLIGENCE/Behavior_Analysis/PH4-0076_Intervention_Ladder.md,06_INTELLIGENCE,AI,CORE,SPECIFIED
+PH5-0010,PH5-0010 — Decision Graph,06_INTELLIGENCE/Behavior_Analysis/PH5-0010_Decision_Graph.md,06_INTELLIGENCE,Operations,CORE,SPECIFIED
+PH5-0012,PH5-0012 — Career Brain,06_INTELLIGENCE/Behavior_Analysis/PH5-0012_Career_Brain.md,06_INTELLIGENCE,Archives,CORE,SPECIFIED
+PH5-0020,PH5-0020 — Chain of Failure,06_INTELLIGENCE/Behavior_Analysis/PH5-0020_Chain_of_Failure.md,06_INTELLIGENCE,Archives,CORE,SPECIFIED
+PH5-0021,PH5-0021 — Chain of Excellence,06_INTELLIGENCE/Behavior_Analysis/PH5-0021_Chain_of_Excellence.md,06_INTELLIGENCE,Archives,IMPORTANT,SPECIFIED
+PH5-0022,PH5-0022 — Butterfly Effect Engine,06_INTELLIGENCE/Behavior_Analysis/PH5-0022_Butterfly_Effect_Engine.md,06_INTELLIGENCE,Intelligence,IMPORTANT,SPECIFIED
+PH5-0033,PH5-0033 — Project Chimera,06_INTELLIGENCE/Behavior_Analysis/PH5-0033_Project_Chimera.md,06_INTELLIGENCE,Intelligence,IMPORTANT,SPECIFIED
+PH5-0047,PH5-0047 — Decision Integrity Engine,06_INTELLIGENCE/Behavior_Analysis/PH5-0047_Decision_Integrity_Engine.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH5-0048,PH5-0048 — Decision Weighting,06_INTELLIGENCE/Behavior_Analysis/PH5-0048_Decision_Weighting.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH5-0055,PH5-0055 — Decision Pressure Map,06_INTELLIGENCE/Behavior_Analysis/PH5-0055_Decision_Pressure_Map.md,06_INTELLIGENCE,Intelligence,IMPORTANT,SPECIFIED
+PH5-0085,PH5-0085 — Intervention Confidence Scoring,06_INTELLIGENCE/Behavior_Analysis/PH5-0085_Intervention_Confidence_Scoring.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH6-0001,PH6-0001 — Doctrine Engine,06_INTELLIGENCE/Behavior_Analysis/PH6-0001_Doctrine_Engine.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH6-0009,PH6-0009 — False Rule Detection,06_INTELLIGENCE/Behavior_Analysis/PH6-0009_False_Rule_Detection.md,06_INTELLIGENCE,Intelligence,IMPORTANT,SPECIFIED
+PH6-0014,PH6-0014 — Personal Laws of Nature,06_INTELLIGENCE/Behavior_Analysis/PH6-0014_Personal_Laws_of_Nature.md,06_INTELLIGENCE,Intelligence,IMPORTANT,SPECIFIED
+PH6-0025,PH6-0025 — Skill Maintenance,06_INTELLIGENCE/Behavior_Analysis/PH6-0025_Skill_Maintenance.md,06_INTELLIGENCE,Academy,IMPORTANT,SPECIFIED
+PH6-0061,PH6-0061 — Monday Flag Raising Ceremony,06_INTELLIGENCE/Behavior_Analysis/PH6-0061_Monday_Flag_Raising_Ceremony.md,06_INTELLIGENCE,Experience,IMPORTANT,SPECIFIED
+REC-0710,REC-0710 — Intelligence Network,06_INTELLIGENCE/Behavior_Analysis/REC-0710_Intelligence_Network.md,06_INTELLIGENCE,Intelligence,P0,Recovered / Specification Draft
+REC-0713,REC-0713 — Intelligence Cases,06_INTELLIGENCE/Behavior_Analysis/REC-0713_Intelligence_Cases.md,06_INTELLIGENCE,Intelligence,P1,Recovered / Specification Draft
+REC-0720,REC-0720 — Cognitive Architecture,06_INTELLIGENCE/Behavior_Analysis/REC-0720_Cognitive_Architecture.md,06_INTELLIGENCE,Intelligence,P0,Recovered / Specification Draft
+REC-0723,REC-0723 — Working Memory and Long Memory,06_INTELLIGENCE/Behavior_Analysis/REC-0723_Working_Memory_and_Long_Memory.md,06_INTELLIGENCE,Intelligence,P0,Recovered / Specification Draft
+REC-0724,REC-0724 — Reflection Engine,06_INTELLIGENCE/Behavior_Analysis/REC-0724_Reflection_Engine.md,06_INTELLIGENCE,Intelligence,P1,Recovered / Specification Draft
+REC-0725,REC-0725 — Curiosity Engine,06_INTELLIGENCE/Behavior_Analysis/REC-0725_Curiosity_Engine.md,06_INTELLIGENCE,Intelligence,P1,Recovered / Specification Draft
+REC-0804,REC-0804 — Red Team Counterargument,06_INTELLIGENCE/Behavior_Analysis/REC-0804_Red_Team_Counterargument.md,06_INTELLIGENCE,Intelligence,P1,Recovered / Specification Draft
+REC-0805,REC-0805 — Blue Team Doctrine QA,06_INTELLIGENCE/Behavior_Analysis/REC-0805_Blue_Team_Doctrine_QA.md,06_INTELLIGENCE,Intelligence,P1,Recovered / Specification Draft
+PH4-0070,PH4-0070 — Precursor Library,06_INTELLIGENCE/Pattern_Recognition/PH4-0070_Precursor_Library.md,06_INTELLIGENCE,AI,CORE,SPECIFIED
+PH5-0032,PH5-0032 — Precursor Library,06_INTELLIGENCE/Pattern_Recognition/PH5-0032_Precursor_Library.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH4-0058,PH4-0058 — Ghost Baseline Calibration,06_INTELLIGENCE/Ghost/PH4-0058_Ghost_Baseline_Calibration.md,06_INTELLIGENCE,AI,CORE,SPECIFIED
+PH5-0007,PH5-0007 — Ghost Baseline Calibration,06_INTELLIGENCE/Ghost/PH5-0007_Ghost_Baseline_Calibration.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH5-0039,PH5-0039 — Ghost Evolution Engine,06_INTELLIGENCE/Ghost/PH5-0039_Ghost_Evolution_Engine.md,06_INTELLIGENCE,Intelligence,CORE,SPECIFIED
+PH5-0040,PH5-0040 — Ghost Comparison,06_INTELLIGENCE/Ghost/PH5-0040_Ghost_Comparison.md,06_INTELLIGENCE,Interface,CORE,SPECIFIED
+PH5-0017,PH5-0017 — Black Box Final Sixty Minutes,06_INTELLIGENCE/Black_Box/PH5-0017_Black_Box_Final_Sixty_Minutes.md,06_INTELLIGENCE,Archives,CORE,SPECIFIED
+OPS-0001,OPS-0001 — Mission Lifecycle,05_OPERATIONS/Protocols/OPS-0001_Mission_Lifecycle.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0002,OPS-0002 — Campaign Lifecycle,05_OPERATIONS/Protocols/OPS-0002_Campaign_Lifecycle.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0003,OPS-0003 — Funded Mode / Guardian Protocol,05_OPERATIONS/Protocols/OPS-0003_Funded_Mode_Guardian_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0004,OPS-0004 — Success Protocol,05_OPERATIONS/Protocols/OPS-0004_Success_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0005,OPS-0005 — Operation Sunset,05_OPERATIONS/Protocols/OPS-0005_Operation_Sunset.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0006,OPS-0006 — Golden Week Protocol,05_OPERATIONS/Protocols/OPS-0006_Golden_Week_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0007,OPS-0007 — Weekend Protocol,05_OPERATIONS/Protocols/OPS-0007_Weekend_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0008,OPS-0008 — Profit Defense Procedure,05_OPERATIONS/Protocols/OPS-0008_Profit_Defense_Procedure.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0009,OPS-0009 — Damage Control Procedure,05_OPERATIONS/Protocols/OPS-0009_Damage_Control_Procedure.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0010,OPS-0010 — Drawdown Recovery Procedure,05_OPERATIONS/Protocols/OPS-0010_Drawdown_Recovery_Procedure.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0011,OPS-0011 — Winning Streak Protocol,05_OPERATIONS/Protocols/OPS-0011_Winning_Streak_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0012,OPS-0012 — Re-entry Protocol,05_OPERATIONS/Protocols/OPS-0012_Re_entry_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0013,OPS-0013 — Missed Trade Protocol,05_OPERATIONS/Protocols/OPS-0013_Missed_Trade_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0014,OPS-0014 — Observation Protocol,05_OPERATIONS/Protocols/OPS-0014_Observation_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0015,OPS-0015 — Authorization Protocol,05_OPERATIONS/Protocols/OPS-0015_Authorization_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0016,OPS-0016 — Override Protocol,05_OPERATIONS/Protocols/OPS-0016_Override_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0017,OPS-0017 — Lockdown Mode,05_OPERATIONS/Protocols/OPS-0017_Lockdown_Mode.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0018,OPS-0018 — Red Button / Emergency Protocol,05_OPERATIONS/Protocols/OPS-0018_Red_Button_Emergency_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0019,OPS-0019 — Return to Base,05_OPERATIONS/Protocols/OPS-0019_Return_to_Base.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0020,OPS-0020 — Shift Log,05_OPERATIONS/Protocols/OPS-0020_Shift_Log.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0021,OPS-0021 — Night Operations,05_OPERATIONS/Protocols/OPS-0021_Night_Operations.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0022,OPS-0022 — Airlock Protocol,05_OPERATIONS/Protocols/OPS-0022_Airlock_Protocol.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0023,OPS-0023 — Daily Oath,05_OPERATIONS/Protocols/OPS-0023_Daily_Oath.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0024,OPS-0024 — Founder’s Oath,05_OPERATIONS/Protocols/OPS-0024_Founder_s_Oath.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0025,OPS-0025 — Custodian Oath,05_OPERATIONS/Protocols/OPS-0025_Custodian_Oath.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0026,OPS-0026 — Oath Renewal,05_OPERATIONS/Protocols/OPS-0026_Oath_Renewal.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0027,OPS-0027 — Equipment Check,05_OPERATIONS/Protocols/OPS-0027_Equipment_Check.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0028,OPS-0028 — Rules of Engagement,05_OPERATIONS/Protocols/OPS-0028_Rules_of_Engagement.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0029,OPS-0029 — Exceptional Authorization,05_OPERATIONS/Protocols/OPS-0029_Exceptional_Authorization.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0030,OPS-0030 — Internal Tribunal,05_OPERATIONS/Protocols/OPS-0030_Internal_Tribunal.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0031,OPS-0031 — Doctrine Validation,05_OPERATIONS/Protocols/OPS-0031_Doctrine_Validation.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0032,OPS-0032 — Doctrine Wars,05_OPERATIONS/Protocols/OPS-0032_Doctrine_Wars.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0033,OPS-0033 — Doctrine Retirement,05_OPERATIONS/Protocols/OPS-0033_Doctrine_Retirement.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0034,OPS-0034 — Myth Investigation,05_OPERATIONS/Protocols/OPS-0034_Myth_Investigation.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0035,OPS-0035 — Quarterly Review,05_OPERATIONS/Protocols/OPS-0035_Quarterly_Review.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0036,OPS-0036 — Annual Stewardship Review,05_OPERATIONS/Protocols/OPS-0036_Annual_Stewardship_Review.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0037,OPS-0037 — Graduation Test,05_OPERATIONS/Protocols/OPS-0037_Graduation_Test.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0038,OPS-0038 — No Weekend Trading Commandment,05_OPERATIONS/Protocols/OPS-0038_No_Weekend_Trading_Commandment.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0039,OPS-0039 — No Trade Without Invalidation,05_OPERATIONS/Protocols/OPS-0039_No_Trade_Without_Invalidation.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0040,OPS-0040 — Never Move Stop Emotionally,05_OPERATIONS/Protocols/OPS-0040_Never_Move_Stop_Emotionally.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0041,OPS-0041 — Never Chase,05_OPERATIONS/Protocols/OPS-0041_Never_Chase.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0042,OPS-0042 — Winning Creates Responsibility,05_OPERATIONS/Protocols/OPS-0042_Winning_Creates_Responsibility.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0043,OPS-0043 — We Do Not Repeat Expensive Lessons,05_OPERATIONS/Protocols/OPS-0043_We_Do_Not_Repeat_Expensive_Lessons.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0044,OPS-0044 — Battlefield Independence,05_OPERATIONS/Protocols/OPS-0044_Battlefield_Independence.md,05_OPERATIONS,Operations / Protocol / Doctrine,CORE,Registered / Specification Draft
+OPS-0045,OPS-0045 — Mission Control Principle,05_OPERATIONS/Protocols/OPS-0045_Mission_Control_Principle.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0046,OPS-0046 — Second Screen Philosophy,05_OPERATIONS/Protocols/OPS-0046_Second_Screen_Philosophy.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0047,OPS-0047 — Manual Confirmation Fallback,05_OPERATIONS/Protocols/OPS-0047_Manual_Confirmation_Fallback.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0048,OPS-0048 — Tactical Overlay,05_OPERATIONS/Protocols/OPS-0048_Tactical_Overlay.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0049,OPS-0049 — Historical Replay Simulation,05_OPERATIONS/Protocols/OPS-0049_Historical_Replay_Simulation.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+OPS-0050,OPS-0050 — Academy Field Exercises,05_OPERATIONS/Protocols/OPS-0050_Academy_Field_Exercises.md,05_OPERATIONS,Operations / Protocol / Doctrine,IMPORTANT,Registered / Specification Draft
+TIME-0001,TIME-0001 — Time Architecture,05_OPERATIONS/Time_Architecture/TIME-0001_Time_Architecture.md,05_OPERATIONS,Operations / Time,CORE,Registered
+TIME-0002,TIME-0002 — Three Clocks,05_OPERATIONS/Time_Architecture/TIME-0002_Three_Clocks.md,05_OPERATIONS,Interface / Time,IMPORTANT,Registered
+TIME-0003,TIME-0003 — Long War Perspective,05_OPERATIONS/Time_Architecture/TIME-0003_Long_War_Perspective.md,05_OPERATIONS,Operations / Psychology,CORE,Registered
+TIME-0004,TIME-0004 — Career Timeline,05_OPERATIONS/Time_Architecture/TIME-0004_Career_Timeline.md,05_OPERATIONS,Legacy / Time,IMPORTANT,Registered
+TIME-0005,TIME-0005 — Operator Seasons,05_OPERATIONS/Time_Architecture/TIME-0005_Operator_Seasons.md,05_OPERATIONS,Operations / Seasons,IMPORTANT,Registered
+TIME-0006,TIME-0006 — Campaign Objective System,05_OPERATIONS/Time_Architecture/TIME-0006_Campaign_Objective_System.md,05_OPERATIONS,Operations / Campaigns,CORE,Registered
+TIME-0007,TIME-0007 — Three Forms of Patience,05_OPERATIONS/Time_Architecture/TIME-0007_Three_Forms_of_Patience.md,05_OPERATIONS,Operator / Psychology,IMPORTANT,Registered
+TIME-0008,TIME-0008 — Campaign Room,05_OPERATIONS/Time_Architecture/TIME-0008_Campaign_Room.md,05_OPERATIONS,Building / Strategy,IMPORTANT,Registered
+TIME-0009,TIME-0009 — Mission Drift Detection,05_OPERATIONS/Time_Architecture/TIME-0009_Mission_Drift_Detection.md,05_OPERATIONS,Operations / Detection,CORE,Registered
+TIME-0010,TIME-0010 — Strategic Map,05_OPERATIONS/Time_Architecture/TIME-0010_Strategic_Map.md,05_OPERATIONS,Interface / Legacy,IMPORTANT,Registered
+TIME-0011,TIME-0011 — Future Archive Shelves,05_OPERATIONS/Time_Architecture/TIME-0011_Future_Archive_Shelves.md,05_OPERATIONS,Legacy / Symbolism,OPTIONAL,Registered
+TIME-0012,TIME-0012 — Institutional Maturity Metric,05_OPERATIONS/Time_Architecture/TIME-0012_Institutional_Maturity_Metric.md,05_OPERATIONS,Legacy / Institution,IMPORTANT,Registered
+TIME-0013,TIME-0013 — Archives Naming Doctrine,05_OPERATIONS/Time_Architecture/TIME-0013_Archives_Naming_Doctrine.md,05_OPERATIONS,Archives / Language,CORE,Registered
+TIME-0014,TIME-0014 — First Debrief vs Current Debrief Reflection,05_OPERATIONS/Time_Architecture/TIME-0014_First_Debrief_vs_Current_Debrief_Reflection.md,05_OPERATIONS,Legacy / Experience,IMPORTANT,Registered
+RHY-0001,RHY-0001 — Rhythm Engine,05_OPERATIONS/Rhythm_Engine/RHY-0001_Rhythm_Engine.md,05_OPERATIONS,Operations / Rhythm,CORE,Registered
+RHY-0002,RHY-0002 — Daily Operational Rhythm,05_OPERATIONS/Rhythm_Engine/RHY-0002_Daily_Operational_Rhythm.md,05_OPERATIONS,Operations / Routine,CORE,Registered
+RHY-0003,RHY-0003 — Weekly Operational Rhythm,05_OPERATIONS/Rhythm_Engine/RHY-0003_Weekly_Operational_Rhythm.md,05_OPERATIONS,Operations / Routine,IMPORTANT,Registered
+RHY-0004,RHY-0004 — Monday Ceremony,05_OPERATIONS/Rhythm_Engine/RHY-0004_Monday_Ceremony.md,05_OPERATIONS,Ceremony / Weekly,IMPORTANT,Registered
+RHY-0005,RHY-0005 — Friday Campaign Closure,05_OPERATIONS/Rhythm_Engine/RHY-0005_Friday_Campaign_Closure.md,05_OPERATIONS,Ceremony / Weekly,IMPORTANT,Registered
+RHY-0006,RHY-0006 — Monthly Council Review,05_OPERATIONS/Rhythm_Engine/RHY-0006_Monthly_Council_Review.md,05_OPERATIONS,Ceremony / Monthly,IMPORTANT,Registered
+RHY-0007,RHY-0007 — Seasonal Headquarters Changes,05_OPERATIONS/Rhythm_Engine/RHY-0007_Seasonal_Headquarters_Changes.md,05_OPERATIONS,Building / Seasonality,OPTIONAL,Registered
+RHY-0008,RHY-0008 — Annual Review Ceremony,05_OPERATIONS/Rhythm_Engine/RHY-0008_Annual_Review_Ceremony.md,05_OPERATIONS,Ceremony / Annual,IMPORTANT,Registered
+RHY-0009,RHY-0009 — Scheduled Silence,05_OPERATIONS/Rhythm_Engine/RHY-0009_Scheduled_Silence.md,05_OPERATIONS,Operations / Silence,IMPORTANT,Registered
+RHY-0010,RHY-0010 — Institutional Bell Policy,05_OPERATIONS/Rhythm_Engine/RHY-0010_Institutional_Bell_Policy.md,05_OPERATIONS,Interface / Sound,IMPORTANT,Registered
+PH0-0011,PH0-0011 — Mission State Machine,05_OPERATIONS/Mission_Lifecycle/PH0-0011_Mission_State_Machine.md,05_OPERATIONS,HQOS,CORE,SPECIFIED
+PH0-0012,PH0-0012 — Mission History Not Trade History,05_OPERATIONS/Mission_Lifecycle/PH0-0012_Mission_History_Not_Trade_History.md,05_OPERATIONS,Archives,CORE,SPECIFIED
+PH2-0014,PH2-0014 — Mission Clock,05_OPERATIONS/Mission_Lifecycle/PH2-0014_Mission_Clock.md,05_OPERATIONS,Interface,IMPORTANT,SPECIFIED
+PH2-0019,PH2-0019 — Mission Patches,05_OPERATIONS/Mission_Lifecycle/PH2-0019_Mission_Patches.md,05_OPERATIONS,Recognition,IMPORTANT,SPECIFIED
+PH1-0001,PH1-0001 — SOP-001 Mission Start Procedure,05_OPERATIONS/Mission_Lifecycle/PH1-0001_SOP_001_Mission_Start_Procedure.md,05_OPERATIONS,SOP,CORE,SPECIFIED
+PH2-0009,PH2-0009 — Mission Report,05_OPERATIONS/Mission_Lifecycle/PH2-0009_Mission_Report.md,05_OPERATIONS,Operations,CORE,SPECIFIED
+PH2-0018,PH2-0018 — Mission Capital Terminology,05_OPERATIONS/Mission_Lifecycle/PH2-0018_Mission_Capital_Terminology.md,05_OPERATIONS,Language,CORE,SPECIFIED
+PH2-0028,PH2-0028 — Mission Readiness Report,05_OPERATIONS/Mission_Lifecycle/PH2-0028_Mission_Readiness_Report.md,05_OPERATIONS,Operations,CORE,SPECIFIED
+PH2-0037,PH2-0037 — Mission Seal,05_OPERATIONS/Mission_Lifecycle/PH2-0037_Mission_Seal.md,05_OPERATIONS,Archives,IMPORTANT,SPECIFIED
+PH2-0046,PH2-0046 — Mission Friction,05_OPERATIONS/Mission_Lifecycle/PH2-0046_Mission_Friction.md,05_OPERATIONS,Operations,CORE,SPECIFIED
+PH2-0113,PH2-0113 — Mission Simulation,05_OPERATIONS/Mission_Lifecycle/PH2-0113_Mission_Simulation.md,05_OPERATIONS,Academy,IMPORTANT,SPECIFIED
+PH4-0011,PH4-0011 — Mission Control Typography,05_OPERATIONS/Mission_Lifecycle/PH4-0011_Mission_Control_Typography.md,05_OPERATIONS,Interface,IMPORTANT,SPECIFIED
+PH4-0047,PH4-0047 — Mission Recorder,05_OPERATIONS/Mission_Lifecycle/PH4-0047_Mission_Recorder.md,05_OPERATIONS,Archives,CORE,SPECIFIED
+PH4-0064,PH4-0064 — Mission Similarity Search,05_OPERATIONS/Mission_Lifecycle/PH4-0064_Mission_Similarity_Search.md,05_OPERATIONS,AI,CORE,SPECIFIED
+PH4-0071,PH4-0071 — Mission Timeline,05_OPERATIONS/Mission_Lifecycle/PH4-0071_Mission_Timeline.md,05_OPERATIONS,Interface,CORE,SPECIFIED
+PH4-0077,PH4-0077 — Mission Pulse,05_OPERATIONS/Mission_Lifecycle/PH4-0077_Mission_Pulse.md,05_OPERATIONS,Interface,IMPORTANT,SPECIFIED
+PH4-0078,PH4-0078 — Mission DNA,05_OPERATIONS/Mission_Lifecycle/PH4-0078_Mission_DNA.md,05_OPERATIONS,Archives,IMPORTANT,SPECIFIED
+PH5-0013,PH5-0013 — Mission Similarity Search,05_OPERATIONS/Mission_Lifecycle/PH5-0013_Mission_Similarity_Search.md,05_OPERATIONS,Intelligence,CORE,SPECIFIED
+PH5-0018,PH5-0018 — Mission Timeline,05_OPERATIONS/Mission_Lifecycle/PH5-0018_Mission_Timeline.md,05_OPERATIONS,Operations,CORE,SPECIFIED
+PH5-0023,PH5-0023 — Mission Forks,05_OPERATIONS/Mission_Lifecycle/PH5-0023_Mission_Forks.md,05_OPERATIONS,Operations,IMPORTANT,SPECIFIED
+PH5-0027,PH5-0027 — Mission DNA,05_OPERATIONS/Mission_Lifecycle/PH5-0027_Mission_DNA.md,05_OPERATIONS,Archives,IMPORTANT,SPECIFIED
+PH5-0036,PH5-0036 — Mission Momentum Engine,05_OPERATIONS/Mission_Lifecycle/PH5-0036_Mission_Momentum_Engine.md,05_OPERATIONS,Operations,IMPORTANT,SPECIFIED
+PH6-0058,PH6-0058 — Permission To Deploy,05_OPERATIONS/Mission_Lifecycle/PH6-0058_Permission_To_Deploy.md,05_OPERATIONS,Operations,CORE,SPECIFIED
+PH6-0075,PH6-0075 — Five Mission Artifacts,05_OPERATIONS/Mission_Lifecycle/PH6-0075_Five_Mission_Artifacts.md,05_OPERATIONS,Archives,CORE,SPECIFIED
+REC-0631,REC-0631 — Five Mission Artifacts,05_OPERATIONS/Mission_Lifecycle/REC-0631_Five_Mission_Artifacts.md,05_OPERATIONS,Archives / Time,P0,Recovered / Specification Draft
+REC-0635,REC-0635 — Saved Missions Ledger,05_OPERATIONS/Mission_Lifecycle/REC-0635_Saved_Missions_Ledger.md,05_OPERATIONS,Archives / Time,P1,Recovered / Specification Draft
+REC-0732,REC-0732 — Mission Kernel,05_OPERATIONS/Mission_Lifecycle/REC-0732_Mission_Kernel.md,05_OPERATIONS,HQOS,P0,Recovered / Specification Draft
+REC-0650,REC-0650 — Operational Cycle,05_OPERATIONS/Mission_Lifecycle/REC-0650_Operational_Cycle.md,05_OPERATIONS,Operations,P0,Recovered / Specification Draft
+REC-0802,REC-0802 — Manual Mission Deploy Fallback,05_OPERATIONS/Mission_Lifecycle/REC-0802_Manual_Mission_Deploy_Fallback.md,05_OPERATIONS,Operations,P0,Recovered / Specification Draft
+PH4-0051,PH4-0051 — Living Campaign Map,05_OPERATIONS/Campaigns/PH4-0051_Living_Campaign_Map.md,05_OPERATIONS,Interface,IMPORTANT,SPECIFIED
+PH6-0077,PH6-0077 — Campaign Books,05_OPERATIONS/Campaigns/PH6-0077_Campaign_Books.md,05_OPERATIONS,Archives,IMPORTANT,SPECIFIED
+REC-0633,REC-0633 — Campaign Books,05_OPERATIONS/Campaigns/REC-0633_Campaign_Books.md,05_OPERATIONS,Archives / Time,P1,Recovered / Specification Draft
+REC-0642,REC-0642 — Career Status Campaign Interrupted Career Continues,05_OPERATIONS/Campaigns/REC-0642_Career_Status_Campaign_Interrupted_Career_Continues.md,05_OPERATIONS,Archives / Time,P1,Recovered / Specification Draft
+REC-0741,REC-0741 — Monday Campaign Ceremony,05_OPERATIONS/Campaigns/REC-0741_Monday_Campaign_Ceremony.md,05_OPERATIONS,Operations,P1,Recovered / Specification Draft
+PH0-0009,PH0-0009 — Edge Quality Score,05_OPERATIONS/Authorization/PH0-0009_Edge_Quality_Score.md,05_OPERATIONS,Authorization,CORE,SPECIFIED
+PH1-0004,PH1-0004 — SOP-004 Mission Authorization,05_OPERATIONS/Authorization/PH1-0004_SOP_004_Mission_Authorization.md,05_OPERATIONS,SOP,CORE,SPECIFIED
+PH2-0017,PH2-0017 — Capital Deployment Language,05_OPERATIONS/Authorization/PH2-0017_Capital_Deployment_Language.md,05_OPERATIONS,Language,CORE,SPECIFIED
+PH2-0029,PH2-0029 — Deployment Ritual,05_OPERATIONS/Authorization/PH2-0029_Deployment_Ritual.md,05_OPERATIONS,Ceremony,CORE,SPECIFIED
+PH6-0008,PH6-0008 — Exceptional Authorization,05_OPERATIONS/Authorization/PH6-0008_Exceptional_Authorization.md,05_OPERATIONS,Operations,CORE,SPECIFIED
+REC-0653,REC-0653 — Deployment Window,05_OPERATIONS/Authorization/REC-0653_Deployment_Window.md,05_OPERATIONS,Operations,P0,Recovered / Specification Draft
+PH5-0049,PH5-0049 — Critical Decision Tree,05_OPERATIONS/Debrief/PH5-0049_Critical_Decision_Tree.md,05_OPERATIONS,Debrief,IMPORTANT,SPECIFIED
+PH5-0086,PH5-0086 — Mission Reconstruction View,05_OPERATIONS/Debrief/PH5-0086_Mission_Reconstruction_View.md,05_OPERATIONS,Debrief,CORE,SPECIFIED
+PH5-0087,PH5-0087 — Alternative Timeline View,05_OPERATIONS/Debrief/PH5-0087_Alternative_Timeline_View.md,05_OPERATIONS,Debrief,IMPORTANT,SPECIFIED
+PH5-0088,PH5-0088 — Decision Quality vs Execution Score,05_OPERATIONS/Debrief/PH5-0088_Decision_Quality_vs_Execution_Score.md,05_OPERATIONS,Debrief,CORE,SPECIFIED
+PH2-0051,PH2-0051 — Mission Bell,05_OPERATIONS/Ceremonies/PH2-0051_Mission_Bell.md,05_OPERATIONS,Audio,IMPORTANT,SPECIFIED
+PH2-0129,PH2-0129 — Operation Sunset,05_OPERATIONS/Ceremonies/PH2-0129_Operation_Sunset.md,05_OPERATIONS,Ceremony,IMPORTANT,SPECIFIED
+SYS-0001,SYS-0001 — Professional Joe,04_OPERATOR/Systems/SYS-0001_Professional_Joe.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0002,SYS-0002 — Civilian Joe,04_OPERATOR/Systems/SYS-0002_Civilian_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0003,SYS-0003 — Impatient Joe,04_OPERATOR/Systems/SYS-0003_Impatient_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0004,SYS-0004 — Greedy Joe,04_OPERATOR/Systems/SYS-0004_Greedy_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0005,SYS-0005 — Fearful Joe,04_OPERATOR/Systems/SYS-0005_Fearful_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0006,SYS-0006 — Guardian Joe,04_OPERATOR/Systems/SYS-0006_Guardian_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0007,SYS-0007 — Observer Joe,04_OPERATOR/Systems/SYS-0007_Observer_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0008,SYS-0008 — Research Joe,04_OPERATOR/Systems/SYS-0008_Research_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0009,SYS-0009 — Instructor Joe,04_OPERATOR/Systems/SYS-0009_Instructor_Joe.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0010,SYS-0010 — Command Authority Engine,04_OPERATOR/Systems/SYS-0010_Command_Authority_Engine.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0011,SYS-0011 — Identity Drift Engine,04_OPERATOR/Systems/SYS-0011_Identity_Drift_Engine.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0012,SYS-0012 — Operator Compass,04_OPERATOR/Systems/SYS-0012_Operator_Compass.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0013,SYS-0013 — Artificial Horizon,04_OPERATOR/Systems/SYS-0013_Artificial_Horizon.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0014,SYS-0014 — Behavioral Gravity,04_OPERATOR/Systems/SYS-0014_Behavioral_Gravity.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0015,SYS-0015 — Decision DNA,04_OPERATOR/Systems/SYS-0015_Decision_DNA.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0016,SYS-0016 — Mission DNA,04_OPERATOR/Systems/SYS-0016_Mission_DNA.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0017,SYS-0017 — Behavioral Cascades,04_OPERATOR/Systems/SYS-0017_Behavioral_Cascades.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0018,SYS-0018 — Precursor Library,04_OPERATOR/Systems/SYS-0018_Precursor_Library.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0019,SYS-0019 — Behavioral Black Box,04_OPERATOR/Systems/SYS-0019_Behavioral_Black_Box.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0020,SYS-0020 — Mission Timeline,04_OPERATOR/Systems/SYS-0020_Mission_Timeline.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0021,SYS-0021 — Decision Nodes,04_OPERATOR/Systems/SYS-0021_Decision_Nodes.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0022,SYS-0022 — Point of No Return,04_OPERATOR/Systems/SYS-0022_Point_of_No_Return.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0023,SYS-0023 — Intervention Ladder,04_OPERATOR/Systems/SYS-0023_Intervention_Ladder.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0024,SYS-0024 — Operator Forecast,04_OPERATOR/Systems/SYS-0024_Operator_Forecast.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0025,SYS-0025 — Operational Pressure,04_OPERATOR/Systems/SYS-0025_Operational_Pressure.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0026,SYS-0026 — Mission Momentum,04_OPERATOR/Systems/SYS-0026_Mission_Momentum.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0027,SYS-0027 — Confidence Ceiling,04_OPERATOR/Systems/SYS-0027_Confidence_Ceiling.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0028,SYS-0028 — Phrase Library,04_OPERATOR/Systems/SYS-0028_Phrase_Library.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0029,SYS-0029 — Recovery Signature,04_OPERATOR/Systems/SYS-0029_Recovery_Signature.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0030,SYS-0030 — Decision Integrity Engine,04_OPERATOR/Systems/SYS-0030_Decision_Integrity_Engine.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0031,SYS-0031 — Decision Debt,04_OPERATOR/Systems/SYS-0031_Decision_Debt.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0032,SYS-0032 — Discipline Interest,04_OPERATOR/Systems/SYS-0032_Discipline_Interest.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0033,SYS-0033 — Decision Pressure Map,04_OPERATOR/Systems/SYS-0033_Decision_Pressure_Map.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0034,SYS-0034 — Judgment Reserve,04_OPERATOR/Systems/SYS-0034_Judgment_Reserve.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0035,SYS-0035 — Decision Latency,04_OPERATOR/Systems/SYS-0035_Decision_Latency.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0036,SYS-0036 — Noise Floor,04_OPERATOR/Systems/SYS-0036_Noise_Floor.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0037,SYS-0037 — Mental Environment Monitor,04_OPERATOR/Systems/SYS-0037_Mental_Environment_Monitor.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0038,SYS-0038 — Cognitive Bandwidth,04_OPERATOR/Systems/SYS-0038_Cognitive_Bandwidth.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0039,SYS-0039 — Operational Load,04_OPERATOR/Systems/SYS-0039_Operational_Load.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0040,SYS-0040 — Discipline Reserve,04_OPERATOR/Systems/SYS-0040_Discipline_Reserve.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0041,SYS-0041 — Patience Meter,04_OPERATOR/Systems/SYS-0041_Patience_Meter.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0042,SYS-0042 — Synchronization System,04_OPERATOR/Systems/SYS-0042_Synchronization_System.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0043,SYS-0043 — Tactical Breathing,04_OPERATOR/Systems/SYS-0043_Tactical_Breathing.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0044,SYS-0044 — Mission Temperature,04_OPERATOR/Systems/SYS-0044_Mission_Temperature.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0045,SYS-0045 — Trust Index,04_OPERATOR/Systems/SYS-0045_Trust_Index.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0046,SYS-0046 — Trust Vault Deposits,04_OPERATOR/Systems/SYS-0046_Trust_Vault_Deposits.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0047,SYS-0047 — Stewardship Engine,04_OPERATOR/Systems/SYS-0047_Stewardship_Engine.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0048,SYS-0048 — Capital Integrity,04_OPERATOR/Systems/SYS-0048_Capital_Integrity.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0049,SYS-0049 — Guardian Integrity,04_OPERATOR/Systems/SYS-0049_Guardian_Integrity.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0050,SYS-0050 — Command Ledger,04_OPERATOR/Systems/SYS-0050_Command_Ledger.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0051,SYS-0051 — Headquarters Integrity,04_OPERATOR/Systems/SYS-0051_Headquarters_Integrity.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0052,SYS-0052 — Mission Integrity,04_OPERATOR/Systems/SYS-0052_Mission_Integrity.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0053,SYS-0053 — Operational Readiness Score,04_OPERATOR/Systems/SYS-0053_Operational_Readiness_Score.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0054,SYS-0054 — Threat Level / DEFCON,04_OPERATOR/Systems/SYS-0054_Threat_Level_DEFCON.md,04_OPERATOR,Operator / Behavior System,CORE,Registered / Specification Draft
+SYS-0055,SYS-0055 — Account Killer Score,04_OPERATOR/Systems/SYS-0055_Account_Killer_Score.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0056,SYS-0056 — Edge Quality Score,04_OPERATOR/Systems/SYS-0056_Edge_Quality_Score.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0057,SYS-0057 — Execution XP,04_OPERATOR/Systems/SYS-0057_Execution_XP.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0058,SYS-0058 — Legacy Projection,04_OPERATOR/Systems/SYS-0058_Legacy_Projection.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0059,SYS-0059 — Career Constitution,04_OPERATOR/Systems/SYS-0059_Career_Constitution.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+SYS-0060,SYS-0060 — Personal Laws of Nature,04_OPERATOR/Systems/SYS-0060_Personal_Laws_of_Nature.md,04_OPERATOR,Operator / Behavior System,IMPORTANT,Registered / Specification Draft
+TRUST-0001,TRUST-0001 — Trust Engine,04_OPERATOR/Trust/TRUST-0001_Trust_Engine.md,04_OPERATOR,Operator / Trust,CORE,Registered
+TRUST-0002,TRUST-0002 — First Save Recognition,04_OPERATOR/Trust/TRUST-0002_First_Save_Recognition.md,04_OPERATOR,Trust / Milestone,IMPORTANT,Registered
+TRUST-0003,TRUST-0003 — Evidence Insufficient Response,04_OPERATOR/Trust/TRUST-0003_Evidence_Insufficient_Response.md,04_OPERATOR,AI / Communication,CORE,Registered
+TRUST-0004,TRUST-0004 — Recommendation Confidence Display,04_OPERATOR/Trust/TRUST-0004_Recommendation_Confidence_Display.md,04_OPERATOR,AI / Transparency,CORE,Registered
+TRUST-0005,TRUST-0005 — Broken Trust Review,04_OPERATOR/Trust/TRUST-0005_Broken_Trust_Review.md,04_OPERATOR,Institution / Self-Correction,IMPORTANT,Registered
+TRUST-0006,TRUST-0006 — Headquarters Self Audit,04_OPERATOR/Trust/TRUST-0006_Headquarters_Self_Audit.md,04_OPERATOR,Engineering / Trust,CORE,Registered
+TRUST-0007,TRUST-0007 — Operator Listening Style Model,04_OPERATOR/Trust/TRUST-0007_Operator_Listening_Style_Model.md,04_OPERATOR,AI / Personalization,IMPORTANT,Registered
+TRUST-0008,TRUST-0008 — Commander Silence Over Time,04_OPERATOR/Trust/TRUST-0008_Commander_Silence_Over_Time.md,04_OPERATOR,AI / Maturity,IMPORTANT,Registered
+TRUST-0009,TRUST-0009 — Non-Dependence Principle,04_OPERATOR/Trust/TRUST-0009_Non_Dependence_Principle.md,04_OPERATOR,Constitution / Trust,CORE,Registered
+TRUST-0010,TRUST-0010 — Trust Equation,04_OPERATOR/Trust/TRUST-0010_Trust_Equation.md,04_OPERATOR,Constitution / Trust,IMPORTANT,Registered
+TRUST-0011,TRUST-0011 — Credibility Protection Rule,04_OPERATOR/Trust/TRUST-0011_Credibility_Protection_Rule.md,04_OPERATOR,Engineering / Trust,CORE,Registered
+PH2-0116,PH2-0116 — Confidence Versus Trust Wall,04_OPERATOR/Trust/PH2-0116_Confidence_Versus_Trust_Wall.md,04_OPERATOR,Trust,CORE,SPECIFIED
+PH2-0002,PH2-0002 — Operator Identity File,04_OPERATOR/Identity/PH2-0002_Operator_Identity_File.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH2-0035,PH2-0035 — Future Operator,04_OPERATOR/Identity/PH2-0035_Future_Operator.md,04_OPERATOR,Identity,IMPORTANT,SPECIFIED
+PH2-0120,PH2-0120 — Identity Drift Curve,04_OPERATOR/Identity/PH2-0120_Identity_Drift_Curve.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH2-0124,PH2-0124 — Identity Engine Roles,04_OPERATOR/Identity/PH2-0124_Identity_Engine_Roles.md,04_OPERATOR,Identity,CORE,SPECIFIED
+PH2-0147,PH2-0147 — Votes For Identity,04_OPERATOR/Identity/PH2-0147_Votes_For_Identity.md,04_OPERATOR,Identity,FOUNDATIONAL,SPECIFIED
+PH4-0056,PH4-0056 — Identity Drift Algorithm,04_OPERATOR/Identity/PH4-0056_Identity_Drift_Algorithm.md,04_OPERATOR,System,CORE,SPECIFIED
+PH4-0057,PH4-0057 — Identity Drift Vector Model,04_OPERATOR/Identity/PH4-0057_Identity_Drift_Vector_Model.md,04_OPERATOR,System,IMPORTANT,SPECIFIED
+PH4-0065,PH4-0065 — Future Identity Simulator,04_OPERATOR/Identity/PH4-0065_Future_Identity_Simulator.md,04_OPERATOR,AI,IMPORTANT,SPECIFIED
+PH5-0005,PH5-0005 — Identity Drift Engine,04_OPERATOR/Identity/PH5-0005_Identity_Drift_Engine.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH5-0006,PH5-0006 — Identity Drift Compass Space,04_OPERATOR/Identity/PH5-0006_Identity_Drift_Compass_Space.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH5-0014,PH5-0014 — Future Identity Simulator,04_OPERATOR/Identity/PH5-0014_Future_Identity_Simulator.md,04_OPERATOR,Intelligence,IMPORTANT,SPECIFIED
+PH5-0082,PH5-0082 — Identity Stability Metric,04_OPERATOR/Identity/PH5-0082_Identity_Stability_Metric.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH6-0026,PH6-0026 — Identity Insurance Policy,04_OPERATOR/Identity/PH6-0026_Identity_Insurance_Policy.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH6-0031,PH6-0031 — Professional Identity Management,04_OPERATOR/Identity/PH6-0031_Professional_Identity_Management.md,04_OPERATOR,Operator,CORE,SPECIFIED
+REC-0780,REC-0780 — Boot Sequence Identity Check,04_OPERATOR/Identity/REC-0780_Boot_Sequence_Identity_Check.md,04_OPERATOR,Interface,P0,Recovered / Specification Draft
+PH0-0004,PH0-0004 — Operational Readiness Score,04_OPERATOR/Behavioral_Systems/PH0-0004_Operational_Readiness_Score.md,04_OPERATOR,Behavior System,CORE,SPECIFIED
+PH0-0005,PH0-0005 — Mission Integrity Score,04_OPERATOR/Behavioral_Systems/PH0-0005_Mission_Integrity_Score.md,04_OPERATOR,Behavior System,CORE,SPECIFIED
+PH0-0007,PH0-0007 — Execution XP,04_OPERATOR/Behavioral_Systems/PH0-0007_Execution_XP.md,04_OPERATOR,Behavior System,IMPORTANT,SPECIFIED
+PH2-0013,PH2-0013 — Daily Operator Oath,04_OPERATOR/Behavioral_Systems/PH2-0013_Daily_Operator_Oath.md,04_OPERATOR,Ritual,CORE,SPECIFIED
+PH2-0020,PH2-0020 — Operator Presence Detection,04_OPERATOR/Behavioral_Systems/PH2-0020_Operator_Presence_Detection.md,04_OPERATOR,Behavior,IMPORTANT,SPECIFIED
+PH2-0026,PH2-0026 — Operator Shadow,04_OPERATOR/Behavioral_Systems/PH2-0026_Operator_Shadow.md,04_OPERATOR,Experience,OPTIONAL,SPECIFIED
+PH2-0031,PH2-0031 — Patience Acknowledgement,04_OPERATOR/Behavioral_Systems/PH2-0031_Patience_Acknowledgement.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH2-0033,PH2-0033 — Mission Temperature,04_OPERATOR/Behavioral_Systems/PH2-0033_Mission_Temperature.md,04_OPERATOR,Behavior,IMPORTANT,SPECIFIED
+PH2-0043,PH2-0043 — Patience Meter Internal,04_OPERATOR/Behavioral_Systems/PH2-0043_Patience_Meter_Internal.md,04_OPERATOR,Behavior,IMPORTANT,SPECIFIED
+PH2-0048,PH2-0048 — Operational Tempo Detection,04_OPERATOR/Behavioral_Systems/PH2-0048_Operational_Tempo_Detection.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH2-0064,PH2-0064 — Negotiation Detection,04_OPERATOR/Behavioral_Systems/PH2-0064_Negotiation_Detection.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH2-0118,PH2-0118 — Bargaining Language Detection,04_OPERATOR/Behavioral_Systems/PH2-0118_Bargaining_Language_Detection.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH2-0119,PH2-0119 — Decision DNA,04_OPERATOR/Behavioral_Systems/PH2-0119_Decision_DNA.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH2-0122,PH2-0122 — Personal Battlefield,04_OPERATOR/Behavioral_Systems/PH2-0122_Personal_Battlefield.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH4-0046,PH4-0046 — Discipline Reserve,04_OPERATOR/Behavioral_Systems/PH4-0046_Discipline_Reserve.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH4-0053,PH4-0053 — Behavioral Engine,04_OPERATOR/Behavioral_Systems/PH4-0053_Behavioral_Engine.md,04_OPERATOR,System,CORE,SPECIFIED
+PH4-0055,PH4-0055 — Behavioral Fingerprints,04_OPERATOR/Behavioral_Systems/PH4-0055_Behavioral_Fingerprints.md,04_OPERATOR,System,CORE,SPECIFIED
+PH4-0062,PH4-0062 — Behavioral Gravity,04_OPERATOR/Behavioral_Systems/PH4-0062_Behavioral_Gravity.md,04_OPERATOR,System,IMPORTANT,SPECIFIED
+PH4-0068,PH4-0068 — Behavioral Black Box,04_OPERATOR/Behavioral_Systems/PH4-0068_Behavioral_Black_Box.md,04_OPERATOR,Archives,CORE,SPECIFIED
+PH4-0080,PH4-0080 — Behavioral Cascade Detection,04_OPERATOR/Behavioral_Systems/PH4-0080_Behavioral_Cascade_Detection.md,04_OPERATOR,System,CORE,SPECIFIED
+PH5-0001,PH5-0001 — Behavioral Engine,04_OPERATOR/Behavioral_Systems/PH5-0001_Behavioral_Engine.md,04_OPERATOR,Intelligence,CORE,SPECIFIED
+PH5-0003,PH5-0003 — Command Stability Model,04_OPERATOR/Behavioral_Systems/PH5-0003_Command_Stability_Model.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH5-0004,PH5-0004 — Behavioral Fingerprints,04_OPERATOR/Behavioral_Systems/PH5-0004_Behavioral_Fingerprints.md,04_OPERATOR,Intelligence,CORE,SPECIFIED
+PH5-0011,PH5-0011 — Behavioral Gravity,04_OPERATOR/Behavioral_Systems/PH5-0011_Behavioral_Gravity.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH5-0016,PH5-0016 — Behavioral Black Box,04_OPERATOR/Behavioral_Systems/PH5-0016_Behavioral_Black_Box.md,04_OPERATOR,Archives,CORE,SPECIFIED
+PH5-0026,PH5-0026 — Mission Pulse,04_OPERATOR/Behavioral_Systems/PH5-0026_Mission_Pulse.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH5-0031,PH5-0031 — Behavioral Cascade Engine,04_OPERATOR/Behavioral_Systems/PH5-0031_Behavioral_Cascade_Engine.md,04_OPERATOR,Intelligence,CORE,SPECIFIED
+PH5-0051,PH5-0051 — Decision Debt,04_OPERATOR/Behavioral_Systems/PH5-0051_Decision_Debt.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH5-0052,PH5-0052 — Discipline Interest,04_OPERATOR/Behavioral_Systems/PH5-0052_Discipline_Interest.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH5-0053,PH5-0053 — Tactical Compass,04_OPERATOR/Behavioral_Systems/PH5-0053_Tactical_Compass.md,04_OPERATOR,Interface,CORE,SPECIFIED
+PH5-0054,PH5-0054 — Headquarters Balance,04_OPERATOR/Behavioral_Systems/PH5-0054_Headquarters_Balance.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH5-0059,PH5-0059 — Operator Seasons,04_OPERATOR/Behavioral_Systems/PH5-0059_Operator_Seasons.md,04_OPERATOR,Operations,IMPORTANT,SPECIFIED
+PH5-0062,PH5-0062 — Operator Compass,04_OPERATOR/Behavioral_Systems/PH5-0062_Operator_Compass.md,04_OPERATOR,Interface,CORE,SPECIFIED
+PH5-0063,PH5-0063 — Behavioral Gyroscope,04_OPERATOR/Behavioral_Systems/PH5-0063_Behavioral_Gyroscope.md,04_OPERATOR,Interface,IMPORTANT,SPECIFIED
+PH5-0064,PH5-0064 — Artificial Horizon,04_OPERATOR/Behavioral_Systems/PH5-0064_Artificial_Horizon.md,04_OPERATOR,Interface,CORE,SPECIFIED
+PH5-0068,PH5-0068 — Behavioral Recorder,04_OPERATOR/Behavioral_Systems/PH5-0068_Behavioral_Recorder.md,04_OPERATOR,Archives,CORE,SPECIFIED
+PH5-0083,PH5-0083 — Professional Alignment Score,04_OPERATOR/Behavioral_Systems/PH5-0083_Professional_Alignment_Score.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH5-0084,PH5-0084 — Behavior Match Confidence,04_OPERATOR/Behavioral_Systems/PH5-0084_Behavior_Match_Confidence.md,04_OPERATOR,Intelligence,CORE,SPECIFIED
+PH6-0017,PH6-0017 — Success Drift,04_OPERATOR/Behavioral_Systems/PH6-0017_Success_Drift.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH6-0018,PH6-0018 — Confidence Ceiling,04_OPERATOR/Behavioral_Systems/PH6-0018_Confidence_Ceiling.md,04_OPERATOR,Behavior,IMPORTANT,SPECIFIED
+PH6-0024,PH6-0024 — Decay Engine,04_OPERATOR/Behavioral_Systems/PH6-0024_Decay_Engine.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+PH6-0048,PH6-0048 — Command Authority Detection,04_OPERATOR/Behavioral_Systems/PH6-0048_Command_Authority_Detection.md,04_OPERATOR,Operator,CORE,SPECIFIED
+PH6-0060,PH6-0060 — Operator Passport,04_OPERATOR/Behavioral_Systems/PH6-0060_Operator_Passport.md,04_OPERATOR,Operator,IMPORTANT,SPECIFIED
+PH6-0092,PH6-0092 — Operator Seasons,04_OPERATOR/Behavioral_Systems/PH6-0092_Operator_Seasons.md,04_OPERATOR,Operations,IMPORTANT,SPECIFIED
+PH6-0095,PH6-0095 — Mission Drift Detection,04_OPERATOR/Behavioral_Systems/PH6-0095_Mission_Drift_Detection.md,04_OPERATOR,Behavior,CORE,SPECIFIED
+REC-0643,REC-0643 — Operator Seasons,04_OPERATOR/Behavioral_Systems/REC-0643_Operator_Seasons.md,04_OPERATOR,Archives / Time,P1,Recovered / Specification Draft
+REC-0722,REC-0722 — Operator Model Single Truth,04_OPERATOR/Behavioral_Systems/REC-0722_Operator_Model_Single_Truth.md,04_OPERATOR,Intelligence,P0,Recovered / Specification Draft
+REC-0610,REC-0610 — Chain of Command,04_OPERATOR/Behavioral_Systems/REC-0610_Chain_of_Command.md,04_OPERATOR,Operator / Command,P0,Recovered / Specification Draft
+REC-0612,REC-0612 — Command Transfer Ceremony,04_OPERATOR/Behavioral_Systems/REC-0612_Command_Transfer_Ceremony.md,04_OPERATOR,Operator / Command,P1,Recovered / Specification Draft
+REC-0613,REC-0613 — Emergency Succession,04_OPERATOR/Behavioral_Systems/REC-0613_Emergency_Succession.md,04_OPERATOR,Operator / Command,P1,Recovered / Specification Draft
+REC-0614,REC-0614 — Rules of Engagement,04_OPERATOR/Behavioral_Systems/REC-0614_Rules_of_Engagement.md,04_OPERATOR,Operator / Command,P0,Recovered / Specification Draft
+REC-0615,REC-0615 — Authority Levels,04_OPERATOR/Behavioral_Systems/REC-0615_Authority_Levels.md,04_OPERATOR,Operator / Command,P1,Recovered / Specification Draft
+REC-0616,REC-0616 — Command Ledger,04_OPERATOR/Behavioral_Systems/REC-0616_Command_Ledger.md,04_OPERATOR,Operator / Command,P0,Recovered / Specification Draft
+REC-0617,REC-0617 — Operational Readiness Conditions,04_OPERATOR/Behavioral_Systems/REC-0617_Operational_Readiness_Conditions.md,04_OPERATOR,Operator / Command,P1,Recovered / Specification Draft
+REC-0619,REC-0619 — Last Resort Protocol,04_OPERATOR/Behavioral_Systems/REC-0619_Last_Resort_Protocol.md,04_OPERATOR,Operator / Command,P1,Recovered / Specification Draft
+REC-0690,REC-0690 — Stewardship Engine,04_OPERATOR/Judgment/REC-0690_Stewardship_Engine.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0691,REC-0691 — Capital Under Protection Language,04_OPERATOR/Judgment/REC-0691_Capital_Under_Protection_Language.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0692,REC-0692 — Stewards Desk,04_OPERATOR/Judgment/REC-0692_Stewards_Desk.md,04_OPERATOR,Stewardship / Judgment,P1,Recovered / Specification Draft
+REC-0694,REC-0694 — Custodian Oath,04_OPERATOR/Judgment/REC-0694_Custodian_Oath.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0695,REC-0695 — Capital Integrity,04_OPERATOR/Judgment/REC-0695_Capital_Integrity.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0696,REC-0696 — Success Burden,04_OPERATOR/Judgment/REC-0696_Success_Burden.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0700,REC-0700 — Judgment Engine,04_OPERATOR/Judgment/REC-0700_Judgment_Engine.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0701,REC-0701 — Judgment Reserve,04_OPERATOR/Judgment/REC-0701_Judgment_Reserve.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0702,REC-0702 — Decision Fatigue Counter,04_OPERATOR/Judgment/REC-0702_Decision_Fatigue_Counter.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0703,REC-0703 — Decision Precision,04_OPERATOR/Judgment/REC-0703_Decision_Precision.md,04_OPERATOR,Stewardship / Judgment,P0,Recovered / Specification Draft
+REC-0704,REC-0704 — Mental Noise Detector,04_OPERATOR/Judgment/REC-0704_Mental_Noise_Detector.md,04_OPERATOR,Stewardship / Judgment,P1,Recovered / Specification Draft
+REC-0705,REC-0705 — Noise Floor,04_OPERATOR/Judgment/REC-0705_Noise_Floor.md,04_OPERATOR,Stewardship / Judgment,P1,Recovered / Specification Draft
+REC-0706,REC-0706 — Decision Latency Graph,04_OPERATOR/Judgment/REC-0706_Decision_Latency_Graph.md,04_OPERATOR,Stewardship / Judgment,P1,Recovered / Specification Draft
+REC-0708,REC-0708 — Judgment Echoes,04_OPERATOR/Judgment/REC-0708_Judgment_Echoes.md,04_OPERATOR,Stewardship / Judgment,P2,Recovered / Specification Draft
+REC-0743,REC-0743 — Annual Stewardship Review,04_OPERATOR/Stewardship/REC-0743_Annual_Stewardship_Review.md,04_OPERATOR,Operations,P1,Recovered / Specification Draft
+PH1-0011,PH1-0011 — SOP-011 Drawdown Recovery Procedure,04_OPERATOR/Recovery/PH1-0011_SOP_011_Drawdown_Recovery_Procedure.md,04_OPERATOR,SOP,CORE,SPECIFIED
+PH2-0086,PH2-0086 — Recovery Window,04_OPERATOR/Recovery/PH2-0086_Recovery_Window.md,04_OPERATOR,Recovery,IMPORTANT,SPECIFIED
+,Command Center,03_BUILDING/Rooms/Command_Center.md,03_BUILDING,,,
+,Ready Room,03_BUILDING/Rooms/Ready_Room.md,03_BUILDING,,,
+,Observation Room,03_BUILDING/Rooms/Observation_Room.md,03_BUILDING,,,
+,War Room,03_BUILDING/Rooms/War_Room.md,03_BUILDING,,,
+,Guardian Wing,03_BUILDING/Rooms/Guardian_Wing.md,03_BUILDING,,,
+,Mirror Room,03_BUILDING/Rooms/Mirror_Room.md,03_BUILDING,,,
+,Debrief Theater,03_BUILDING/Rooms/Debrief_Theater.md,03_BUILDING,,,
+,Archives,03_BUILDING/Rooms/Archives.md,03_BUILDING,,,
+,Academy,03_BUILDING/Rooms/Academy.md,03_BUILDING,,,
+,Engineering,03_BUILDING/Rooms/Engineering.md,03_BUILDING,,,
+,Internal Affairs Room,03_BUILDING/Rooms/Internal_Affairs_Room.md,03_BUILDING,,,
+,Medical Office,03_BUILDING/Rooms/Medical_Office.md,03_BUILDING,,,
+,Founders Office,03_BUILDING/Rooms/Founders_Office.md,03_BUILDING,,,
+,Observatory,03_BUILDING/Rooms/Observatory.md,03_BUILDING,,,
+,Hall of Restraint,03_BUILDING/Rooms/Hall_of_Restraint.md,03_BUILDING,,,
+,Hall of Quiet Victories,03_BUILDING/Rooms/Hall_of_Quiet_Victories.md,03_BUILDING,,,
+,Hall of Custodians,03_BUILDING/Rooms/Hall_of_Custodians.md,03_BUILDING,,,
+,Capital Vault,03_BUILDING/Rooms/Capital_Vault.md,03_BUILDING,,,
+,Judgment Reserve,03_BUILDING/Rooms/Judgment_Reserve.md,03_BUILDING,,,
+,Thinking Room,03_BUILDING/Rooms/Thinking_Room.md,03_BUILDING,,,
+,Observation Balcony,03_BUILDING/Rooms/Observation_Balcony.md,03_BUILDING,,,
+,Quiet Archive,03_BUILDING/Rooms/Quiet_Archive.md,03_BUILDING,,,
+,Council Chamber,03_BUILDING/Rooms/Council_Chamber.md,03_BUILDING,,,
+,Legacy Vault,03_BUILDING/Rooms/Legacy_Vault.md,03_BUILDING,,,
+PH2-0006,PH2-0006 — Room-Based Navigation,03_BUILDING/Rooms/PH2-0006_Room_Based_Navigation.md,03_BUILDING,Building,CORE,SPECIFIED
+PH2-0007,PH2-0007 — Secure Door Transition,03_BUILDING/Rooms/PH2-0007_Secure_Door_Transition.md,03_BUILDING,Environment,IMPORTANT,SPECIFIED
+PH2-0011,PH2-0011 — Mirror Room,03_BUILDING/Rooms/PH2-0011_Mirror_Room.md,03_BUILDING,Room/Operator,CORE,SPECIFIED
+PH2-0016,PH2-0016 — Situation Wall,03_BUILDING/Rooms/PH2-0016_Situation_Wall.md,03_BUILDING,Room,CORE,SPECIFIED
+PH2-0020,PH2-0020 — Hall of Fallen Missions,03_BUILDING/Rooms/PH2-0020_Hall_of_Fallen_Missions.md,03_BUILDING,Archive/Room,IMPORTANT,SPECIFIED
+PH2-0016,PH2-0016 — Watch Floor,03_BUILDING/Rooms/PH2-0016_Watch_Floor.md,03_BUILDING,Room,IMPORTANT,SPECIFIED
+PH2-0023,PH2-0023 — Tactical Corridor Doctrines,03_BUILDING/Rooms/PH2-0023_Tactical_Corridor_Doctrines.md,03_BUILDING,Experience,IMPORTANT,SPECIFIED
+PH2-0040,PH2-0040 — Founders Office Origin Plaque,03_BUILDING/Rooms/PH2-0040_Founders_Office_Origin_Plaque.md,03_BUILDING,Legacy,IMPORTANT,SPECIFIED
+PH2-0076,PH2-0076 — Observatory Strategic Room,03_BUILDING/Rooms/PH2-0076_Observatory_Strategic_Room.md,03_BUILDING,Room,IMPORTANT,SPECIFIED
+PH2-0081,PH2-0081 — Hall Of Quiet Victories,03_BUILDING/Rooms/PH2-0081_Hall_Of_Quiet_Victories.md,03_BUILDING,Room,IMPORTANT,SPECIFIED
+PH2-0092,PH2-0092 — War Room Glass Wall,03_BUILDING/Rooms/PH2-0092_War_Room_Glass_Wall.md,03_BUILDING,Environment,OPTIONAL,SPECIFIED
+PH2-0103,PH2-0103 — Armory,03_BUILDING/Rooms/PH2-0103_Armory.md,03_BUILDING,Room,IMPORTANT,SPECIFIED
+PH2-0108,PH2-0108 — Mission Archive Room,03_BUILDING/Rooms/PH2-0108_Mission_Archive_Room.md,03_BUILDING,Archives,IMPORTANT,SPECIFIED
+PH2-0114,PH2-0114 — Debrief Theater,03_BUILDING/Rooms/PH2-0114_Debrief_Theater.md,03_BUILDING,Room,CORE,SPECIFIED
+PH2-0117,PH2-0117 — Trust Vault,03_BUILDING/Rooms/PH2-0117_Trust_Vault.md,03_BUILDING,Trust,IMPORTANT,SPECIFIED
+PH3-0014,PH3-0014 — Dynamic Opening Room,03_BUILDING/Rooms/PH3-0014_Dynamic_Opening_Room.md,03_BUILDING,HQOS,IMPORTANT,SPECIFIED
+PH4-0015,PH4-0015 — Dynamic Initial Room Selection,03_BUILDING/Rooms/PH4-0015_Dynamic_Initial_Room_Selection.md,03_BUILDING,HQOS,IMPORTANT,SPECIFIED
+PH4-0048,PH4-0048 — Archive Vault,03_BUILDING/Rooms/PH4-0048_Archive_Vault.md,03_BUILDING,Archives,CORE,SPECIFIED
+PH4-0079,PH4-0079 — Hall Of Decisions,03_BUILDING/Rooms/PH4-0079_Hall_Of_Decisions.md,03_BUILDING,Room,OPTIONAL,SPECIFIED
+PH5-0028,PH5-0028 — Hall of Decisions,03_BUILDING/Rooms/PH5-0028_Hall_of_Decisions.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH5-0041,PH5-0041 — Legacy Projection Room,03_BUILDING/Rooms/PH5-0041_Legacy_Projection_Room.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH5-0045,PH5-0045 — Strategy Chamber,03_BUILDING/Rooms/PH5-0045_Strategy_Chamber.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH5-0050,PH5-0050 — Butterfly Room,03_BUILDING/Rooms/PH5-0050_Butterfly_Room.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH5-0060,PH5-0060 — Mission Forecast Room,03_BUILDING/Rooms/PH5-0060_Mission_Forecast_Room.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH5-0066,PH5-0066 — Gravity Room,03_BUILDING/Rooms/PH5-0066_Gravity_Room.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH5-0073,PH5-0073 — Intelligence Officer Three Observations,03_BUILDING/Rooms/PH5-0073_Intelligence_Officer_Three_Observations.md,03_BUILDING,Intelligence,IMPORTANT,SPECIFIED
+PH5-0076,PH5-0076 — Campaign Table,03_BUILDING/Rooms/PH5-0076_Campaign_Table.md,03_BUILDING,Building,CORE,SPECIFIED
+PH6-0005,PH6-0005 — Doctrine Chamber,03_BUILDING/Rooms/PH6-0005_Doctrine_Chamber.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0021,PH6-0021 — Trophy Room of Evidence,03_BUILDING/Rooms/PH6-0021_Trophy_Room_of_Evidence.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0022,PH6-0022 — Hall of Fallen Giants,03_BUILDING/Rooms/PH6-0022_Hall_of_Fallen_Giants.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0027,PH6-0027 — Hall of Future Operators,03_BUILDING/Rooms/PH6-0027_Hall_of_Future_Operators.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0055,PH6-0055 — Situation Room,03_BUILDING/Rooms/PH6-0055_Situation_Room.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0068,PH6-0068 — Founders Office Locked Door,03_BUILDING/Rooms/PH6-0068_Founders_Office_Locked_Door.md,03_BUILDING,Legacy,IMPORTANT,SPECIFIED
+PH6-0083,PH6-0083 — Hall of Recovery,03_BUILDING/Rooms/PH6-0083_Hall_of_Recovery.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0094,PH6-0094 — Campaign Room,03_BUILDING/Rooms/PH6-0094_Campaign_Room.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0096,PH6-0096 — Future Archive Shelves,03_BUILDING/Rooms/PH6-0096_Future_Archive_Shelves.md,03_BUILDING,Building,OPTIONAL,SPECIFIED
+REC-0628,REC-0628 — Exit Wall Inscription,03_BUILDING/Rooms/REC-0628_Exit_Wall_Inscription.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0654,REC-0654 — Ready Room Lockers,03_BUILDING/Rooms/REC-0654_Ready_Room_Lockers.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0670,REC-0670 — Presence Engine,03_BUILDING/Rooms/REC-0670_Presence_Engine.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0671,REC-0671 — Transition Zone,03_BUILDING/Rooms/REC-0671_Transition_Zone.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0672,REC-0672 — Command Light Alignment,03_BUILDING/Rooms/REC-0672_Command_Light_Alignment.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0674,REC-0674 — Dawn Protocol,03_BUILDING/Rooms/REC-0674_Dawn_Protocol.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0675,REC-0675 — Night Protocol,03_BUILDING/Rooms/REC-0675_Night_Protocol.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0623,REC-0623 — Founder Locked Office,03_BUILDING/Rooms/REC-0623_Founder_Locked_Office.md,03_BUILDING,Legacy,P1,Recovered / Specification Draft
+REC-0693,REC-0693 — Vault Walk,03_BUILDING/Rooms/REC-0693_Vault_Walk.md,03_BUILDING,Stewardship / Judgment,P1,Recovered / Specification Draft
+REC-0707,REC-0707 — Thinking Room Protocol,03_BUILDING/Rooms/REC-0707_Thinking_Room_Protocol.md,03_BUILDING,Stewardship / Judgment,P1,Recovered / Specification Draft
+REC-0709,REC-0709 — Hall of Restraint,03_BUILDING/Rooms/REC-0709_Hall_of_Restraint.md,03_BUILDING,Stewardship / Judgment,P1,Recovered / Specification Draft
+,Environmental Systems,03_BUILDING/Environmental_Systems/Environmental_Systems.md,03_BUILDING,,,
+PH2-0015,PH2-0015 — Heartbeat Mode,03_BUILDING/Environmental_Systems/PH2-0015_Heartbeat_Mode.md,03_BUILDING,Environment,IMPORTANT,SPECIFIED
+PH2-0021,PH2-0021 — Environmental Psychology State,03_BUILDING/Environmental_Systems/PH2-0021_Environmental_Psychology_State.md,03_BUILDING,Experience,IMPORTANT,SPECIFIED
+PH2-0030,PH2-0030 — Unconscious Tactical Breathing,03_BUILDING/Environmental_Systems/PH2-0030_Unconscious_Tactical_Breathing.md,03_BUILDING,Experience,IMPORTANT,SPECIFIED
+PH2-0049,PH2-0049 — Environmental Drift,03_BUILDING/Environmental_Systems/PH2-0049_Environmental_Drift.md,03_BUILDING,Environment,IMPORTANT,SPECIFIED
+PH2-0089,PH2-0089 — Emergency Lighting,03_BUILDING/Environmental_Systems/PH2-0089_Emergency_Lighting.md,03_BUILDING,Environment,IMPORTANT,SPECIFIED
+PH3-0011,PH3-0011 — Room Soundtracks,03_BUILDING/Environmental_Systems/PH3-0011_Room_Soundtracks.md,03_BUILDING,Audio,IMPORTANT,SPECIFIED
+PH3-0012,PH3-0012 — Lighting Engine,03_BUILDING/Environmental_Systems/PH3-0012_Lighting_Engine.md,03_BUILDING,Environment,CORE,SPECIFIED
+PH3-0017,PH3-0017 — Headquarters Heartbeat,03_BUILDING/Environmental_Systems/PH3-0017_Headquarters_Heartbeat.md,03_BUILDING,Environment,IMPORTANT,SPECIFIED
+PH4-0012,PH4-0012 — Room Soundtracks,03_BUILDING/Environmental_Systems/PH4-0012_Room_Soundtracks.md,03_BUILDING,Audio,IMPORTANT,SPECIFIED
+PH4-0013,PH4-0013 — Lighting Engine,03_BUILDING/Environmental_Systems/PH4-0013_Lighting_Engine.md,03_BUILDING,Environment,CORE,SPECIFIED
+PH5-0034,PH5-0034 — Behavioral Weather Forecast,03_BUILDING/Environmental_Systems/PH5-0034_Behavioral_Weather_Forecast.md,03_BUILDING,Operator,IMPORTANT,SPECIFIED
+REC-0784,REC-0784 — Hydraulic Door Transition,03_BUILDING/Environmental_Systems/REC-0784_Hydraulic_Door_Transition.md,03_BUILDING,Animation / Sound,P1,Recovered / Specification Draft
+REC-0673,REC-0673 — Shadow Protocol,03_BUILDING/Environmental_Systems/REC-0673_Shadow_Protocol.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0789,REC-0789 — Building Breathing,03_BUILDING/Environmental_Systems/REC-0789_Building_Breathing.md,03_BUILDING,Environmental,P2,Recovered / Specification Draft
+REC-0790,REC-0790 — Operational Weather,03_BUILDING/Environmental_Systems/REC-0790_Operational_Weather.md,03_BUILDING,Environmental,P2,Recovered / Specification Draft
+REC-0791,REC-0791 — Seasonal Headquarters,03_BUILDING/Environmental_Systems/REC-0791_Seasonal_Headquarters.md,03_BUILDING,Environmental,P2,Recovered / Specification Draft
+REC-0810,REC-0810 — Doctrine Printer,03_BUILDING/Environmental_Systems/REC-0810_Doctrine_Printer.md,03_BUILDING,Environmental / Doctrine,P2,Recovered / Specification Draft
+REC-0734,REC-0734 — HQOS Heartbeat,03_BUILDING/Environmental_Systems/REC-0734_HQOS_Heartbeat.md,03_BUILDING,HQOS,P0,Recovered / Specification Draft
+REC-0786,REC-0786 — Vault Lock Acoustic,03_BUILDING/Environmental_Systems/REC-0786_Vault_Lock_Acoustic.md,03_BUILDING,Sound,P1,Recovered / Specification Draft
+REC-0788,REC-0788 — Radar Sweep Ambient,03_BUILDING/Environmental_Systems/REC-0788_Radar_Sweep_Ambient.md,03_BUILDING,Sound / Motion,P1,Recovered / Specification Draft
+RM-0001,RM-0001 — Security Checkpoint,03_BUILDING/Rooms_Expanded/RM-0001_Security_Checkpoint.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0002,RM-0002 — Blast Door Entrance,03_BUILDING/Rooms_Expanded/RM-0002_Blast_Door_Entrance.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0003,RM-0003 — Transition Corridor,03_BUILDING/Rooms_Expanded/RM-0003_Transition_Corridor.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0004,RM-0004 — Entrance Hall,03_BUILDING/Rooms_Expanded/RM-0004_Entrance_Hall.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0005,RM-0005 — Command Center,03_BUILDING/Rooms_Expanded/RM-0005_Command_Center.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0006,RM-0006 — Command Chair,03_BUILDING/Rooms_Expanded/RM-0006_Command_Chair.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0007,RM-0007 — Mission Board,03_BUILDING/Rooms_Expanded/RM-0007_Mission_Board.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0008,RM-0008 — Ready Room,03_BUILDING/Rooms_Expanded/RM-0008_Ready_Room.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0009,RM-0009 — Personal Locker,03_BUILDING/Rooms_Expanded/RM-0009_Personal_Locker.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0010,RM-0010 — Briefing Table,03_BUILDING/Rooms_Expanded/RM-0010_Briefing_Table.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0011,RM-0011 — War Room,03_BUILDING/Rooms_Expanded/RM-0011_War_Room.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0012,RM-0012 — War Table / Campaign Table,03_BUILDING/Rooms_Expanded/RM-0012_War_Table_Campaign_Table.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0013,RM-0013 — Authorization Terminal,03_BUILDING/Rooms_Expanded/RM-0013_Authorization_Terminal.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0014,RM-0014 — Observation Room,03_BUILDING/Rooms_Expanded/RM-0014_Observation_Room.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0015,RM-0015 — Observation Balcony,03_BUILDING/Rooms_Expanded/RM-0015_Observation_Balcony.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0016,RM-0016 — Thinking Room,03_BUILDING/Rooms_Expanded/RM-0016_Thinking_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0017,RM-0017 — Execution Room,03_BUILDING/Rooms_Expanded/RM-0017_Execution_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0018,RM-0018 — Debrief Theater,03_BUILDING/Rooms_Expanded/RM-0018_Debrief_Theater.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0019,RM-0019 — Mirror Room,03_BUILDING/Rooms_Expanded/RM-0019_Mirror_Room.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0020,RM-0020 — AAR Room,03_BUILDING/Rooms_Expanded/RM-0020_AAR_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0021,RM-0021 — Internal Affairs Room,03_BUILDING/Rooms_Expanded/RM-0021_Internal_Affairs_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0022,RM-0022 — Council Chamber,03_BUILDING/Rooms_Expanded/RM-0022_Council_Chamber.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0023,RM-0023 — Guardian Wing,03_BUILDING/Rooms_Expanded/RM-0023_Guardian_Wing.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0024,RM-0024 — Guardian Room,03_BUILDING/Rooms_Expanded/RM-0024_Guardian_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0025,RM-0025 — Capital Vault,03_BUILDING/Rooms_Expanded/RM-0025_Capital_Vault.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0026,RM-0026 — Judgment Reserve,03_BUILDING/Rooms_Expanded/RM-0026_Judgment_Reserve.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0027,RM-0027 — Trust Vault,03_BUILDING/Rooms_Expanded/RM-0027_Trust_Vault.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0028,RM-0028 — Steward’s Desk,03_BUILDING/Rooms_Expanded/RM-0028_Steward_s_Desk.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0029,RM-0029 — Hall of Custodians,03_BUILDING/Rooms_Expanded/RM-0029_Hall_of_Custodians.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0030,RM-0030 — Hall of Restraint,03_BUILDING/Rooms_Expanded/RM-0030_Hall_of_Restraint.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0031,RM-0031 — Hall of Quiet Victories,03_BUILDING/Rooms_Expanded/RM-0031_Hall_of_Quiet_Victories.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0032,RM-0032 — Hall of Honor,03_BUILDING/Rooms_Expanded/RM-0032_Hall_of_Honor.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0033,RM-0033 — Hall of Fallen Missions,03_BUILDING/Rooms_Expanded/RM-0033_Hall_of_Fallen_Missions.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0034,RM-0034 — Operation Cemetery,03_BUILDING/Rooms_Expanded/RM-0034_Operation_Cemetery.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0035,RM-0035 — Fallen Comrades Room,03_BUILDING/Rooms_Expanded/RM-0035_Fallen_Comrades_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0036,RM-0036 — Situation Wall,03_BUILDING/Rooms_Expanded/RM-0036_Situation_Wall.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0037,RM-0037 — Situation Room,03_BUILDING/Rooms_Expanded/RM-0037_Situation_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0038,RM-0038 — Intelligence Center,03_BUILDING/Rooms_Expanded/RM-0038_Intelligence_Center.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0039,RM-0039 — Archives,03_BUILDING/Rooms_Expanded/RM-0039_Archives.md,03_BUILDING,Building / Room,CORE,Registered / Specification Draft
+RM-0040,RM-0040 — Quiet Archive,03_BUILDING/Rooms_Expanded/RM-0040_Quiet_Archive.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0041,RM-0041 — Historian Office,03_BUILDING/Rooms_Expanded/RM-0041_Historian_Office.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0042,RM-0042 — Academy,03_BUILDING/Rooms_Expanded/RM-0042_Academy.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0043,RM-0043 — Simulation Chamber,03_BUILDING/Rooms_Expanded/RM-0043_Simulation_Chamber.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0044,RM-0044 — Strategy Chamber,03_BUILDING/Rooms_Expanded/RM-0044_Strategy_Chamber.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0045,RM-0045 — Operations Sandbox,03_BUILDING/Rooms_Expanded/RM-0045_Operations_Sandbox.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0046,RM-0046 — Medical Office,03_BUILDING/Rooms_Expanded/RM-0046_Medical_Office.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0047,RM-0047 — Recovery Room,03_BUILDING/Rooms_Expanded/RM-0047_Recovery_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0048,RM-0048 — Engineering Department,03_BUILDING/Rooms_Expanded/RM-0048_Engineering_Department.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0049,RM-0049 — Systems Laboratory,03_BUILDING/Rooms_Expanded/RM-0049_Systems_Laboratory.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0050,RM-0050 — Research Division Room,03_BUILDING/Rooms_Expanded/RM-0050_Research_Division_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0051,RM-0051 — Vault / Constitution Hall,03_BUILDING/Rooms_Expanded/RM-0051_Vault_Constitution_Hall.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0052,RM-0052 — Founder’s Office,03_BUILDING/Rooms_Expanded/RM-0052_Founder_s_Office.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0053,RM-0053 — Observatory,03_BUILDING/Rooms_Expanded/RM-0053_Observatory.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0054,RM-0054 — Legacy Vault,03_BUILDING/Rooms_Expanded/RM-0054_Legacy_Vault.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0055,RM-0055 — Legacy Wall,03_BUILDING/Rooms_Expanded/RM-0055_Legacy_Wall.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0056,RM-0056 — Twenty-Year Wall,03_BUILDING/Rooms_Expanded/RM-0056_Twenty_Year_Wall.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0057,RM-0057 — Library,03_BUILDING/Rooms_Expanded/RM-0057_Library.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0058,RM-0058 — Doctrine Chamber,03_BUILDING/Rooms_Expanded/RM-0058_Doctrine_Chamber.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0059,RM-0059 — Doctrine Cemetery,03_BUILDING/Rooms_Expanded/RM-0059_Doctrine_Cemetery.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0060,RM-0060 — Myth Library,03_BUILDING/Rooms_Expanded/RM-0060_Myth_Library.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0061,RM-0061 — Trophy Room,03_BUILDING/Rooms_Expanded/RM-0061_Trophy_Room.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0062,RM-0062 — Hall of Fallen Giants,03_BUILDING/Rooms_Expanded/RM-0062_Hall_of_Fallen_Giants.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0063,RM-0063 — Hall of Future Operators,03_BUILDING/Rooms_Expanded/RM-0063_Hall_of_Future_Operators.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0064,RM-0064 — Founder’s Wall,03_BUILDING/Rooms_Expanded/RM-0064_Founder_s_Wall.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0065,RM-0065 — Eternal Flame / Doctrine Flame,03_BUILDING/Rooms_Expanded/RM-0065_Eternal_Flame_Doctrine_Flame.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0066,RM-0066 — Empty Chair,03_BUILDING/Rooms_Expanded/RM-0066_Empty_Chair.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0067,RM-0067 — Empty Desk,03_BUILDING/Rooms_Expanded/RM-0067_Empty_Desk.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0068,RM-0068 — Armory,03_BUILDING/Rooms_Expanded/RM-0068_Armory.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0069,RM-0069 — Ready Room Lockers,03_BUILDING/Rooms_Expanded/RM-0069_Ready_Room_Lockers.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+RM-0070,RM-0070 — Last Door,03_BUILDING/Rooms_Expanded/RM-0070_Last_Door.md,03_BUILDING,Building / Room,IMPORTANT,Registered / Specification Draft
+PRES-0001,PRES-0001 — Presence Engine,03_BUILDING/Presence/PRES-0001_Presence_Engine.md,03_BUILDING,Building / Atmosphere,CORE,Registered
+PRES-0002,PRES-0002 — Arrival Psychology,03_BUILDING/Presence/PRES-0002_Arrival_Psychology.md,03_BUILDING,Building / UX,CORE,Registered
+PRES-0003,PRES-0003 — Transition Zone,03_BUILDING/Presence/PRES-0003_Transition_Zone.md,03_BUILDING,Building / Corridor,CORE,Registered
+PRES-0004,PRES-0004 — Weight of the Building,03_BUILDING/Presence/PRES-0004_Weight_of_the_Building.md,03_BUILDING,Building / Environmental Design,IMPORTANT,Registered
+PRES-0005,PRES-0005 — First Decision Ritual,03_BUILDING/Presence/PRES-0005_First_Decision_Ritual.md,03_BUILDING,Operator / Ritual,IMPORTANT,Registered
+PRES-0006,PRES-0006 — Slow System Pacing,03_BUILDING/Presence/PRES-0006_Slow_System_Pacing.md,03_BUILDING,Interface / Timing,CORE,Registered
+PRES-0007,PRES-0007 — Operational Gravity,03_BUILDING/Presence/PRES-0007_Operational_Gravity.md,03_BUILDING,Building / Behavior,IMPORTANT,Registered
+PRES-0008,PRES-0008 — Hallway of Campaign Flags,03_BUILDING/Presence/PRES-0008_Hallway_of_Campaign_Flags.md,03_BUILDING,Building / Legacy,IMPORTANT,Registered
+PRES-0009,PRES-0009 — Precision Command Clock,03_BUILDING/Presence/PRES-0009_Precision_Command_Clock.md,03_BUILDING,Building / Time Symbol,IMPORTANT,Registered
+PRES-0010,PRES-0010 — Industrial Sound Palette,03_BUILDING/Presence/PRES-0010_Industrial_Sound_Palette.md,03_BUILDING,Interface / Audio,CORE,Registered
+PRES-0011,PRES-0011 — Command Chair Overhead Light,03_BUILDING/Presence/PRES-0011_Command_Chair_Overhead_Light.md,03_BUILDING,Building / Symbolism,IMPORTANT,Registered
+PRES-0012,PRES-0012 — Temperature Profile System,03_BUILDING/Presence/PRES-0012_Temperature_Profile_System.md,03_BUILDING,Building / Atmosphere,OPTIONAL,Registered
+PRES-0013,PRES-0013 — Archive Sensory Imagination,03_BUILDING/Presence/PRES-0013_Archive_Sensory_Imagination.md,03_BUILDING,Building / Storytelling,OPTIONAL,Registered
+PRES-0014,PRES-0014 — Maintenance Crew Illusion,03_BUILDING/Presence/PRES-0014_Maintenance_Crew_Illusion.md,03_BUILDING,Building / Ambient Life,OPTIONAL,Registered
+PRES-0015,PRES-0015 — Dawn Protocol,03_BUILDING/Presence/PRES-0015_Dawn_Protocol.md,03_BUILDING,Building / Ritual,IMPORTANT,Registered
+PRES-0016,PRES-0016 — Night Protocol,03_BUILDING/Presence/PRES-0016_Night_Protocol.md,03_BUILDING,Building / Ritual,IMPORTANT,Registered
+PRES-0017,PRES-0017 — Living Crest Evolution,03_BUILDING/Presence/PRES-0017_Living_Crest_Evolution.md,03_BUILDING,Legacy / Identity,IMPORTANT,Registered
+PRES-0018,PRES-0018 — Founder Question Cards,03_BUILDING/Presence/PRES-0018_Founder_Question_Cards.md,03_BUILDING,Legacy / Founder,IMPORTANT,Registered
+PRES-0019,PRES-0019 — Ceiling Character Inscription,03_BUILDING/Presence/PRES-0019_Ceiling_Character_Inscription.md,03_BUILDING,Building / Symbolism,IMPORTANT,Registered
+PH2-0034,PH2-0034 — Ready Chair Identity Question,03_BUILDING/Symbolic_Objects/PH2-0034_Ready_Chair_Identity_Question.md,03_BUILDING,Identity,IMPORTANT,SPECIFIED
+PH2-0059,PH2-0059 — Eternal Flame,03_BUILDING/Symbolic_Objects/PH2-0059_Eternal_Flame.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH2-0069,PH2-0069 — Entrance Hall Crest And Motto,03_BUILDING/Symbolic_Objects/PH2-0069_Entrance_Hall_Crest_And_Motto.md,03_BUILDING,Building,CORE,SPECIFIED
+PH2-0078,PH2-0078 — Empty Chair,03_BUILDING/Symbolic_Objects/PH2-0078_Empty_Chair.md,03_BUILDING,Identity,IMPORTANT,SPECIFIED
+PH3-0013,PH3-0013 — Chair As Control Symbol,03_BUILDING/Symbolic_Objects/PH3-0013_Chair_As_Control_Symbol.md,03_BUILDING,Identity,CORE,SPECIFIED
+PH4-0014,PH4-0014 — Command Chair Control Symbol,03_BUILDING/Symbolic_Objects/PH4-0014_Command_Chair_Control_Symbol.md,03_BUILDING,Identity,CORE,SPECIFIED
+PH4-0054,PH4-0054 — Command Chair Engine,03_BUILDING/Symbolic_Objects/PH4-0054_Command_Chair_Engine.md,03_BUILDING,System,CORE,SPECIFIED
+PH5-0002,PH5-0002 — Command Chair Engine,03_BUILDING/Symbolic_Objects/PH5-0002_Command_Chair_Engine.md,03_BUILDING,Operator,CORE,SPECIFIED
+PH5-0079,PH5-0079 — Command Chair Floor Inscription,03_BUILDING/Symbolic_Objects/PH5-0079_Command_Chair_Floor_Inscription.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+PH6-0059,PH6-0059 — Chair Never Lies Symbol,03_BUILDING/Symbolic_Objects/PH6-0059_Chair_Never_Lies_Symbol.md,03_BUILDING,Interface,IMPORTANT,SPECIFIED
+PH6-0064,PH6-0064 — Daily Command Chair Question,03_BUILDING/Symbolic_Objects/PH6-0064_Daily_Command_Chair_Question.md,03_BUILDING,Debrief,IMPORTANT,SPECIFIED
+PH6-0072,PH6-0072 — Doctrine Flame,03_BUILDING/Symbolic_Objects/PH6-0072_Doctrine_Flame.md,03_BUILDING,Building,IMPORTANT,SPECIFIED
+REC-0626,REC-0626 — Doctrine Flame,03_BUILDING/Symbolic_Objects/REC-0626_Doctrine_Flame.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0792,REC-0792 — Campaign Flags Corridor,03_BUILDING/Symbolic_Objects/REC-0792_Campaign_Flags_Corridor.md,03_BUILDING,Building,P1,Recovered / Specification Draft
+REC-0618,REC-0618 — Chair Never Lies Indicator,03_BUILDING/Symbolic_Objects/REC-0618_Chair_Never_Lies_Indicator.md,03_BUILDING,Operator / Command,P1,Recovered / Specification Draft
+PH2-0096,PH2-0096 — Return To Civilian Life Door,03_BUILDING/Ceremonies/PH2-0096_Return_To_Civilian_Life_Door.md,03_BUILDING,Ceremony,IMPORTANT,SPECIFIED
+PH2-0099,PH2-0099 — Opening Of Doors Tradition,03_BUILDING/Ceremonies/PH2-0099_Opening_Of_Doors_Tradition.md,03_BUILDING,Ceremony,CORE,SPECIFIED
+PH2-0133,PH2-0133 — Vault Opening Ritual,03_BUILDING/Ceremonies/PH2-0133_Vault_Opening_Ritual.md,03_BUILDING,Ceremony,IMPORTANT,SPECIFIED
+,Commander,02_INSTITUTION/Departments/Commander.md,02_INSTITUTION,,,
+,Guardian,02_INSTITUTION/Departments/Guardian.md,02_INSTITUTION,,,
+,Ghost,02_INSTITUTION/Departments/Ghost.md,02_INSTITUTION,,,
+,Historian,02_INSTITUTION/Departments/Historian.md,02_INSTITUTION,,,
+,Engineer,02_INSTITUTION/Departments/Engineer.md,02_INSTITUTION,,,
+,Medical Officer,02_INSTITUTION/Departments/Medical_Officer.md,02_INSTITUTION,,,
+,Internal Affairs,02_INSTITUTION/Departments/Internal_Affairs.md,02_INSTITUTION,,,
+,Academy,02_INSTITUTION/Departments/Academy.md,02_INSTITUTION,,,
+,Council,02_INSTITUTION/Departments/Council.md,02_INSTITUTION,,,
+,Recognition Office,02_INSTITUTION/Departments/Recognition_Office.md,02_INSTITUTION,,,
+PH0-0002,PH0-0002 — Chief Risk Officer Mission,02_INSTITUTION/Departments/PH0-0002_Chief_Risk_Officer_Mission.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH0-0006,PH0-0006 — Threat Level System,02_INSTITUTION/Departments/PH0-0006_Threat_Level_System.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH0-0008,PH0-0008 — Account Killer Score,02_INSTITUTION/Departments/PH0-0008_Account_Killer_Score.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH2-0008,PH2-0008 — Commander Voice Profile,02_INSTITUTION/Departments/PH2-0008_Commander_Voice_Profile.md,02_INSTITUTION,Audio/AI,CORE,SPECIFIED
+PH2-0009,PH2-0009 — Operations Officer Voice Profile,02_INSTITUTION/Departments/PH2-0009_Operations_Officer_Voice_Profile.md,02_INSTITUTION,Audio/AI,IMPORTANT,SPECIFIED
+PH2-0010,PH2-0010 — Commander Message Rarity,02_INSTITUTION/Departments/PH2-0010_Commander_Message_Rarity.md,02_INSTITUTION,AI,CORE,SPECIFIED
+PH2-0023,PH2-0023 — Commander Career Memory,02_INSTITUTION/Departments/PH2-0023_Commander_Career_Memory.md,02_INSTITUTION,AI/Archives,CORE,SPECIFIED
+PH2-0001,PH2-0001 — Four Command Structure,02_INSTITUTION/Departments/PH2-0001_Four_Command_Structure.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0002,PH2-0002 — Commander Strategic Role,02_INSTITUTION/Departments/PH2-0002_Commander_Strategic_Role.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0003,PH2-0003 — Operations Officer Procedural Role,02_INSTITUTION/Departments/PH2-0003_Operations_Officer_Procedural_Role.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0004,PH2-0004 — Intelligence Officer Pattern Role,02_INSTITUTION/Departments/PH2-0004_Intelligence_Officer_Pattern_Role.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH2-0005,PH2-0005 — Medical Officer Recovery Role,02_INSTITUTION/Departments/PH2-0005_Medical_Officer_Recovery_Role.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0006,PH2-0006 — Historian Memory Role,02_INSTITUTION/Departments/PH2-0006_Historian_Memory_Role.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0010,PH2-0010 — Self-Aware Headquarters,02_INSTITUTION/Departments/PH2-0010_Self_Aware_Headquarters.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH2-0039,PH2-0039 — Uphold The Institution Question,02_INSTITUTION/Departments/PH2-0039_Uphold_The_Institution_Question.md,02_INSTITUTION,Debrief,CORE,SPECIFIED
+PH2-0061,PH2-0061 — Commander Never Says Goodbye,02_INSTITUTION/Departments/PH2-0061_Commander_Never_Says_Goodbye.md,02_INSTITUTION,Language,IMPORTANT,SPECIFIED
+PH2-0065,PH2-0065 — Internal Tribunal,02_INSTITUTION/Departments/PH2-0065_Internal_Tribunal.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH2-0067,PH2-0067 — Institutional Trust,02_INSTITUTION/Departments/PH2-0067_Institutional_Trust.md,02_INSTITUTION,Trust,CORE,SPECIFIED
+PH2-0077,PH2-0077 — Institutional Calendar,02_INSTITUTION/Departments/PH2-0077_Institutional_Calendar.md,02_INSTITUTION,Operations,IMPORTANT,SPECIFIED
+PH2-0084,PH2-0084 — Operational Load,02_INSTITUTION/Departments/PH2-0084_Operational_Load.md,02_INSTITUTION,Medical,CORE,SPECIFIED
+PH2-0085,PH2-0085 — Cognitive Bandwidth,02_INSTITUTION/Departments/PH2-0085_Cognitive_Bandwidth.md,02_INSTITUTION,Medical,IMPORTANT,SPECIFIED
+PH2-0087,PH2-0087 — Mission Fatigue,02_INSTITUTION/Departments/PH2-0087_Mission_Fatigue.md,02_INSTITUTION,Medical,IMPORTANT,SPECIFIED
+PH2-0098,PH2-0098 — Account Three Design Test,02_INSTITUTION/Departments/PH2-0098_Account_Three_Design_Test.md,02_INSTITUTION,Engineering,IMPORTANT,SPECIFIED
+PH2-0102,PH2-0102 — Commanders Clock,02_INSTITUTION/Departments/PH2-0102_Commanders_Clock.md,02_INSTITUTION,Interface,IMPORTANT,SPECIFIED
+PH2-0105,PH2-0105 — Institutional Weather,02_INSTITUTION/Departments/PH2-0105_Institutional_Weather.md,02_INSTITUTION,Environment,OPTIONAL,SPECIFIED
+PH2-0106,PH2-0106 — Headquarters Integrity,02_INSTITUTION/Departments/PH2-0106_Headquarters_Integrity.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0109,PH2-0109 — Engineering Department,02_INSTITUTION/Departments/PH2-0109_Engineering_Department.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH2-0110,PH2-0110 — Research Division,02_INSTITUTION/Departments/PH2-0110_Research_Division.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH2-0112,PH2-0112 — Blue Team,02_INSTITUTION/Departments/PH2-0112_Blue_Team.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH2-0125,PH2-0125 — Guardian Mode,02_INSTITUTION/Departments/PH2-0125_Guardian_Mode.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH2-0126,PH2-0126 — Guardian Statistics,02_INSTITUTION/Departments/PH2-0126_Guardian_Statistics.md,02_INSTITUTION,Guardian,IMPORTANT,SPECIFIED
+PH2-0127,PH2-0127 — Safe/Vault Capital Visualization,02_INSTITUTION/Departments/PH2-0127_Safe_Vault_Capital_Visualization.md,02_INSTITUTION,Guardian,IMPORTANT,SPECIFIED
+PH2-0131,PH2-0131 — Training Headquarters Versus Guardian Headquarters,02_INSTITUTION/Departments/PH2-0131_Training_Headquarters_Versus_Guardian_Headquarters.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0134,PH2-0134 — Guardian Language Set,02_INSTITUTION/Departments/PH2-0134_Guardian_Language_Set.md,02_INSTITUTION,Language,CORE,SPECIFIED
+PH2-0135,PH2-0135 — Guardian Lighting And Seal,02_INSTITUTION/Departments/PH2-0135_Guardian_Lighting_And_Seal.md,02_INSTITUTION,Environment,IMPORTANT,SPECIFIED
+PH2-0137,PH2-0137 — Guardian Historical Risk Memory,02_INSTITUTION/Departments/PH2-0137_Guardian_Historical_Risk_Memory.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH2-0138,PH2-0138 — Guardian Shadow,02_INSTITUTION/Departments/PH2-0138_Guardian_Shadow.md,02_INSTITUTION,Environment,OPTIONAL,SPECIFIED
+PH2-0139,PH2-0139 — Sentinel,02_INSTITUTION/Departments/PH2-0139_Sentinel.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH2-0140,PH2-0140 — Guardian Lock,02_INSTITUTION/Departments/PH2-0140_Guardian_Lock.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH2-0141,PH2-0141 — Guardian Unlock Procedure,02_INSTITUTION/Departments/PH2-0141_Guardian_Unlock_Procedure.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH2-0142,PH2-0142 — Guardian Integrity,02_INSTITUTION/Departments/PH2-0142_Guardian_Integrity.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH2-0143,PH2-0143 — Guardian Bell,02_INSTITUTION/Departments/PH2-0143_Guardian_Bell.md,02_INSTITUTION,Audio,IMPORTANT,SPECIFIED
+PH2-0144,PH2-0144 — Guardian Room,02_INSTITUTION/Departments/PH2-0144_Guardian_Room.md,02_INSTITUTION,Room,IMPORTANT,SPECIFIED
+PH2-0148,PH2-0148 — Internal Affairs Integrity Protection,02_INSTITUTION/Departments/PH2-0148_Internal_Affairs_Integrity_Protection.md,02_INSTITUTION,Internal Affairs,CORE,SPECIFIED
+PH3-0016,PH3-0016 — Commander No Avatar,02_INSTITUTION/Departments/PH3-0016_Commander_No_Avatar.md,02_INSTITUTION,AI,FOUNDATIONAL,SPECIFIED
+PH4-0017,PH4-0017 — No Commander Avatar Rule,02_INSTITUTION/Departments/PH4-0017_No_Commander_Avatar_Rule.md,02_INSTITUTION,AI,FOUNDATIONAL,SPECIFIED
+PH4-0018,PH4-0018 — Institutional Heartbeat,02_INSTITUTION/Departments/PH4-0018_Institutional_Heartbeat.md,02_INSTITUTION,Environment,IMPORTANT,SPECIFIED
+PH4-0021,PH4-0021 — Internal Affairs Department,02_INSTITUTION/Departments/PH4-0021_Internal_Affairs_Department.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH4-0022,PH4-0022 — Internal Affairs Room,02_INSTITUTION/Departments/PH4-0022_Internal_Affairs_Room.md,02_INSTITUTION,Room,IMPORTANT,SPECIFIED
+PH4-0027,PH4-0027 — Institutional Witness System,02_INSTITUTION/Departments/PH4-0027_Institutional_Witness_System.md,02_INSTITUTION,AI,IMPORTANT,SPECIFIED
+PH4-0031,PH4-0031 — Quality Assurance Department,02_INSTITUTION/Departments/PH4-0031_Quality_Assurance_Department.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH4-0032,PH4-0032 — Institution Admits Mistakes,02_INSTITUTION/Departments/PH4-0032_Institution_Admits_Mistakes.md,02_INSTITUTION,Trust,FOUNDATIONAL,SPECIFIED
+PH4-0033,PH4-0033 — Ethics Committee,02_INSTITUTION/Departments/PH4-0033_Ethics_Committee.md,02_INSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH4-0036,PH4-0036 — Engineering Philosophy,02_INSTITUTION/Departments/PH4-0036_Engineering_Philosophy.md,02_INSTITUTION,Engineering,FOUNDATIONAL,SPECIFIED
+PH4-0037,PH4-0037 — Friction Is A Feature,02_INSTITUTION/Departments/PH4-0037_Friction_Is_A_Feature.md,02_INSTITUTION,Engineering,CORE,SPECIFIED
+PH4-0041,PH4-0041 — Commander Three Responsibilities,02_INSTITUTION/Departments/PH4-0041_Commander_Three_Responsibilities.md,02_INSTITUTION,AI,FOUNDATIONAL,SPECIFIED
+PH4-0050,PH4-0050 — Headquarters Health,02_INSTITUTION/Departments/PH4-0050_Headquarters_Health.md,02_INSTITUTION,Engineering,IMPORTANT,SPECIFIED
+PH4-0052,PH4-0052 — Founder Engineering Creed,02_INSTITUTION/Departments/PH4-0052_Founder_Engineering_Creed.md,02_INSTITUTION,Legacy,FOUNDATIONAL,SPECIFIED
+PH4-0060,PH4-0060 — Commander Detects Not Predicts,02_INSTITUTION/Departments/PH4-0060_Commander_Detects_Not_Predicts.md,02_INSTITUTION,AI,FOUNDATIONAL,SPECIFIED
+PH4-0067,PH4-0067 — Institution Reputation,02_INSTITUTION/Departments/PH4-0067_Institution_Reputation.md,02_INSTITUTION,System,IMPORTANT,SPECIFIED
+PH5-0008,PH5-0008 — Commander Evidence Threshold,02_INSTITUTION/Departments/PH5-0008_Commander_Evidence_Threshold.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH5-0024,PH5-0024 — Point of No Return Detector,02_INSTITUTION/Departments/PH5-0024_Point_of_No_Return_Detector.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH5-0025,PH5-0025 — Intervention Ladder,02_INSTITUTION/Departments/PH5-0025_Intervention_Ladder.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH5-0029,PH5-0029 — Institutional Memory Engine,02_INSTITUTION/Departments/PH5-0029_Institutional_Memory_Engine.md,02_INSTITUTION,Archives,CORE,SPECIFIED
+PH5-0035,PH5-0035 — Emotional Pressure System,02_INSTITUTION/Departments/PH5-0035_Emotional_Pressure_System.md,02_INSTITUTION,Medical,IMPORTANT,SPECIFIED
+PH5-0037,PH5-0037 — Cascade Predictor,02_INSTITUTION/Departments/PH5-0037_Cascade_Predictor.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH5-0038,PH5-0038 — Operation Echoes,02_INSTITUTION/Departments/PH5-0038_Operation_Echoes.md,02_INSTITUTION,Historian,IMPORTANT,SPECIFIED
+PH5-0043,PH5-0043 — Dangerous Phrase Library,02_INSTITUTION/Departments/PH5-0043_Dangerous_Phrase_Library.md,02_INSTITUTION,Internal Affairs,CORE,SPECIFIED
+PH5-0044,PH5-0044 — Recovery Signature,02_INSTITUTION/Departments/PH5-0044_Recovery_Signature.md,02_INSTITUTION,Medical,IMPORTANT,SPECIFIED
+PH5-0070,PH5-0070 — General Staff Model,02_INSTITUTION/Departments/PH5-0070_General_Staff_Model.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH5-0071,PH5-0071 — Medical Officer Recovery Prompt,02_INSTITUTION/Departments/PH5-0071_Medical_Officer_Recovery_Prompt.md,02_INSTITUTION,Medical,IMPORTANT,SPECIFIED
+PH5-0072,PH5-0072 — Engineer Sunday Maintenance,02_INSTITUTION/Departments/PH5-0072_Engineer_Sunday_Maintenance.md,02_INSTITUTION,Engineering,IMPORTANT,SPECIFIED
+PH5-0074,PH5-0074 — Operations Officer Procedural Voice,02_INSTITUTION/Departments/PH5-0074_Operations_Officer_Procedural_Voice.md,02_INSTITUTION,Operations,CORE,SPECIFIED
+PH5-0090,PH5-0090 — Precursor Sequence Alert,02_INSTITUTION/Departments/PH5-0090_Precursor_Sequence_Alert.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH6-0015,PH6-0015 — Complacency Division,02_INSTITUTION/Departments/PH6-0015_Complacency_Division.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH6-0016,PH6-0016 — Success Monitoring,02_INSTITUTION/Departments/PH6-0016_Success_Monitoring.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH6-0020,PH6-0020 — Guardian Phase II Humility Protection,02_INSTITUTION/Departments/PH6-0020_Guardian_Phase_II_Humility_Protection.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH6-0037,PH6-0037 — Institutional Health,02_INSTITUTION/Departments/PH6-0037_Institutional_Health.md,02_INSTITUTION,Engineering,IMPORTANT,SPECIFIED
+PH6-0038,PH6-0038 — Engineering Oath,02_INSTITUTION/Departments/PH6-0038_Engineering_Oath.md,02_INSTITUTION,Engineering,CORE,SPECIFIED
+PH6-0042,PH6-0042 — Architectural Review Board,02_INSTITUTION/Departments/PH6-0042_Architectural_Review_Board.md,02_INSTITUTION,Engineering,IMPORTANT,SPECIFIED
+PH6-0045,PH6-0045 — Longevity Optimization,02_INSTITUTION/Departments/PH6-0045_Longevity_Optimization.md,02_INSTITUTION,Engineering,CORE,SPECIFIED
+PH6-0046,PH6-0046 — Command Chair Test,02_INSTITUTION/Departments/PH6-0046_Command_Chair_Test.md,02_INSTITUTION,Engineering,CORE,SPECIFIED
+PH6-0047,PH6-0047 — Chain of Command,02_INSTITUTION/Departments/PH6-0047_Chain_of_Command.md,02_INSTITUTION,Institution,CORE,SPECIFIED
+PH6-0049,PH6-0049 — Acting Commander States,02_INSTITUTION/Departments/PH6-0049_Acting_Commander_States.md,02_INSTITUTION,Operator,IMPORTANT,SPECIFIED
+PH6-0050,PH6-0050 — Emergency Succession,02_INSTITUTION/Departments/PH6-0050_Emergency_Succession.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH6-0067,PH6-0067 — Ambient Department Activity,02_INSTITUTION/Departments/PH6-0067_Ambient_Department_Activity.md,02_INSTITUTION,Building,OPTIONAL,SPECIFIED
+PH6-0074,PH6-0074 — Institutional Memory Core,02_INSTITUTION/Departments/PH6-0074_Institutional_Memory_Core.md,02_INSTITUTION,Archives,CORE,SPECIFIED
+PH6-0082,PH6-0082 — Saved Missions Ledger,02_INSTITUTION/Departments/PH6-0082_Saved_Missions_Ledger.md,02_INSTITUTION,Guardian,IMPORTANT,SPECIFIED
+PH6-0084,PH6-0084 — Historian Perspective Messages,02_INSTITUTION/Departments/PH6-0084_Historian_Perspective_Messages.md,02_INSTITUTION,AI,IMPORTANT,SPECIFIED
+PH6-0088,PH6-0088 — Campaign Versioning,02_INSTITUTION/Departments/PH6-0088_Campaign_Versioning.md,02_INSTITUTION,Engineering,IMPORTANT,SPECIFIED
+PH6-0097,PH6-0097 — Institutional Maturity Model,02_INSTITUTION/Departments/PH6-0097_Institutional_Maturity_Model.md,02_INSTITUTION,Legacy,IMPORTANT,SPECIFIED
+REC-0630,REC-0630 — Institutional Memory Core,02_INSTITUTION/Departments/REC-0630_Institutional_Memory_Core.md,02_INSTITUTION,Archives / Time,P0,Recovered / Specification Draft
+REC-0646,REC-0646 — Institutional Maturity,02_INSTITUTION/Departments/REC-0646_Institutional_Maturity.md,02_INSTITUTION,Archives / Time,P1,Recovered / Specification Draft
+REC-0622,REC-0622 — Department Ambient Activity,02_INSTITUTION/Departments/REC-0622_Department_Ambient_Activity.md,02_INSTITUTION,Building,P1,Recovered / Specification Draft
+REC-0601,REC-0601 — Minimum Viable Institution,02_INSTITUTION/Departments/REC-0601_Minimum_Viable_Institution.md,02_INSTITUTION,Engineering,P0,Recovered / Specification Draft
+REC-0770,REC-0770 — HDR Repository Process,02_INSTITUTION/Departments/REC-0770_HDR_Repository_Process.md,02_INSTITUTION,Engineering,P0,Recovered / Specification Draft
+REC-0771,REC-0771 — Recovery To Normalization Workflow,02_INSTITUTION/Departments/REC-0771_Recovery_To_Normalization_Workflow.md,02_INSTITUTION,Engineering,P0,Recovered / Specification Draft
+REC-0773,REC-0773 — Design Freeze Audit,02_INSTITUTION/Departments/REC-0773_Design_Freeze_Audit.md,02_INSTITUTION,Engineering,P0,Recovered / Specification Draft
+REC-0796,REC-0796 — Engineering Oath,02_INSTITUTION/Departments/REC-0796_Engineering_Oath.md,02_INSTITUTION,Engineering,P0,Recovered / Specification Draft
+REC-0797,REC-0797 — PR Founder Review Template,02_INSTITUTION/Departments/REC-0797_PR_Founder_Review_Template.md,02_INSTITUTION,Engineering,P1,Recovered / Specification Draft
+REC-0733,REC-0733 — Department Event Bus,02_INSTITUTION/Departments/REC-0733_Department_Event_Bus.md,02_INSTITUTION,HQOS,P0,Recovered / Specification Draft
+REC-0625,REC-0625 — Recognition Office Invisible Victories,02_INSTITUTION/Departments/REC-0625_Recognition_Office_Invisible_Victories.md,02_INSTITUTION,Institution,P1,Recovered / Specification Draft
+REC-0680,REC-0680 — Trust Engine,02_INSTITUTION/Departments/REC-0680_Trust_Engine.md,02_INSTITUTION,Institution,P0,Recovered / Specification Draft
+REC-0681,REC-0681 — Recommendation Ledger,02_INSTITUTION/Departments/REC-0681_Recommendation_Ledger.md,02_INSTITUTION,Institution,P0,Recovered / Specification Draft
+REC-0682,REC-0682 — Silence Budget,02_INSTITUTION/Departments/REC-0682_Silence_Budget.md,02_INSTITUTION,Institution,P1,Recovered / Specification Draft
+REC-0683,REC-0683 — One Sentence Rule,02_INSTITUTION/Departments/REC-0683_One_Sentence_Rule.md,02_INSTITUTION,Institution,P1,Recovered / Specification Draft
+REC-0711,REC-0711 — Department Bus Priority Levels,02_INSTITUTION/Departments/REC-0711_Department_Bus_Priority_Levels.md,02_INSTITUTION,Intelligence,P0,Recovered / Specification Draft
+REC-0712,REC-0712 — Institutional Consensus,02_INSTITUTION/Departments/REC-0712_Institutional_Consensus.md,02_INSTITUTION,Intelligence,P0,Recovered / Specification Draft
+REC-0611,REC-0611 — Acting Commander States,02_INSTITUTION/Departments/REC-0611_Acting_Commander_States.md,02_INSTITUTION,Operator / Command,P1,Recovered / Specification Draft
+REC-0787,REC-0787 — Institutional Bell,02_INSTITUTION/Departments/REC-0787_Institutional_Bell.md,02_INSTITUTION,Sound,P1,Recovered / Specification Draft
+HQ-0001,HQ-0001 — Commander,02_INSTITUTION/Objects/HQ-0001_Commander.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0002,HQ-0002 — Guardian,02_INSTITUTION/Objects/HQ-0002_Guardian.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0003,HQ-0003 — Ghost,02_INSTITUTION/Objects/HQ-0003_Ghost.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0004,HQ-0004 — Historian,02_INSTITUTION/Objects/HQ-0004_Historian.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0005,HQ-0005 — Engineer,02_INSTITUTION/Objects/HQ-0005_Engineer.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0006,HQ-0006 — Medical Officer,02_INSTITUTION/Objects/HQ-0006_Medical_Officer.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0007,HQ-0007 — Internal Affairs,02_INSTITUTION/Objects/HQ-0007_Internal_Affairs.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0008,HQ-0008 — Academy,02_INSTITUTION/Objects/HQ-0008_Academy.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0009,HQ-0009 — Operations Officer,02_INSTITUTION/Objects/HQ-0009_Operations_Officer.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0010,HQ-0010 — Intelligence Officer,02_INSTITUTION/Objects/HQ-0010_Intelligence_Officer.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0011,HQ-0011 — Recognition Office,02_INSTITUTION/Objects/HQ-0011_Recognition_Office.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0012,HQ-0012 — Sentinel,02_INSTITUTION/Objects/HQ-0012_Sentinel.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0013,HQ-0013 — Complacency Division,02_INSTITUTION/Objects/HQ-0013_Complacency_Division.md,02_INSTITUTION,Institution / Department,IMPORTANT,Registered / Specification Draft
+HQ-0014,HQ-0014 — Quality Assurance,02_INSTITUTION/Objects/HQ-0014_Quality_Assurance.md,02_INSTITUTION,Institution / Department,IMPORTANT,Registered / Specification Draft
+HQ-0015,HQ-0015 — Ethics Committee,02_INSTITUTION/Objects/HQ-0015_Ethics_Committee.md,02_INSTITUTION,Institution / Department,IMPORTANT,Registered / Specification Draft
+HQ-0016,HQ-0016 — Research Division,02_INSTITUTION/Objects/HQ-0016_Research_Division.md,02_INSTITUTION,Institution / Department,IMPORTANT,Registered / Specification Draft
+HQ-0017,HQ-0017 — Red Team,02_INSTITUTION/Objects/HQ-0017_Red_Team.md,02_INSTITUTION,Institution / Department,IMPORTANT,Registered / Specification Draft
+HQ-0018,HQ-0018 — Blue Team,02_INSTITUTION/Objects/HQ-0018_Blue_Team.md,02_INSTITUTION,Institution / Department,IMPORTANT,Registered / Specification Draft
+HQ-0019,HQ-0019 — Founder,02_INSTITUTION/Objects/HQ-0019_Founder.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+HQ-0020,HQ-0020 — Council,02_INSTITUTION/Objects/HQ-0020_Council.md,02_INSTITUTION,Institution / Department,CORE,Registered / Specification Draft
+PH6-0028,PH6-0028 — Annual Review Council,02_INSTITUTION/Council/PH6-0028_Annual_Review_Council.md,02_INSTITUTION,Operations,IMPORTANT,SPECIFIED
+REC-0721,REC-0721 — Council Chamber Deliberation,02_INSTITUTION/Council/REC-0721_Council_Chamber_Deliberation.md,02_INSTITUTION,Intelligence,P0,Recovered / Specification Draft
+REC-0742,REC-0742 — Monthly Council Review,02_INSTITUTION/Council/REC-0742_Monthly_Council_Review.md,02_INSTITUTION,Operations,P1,Recovered / Specification Draft
+PH2-0128,PH2-0128 — Success Protocol,02_INSTITUTION/Protocols/PH2-0128_Success_Protocol.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH5-0042,PH5-0042 — Guardian Protocol Level II,02_INSTITUTION/Protocols/PH5-0042_Guardian_Protocol_Level_II.md,02_INSTITUTION,Guardian,IMPORTANT,SPECIFIED
+PH5-0057,PH5-0057 — Guardian Protocol Level III,02_INSTITUTION/Protocols/PH5-0057_Guardian_Protocol_Level_III.md,02_INSTITUTION,Guardian,IMPORTANT,SPECIFIED
+PH5-0058,PH5-0058 — Golden Week Protocol,02_INSTITUTION/Protocols/PH5-0058_Golden_Week_Protocol.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+PH6-0062,PH6-0062 — Last Resort Protocol,02_INSTITUTION/Protocols/PH6-0062_Last_Resort_Protocol.md,02_INSTITUTION,Guardian,CORE,SPECIFIED
+CULT-0001,CULT-0001 — Headquarters Culture,01_CONSTITUTION/Culture/CULT-0001_Headquarters_Culture.md,01_CONSTITUTION,Constitution / Culture,CORE,Registered
+CULT-0002,CULT-0002 — The Headquarters Way,01_CONSTITUTION/Culture/CULT-0002_The_Headquarters_Way.md,01_CONSTITUTION,Constitution / Culture,CORE,Registered
+CULT-0003,CULT-0003 — Four Pillars of Headquarters,01_CONSTITUTION/Culture/CULT-0003_Four_Pillars_of_Headquarters.md,01_CONSTITUTION,Constitution / Principles,CORE,Registered
+CULT-0004,CULT-0004 — Institutional Vocabulary System,01_CONSTITUTION/Culture/CULT-0004_Institutional_Vocabulary_System.md,01_CONSTITUTION,Constitution / Language,CORE,Registered
+CULT-0005,CULT-0005 — Daily Standard Statement,01_CONSTITUTION/Culture/CULT-0005_Daily_Standard_Statement.md,01_CONSTITUTION,Constitution / Ritual Language,IMPORTANT,Registered
+CULT-0006,CULT-0006 — Department Reputation Relationship,01_CONSTITUTION/Culture/CULT-0006_Department_Reputation_Relationship.md,01_CONSTITUTION,Institution / Culture,IMPORTANT,Registered
+CULT-0007,CULT-0007 — Honor System,01_CONSTITUTION/Culture/CULT-0007_Honor_System.md,01_CONSTITUTION,Institution / Integrity,CORE,Registered
+CULT-0008,CULT-0008 — Institutional Handshake,01_CONSTITUTION/Culture/CULT-0008_Institutional_Handshake.md,01_CONSTITUTION,Institution / Ceremony,IMPORTANT,Registered
+CULT-0009,CULT-0009 — Hallway Status Displays,01_CONSTITUTION/Culture/CULT-0009_Hallway_Status_Displays.md,01_CONSTITUTION,Building / Ambient Life,IMPORTANT,Registered
+CULT-0010,CULT-0010 — No Panic Rule,01_CONSTITUTION/Culture/CULT-0010_No_Panic_Rule.md,01_CONSTITUTION,Constitution / Behavior,CORE,Registered
+CULT-0011,CULT-0011 — Commander Never Raises Voice,01_CONSTITUTION/Culture/CULT-0011_Commander_Never_Raises_Voice.md,01_CONSTITUTION,Constitution / AI Behavior,CORE,Registered
+CULT-0012,CULT-0012 — Headquarters Covenant,01_CONSTITUTION/Culture/CULT-0012_Headquarters_Covenant.md,01_CONSTITUTION,Constitution / Promise,CORE,Registered
+CULT-0013,CULT-0013 — Wall of Responsibility,01_CONSTITUTION/Culture/CULT-0013_Wall_of_Responsibility.md,01_CONSTITUTION,Building / Symbolism,IMPORTANT,Registered
+CULT-0014,CULT-0014 — Empty Hall Protocol,01_CONSTITUTION/Culture/CULT-0014_Empty_Hall_Protocol.md,01_CONSTITUTION,Building / Atmosphere,OPTIONAL,Registered
+CULT-0015,CULT-0015 — Return After Absence Protocol,01_CONSTITUTION/Culture/CULT-0015_Return_After_Absence_Protocol.md,01_CONSTITUTION,Institution / Trust,IMPORTANT,Registered
+CULT-0016,CULT-0016 — Reserved For The Next Lesson Desk,01_CONSTITUTION/Culture/CULT-0016_Reserved_For_The_Next_Lesson_Desk.md,01_CONSTITUTION,Building / Symbolism,IMPORTANT,Registered
+PH2-0024,PH2-0024 — Headquarters Remembers Line,01_CONSTITUTION/Culture/PH2-0024_Headquarters_Remembers_Line.md,01_CONSTITUTION,Culture,IMPORTANT,SPECIFIED
+PH2-0068,PH2-0068 — Professionalism Standards Entrance,01_CONSTITUTION/Culture/PH2-0068_Professionalism_Standards_Entrance.md,01_CONSTITUTION,Culture,IMPORTANT,SPECIFIED
+PH2-0072,PH2-0072 — Headquarters Standards,01_CONSTITUTION/Culture/PH2-0072_Headquarters_Standards.md,01_CONSTITUTION,Culture,CORE,SPECIFIED
+PH2-0091,PH2-0091 — Observation Is Not Inactivity,01_CONSTITUTION/Culture/PH2-0091_Observation_Is_Not_Inactivity.md,01_CONSTITUTION,Culture,CORE,SPECIFIED
+PH4-0010,PH4-0010 — Headquarters Terminology Replacement,01_CONSTITUTION/Culture/PH4-0010_Headquarters_Terminology_Replacement.md,01_CONSTITUTION,Culture,CORE,SPECIFIED
+PH4-0028,PH4-0028 — No Accusation Rule,01_CONSTITUTION/Culture/PH4-0028_No_Accusation_Rule.md,01_CONSTITUTION,Culture,FOUNDATIONAL,SPECIFIED
+PH4-0044,PH4-0044 — Institutional Language Ban List,01_CONSTITUTION/Culture/PH4-0044_Institutional_Language_Ban_List.md,01_CONSTITUTION,Culture,IMPORTANT,SPECIFIED
+REC-0660,REC-0660 — Headquarters Culture,01_CONSTITUTION/Culture/REC-0660_Headquarters_Culture.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REC-0661,REC-0661 — Headquarters Covenant,01_CONSTITUTION/Culture/REC-0661_Headquarters_Covenant.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+PH0-0001,PH0-0001 — Decision Operating System Identity,01_CONSTITUTION/Principles/PH0-0001_Decision_Operating_System_Identity.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH0-0003,PH0-0003 — TradingView After Authorization Principle,01_CONSTITUTION/Principles/PH0-0003_TradingView_After_Authorization_Principle.md,01_CONSTITUTION,Operations,CORE,SPECIFIED
+PH2-0021,PH2-0021 — Eternal Rules Wall,01_CONSTITUTION/Principles/PH2-0021_Eternal_Rules_Wall.md,01_CONSTITUTION,Constitution/Room,CORE,SPECIFIED
+PH2-0026,PH2-0026 — No Market Prediction Law,01_CONSTITUTION/Principles/PH2-0026_No_Market_Prediction_Law.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0012,PH2-0012 — Preserve Professional Joe Mission,01_CONSTITUTION/Principles/PH2-0012_Preserve_Professional_Joe_Mission.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0022,PH2-0022 — Headquarters Never Panics,01_CONSTITUTION/Principles/PH2-0022_Headquarters_Never_Panics.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0041,PH2-0041 — Headquarters Preamble,01_CONSTITUTION/Principles/PH2-0041_Headquarters_Preamble.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0054,PH2-0054 — Headquarters As Nervous System,01_CONSTITUTION/Principles/PH2-0054_Headquarters_As_Nervous_System.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0056,PH2-0056 — Founding Principles Wall,01_CONSTITUTION/Principles/PH2-0056_Founding_Principles_Wall.md,01_CONSTITUTION,Building,IMPORTANT,SPECIFIED
+PH2-0082,PH2-0082 — Environment As Discipline Carrier,01_CONSTITUTION/Principles/PH2-0082_Environment_As_Discipline_Carrier.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0094,PH2-0094 — Living Constitution,01_CONSTITUTION/Principles/PH2-0094_Living_Constitution.md,01_CONSTITUTION,Doctrine,CORE,SPECIFIED
+PH2-0097,PH2-0097 — Conditions For Discipline Axiom,01_CONSTITUTION/Principles/PH2-0097_Conditions_For_Discipline_Axiom.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH2-0121,PH2-0121 — Anchor Sentence,01_CONSTITUTION/Principles/PH2-0121_Anchor_Sentence.md,01_CONSTITUTION,Constitution,IMPORTANT,SPECIFIED
+PH2-0132,PH2-0132 — Entrusted Capital Principle,01_CONSTITUTION/Principles/PH2-0132_Entrusted_Capital_Principle.md,01_CONSTITUTION,Stewardship,CORE,SPECIFIED
+PH3-0001,PH3-0001 — Design Constitution,01_CONSTITUTION/Principles/PH3-0001_Design_Constitution.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH3-0018,PH3-0018 — Fictional Institution Real Behavioral Value,01_CONSTITUTION/Principles/PH3-0018_Fictional_Institution_Real_Behavioral_Value.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH4-0001,PH4-0001 — Design Constitution,01_CONSTITUTION/Principles/PH4-0001_Design_Constitution.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH4-0003,PH4-0003 — Silence Priority Principle,01_CONSTITUTION/Principles/PH4-0003_Silence_Priority_Principle.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH4-0009,PH4-0009 — Attention Respect Law,01_CONSTITUTION/Principles/PH4-0009_Attention_Respect_Law.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH4-0019,PH4-0019 — Fictional Institution Real Psychology,01_CONSTITUTION/Principles/PH4-0019_Fictional_Institution_Real_Psychology.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH4-0034,PH4-0034 — Constitutional Court,01_CONSTITUTION/Principles/PH4-0034_Constitutional_Court.md,01_CONSTITUTION,Institution,IMPORTANT,SPECIFIED
+PH4-0039,PH4-0039 — Operator Is Never Rushed,01_CONSTITUTION/Principles/PH4-0039_Operator_Is_Never_Rushed.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH5-0009,PH5-0009 — Commander Detects Never Predicts,01_CONSTITUTION/Principles/PH5-0009_Commander_Detects_Never_Predicts.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH5-0046,PH5-0046 — AI Purpose Principle,01_CONSTITUTION/Principles/PH5-0046_AI_Purpose_Principle.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH5-0061,PH5-0061 — Career Constitution,01_CONSTITUTION/Principles/PH5-0061_Career_Constitution.md,01_CONSTITUTION,Legacy,IMPORTANT,SPECIFIED
+PH5-0080,PH5-0080 — Professional Operating Environment Principle,01_CONSTITUTION/Principles/PH5-0080_Professional_Operating_Environment_Principle.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH5-0081,PH5-0081 — Mission Control Comparison Principle,01_CONSTITUTION/Principles/PH5-0081_Mission_Control_Comparison_Principle.md,01_CONSTITUTION,Constitution,IMPORTANT,SPECIFIED
+PH5-0089,PH5-0089 — Outcome Separation Rule,01_CONSTITUTION/Principles/PH5-0089_Outcome_Separation_Rule.md,01_CONSTITUTION,Constitution,FOUNDATIONAL,SPECIFIED
+PH6-0019,PH6-0019 — Professional Paradox,01_CONSTITUTION/Principles/PH6-0019_Professional_Paradox.md,01_CONSTITUTION,Constitution,IMPORTANT,SPECIFIED
+PH6-0030,PH6-0030 — Headquarters Axiom Vote For Future,01_CONSTITUTION/Principles/PH6-0030_Headquarters_Axiom_Vote_For_Future.md,01_CONSTITUTION,Constitution,IMPORTANT,SPECIFIED
+PH6-0032,PH6-0032 — Headquarters Manifesto,01_CONSTITUTION/Principles/PH6-0032_Headquarters_Manifesto.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0033,PH6-0033 — No Manipulation Law,01_CONSTITUTION/Principles/PH6-0033_No_Manipulation_Law.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0034,PH6-0034 — No Shame Law,01_CONSTITUTION/Principles/PH6-0034_No_Shame_Law.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0035,PH6-0035 — Respect The Operator Law,01_CONSTITUTION/Principles/PH6-0035_Respect_The_Operator_Law.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0036,PH6-0036 — No Money Celebration Law,01_CONSTITUTION/Principles/PH6-0036_No_Money_Celebration_Law.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0063,PH6-0063 — Principle of Command,01_CONSTITUTION/Principles/PH6-0063_Principle_of_Command.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0087,PH6-0087 — Institutional Memory Principle,01_CONSTITUTION/Principles/PH6-0087_Institutional_Memory_Principle.md,01_CONSTITUTION,Constitution,CORE,SPECIFIED
+PH6-0099,PH6-0099 — Memory Capital Principle,01_CONSTITUTION/Principles/PH6-0099_Memory_Capital_Principle.md,01_CONSTITUTION,Constitution,IMPORTANT,SPECIFIED
+REC-0600,REC-0600 — Headquarters Manifesto,01_CONSTITUTION/Principles/REC-0600_Headquarters_Manifesto.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REC-0602,REC-0602 — Command Chair Test,01_CONSTITUTION/Principles/REC-0602_Command_Chair_Test.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REC-0662,REC-0662 — Four Pillars Truth Discipline Responsibility Improvement,01_CONSTITUTION/Principles/REC-0662_Four_Pillars_Truth_Discipline_Responsibility_Improvement.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REC-0799,REC-0799 — Broker Independence Principle,01_CONSTITUTION/Principles/REC-0799_Broker_Independence_Principle.md,01_CONSTITUTION,Engineering,P0,Recovered / Specification Draft
+REC-0761,REC-0761 — Constitutional Amendments,01_CONSTITUTION/Principles/REC-0761_Constitutional_Amendments.md,01_CONSTITUTION,Legacy,P0,Recovered / Specification Draft
+REC-0750,REC-0750 — Rule of Elegance,01_CONSTITUTION/Rule_Of_Elegance/REC-0750_Rule_of_Elegance.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REC-0751,REC-0751 — Five Gates Feature Review,01_CONSTITUTION/Rule_Of_Elegance/REC-0751_Five_Gates_Feature_Review.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REC-0752,REC-0752 — Anti Feature List,01_CONSTITUTION/Rule_Of_Elegance/REC-0752_Anti_Feature_List.md,01_CONSTITUTION,Constitution,P0,Recovered / Specification Draft
+REPO-0001,REPO-0001 — Headquarters Design Repository,00_PROJECT/Repository_Process/REPO-0001_Headquarters_Design_Repository.md,00_PROJECT,Project / Repository,CORE,Registered
+REPO-0002,REPO-0002 — Headquarters Knowledge Base,00_PROJECT/Repository_Process/REPO-0002_Headquarters_Knowledge_Base.md,00_PROJECT,Project / Repository,CORE,Registered
+REPO-0003,REPO-0003 — Atomic Specification Files,00_PROJECT/Repository_Process/REPO-0003_Atomic_Specification_Files.md,00_PROJECT,Project / Repository,CORE,Registered
+REPO-0004,REPO-0004 — Document Locking Process,00_PROJECT/Repository_Process/REPO-0004_Document_Locking_Process.md,00_PROJECT,Project / Governance,IMPORTANT,Registered
+REPO-0005,REPO-0005 — Repository Completion Statistics,00_PROJECT/Repository_Process/REPO-0005_Repository_Completion_Statistics.md,00_PROJECT,Project / Tracking,IMPORTANT,Registered
+,HDR v0.9 — Relationship Audit Report,00_PROJECT/AUDITS/v0_9_relationship_audit/Relationship_Audit_Report_v0_9.md,00_PROJECT,,,Audit Complete / Normalization Pending
+,HDR v0.9 — Normalization Plan,00_PROJECT/AUDITS/v0_9_relationship_audit/Normalization_Plan_v0_9.md,00_PROJECT,,,
+,HDR v0.9 — Gap Report,00_PROJECT/AUDITS/v0_9_relationship_audit/Gap_Report_v0_9.md,00_PROJECT,,,
+,HDR v0.9 — Design Freeze QA Checklist,00_PROJECT/AUDITS/v0_9_relationship_audit/Design_Freeze_QA_Checklist_v0_9.md,00_PROJECT,,,

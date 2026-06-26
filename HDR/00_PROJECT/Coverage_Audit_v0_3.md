@@ -1,0 +1,181 @@
+# Coverage Audit v0.3
+
+## Purpose
+This audit compares HDR v0.2 against additional concepts available from the current chat context and registers missing items into HDR v0.3.
+
+## Result
+- Base version: v0.2
+- Objects before audit: 303
+- Objects added: 149
+- Objects after audit: 452
+
+## Major Coverage Areas Added
+- Headquarters Culture
+- Presence Engine
+- Trust Engine expansion
+- Intelligence Network
+- Cognitive Architecture
+- HQOS kernel details
+- Time Architecture
+- Rhythm Engine
+- Rule of Elegance expansion
+- Evolution Doctrine
+- Repository Process
+- Room Experience Pass
+
+## Important Limitation
+This audit is based on the current accessible chat context and the v0.2 repository package. It improves coverage substantially but should not yet be treated as a final proof that every historical idea from the full conversation has been captured. Additional pass recommended before HDR v1.0 lock.
+
+## Next Audit Step
+Perform a relationship audit: dependencies, parent/child systems, duplicate concepts, and priority corrections.
+
+## Added Object IDs
+- CULT-0001 — Headquarters Culture
+- CULT-0002 — The Headquarters Way
+- CULT-0003 — Four Pillars of Headquarters
+- CULT-0004 — Institutional Vocabulary System
+- CULT-0005 — Daily Standard Statement
+- CULT-0006 — Department Reputation Relationship
+- CULT-0007 — Honor System
+- CULT-0008 — Institutional Handshake
+- CULT-0009 — Hallway Status Displays
+- CULT-0010 — No Panic Rule
+- CULT-0011 — Commander Never Raises Voice
+- CULT-0012 — Headquarters Covenant
+- CULT-0013 — Wall of Responsibility
+- CULT-0014 — Empty Hall Protocol
+- CULT-0015 — Return After Absence Protocol
+- CULT-0016 — Reserved For The Next Lesson Desk
+- PRES-0001 — Presence Engine
+- PRES-0002 — Arrival Psychology
+- PRES-0003 — Transition Zone
+- PRES-0004 — Weight of the Building
+- PRES-0005 — First Decision Ritual
+- PRES-0006 — Slow System Pacing
+- PRES-0007 — Operational Gravity
+- PRES-0008 — Hallway of Campaign Flags
+- PRES-0009 — Precision Command Clock
+- PRES-0010 — Industrial Sound Palette
+- PRES-0011 — Command Chair Overhead Light
+- PRES-0012 — Temperature Profile System
+- PRES-0013 — Archive Sensory Imagination
+- PRES-0014 — Maintenance Crew Illusion
+- PRES-0015 — Dawn Protocol
+- PRES-0016 — Night Protocol
+- PRES-0017 — Living Crest Evolution
+- PRES-0018 — Founder Question Cards
+- PRES-0019 — Ceiling Character Inscription
+- TRUST-0001 — Trust Engine
+- TRUST-0002 — First Save Recognition
+- TRUST-0003 — Evidence Insufficient Response
+- TRUST-0004 — Recommendation Confidence Display
+- TRUST-0005 — Broken Trust Review
+- TRUST-0006 — Headquarters Self Audit
+- TRUST-0007 — Operator Listening Style Model
+- TRUST-0008 — Commander Silence Over Time
+- TRUST-0009 — Non-Dependence Principle
+- TRUST-0010 — Trust Equation
+- TRUST-0011 — Credibility Protection Rule
+- INTNET-0001 — Intelligence Network
+- INTNET-0002 — Secure Department Network
+- INTNET-0003 — Intelligence Feed
+- INTNET-0004 — Institutional Consensus Response
+- INTNET-0005 — Priority Messaging Levels
+- INTNET-0006 — Silent Department Communication
+- INTNET-0007 — Intelligence Case Lifecycle
+- INTNET-0008 — Founder Review Protocol
+- INTNET-0009 — Request Traceability
+- COG-0001 — Cognitive Architecture
+- COG-0002 — Council Deliberation Delay
+- COG-0003 — Memory Before Intelligence Rule
+- COG-0004 — Three Institutional Questions
+- COG-0005 — Single Operator Model
+- COG-0006 — Ghost Simulation Principle
+- COG-0007 — Historian Investigation Principle
+- COG-0008 — Guardian Negotiation Principle
+- COG-0009 — Working Memory
+- COG-0010 — Long Memory
+- COG-0011 — Reflection Engine
+- COG-0012 — Curiosity Engine
+- COG-0013 — Wisdom Engine
+- HQOS-0001 — Everything Is An Event
+- HQOS-0002 — Respond Not React Principle
+- HQOS-0003 — One Truth Architecture
+- HQOS-0004 — Context Awareness Layer
+- HQOS-0005 — Mission Kernel
+- HQOS-0006 — Consciousness Loop
+- HQOS-0007 — Behavioral Resource Management
+- HQOS-0008 — Behavioral Threads
+- HQOS-0009 — Interrupt Handling
+- HQOS-0010 — Background Services
+- HQOS-0011 — Operational Anomaly Handling
+- HQOS-0012 — Department Bus
+- HQOS-0013 — Core Loop
+- TIME-0001 — Time Architecture
+- TIME-0002 — Three Clocks
+- TIME-0003 — Long War Perspective
+- TIME-0004 — Career Timeline
+- TIME-0005 — Operator Seasons
+- TIME-0006 — Campaign Objective System
+- TIME-0007 — Three Forms of Patience
+- TIME-0008 — Campaign Room
+- TIME-0009 — Mission Drift Detection
+- TIME-0010 — Strategic Map
+- TIME-0011 — Future Archive Shelves
+- TIME-0012 — Institutional Maturity Metric
+- TIME-0013 — Archives Naming Doctrine
+- TIME-0014 — First Debrief vs Current Debrief Reflection
+- RHY-0001 — Rhythm Engine
+- RHY-0002 — Daily Operational Rhythm
+- RHY-0003 — Weekly Operational Rhythm
+- RHY-0004 — Monday Ceremony
+- RHY-0005 — Friday Campaign Closure
+- RHY-0006 — Monthly Council Review
+- RHY-0007 — Seasonal Headquarters Changes
+- RHY-0008 — Annual Review Ceremony
+- RHY-0009 — Scheduled Silence
+- RHY-0010 — Institutional Bell Policy
+- ELEG-0001 — Five Gates Review
+- ELEG-0002 — Museum Test
+- ELEG-0003 — Uniform Rule
+- ELEG-0004 — Empty Space Confidence Rule
+- ELEG-0005 — Wall Test
+- ELEG-0006 — One Purpose Per Room
+- ELEG-0007 — Architecture Does Not Explain Itself
+- ELEG-0008 — Mental Weight Rule
+- ELEG-0009 — Feature Retirement Ceremony
+- ELEG-0010 — Engineering Restraint Rule
+- ELEG-0011 — Attention Protection Doctrine
+- ELEG-0012 — Thirty Year Test
+- ELEG-0013 — Zero Onboarding Discovery
+- EVOL-0001 — Evolution Doctrine
+- EVOL-0002 — Doctrine Updates Instead of Feature Updates
+- EVOL-0003 — Update Story Requirement
+- EVOL-0004 — History Never Deleted Rule
+- EVOL-0005 — Archive Security Doctrine
+- EVOL-0006 — Headquarters Promotion System
+- EVOL-0007 — Constitutional Amendment Process
+- EVOL-0008 — Foundational Cases
+- EVOL-0009 — Institutional Myths
+- EVOL-0010 — Self-Correcting Institution
+- EVOL-0011 — Wisdom Threshold
+- EVOL-0012 — Living Doctrine Pages
+- EVOL-0013 — Hall of Architects
+- EVOL-0014 — Technology Serves Doctrine Rule
+- EVOL-0015 — Legacy Clock
+- EVOL-0016 — Founder Never Replaced Rule
+- EVOL-0017 — Outlive Creator Principle
+- EVOL-0018 — Why Headquarters Exists Document
+- REPO-0001 — Headquarters Design Repository
+- REPO-0002 — Headquarters Knowledge Base
+- REPO-0003 — Atomic Specification Files
+- REPO-0004 — Document Locking Process
+- REPO-0005 — Repository Completion Statistics
+- EXP-0001 — Room Emotional Targets
+- EXP-0002 — Entrance Hall Experience
+- EXP-0003 — Observation Reward Experience
+- EXP-0004 — Authorization Stamp Experience
+- EXP-0005 — Mission Management Silence
+- EXP-0006 — Target Hit Return Experience
+- EXP-0007 — Archive Stamping Experience
+- EXP-0008 — Exit To Civilian Life Experience

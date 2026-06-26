@@ -1,0 +1,93 @@
+normalized_title,count,paths
+rule of elegance,3,HDR/01_CONSTITUTION/Rule_of_Elegance.md | HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0750_Rule_of_Elegance.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0031_Rule_of_Elegance.md
+chain of command,2,HDR/02_INSTITUTION/Chain_of_Command.md | HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0610_Chain_of_Command.md
+professional joe,2,HDR/04_OPERATOR/Professional_Joe.md | HDR/04_OPERATOR/Systems/SYS-0001_Professional_Joe.md
+mission lifecycle,2,HDR/05_OPERATIONS/Mission_Lifecycle.md | HDR/05_OPERATIONS/Protocols/OPS-0001_Mission_Lifecycle.md
+cognitive architecture,3,HDR/06_INTELLIGENCE/Cognitive_Architecture.md | HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0720_Cognitive_Architecture.md | HDR/06_INTELLIGENCE/Cognition/COG-0001_Cognitive_Architecture.md
+behavioral black box,2,HDR/06_INTELLIGENCE/Behavioral_Black_Box.md | HDR/04_OPERATOR/Systems/SYS-0019_Behavioral_Black_Box.md
+ghost,3,HDR/06_INTELLIGENCE/Ghost.md | HDR/02_INSTITUTION/Departments/Ghost.md | HDR/02_INSTITUTION/Objects/HQ-0003_Ghost.md
+archives,3,HDR/08_ARCHIVES/Archives.md | HDR/03_BUILDING/Rooms/Archives.md | HDR/03_BUILDING/Rooms_Expanded/RM-0039_Archives.md
+academy,5,HDR/11_ACADEMY/Academy.md | HDR/03_BUILDING/Rooms/Academy.md | HDR/03_BUILDING/Rooms_Expanded/RM-0042_Academy.md | HDR/02_INSTITUTION/Departments/Academy.md | HDR/02_INSTITUTION/Objects/HQ-0008_Academy.md
+headquarters culture,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0660_Headquarters_Culture.md | HDR/01_CONSTITUTION/Culture/CULT-0001_Headquarters_Culture.md
+headquarters covenant,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0661_Headquarters_Covenant.md | HDR/01_CONSTITUTION/Culture/CULT-0012_Headquarters_Covenant.md
+anti feature list,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Constitution/REC-0752_Anti_Feature_List.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0029_Anti_Feature_List.md
+engineering oath,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Engineering/REC-0796_Engineering_Oath.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0032_Engineering_Oath.md
+rules of engagement,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0614_Rules_of_Engagement.md | HDR/05_OPERATIONS/Protocols/OPS-0028_Rules_of_Engagement.md
+command ledger,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operator_Command/REC-0616_Command_Ledger.md | HDR/04_OPERATOR/Systems/SYS-0050_Command_Ledger.md
+observation protocol,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0624_Observation_Protocol.md | HDR/05_OPERATIONS/Protocols/OPS-0014_Observation_Protocol.md
+command seal,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0655_Command_Seal.md | HDR/09_INTERFACE/Elements/UI-0030_Command_Seal.md
+rhythm engine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0740_Rhythm_Engine.md | HDR/05_OPERATIONS/Rhythm_Engine/RHY-0001_Rhythm_Engine.md
+monthly council review,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0742_Monthly_Council_Review.md | HDR/05_OPERATIONS/Rhythm_Engine/RHY-0006_Monthly_Council_Review.md
+annual stewardship review,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Operations/REC-0743_Annual_Stewardship_Review.md | HDR/05_OPERATIONS/Protocols/OPS-0036_Annual_Stewardship_Review.md
+ready room lockers,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0654_Ready_Room_Lockers.md | HDR/03_BUILDING/Rooms_Expanded/RM-0069_Ready_Room_Lockers.md
+presence engine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0670_Presence_Engine.md | HDR/03_BUILDING/Presence/PRES-0001_Presence_Engine.md
+transition zone,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0671_Transition_Zone.md | HDR/03_BUILDING/Presence/PRES-0003_Transition_Zone.md
+command light alignment,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0672_Command_Light_Alignment.md | HDR/09_INTERFACE/Elements/UI-0021_Command_Light_Alignment.md
+shadow protocol,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0673_Shadow_Protocol.md | HDR/09_INTERFACE/Elements/UI-0022_Shadow_Protocol.md
+dawn protocol,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0674_Dawn_Protocol.md | HDR/03_BUILDING/Presence/PRES-0015_Dawn_Protocol.md
+night protocol,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Building/REC-0675_Night_Protocol.md | HDR/03_BUILDING/Presence/PRES-0016_Night_Protocol.md
+legacy transfer,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0627_Legacy_Transfer.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0013_Legacy_Transfer.md
+archive of removed features,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0753_Archive_of_Removed_Features.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0028_Archive_of_Removed_Features.md
+evolution doctrine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0760_Evolution_Doctrine.md | HDR/12_LEGACY/Evolution_Doctrine/EVOL-0001_Evolution_Doctrine.md
+foundational cases,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0762_Foundational_Cases.md | HDR/12_LEGACY/Evolution_Doctrine/EVOL-0008_Foundational_Cases.md
+wisdom threshold,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0763_Wisdom_Threshold.md | HDR/12_LEGACY/Evolution_Doctrine/EVOL-0011_Wisdom_Threshold.md
+twenty year wall,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Legacy/REC-0793_Twenty_Year_Wall.md | HDR/03_BUILDING/Rooms_Expanded/RM-0056_Twenty_Year_Wall.md
+trust engine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0680_Trust_Engine.md | HDR/04_OPERATOR/Trust/TRUST-0001_Trust_Engine.md
+recommendation ledger,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0681_Recommendation_Ledger.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0025_Recommendation_Ledger.md
+silence budget,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0682_Silence_Budget.md | HDR/09_INTERFACE/Elements/UI-0044_Silence_Budget.md
+one sentence rule,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Institution/REC-0683_One_Sentence_Rule.md | HDR/09_INTERFACE/Elements/UI-0045_One_Sentence_Rule.md
+memory pyramid,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0632_Memory_Pyramid.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0006_Memory_Pyramid.md
+campaign books,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0633_Campaign_Books.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0007_Campaign_Books.md
+saved missions ledger,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0635_Saved_Missions_Ledger.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0010_Saved_Missions_Ledger.md
+time architecture,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0640_Time_Architecture.md | HDR/05_OPERATIONS/Time_Architecture/TIME-0001_Time_Architecture.md
+three clocks,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0641_Three_Clocks.md | HDR/05_OPERATIONS/Time_Architecture/TIME-0002_Three_Clocks.md
+operator seasons,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0643_Operator_Seasons.md | HDR/05_OPERATIONS/Time_Architecture/TIME-0005_Operator_Seasons.md
+future archive shelves,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0645_Future_Archive_Shelves.md | HDR/05_OPERATIONS/Time_Architecture/TIME-0011_Future_Archive_Shelves.md
+archives naming doctrine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Archives_Time/REC-0647_Archives_Naming_Doctrine.md | HDR/05_OPERATIONS/Time_Architecture/TIME-0013_Archives_Naming_Doctrine.md
+graduation test,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Academy/REC-0684_Graduation_Test.md | HDR/05_OPERATIONS/Protocols/OPS-0037_Graduation_Test.md
+stewardship engine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0690_Stewardship_Engine.md | HDR/04_OPERATOR/Systems/SYS-0047_Stewardship_Engine.md
+custodian oath,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0694_Custodian_Oath.md | HDR/05_OPERATIONS/Protocols/OPS-0025_Custodian_Oath.md
+capital integrity,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0695_Capital_Integrity.md | HDR/04_OPERATOR/Systems/SYS-0048_Capital_Integrity.md
+judgment reserve,4,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0701_Judgment_Reserve.md | HDR/04_OPERATOR/Systems/SYS-0034_Judgment_Reserve.md | HDR/03_BUILDING/Rooms/Judgment_Reserve.md | HDR/03_BUILDING/Rooms_Expanded/RM-0026_Judgment_Reserve.md
+noise floor,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0705_Noise_Floor.md | HDR/04_OPERATOR/Systems/SYS-0036_Noise_Floor.md
+hall of restraint,3,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Stewardship_Judgment/REC-0709_Hall_of_Restraint.md | HDR/03_BUILDING/Rooms/Hall_of_Restraint.md | HDR/03_BUILDING/Rooms_Expanded/RM-0030_Hall_of_Restraint.md
+reflection engine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0724_Reflection_Engine.md | HDR/06_INTELLIGENCE/Cognition/COG-0011_Reflection_Engine.md
+curiosity engine,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Intelligence/REC-0725_Curiosity_Engine.md | HDR/06_INTELLIGENCE/Cognition/COG-0012_Curiosity_Engine.md
+everything is an event,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0731_Everything_Is_An_Event.md | HDR/07_HQOS/Kernel/HQOS-0001_Everything_Is_An_Event.md
+mission kernel,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0732_Mission_Kernel.md | HDR/07_HQOS/Kernel/HQOS-0005_Mission_Kernel.md
+hqos heartbeat,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0734_HQOS_Heartbeat.md | HDR/08_ARCHIVES/Memory_Objects/MEM-0035_HQOS_Heartbeat.md
+operational anomaly handling,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/HQOS/REC-0736_Operational_Anomaly_Handling.md | HDR/07_HQOS/Kernel/HQOS-0011_Operational_Anomaly_Handling.md
+second screen philosophy,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Interface/REC-0800_Second_Screen_Philosophy.md | HDR/05_OPERATIONS/Protocols/OPS-0046_Second_Screen_Philosophy.md
+hydraulic door transition,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Animation_Sound/REC-0784_Hydraulic_Door_Transition.md | HDR/09_INTERFACE/Elements/UI-0004_Hydraulic_Door_Transition.md
+institutional bell,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Sound/REC-0787_Institutional_Bell.md | HDR/09_INTERFACE/Elements/UI-0019_Institutional_Bell.md
+building breathing,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Environmental/REC-0789_Building_Breathing.md | HDR/09_INTERFACE/Elements/UI-0009_Building_Breathing.md
+operational weather,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Environmental/REC-0790_Operational_Weather.md | HDR/09_INTERFACE/Elements/UI-0012_Operational_Weather.md
+doctrine wars,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Doctrine/REC-0807_Doctrine_Wars.md | HDR/05_OPERATIONS/Protocols/OPS-0032_Doctrine_Wars.md
+myth library,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Doctrine/REC-0808_Myth_Library.md | HDR/03_BUILDING/Rooms_Expanded/RM-0060_Myth_Library.md
+doctrine cemetery,2,HDR/13_PHASE_RECOVERY/Phase_06_to_07x/Doctrine/REC-0809_Doctrine_Cemetery.md | HDR/03_BUILDING/Rooms_Expanded/RM-0059_Doctrine_Cemetery.md
+command center,2,HDR/03_BUILDING/Rooms/Command_Center.md | HDR/03_BUILDING/Rooms_Expanded/RM-0005_Command_Center.md
+ready room,2,HDR/03_BUILDING/Rooms/Ready_Room.md | HDR/03_BUILDING/Rooms_Expanded/RM-0008_Ready_Room.md
+observation room,2,HDR/03_BUILDING/Rooms/Observation_Room.md | HDR/03_BUILDING/Rooms_Expanded/RM-0014_Observation_Room.md
+war room,2,HDR/03_BUILDING/Rooms/War_Room.md | HDR/03_BUILDING/Rooms_Expanded/RM-0011_War_Room.md
+guardian wing,2,HDR/03_BUILDING/Rooms/Guardian_Wing.md | HDR/03_BUILDING/Rooms_Expanded/RM-0023_Guardian_Wing.md
+mirror room,2,HDR/03_BUILDING/Rooms/Mirror_Room.md | HDR/03_BUILDING/Rooms_Expanded/RM-0019_Mirror_Room.md
+debrief theater,2,HDR/03_BUILDING/Rooms/Debrief_Theater.md | HDR/03_BUILDING/Rooms_Expanded/RM-0018_Debrief_Theater.md
+internal affairs room,2,HDR/03_BUILDING/Rooms/Internal_Affairs_Room.md | HDR/03_BUILDING/Rooms_Expanded/RM-0021_Internal_Affairs_Room.md
+medical office,2,HDR/03_BUILDING/Rooms/Medical_Office.md | HDR/03_BUILDING/Rooms_Expanded/RM-0046_Medical_Office.md
+observatory,2,HDR/03_BUILDING/Rooms/Observatory.md | HDR/03_BUILDING/Rooms_Expanded/RM-0053_Observatory.md
+hall of quiet victories,2,HDR/03_BUILDING/Rooms/Hall_of_Quiet_Victories.md | HDR/03_BUILDING/Rooms_Expanded/RM-0031_Hall_of_Quiet_Victories.md
+hall of custodians,2,HDR/03_BUILDING/Rooms/Hall_of_Custodians.md | HDR/03_BUILDING/Rooms_Expanded/RM-0029_Hall_of_Custodians.md
+capital vault,2,HDR/03_BUILDING/Rooms/Capital_Vault.md | HDR/03_BUILDING/Rooms_Expanded/RM-0025_Capital_Vault.md
+thinking room,2,HDR/03_BUILDING/Rooms/Thinking_Room.md | HDR/03_BUILDING/Rooms_Expanded/RM-0016_Thinking_Room.md
+observation balcony,2,HDR/03_BUILDING/Rooms/Observation_Balcony.md | HDR/03_BUILDING/Rooms_Expanded/RM-0015_Observation_Balcony.md
+quiet archive,2,HDR/03_BUILDING/Rooms/Quiet_Archive.md | HDR/03_BUILDING/Rooms_Expanded/RM-0040_Quiet_Archive.md
+council chamber,2,HDR/03_BUILDING/Rooms/Council_Chamber.md | HDR/03_BUILDING/Rooms_Expanded/RM-0022_Council_Chamber.md
+legacy vault,2,HDR/03_BUILDING/Rooms/Legacy_Vault.md | HDR/03_BUILDING/Rooms_Expanded/RM-0054_Legacy_Vault.md
+commander,2,HDR/02_INSTITUTION/Departments/Commander.md | HDR/02_INSTITUTION/Objects/HQ-0001_Commander.md
+guardian,2,HDR/02_INSTITUTION/Departments/Guardian.md | HDR/02_INSTITUTION/Objects/HQ-0002_Guardian.md
+historian,2,HDR/02_INSTITUTION/Departments/Historian.md | HDR/02_INSTITUTION/Objects/HQ-0004_Historian.md
+engineer,2,HDR/02_INSTITUTION/Departments/Engineer.md | HDR/02_INSTITUTION/Objects/HQ-0005_Engineer.md
+medical officer,2,HDR/02_INSTITUTION/Departments/Medical_Officer.md | HDR/02_INSTITUTION/Objects/HQ-0006_Medical_Officer.md
+internal affairs,2,HDR/02_INSTITUTION/Departments/Internal_Affairs.md | HDR/02_INSTITUTION/Objects/HQ-0007_Internal_Affairs.md
+council,2,HDR/02_INSTITUTION/Departments/Council.md | HDR/02_INSTITUTION/Objects/HQ-0020_Council.md
+recognition office,2,HDR/02_INSTITUTION/Departments/Recognition_Office.md | HDR/02_INSTITUTION/Objects/HQ-0011_Recognition_Office.md
