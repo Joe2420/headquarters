@@ -13,7 +13,7 @@ describe('HQOS event envelope foundation', () => {
       source: 'hqos',
       missionId,
       occurredAt,
-      payload: { missionId },
+      payload: { missionId, codename: 'Quiet Registry' },
     });
 
     expect(event).toEqual({
@@ -24,7 +24,7 @@ describe('HQOS event envelope foundation', () => {
       source: 'hqos',
       missionId,
       priority: 'white',
-      payload: { missionId },
+      payload: { missionId, codename: 'Quiet Registry' },
     });
   });
 
@@ -36,7 +36,7 @@ describe('HQOS event envelope foundation', () => {
       occurredAt,
       priority: 'red',
       correlationId: '33333333-3333-4333-8333-333333333333',
-      payload: { reason: 'risk threshold crossed' },
+      payload: { interventionType: 'stand_down', reason: 'risk threshold crossed' },
     });
 
     expect(validateEventEnvelope(event)).toEqual({ valid: true, errors: [] });

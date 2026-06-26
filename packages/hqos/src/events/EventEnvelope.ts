@@ -1,56 +1,19 @@
-import type { EventPriority, HeadquartersEventType, HQEvent, UUID } from '@headquarters/shared';
+import type { EventPayloadMap, EventPriority, HeadquartersEventType, HQEvent, UUID } from '@headquarters/shared';
+import {
+  EVENT_IDS,
+  EVENT_REGISTRY,
+  getDefaultEventPriority,
+  getEventSchemaVersion,
+  isKnownEventType,
+} from '@headquarters/shared';
 
-export const HEADQUARTERS_EVENT_TYPES = [
-  'system.boot.completed',
-  'hq.boot.started',
-  'hq.boot.completed',
-  'hq.shutdown.requested',
-  'mission.created',
-  'mission.briefing_started',
-  'mission.briefing_completed',
-  'mission.observation_started',
-  'mission.authorization_requested',
-  'mission.authorized',
-  'mission.authorization_denied',
-  'mission.deployment_declared',
-  'mission.objective_achieved',
-  'mission.return_to_base_requested',
-  'mission.completed',
-  'mission.debrief_started',
-  'mission.debrief_completed',
-  'mission.archived',
-  'mission.state.changed',
-  'operator.command_assumed',
-  'operator.command_released',
-  'operator.identity_snapshot_recorded',
-  'operator.identity_drift_detected',
-  'operator.judgment_reserve_changed',
-  'operator.readiness_report_submitted',
-  'operator.recovery_window_started',
-  'operator.recovery_window_completed',
-  'guardian.protocol_activated',
-  'guardian.intervention_recommended',
-  'guardian.vault_secured',
-  'guardian.unlock_requested',
-  'guardian.success_protocol_activated',
-  'guardian.capital_integrity_changed',
-  'archive.artifact_written',
-  'archive.campaign_book_updated',
-  'archive.doctrine_snapshot_saved',
-  'archive.black_box_closed',
-  'environment.room_entered',
-  'environment.lighting_profile_changed',
-  'environment.audio_profile_changed',
-  'environment.transition_started',
-  'environment.transition_completed',
-] as const satisfies readonly HeadquartersEventType[];
-
+export const HEADQUARTERS_EVENT_TYPES = EVENT_IDS;
 export const EVENT_PRIORITIES = ['white', 'green', 'amber', 'red', 'black'] as const satisfies readonly EventPriority[];
 
-export interface CreateEventEnvelopeInput<TPayload> {
-  type: HeadquartersEventType;
+export interface CreateEventEnvelopeInput<TType extends HeadquartersEventType> {
+  type: TType;
   source: string;
-  payload: TPayload;
+  payload: EventPayloadMap[TType];
   id?: UUID;
   version?: number;
   occurredAt?: string;
@@ -67,17 +30,18 @@ export interface EventEnvelopeValidationResult {
 }
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const eventTypeSet = new Set<string>(HEADQUARTERS_EVENT_TYPES);
 const prioritySet = new Set<string>(EVENT_PRIORITIES);
 
-export function createEventEnvelope<TPayload>(input: CreateEventEnvelopeInput<TPayload>): HQEvent<TPayload> {
-  const event: HQEvent<TPayload> = {
+export function createEventEnvelope<TType extends HeadquartersEventType>(
+  input: CreateEventEnvelopeInput<TType>,
+): HQEvent<EventPayloadMap[TType]> {
+  const event: HQEvent<EventPayloadMap[TType]> = {
     id: input.id ?? createEventId(),
     type: input.type,
-    version: input.version ?? 1,
+    version: input.version ?? getEventSchemaVersion(input.type),
     occurredAt: input.occurredAt ?? new Date().toISOString(),
     source: input.source,
-    priority: input.priority ?? 'white',
+    priority: input.priority ?? getDefaultEventPriority(input.type),
     payload: input.payload,
   };
 
@@ -98,7 +62,7 @@ export function validateEventEnvelope(event: unknown): EventEnvelopeValidationRe
 
   validateUuidField(event, 'id', errors, true);
 
-  if (typeof event.type !== 'string' || !eventTypeSet.has(event.type)) {
+  if (typeof event.type !== 'string' || !isKnownEventType(event.type)) {
     errors.push('type must be a known Headquarters event type');
   }
 
@@ -122,6 +86,13 @@ export function validateEventEnvelope(event: unknown): EventEnvelopeValidationRe
     errors.push('payload is required');
   }
 
+  if (typeof event.type === 'string' && isKnownEventType(event.type) && typeof event.version === 'number') {
+    const expectedVersion = EVENT_REGISTRY[event.type].version;
+    if (Number.isInteger(event.version) && event.version >= 1 && event.version !== expectedVersion) {
+      errors.push(`version must match registry version ${expectedVersion}`);
+    }
+  }
+
   validateUuidField(event, 'missionId', errors, false);
   validateUuidField(event, 'campaignId', errors, false);
   validateUuidField(event, 'correlationId', errors, false);
@@ -130,7 +101,9 @@ export function validateEventEnvelope(event: unknown): EventEnvelopeValidationRe
   return { valid: errors.length === 0, errors };
 }
 
-export function isEventEnvelope<TPayload = unknown>(event: unknown): event is HQEvent<TPayload> {
+export function isEventEnvelope<TType extends HeadquartersEventType = HeadquartersEventType>(
+  event: unknown,
+): event is HQEvent<EventPayloadMap[TType]> {
   return validateEventEnvelope(event).valid;
 }
 
@@ -142,7 +115,7 @@ function createEventId(): UUID {
   }
 
   return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (character) => {
-    const value = Number(character) ^ Math.floor(Math.random() * 16) >> Number(character) / 4;
+    const value = (Number(character) ^ (Math.floor(Math.random() * 16) >> (Number(character) / 4)));
     return value.toString(16);
   });
 }
