@@ -4,7 +4,7 @@
 2. Never guess architecture.
 3. Never continue after task completion.
 4. One task at a time.
-5. Keep every task within 2–4 hours.
+5. Keep every task within 2-4 hours.
 6. Tests are mandatory for core behavior.
 7. Simplicity over cleverness.
 8. Preserve institutional identity.
@@ -20,3 +20,4 @@
 18. No undocumented architectural changes.
 19. Every important action becomes an event.
 20. Headquarters must remain calm.
+21. Follow the Git Workflow before, during, and after every task.
