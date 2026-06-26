@@ -1,6 +1,7 @@
 import { EventBus } from './EventBus';
 import { StateStore } from './StateStore';
 import { MissionKernel } from './MissionKernel';
+import { createEventEnvelope } from './events';
 
 export class HQOS {
   readonly events = new EventBus();
@@ -8,20 +9,18 @@ export class HQOS {
   readonly missions = new MissionKernel();
 
   async boot(): Promise<void> {
-    await this.events.publish({
-      id: crypto.randomUUID(),
+    await this.events.publish(createEventEnvelope({
       type: 'hq.boot.started',
-      timestamp: new Date().toISOString(),
       source: 'hqos',
       payload: {},
-    });
+    }));
+
     this.state.setBooted(true);
-    await this.events.publish({
-      id: crypto.randomUUID(),
+
+    await this.events.publish(createEventEnvelope({
       type: 'hq.boot.completed',
-      timestamp: new Date().toISOString(),
       source: 'hqos',
       payload: {},
-    });
+    }));
   }
 }
