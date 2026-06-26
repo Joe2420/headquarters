@@ -1,5 +1,11 @@
 # Development Constitution
 
+## Infrastructure MVP Rule
+
+Every infrastructure component begins as the smallest useful implementation.
+
+Persistence, replay, metrics, distributed messaging, optimization, queues, telemetry, and advanced orchestration require their own approved HQ task.
+
 ## Article I - Architecture Already Exists
 
 The architecture of Headquarters is defined in HDR, HTB, and HIG. Implementation work must not reinterpret, replace, simplify, or expand that architecture without approval.
