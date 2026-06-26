@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '*.local.sqlite*'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/*.local.sqlite*'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
