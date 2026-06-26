@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+import type { EventPayloadMap } from './eventRegistry';
+import {
+  EVENT_CATEGORIES,
+  EVENT_IDS,
+  EVENT_REGISTRY,
+  getDefaultEventPriority,
+  getEventCategory,
+  getEventIdsByCategory,
+  getEventRegistryEntry,
+  getEventSchemaVersion,
+  isKnownEventType,
+} from './eventRegistry';
+
+describe('event registry', () => {
+  it('is the complete source of event identifiers and categories', () => {
+    expect(EVENT_IDS).toHaveLength(Object.keys(EVENT_REGISTRY).length);
+    expect(EVENT_CATEGORIES).toEqual(['system', 'mission', 'operator', 'guardian', 'archive', 'environment']);
+    expect(getEventIdsByCategory('mission')).toContain('mission.created');
+  });
+
+  it('looks up event metadata type-safely', () => {
+    expect(isKnownEventType('guardian.intervention_recommended')).toBe(true);
+    expect(isKnownEventType('guardian.intervention.raised')).toBe(false);
+    expect(getEventCategory('guardian.intervention_recommended')).toBe('guardian');
+    expect(getDefaultEventPriority('guardian.intervention_recommended')).toBe('red');
+    expect(getEventSchemaVersion('guardian.intervention_recommended')).toBe(1);
+    expect(getEventRegistryEntry('mission.created').id).toBe('mission.created');
+  });
+
+  it('maps event identifiers to payload shapes', () => {
+    const payload: EventPayloadMap['mission.created'] = {
+      missionId: '11111111-1111-4111-8111-111111111111',
+      codename: 'Quiet Registry',
+      objective: 'Create a canonical event registry.',
+    };
+
+    expect(payload.codename).toBe('Quiet Registry');
+  });
+});
