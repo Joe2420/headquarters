@@ -1,5 +1,9 @@
 ﻿# Project Status
 
+## Completed Foundation Tasks
+
+- HQ-TASK-0007 — SQLite Connection Layer MVP
+
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
 Status: documented.
@@ -16,4 +20,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0006 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0008 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
