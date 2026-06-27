@@ -152,7 +152,9 @@ describe('MissionTimelineExport', () => {
     expect(exported).not.toBe(timeline);
     expect(exported.entries).not.toBe(timeline.entries);
     expect(exported.entries[0]).not.toBe(timeline.entries[0]);
+    expect(exported.entries[0]?.transition).not.toBe(timeline.entries[0]?.transition);
     expect(exported.transitions).not.toBe(timeline.transitions);
+    expect(exported.transitions[0]).not.toBe(timeline.transitions[0]);
     expect(exported.durations.byStateMs).not.toBe(timeline.durations.byStateMs);
   });
 });

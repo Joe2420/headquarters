@@ -98,4 +98,26 @@ describe('MissionEventReader', () => {
 
     close();
   });
+
+  it('ignores malformed mission state-change payloads', () => {
+    const { repository, close } = createArchiveRepository();
+    const reader = new MissionEventReader(repository);
+
+    repository.append({
+      id: '22222222-2222-4222-8222-222222222222',
+      type: 'mission.state.changed',
+      version: 1,
+      occurredAt,
+      source: 'MissionKernel',
+      priority: 'white',
+      payload: {
+        missionId: '33333333-3333-4333-8333-333333333333',
+        from: 'idle',
+      },
+    });
+
+    expect(reader.listStateChanges()).toEqual([]);
+
+    close();
+  });
 });
