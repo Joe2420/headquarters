@@ -1,6 +1,7 @@
 export * from './EventBus';
 export * from './StateStore';
 export * from './MissionKernel';
+export * from './MissionCommands';
 export * from './MissionLifecyclePersistence';
 export * from './MissionEventReader';
 export * from './MissionTimelineBuilder';

@@ -14,6 +14,7 @@
 - HQ-TASK-0016 — Mission Timeline Query API
 - HQ-TASK-0017 — Mission Timeline Snapshot Builder
 - HQ-TASK-0018 — Mission Read Model Foundation Audit
+- HQ-TASK-0019 — Mission Command DTO Foundation
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -31,4 +32,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0019 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0020 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
