@@ -23,6 +23,8 @@
 - HQ-TASK-0025 — Mission Command Execution MVP
 - HQ-TASK-0026 — Mission Command Execution Result Event Mapping Integration
 - HQ-TASK-0027 — Mission Command Execution Audit Documentation
+- HQ-TASK-0028 — Mission Command Execution Orchestrator MVP
+- HQ-TASK-0029 — Mission Command Orchestration Audit Documentation
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -40,4 +42,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0028 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0030 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
