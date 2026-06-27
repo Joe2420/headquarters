@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0011 — Connected mission state changes to archive event persistence.
+
 HQ-TASK-0010 — Added app startup wiring for local infrastructure initialization.
 
 HQ-TASK-0009 — Added first visible desktop shell MVP.
