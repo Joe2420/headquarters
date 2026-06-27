@@ -12,6 +12,7 @@
                     "test":  "vitest run --passWithNoTests"
                 },
     "dependencies":  {
+                         "@headquarters/database":  "workspace:*",
                          "@headquarters/shared":  "workspace:*"
                      },
     "devDependencies":  {
