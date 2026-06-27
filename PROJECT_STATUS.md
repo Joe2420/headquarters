@@ -12,6 +12,7 @@
 - HQ-TASK-0014 — Mission Timeline Duration Helpers
 - HQ-TASK-0015 — Mission Timeline Export Contract
 - HQ-TASK-0016 — Mission Timeline Query API
+- HQ-TASK-0017 — Mission Timeline Snapshot Builder
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -29,4 +30,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0017 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0018 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
