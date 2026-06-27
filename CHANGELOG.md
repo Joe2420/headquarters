@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0021 — Added mission command handler interface and result contracts.
+
 HQ-TASK-0020 — Added deterministic validation helpers for mission command DTOs.
 
 HQ-TASK-0019 — Added mission command DTO foundation for future lifecycle operations.
