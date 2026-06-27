@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0022 — Added mission command dispatcher for validated handler routing.
+
 HQ-TASK-0021 — Added mission command handler interface and result contracts.
 
 HQ-TASK-0020 — Added deterministic validation helpers for mission command DTOs.

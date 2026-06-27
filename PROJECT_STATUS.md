@@ -17,6 +17,7 @@
 - HQ-TASK-0019 — Mission Command DTO Foundation
 - HQ-TASK-0020 — Mission Command Validation
 - HQ-TASK-0021 — Mission Command Handler Interface
+- HQ-TASK-0022 — Mission Command Dispatcher
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -34,4 +35,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0022 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0023 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
