@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0009 — Added first visible desktop shell MVP.
+
 HQ-TASK-0008 — Added archive repository MVP for persisting HQOS event envelopes in SQLite.
 
 HQ-TASK-0007 — Added SQLite connection layer MVP with migration runner foundation.
