@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0020 — Added deterministic validation helpers for mission command DTOs.
+
 HQ-TASK-0019 — Added mission command DTO foundation for future lifecycle operations.
 
 HQ-TASK-0018 — Audited mission read-model foundation coverage and responsibilities.
