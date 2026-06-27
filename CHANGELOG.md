@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0016 — Added mission timeline query API for read-only timeline access.
+
 HQ-TASK-0015 — Added mission timeline export contract for read-only timeline DTOs.
 
 HQ-TASK-0014 — Added deterministic duration helpers for mission timelines.

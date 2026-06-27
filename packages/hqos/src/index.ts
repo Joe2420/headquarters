@@ -5,5 +5,6 @@ export * from './MissionLifecyclePersistence';
 export * from './MissionEventReader';
 export * from './MissionTimelineBuilder';
 export * from './MissionTimelineExport';
+export * from './MissionTimelineQuery';
 export * from './HQOS';
 export * from './events';
