@@ -21,3 +21,9 @@
 19. Every important action becomes an event.
 20. Headquarters must remain calm.
 21. Follow the Git Workflow before, during, and after every task.
+
+## Commandment XII — Build Infrastructure Incrementally
+
+Infrastructure must begin with the smallest production-quality implementation.
+
+Do not implement advanced capabilities unless explicitly included in the approved HQ task.
