@@ -2,17 +2,15 @@ export type UUID = string;
 export type ISODateTime = string;
 
 export type MissionState =
-  | 'created'
+  | 'idle'
   | 'briefing'
   | 'ready'
   | 'observation'
   | 'authorization'
-  | 'authorized'
   | 'deployed'
-  | 'completed'
+  | 'return_to_base'
   | 'debrief'
-  | 'archived'
-  | 'closed';
+  | 'archived';
 
 export type CampaignState =
   | 'planned'

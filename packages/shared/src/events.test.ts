@@ -7,7 +7,7 @@ describe('shared event types', () => {
   it('represent the canonical serializable HQ event envelope', () => {
     const payload: MissionStateChangedPayload = {
       missionId: 'mission-1',
-      from: 'created',
+      from: 'idle',
       to: 'briefing',
     };
 
