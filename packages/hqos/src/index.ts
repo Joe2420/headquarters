@@ -7,6 +7,7 @@ export * from './MissionCommandHandler';
 export * from './MissionCommandDispatcher';
 export * from './MissionCommandResultEvents';
 export * from './MissionCommandExecutionHandler';
+export * from './MissionCommandExecutionResultEvents';
 export * from './MissionLifecyclePersistence';
 export * from './MissionEventReader';
 export * from './MissionTimelineBuilder';

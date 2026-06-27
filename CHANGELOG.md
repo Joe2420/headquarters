@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+HQ-TASK-0027 — Documented mission command execution pipeline audit boundaries.
+
+HQ-TASK-0026 — Added mission command execution result event mapping integration.
+
 HQ-TASK-0025 — Added mission command execution MVP for deterministic lifecycle command results.
 
 HQ-TASK-0024 — Audited mission command pipeline coverage and responsibilities.
