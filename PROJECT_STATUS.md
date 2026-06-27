@@ -7,6 +7,7 @@
 - HQ-TASK-0009 — Desktop Shell MVP
 - HQ-TASK-0010 — App Startup Wiring MVP
 - HQ-TASK-0011 — Mission Event Persistence MVP
+- HQ-TASK-0012 — Mission Event Read API MVP
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -24,4 +25,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0012 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0013 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
