@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0018 — Audited mission read-model foundation coverage and responsibilities.
+
 HQ-TASK-0017 — Added mission timeline snapshot builder for immutable mission timeline state.
 
 HQ-TASK-0016 — Added mission timeline query API for read-only timeline access.
