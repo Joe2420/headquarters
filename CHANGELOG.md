@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0015 — Added mission timeline export contract for read-only timeline DTOs.
+
 HQ-TASK-0014 — Added deterministic duration helpers for mission timelines.
 
 HQ-TASK-0013 — Added mission timeline builder for persisted mission state-change events.

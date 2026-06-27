@@ -10,6 +10,7 @@
 - HQ-TASK-0012 — Mission Event Read API MVP
 - HQ-TASK-0013 — Mission Timeline Builder
 - HQ-TASK-0014 — Mission Timeline Duration Helpers
+- HQ-TASK-0015 — Mission Timeline Export Contract
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -27,4 +28,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0015 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0016 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
