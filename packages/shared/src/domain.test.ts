@@ -9,7 +9,7 @@ describe('shared domain types', () => {
       id: 'mission-1',
       campaignId: 'campaign-1',
       codename: 'Quiet Foundation',
-      state: 'created',
+      state: 'idle',
       objective: 'Validate the shared domain contract.',
       createdAt: timestamp,
       updatedAt: timestamp,

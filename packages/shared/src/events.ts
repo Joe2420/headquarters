@@ -1,4 +1,4 @@
-import type { Department, ISODateTime, UUID } from './domain';
+import type { Department, ISODateTime, MissionState, UUID } from './domain';
 
 export type EventPriority = 'white' | 'green' | 'amber' | 'red' | 'black';
 
@@ -73,7 +73,7 @@ export interface HeadquartersEvent<TPayload = unknown> {
 
 export interface MissionStateChangedPayload {
   missionId: UUID;
-  from: string;
-  to: string;
+  from: MissionState;
+  to: MissionState;
   reason?: string;
 }
