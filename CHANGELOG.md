@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0025 — Added mission command execution MVP for deterministic lifecycle command results.
+
 HQ-TASK-0024 — Audited mission command pipeline coverage and responsibilities.
 
 HQ-TASK-0023 — Added mission command result event payload candidate contracts.

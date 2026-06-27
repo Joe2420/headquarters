@@ -5,7 +5,9 @@ import type { MissionCommandValidationError } from './MissionCommandValidation';
 export type MissionCommandHandlerFailureCode =
   | 'command.validation_failed'
   | 'command.not_supported'
-  | 'command.execution_unavailable';
+  | 'command.execution_unavailable'
+  | 'mission.not_found'
+  | 'mission.transition_invalid';
 
 export interface ValidatedMissionCommand<TCommand extends MissionCommand = MissionCommand> {
   readonly command: TCommand;
