@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0013 — Added mission timeline builder for persisted mission state-change events.
+
 HQ-TASK-0012 — Added mission event read API for persisted mission state-change events.
 
 HQ-TASK-0011 — Connected mission state changes to archive event persistence.
