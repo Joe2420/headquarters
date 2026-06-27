@@ -10,5 +10,6 @@ describe('Desktop shell', () => {
     expect(html).toContain('Command Center');
     expect(html).toContain('Desktop shell online.');
     expect(html).toContain('Status');
+    expect(html).toContain('Database');
   });
 });
