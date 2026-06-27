@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { MissionStateChangedEvent } from './MissionEventReader';
+import type { MissionStateDurationMs } from './MissionTimelineBuilder';
 import { MissionTimelineBuilder } from './MissionTimelineBuilder';
 
 const firstMissionId = '11111111-1111-4111-8111-111111111111';
@@ -42,6 +43,21 @@ class StubMissionEventReader {
   }
 }
 
+function zeroStateDurations(overrides: Partial<MissionStateDurationMs> = {}): MissionStateDurationMs {
+  return {
+    idle: 0,
+    briefing: 0,
+    ready: 0,
+    observation: 0,
+    authorization: 0,
+    deployed: 0,
+    return_to_base: 0,
+    debrief: 0,
+    archived: 0,
+    ...overrides,
+  };
+}
+
 describe('MissionTimelineBuilder', () => {
   it('builds ordered timeline entries and transitions from mission events', () => {
     const events = [
@@ -78,6 +94,13 @@ describe('MissionTimelineBuilder', () => {
         { from: 'briefing', to: 'ready' },
         { from: 'ready', to: 'observation' },
       ],
+      durations: {
+        byStateMs: zeroStateDurations({
+          briefing: 300000,
+          ready: 300000,
+        }),
+        lifetimeMs: 600000,
+      },
     });
   });
 
@@ -109,6 +132,12 @@ describe('MissionTimelineBuilder', () => {
         { from: 'idle', to: 'briefing' },
         { from: 'briefing', to: 'ready' },
       ],
+      durations: {
+        byStateMs: zeroStateDurations({
+          briefing: 120000,
+        }),
+        lifetimeMs: 120000,
+      },
     });
   });
 
@@ -118,11 +147,52 @@ describe('MissionTimelineBuilder', () => {
     expect(builder.buildAll()).toEqual({
       entries: [],
       transitions: [],
+      durations: {
+        byStateMs: zeroStateDurations(),
+        lifetimeMs: 0,
+      },
     });
     expect(builder.buildForMission(firstMissionId)).toEqual({
       missionId: firstMissionId,
       entries: [],
       transitions: [],
+      durations: {
+        byStateMs: zeroStateDurations(),
+        lifetimeMs: 0,
+      },
+    });
+  });
+
+  it('returns zero durations for a single-event timeline', () => {
+    const events = [
+      createStateChangedEvent('event-1', firstMissionId, 'idle', 'briefing', '2026-06-27T10:00:00.000Z'),
+    ];
+    const builder = new MissionTimelineBuilder(new StubMissionEventReader(events));
+
+    expect(builder.buildForMission(firstMissionId).durations).toEqual({
+      byStateMs: zeroStateDurations(),
+      lifetimeMs: 0,
+    });
+  });
+
+  it('calculates state durations across multiple transitions deterministically', () => {
+    const events = [
+      createStateChangedEvent('event-1', firstMissionId, 'idle', 'briefing', '2026-06-27T10:00:00.000Z'),
+      createStateChangedEvent('event-2', firstMissionId, 'briefing', 'ready', '2026-06-27T10:03:00.000Z'),
+      createStateChangedEvent('event-3', firstMissionId, 'ready', 'observation', '2026-06-27T10:10:00.000Z'),
+      createStateChangedEvent('event-4', firstMissionId, 'observation', 'debrief', '2026-06-27T10:25:00.000Z'),
+    ];
+    const builder = new MissionTimelineBuilder(new StubMissionEventReader(events));
+    const timeline = builder.buildForMission(firstMissionId);
+
+    expect(timeline.entries.map((entry) => entry.eventId)).toEqual(['event-1', 'event-2', 'event-3', 'event-4']);
+    expect(timeline.durations).toEqual({
+      byStateMs: zeroStateDurations({
+        briefing: 180000,
+        ready: 420000,
+        observation: 900000,
+      }),
+      lifetimeMs: 1500000,
     });
   });
 });

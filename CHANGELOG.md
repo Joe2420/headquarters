@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0014 — Added deterministic duration helpers for mission timelines.
+
 HQ-TASK-0013 — Added mission timeline builder for persisted mission state-change events.
 
 HQ-TASK-0012 — Added mission event read API for persisted mission state-change events.
