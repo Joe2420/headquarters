@@ -5,8 +5,7 @@ import Database from 'better-sqlite3';
 
 const dbPath = process.env.HEADQUARTERS_DB ?? path.resolve(process.cwd(), 'headquarters.local.sqlite');
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const migrationPath = path.resolve(scriptDir, '../migrations/001_initial.sql');
-const sql = fs.readFileSync(migrationPath, 'utf8');
+const migrationsDirectory = path.resolve(scriptDir, '../migrations');
 const db = new Database(dbPath);
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
@@ -18,19 +17,26 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
 );
 `);
 
-const version = path.basename(migrationPath, '.sql');
-const existing = db.prepare('SELECT version FROM schema_migrations WHERE version = ?').get(version);
+const migrationFiles = fs.readdirSync(migrationsDirectory)
+  .filter((fileName) => fileName.endsWith('.sql'))
+  .sort();
 
-if (!existing) {
-  const applyMigration = db.transaction(() => {
-    db.exec(sql);
-    db.prepare(`
-      INSERT OR IGNORE INTO schema_migrations (version, applied_at)
-      VALUES (?, datetime('now'))
-    `).run(version);
-  });
+for (const fileName of migrationFiles) {
+  const version = path.basename(fileName, '.sql');
+  const existing = db.prepare('SELECT version FROM schema_migrations WHERE version = ?').get(version);
 
-  applyMigration();
+  if (!existing) {
+    const sql = fs.readFileSync(path.join(migrationsDirectory, fileName), 'utf8');
+    const applyMigration = db.transaction(() => {
+      db.exec(sql);
+      db.prepare(`
+        INSERT OR IGNORE INTO schema_migrations (version, applied_at)
+        VALUES (?, datetime('now'))
+      `).run(version);
+    });
+
+    applyMigration();
+  }
 }
 
 db.close();
