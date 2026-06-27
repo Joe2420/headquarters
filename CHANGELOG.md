@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0023 — Added mission command result event payload candidate contracts.
+
 HQ-TASK-0022 — Added mission command dispatcher for validated handler routing.
 
 HQ-TASK-0021 — Added mission command handler interface and result contracts.
