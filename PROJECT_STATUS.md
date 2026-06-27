@@ -4,6 +4,7 @@
 
 - HQ-TASK-0007 — SQLite Connection Layer MVP
 - HQ-TASK-0008 — Archive Repository MVP
+- HQ-TASK-0009 — Desktop Shell MVP
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -21,4 +22,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0009 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0010 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
