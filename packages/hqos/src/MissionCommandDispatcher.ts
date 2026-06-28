@@ -8,10 +8,13 @@ import type {
 } from './MissionCommandHandler';
 import { isValidMissionCommand, validateMissionCommand } from './MissionCommandValidation';
 
-export class MissionCommandDispatcher {
-  constructor(private readonly handler: MissionCommandHandler) {}
+export class MissionCommandDispatcher<TResult = unknown> {
+  constructor(private readonly handler: MissionCommandHandler<TResult>) {}
 
-  dispatch(command: unknown, context: MissionCommandExecutionContext): Promise<MissionCommandHandlerResult> | MissionCommandHandlerResult {
+  dispatch(
+    command: unknown,
+    context: MissionCommandExecutionContext,
+  ): Promise<MissionCommandHandlerResult<TResult>> | MissionCommandHandlerResult<TResult> {
     const validation = validateMissionCommand(command);
     if (!validation.valid) {
       return createValidationFailure(command, validation.errors);

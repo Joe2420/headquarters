@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+HQ-TASK-0029 — Documented mission command orchestration boundary and future persistence work.
+
+HQ-TASK-0028 — Added mission command execution orchestrator MVP.
+
 HQ-TASK-0027 — Documented mission command execution pipeline audit boundaries.
 
 HQ-TASK-0026 — Added mission command execution result event mapping integration.
