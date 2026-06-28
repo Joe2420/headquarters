@@ -24,18 +24,32 @@ describe('App startup wiring', () => {
     const dbPath = createTempDatabasePath();
     const firstStartup = initializeAppStartup({ dbPath, migrationsDirectory });
 
-    expect(firstStartup.status.state).toBe('ready');
-    expect(firstStartup.status.database.connected).toBe(true);
-    expect(firstStartup.status.migrations.applied).toEqual(['001_initial', '002_archive_events']);
-    expect(firstStartup.status.migrations.skipped).toEqual([]);
-    firstStartup.close();
+    try {
+      expect(firstStartup.status.state).toBe('ready');
+      expect(firstStartup.status.database.connected).toBe(true);
+      expect(firstStartup.status.migrations.applied).toEqual([
+        '001_initial',
+        '002_archive_events',
+        '003_mission_creation_fields',
+      ]);
+      expect(firstStartup.status.migrations.skipped).toEqual([]);
+    } finally {
+      firstStartup.close();
+    }
 
     const secondStartup = initializeAppStartup({ dbPath, migrationsDirectory });
 
-    expect(secondStartup.status.state).toBe('ready');
-    expect(secondStartup.status.migrations.applied).toEqual([]);
-    expect(secondStartup.status.migrations.skipped).toEqual(['001_initial', '002_archive_events']);
-    secondStartup.close();
+    try {
+      expect(secondStartup.status.state).toBe('ready');
+      expect(secondStartup.status.migrations.applied).toEqual([]);
+      expect(secondStartup.status.migrations.skipped).toEqual([
+        '001_initial',
+        '002_archive_events',
+        '003_mission_creation_fields',
+      ]);
+    } finally {
+      secondStartup.close();
+    }
   });
 
   it('represents startup failure safely', () => {

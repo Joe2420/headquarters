@@ -3,6 +3,7 @@ export * from './ServiceRegistry';
 export * from './HQOSKernel';
 export * from './StateStore';
 export * from './MissionKernel';
+export * from './MissionService';
 export * from './MissionCommands';
 export * from './MissionCommandValidation';
 export * from './MissionCommandHandler';
