@@ -19,6 +19,14 @@ export interface MissionDraft {
   objective: string;
 }
 
+export interface ArchiveWritePlaceholder {
+  id: string;
+  missionId: string;
+  status: 'not-started' | 'queued';
+  title: string;
+  createdAt: string;
+}
+
 interface StartupStatus {
   state: StartupState;
   database: {
@@ -45,6 +53,7 @@ export function App() {
   const version = globalThis.window?.headquarters?.version ?? '0.1.0';
   const [shellPhase, setShellPhase] = useState<DesktopShellPhase>('security-checkpoint');
   const [activeMission, setActiveMission] = useState<ActiveMission | undefined>();
+  const [archiveWrite, setArchiveWrite] = useState<ArchiveWritePlaceholder | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -116,7 +125,14 @@ export function App() {
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase))} />
             ) : (
-              <CommandCenter activeMission={activeMission} onCreateMission={setActiveMission} />
+              <CommandCenter
+                activeMission={activeMission}
+                archiveWrite={archiveWrite}
+                onCreateMission={(mission) => {
+                  setActiveMission(mission);
+                  setArchiveWrite(createArchiveWritePlaceholder(mission));
+                }}
+              />
             )}
           </section>
 
@@ -167,10 +183,11 @@ export function CommandCenterPlaceholder() {
 
 interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
+  archiveWrite?: ArchiveWritePlaceholder | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
 }
 
-export function CommandCenter({ activeMission, onCreateMission }: CommandCenterProps) {
+export function CommandCenter({ activeMission, archiveWrite, onCreateMission }: CommandCenterProps) {
   return (
     <div className="command-placeholder">
       <p className="section-label">Main Content</p>
@@ -186,6 +203,7 @@ export function CommandCenter({ activeMission, onCreateMission }: CommandCenterP
           currentState={activeMission?.currentState ?? 'No mission loaded'}
         />
       </div>
+      <ArchiveWritePanel archiveWrite={archiveWrite} />
       <CommandChair />
     </div>
   );
@@ -231,6 +249,27 @@ function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
   );
 }
 
+interface ArchiveWritePanelProps {
+  archiveWrite?: ArchiveWritePlaceholder | undefined;
+}
+
+function ArchiveWritePanel({ archiveWrite }: ArchiveWritePanelProps) {
+  return (
+    <section className="archive-write-panel" aria-label="Archive write placeholder">
+      <div>
+        <p className="section-label">Archive Write</p>
+        <h3>Archive Placeholder</h3>
+      </div>
+      <dl>
+        <dt>Status</dt>
+        <dd>{formatArchiveWriteStatus(archiveWrite)}</dd>
+        <dt>Artifact</dt>
+        <dd>{archiveWrite?.title ?? 'Awaiting mission creation'}</dd>
+      </dl>
+    </section>
+  );
+}
+
 export function reportForDuty(currentPhase: DesktopShellPhase): DesktopShellPhase {
   if (currentPhase === 'security-checkpoint') return 'command-center';
   return currentPhase;
@@ -256,6 +295,24 @@ export function createLocalMission(
     currentState: 'briefing',
     createdAt: options.createdAt ?? new Date().toISOString(),
   };
+}
+
+export function createArchiveWritePlaceholder(
+  mission: ActiveMission,
+  options: { id?: string; createdAt?: string } = {},
+): ArchiveWritePlaceholder {
+  return {
+    id: options.id ?? crypto.randomUUID(),
+    missionId: mission.id,
+    status: 'queued',
+    title: `${mission.campaign} mission archive placeholder`,
+    createdAt: options.createdAt ?? new Date().toISOString(),
+  };
+}
+
+export function formatArchiveWriteStatus(archiveWrite?: ArchiveWritePlaceholder): string {
+  if (archiveWrite?.status === 'queued') return 'Queued placeholder';
+  return 'Not started';
 }
 
 function formatStartupState(state: StartupState): string {
