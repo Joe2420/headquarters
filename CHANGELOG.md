@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0046 — Added archive write placeholder status for local mission creation.
+
 HQ-TASK-0045 — Added local create mission flow to the Command Center Mission Board.
 
 HQ-TASK-0044 — Added Mission Board placeholder to the Command Center shell.

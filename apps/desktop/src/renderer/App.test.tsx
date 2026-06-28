@@ -1,6 +1,14 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { App, CommandCenter, CommandCenterPlaceholder, createLocalMission, reportForDuty } from './App';
+import {
+  App,
+  CommandCenter,
+  CommandCenterPlaceholder,
+  createArchiveWritePlaceholder,
+  createLocalMission,
+  formatArchiveWriteStatus,
+  reportForDuty,
+} from './App';
 
 describe('Desktop shell', () => {
   it('renders the security checkpoint startup surface', () => {
@@ -26,6 +34,8 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
+    expect(html).toContain('Archive Placeholder');
+    expect(html).toContain('Not started');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
   });
@@ -78,5 +88,60 @@ describe('Desktop shell', () => {
     expect(html).toContain('Hold the line');
     expect(html).toContain('Briefing');
     expect(html).toContain('Professional command');
+  });
+
+  it('creates a deterministic archive write placeholder for a local mission', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const archiveWrite = createArchiveWritePlaceholder(mission, {
+      createdAt: '2026-01-01T00:01:00.000Z',
+      id: 'archive-placeholder-001',
+    });
+
+    expect(archiveWrite).toEqual({
+      id: 'archive-placeholder-001',
+      missionId: 'mission-001',
+      status: 'queued',
+      title: 'Foundation Patrol mission archive placeholder',
+      createdAt: '2026-01-01T00:01:00.000Z',
+    });
+    expect(formatArchiveWriteStatus(archiveWrite)).toBe('Queued placeholder');
+  });
+
+  it('renders queued archive write placeholder state without persisting archive data', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const archiveWrite = createArchiveWritePlaceholder(mission, {
+      createdAt: '2026-01-01T00:01:00.000Z',
+      id: 'archive-placeholder-001',
+    });
+
+    const html = renderToStaticMarkup(<CommandCenter activeMission={mission} archiveWrite={archiveWrite} />);
+
+    expect(html).toContain('Archive Placeholder');
+    expect(html).toContain('Queued placeholder');
+    expect(html).toContain('Foundation Patrol mission archive placeholder');
   });
 });
