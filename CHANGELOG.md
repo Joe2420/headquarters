@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0035 — Added mission command persistence composition boundary.
+
 HQ-TASK-0034 — Audited mission command persistence port contracts.
 
 HQ-TASK-0033 — Added mission command persistence port contracts.
