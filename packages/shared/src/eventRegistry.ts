@@ -76,6 +76,25 @@ export interface MissionArchivedPayload {
   archiveRecordId?: UUID;
 }
 
+export interface MissionCommandSucceededPayload {
+  commandId: UUID;
+  commandType: string;
+  ok: true;
+  result: unknown;
+}
+
+export interface MissionCommandFailedPayload {
+  commandId?: UUID;
+  commandType: string;
+  ok: false;
+  code: string;
+  message: string;
+  validationErrors?: readonly {
+    path: string;
+    code: string;
+    message: string;
+  }[];
+}
 
 export interface OperatorCommandAssumedPayload {
   operatorId?: UUID;
@@ -212,6 +231,8 @@ export interface EventPayloadMap {
   'mission.debrief_completed': MissionDebriefCompletedPayload;
   'mission.archived': MissionArchivedPayload;
   'mission.state.changed': MissionStateChangedPayload;
+  'mission.command.succeeded': MissionCommandSucceededPayload;
+  'mission.command.failed': MissionCommandFailedPayload;
   'operator.command_assumed': OperatorCommandAssumedPayload;
   'operator.command_released': OperatorCommandReleasedPayload;
   'operator.identity_snapshot_recorded': OperatorIdentitySnapshotRecordedPayload;
@@ -271,6 +292,8 @@ export const EVENT_REGISTRY = {
   'mission.debrief_completed': { id: 'mission.debrief_completed', category: 'mission', defaultPriority: 'green', version: 1, description: 'Mission debrief completed.', owner: 'MissionService', consumers: ['ArchiveService', 'Guardian', 'Commander'] },
   'mission.archived': { id: 'mission.archived', category: 'mission', defaultPriority: 'white', version: 1, description: 'Mission was archived.', owner: 'MissionService', consumers: ['ArchiveService', 'Guardian', 'Commander'] },
   'mission.state.changed': { id: 'mission.state.changed', category: 'mission', defaultPriority: 'white', version: 1, description: 'Mission state changed.', owner: 'MissionService', consumers: ['ArchiveService', 'Guardian', 'Commander'] },
+  'mission.command.succeeded': { id: 'mission.command.succeeded', category: 'mission', defaultPriority: 'white', version: 1, description: 'Mission command execution succeeded.', owner: 'MissionService', consumers: ['ArchiveService', 'Commander'] },
+  'mission.command.failed': { id: 'mission.command.failed', category: 'mission', defaultPriority: 'amber', version: 1, description: 'Mission command execution failed.', owner: 'MissionService', consumers: ['ArchiveService', 'Commander', 'Guardian'] },
   'operator.command_assumed': { id: 'operator.command_assumed', category: 'operator', defaultPriority: 'green', version: 1, description: 'Operator assumed command.', owner: 'OperatorModelService', consumers: ['ArchiveService', 'Guardian', 'Commander'] },
   'operator.command_released': { id: 'operator.command_released', category: 'operator', defaultPriority: 'white', version: 1, description: 'Operator released command.', owner: 'OperatorModelService', consumers: ['ArchiveService', 'Guardian', 'Commander'] },
   'operator.identity_snapshot_recorded': { id: 'operator.identity_snapshot_recorded', category: 'operator', defaultPriority: 'white', version: 1, description: 'Operator identity snapshot was recorded.', owner: 'OperatorModelService', consumers: ['ArchiveService', 'Guardian', 'Commander'] },

@@ -22,6 +22,8 @@ export type HeadquartersEventType =
   | 'mission.debrief_completed'
   | 'mission.archived'
   | 'mission.state.changed'
+  | 'mission.command.succeeded'
+  | 'mission.command.failed'
   | 'operator.command_assumed'
   | 'operator.command_released'
   | 'operator.identity_snapshot_recorded'
