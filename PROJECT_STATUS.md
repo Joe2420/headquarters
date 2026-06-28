@@ -27,6 +27,7 @@
 - HQ-TASK-0029 — Mission Command Orchestration Audit Documentation
 - HQ-TASK-0030 — MissionCommandDispatcher Responsibility Audit
 - HQ-TASK-0031 — Mission Command Pipeline Boundary Governance Note
+- HQ-TASK-0032 — Mission Command Pipeline Readiness Audit Before Persistence
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -44,4 +45,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0032 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0033 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.

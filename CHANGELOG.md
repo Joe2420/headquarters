@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0032 — Audited mission command pipeline readiness before persistence.
+
 HQ-TASK-0031 — Documented mission command pipeline boundary governance.
 
 HQ-TASK-0030 — Audited MissionCommandDispatcher responsibility after orchestration introduction.
