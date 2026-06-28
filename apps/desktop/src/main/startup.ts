@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import {
   type HeadquartersDatabase,
   loadMigrationsFromDirectory,
@@ -36,7 +37,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
 
   try {
     database = openHeadquartersDatabase(options.dbPath);
-    const migrations = loadMigrationsFromDirectory(options.migrationsDirectory ?? getDefaultMigrationsDirectory());
+    const migrations = options.migrationsDirectory
+      ? loadMigrationsFromDirectory(options.migrationsDirectory)
+      : loadDefaultMigrations();
     const migrationResult = runMigrations(database, migrations);
 
     return {
@@ -72,5 +75,35 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
 }
 
 export function getDefaultMigrationsDirectory(): string {
-  return join(process.cwd(), 'packages', 'database', 'migrations');
+  return findDefaultMigrationsDirectory() ?? join(process.cwd(), 'packages', 'database', 'migrations');
+}
+
+function loadDefaultMigrations() {
+  const migrationsDirectory = findDefaultMigrationsDirectory();
+
+  if (!migrationsDirectory) {
+    return [];
+  }
+
+  return loadMigrationsFromDirectory(migrationsDirectory);
+}
+
+function findDefaultMigrationsDirectory(): string | undefined {
+  let directory = process.cwd();
+
+  while (true) {
+    const candidate = join(directory, 'packages', 'database', 'migrations');
+
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+
+    const parent = dirname(directory);
+
+    if (parent === directory) {
+      return undefined;
+    }
+
+    directory = parent;
+  }
 }

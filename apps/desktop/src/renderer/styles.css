@@ -162,6 +162,26 @@ dd {
   background: #f1f6ff;
 }
 
+.mission-board-shell {
+  width: min(100%, 620px);
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #242b31;
+  background: #0f1215;
+}
+
+.mission-board-shell section {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.mission-board-shell dl {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
+  gap: 0.55rem 1rem;
+  margin: 0;
+}
+
 .command-chair {
   display: grid;
   gap: 0.85rem;

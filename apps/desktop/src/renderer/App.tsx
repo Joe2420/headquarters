@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { MissionBoard } from '@headquarters/ui';
 import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
@@ -145,12 +146,21 @@ function SecurityCheckpoint({ onReportForDuty }: SecurityCheckpointProps) {
   );
 }
 
-function CommandCenterPlaceholder() {
+export function CommandCenterPlaceholder() {
   return (
     <div className="command-placeholder">
       <p className="section-label">Main Content</p>
       <h2>Command Center</h2>
       <p className="muted">Command shell placeholder online.</p>
+      <div className="mission-board-shell" data-object-id="RM-0007">
+        <MissionBoard
+          campaign="No active campaign"
+          objective="Awaiting mission creation"
+          condition="Standby"
+          commandAuthority="Local placeholder"
+          currentState="No mission loaded"
+        />
+      </div>
       <CommandChair />
     </div>
   );

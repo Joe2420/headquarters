@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { initializeAppStartup, type AppStartupRuntime } from './startup';
+import { initializeAppStartup, type AppStartupRuntime } from './startup.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 let startupRuntime: AppStartupRuntime | undefined;
@@ -18,14 +18,16 @@ async function createWindow() {
     height: 800,
     backgroundColor: '#070a0d',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
 
-  if (process.env.VITE_DEV_SERVER_URL) {
-    await win.loadURL(process.env.VITE_DEV_SERVER_URL);
+  const devServerUrl = process.env['VITE_DEV_SERVER_URL'];
+
+  if (devServerUrl) {
+    await win.loadURL(devServerUrl);
   } else {
     await win.loadFile(path.join(__dirname, '../renderer/index.html'));
   }

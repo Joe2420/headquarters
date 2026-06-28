@@ -1,6 +1,7 @@
 node_modules/
 dist/
 out/
+apps/desktop/.electron-native/
 *.db
 *.sqlite
 .DS_Store

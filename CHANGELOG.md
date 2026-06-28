@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0044 — Added Mission Board placeholder to the Command Center shell.
+
 HQ-TASK-0043 — Added HQOS service registry and kernel boot foundation.
 
 HQ-TASK-0042 — Added Command Chair placeholder with local operator command status.
