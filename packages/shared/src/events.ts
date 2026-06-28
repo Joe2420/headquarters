@@ -3,6 +3,7 @@ import type { Department, ISODateTime, MissionState, UUID } from './domain';
 export type EventPriority = 'white' | 'green' | 'amber' | 'red' | 'black';
 
 export type HeadquartersEventType =
+  | 'system.boot.started'
   | 'system.boot.completed'
   | 'hq.boot.started'
   | 'hq.boot.completed'

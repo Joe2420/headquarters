@@ -8,6 +8,10 @@ export interface SystemBootCompletedPayload {
   integrityStatus?: 'secure' | 'degraded' | 'unknown';
 }
 
+export interface SystemBootStartedPayload {
+  bootMode?: 'normal' | 'recovery' | 'safe';
+}
+
 export interface MissionCreatedPayload {
   missionId: UUID;
   campaignId?: UUID;
@@ -212,6 +216,7 @@ export interface EnvironmentTransitionPayload {
 }
 
 export interface EventPayloadMap {
+  'system.boot.started': SystemBootStartedPayload;
   'system.boot.completed': SystemBootCompletedPayload;
   'hq.boot.started': Record<string, never>;
   'hq.boot.completed': Record<string, never>;
@@ -273,6 +278,7 @@ type EventRegistryShape = {
 };
 
 export const EVENT_REGISTRY = {
+  'system.boot.started': { id: 'system.boot.started', category: 'system', defaultPriority: 'white', version: 1, description: 'System boot started.', owner: 'HQOSKernel', consumers: ['ArchiveService', 'Commander'] },
   'system.boot.completed': { id: 'system.boot.completed', category: 'system', defaultPriority: 'white', version: 1, description: 'System boot completed.', owner: 'HQOSKernel', consumers: ['ArchiveService', 'Commander'] },
   'hq.boot.started': { id: 'hq.boot.started', category: 'system', defaultPriority: 'white', version: 1, description: 'HQOS boot sequence started.', owner: 'HQOSKernel', consumers: ['ArchiveService', 'Commander'] },
   'hq.boot.completed': { id: 'hq.boot.completed', category: 'system', defaultPriority: 'green', version: 1, description: 'HQOS boot sequence completed.', owner: 'HQOSKernel', consumers: ['ArchiveService', 'Commander'] },

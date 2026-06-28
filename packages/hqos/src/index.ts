@@ -1,4 +1,6 @@
 export * from './EventBus';
+export * from './ServiceRegistry';
+export * from './HQOSKernel';
 export * from './StateStore';
 export * from './MissionKernel';
 export * from './MissionCommands';
