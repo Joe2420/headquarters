@@ -1,4 +1,13 @@
-import type { EventPayloadMap, HeadquartersEventType, HQEvent, Mission, MissionCreatedPayload, UUID } from '@headquarters/shared';
+import type {
+  EventPayloadMap,
+  HeadquartersEventType,
+  HQEvent,
+  ISODateTime,
+  Mission,
+  MissionCreatedPayload,
+  MissionStateChangedPayload,
+  UUID,
+} from '@headquarters/shared';
 import { createEventEnvelope } from './events';
 import { InvalidMissionTransitionError, MissionKernel } from './MissionKernel';
 
@@ -19,9 +28,31 @@ export interface MissionBriefingTransitionInput {
   readonly reason?: string;
 }
 
+export interface MissionObservationTransitionInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: ISODateTime;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly reason?: string;
+}
+
+export interface MissionObservationSession {
+  readonly id: UUID;
+  readonly missionId: UUID;
+  readonly startedAt: ISODateTime;
+  readonly completedAt?: ISODateTime;
+  readonly durationMs?: number;
+}
+
 export interface MissionRecordRepository {
   save(mission: Mission): Promise<void> | void;
   findById(id: UUID): Promise<Mission | undefined> | Mission | undefined;
+}
+
+export interface MissionObservationSessionRepository {
+  start(session: MissionObservationSession): Promise<void> | void;
+  complete(session: MissionObservationSession): Promise<void> | void;
+  findActiveByMissionId(missionId: UUID): Promise<MissionObservationSession | undefined> | MissionObservationSession | undefined;
 }
 
 export interface MissionCreatedEventPublisher {
@@ -32,6 +63,7 @@ export interface MissionServiceOptions {
   readonly now?: () => string;
   readonly createMissionId?: () => UUID;
   readonly createEventId?: () => UUID;
+  readonly createObservationSessionId?: () => UUID;
   readonly source?: string;
 }
 
@@ -45,10 +77,29 @@ export interface MissionBriefingTransitionResult<TType extends HeadquartersEvent
   readonly event: HQEvent<EventPayloadMap[TType]>;
 }
 
+export interface MissionObservationStartResult {
+  readonly mission: Mission;
+  readonly session: MissionObservationSession;
+  readonly event: HQEvent<EventPayloadMap['mission.observation_started']>;
+}
+
+export interface MissionObservationCompletionResult {
+  readonly mission: Mission;
+  readonly session: MissionObservationSession;
+  readonly event: HQEvent<MissionStateChangedPayload>;
+}
+
 export class MissionNotFoundError extends Error {
   constructor(readonly missionId: UUID) {
     super(`Mission ${missionId} was not found.`);
     this.name = 'MissionNotFoundError';
+  }
+}
+
+export class MissionObservationSessionNotFoundError extends Error {
+  constructor(readonly missionId: UUID) {
+    super(`Active observation session for mission ${missionId} was not found.`);
+    this.name = 'MissionObservationSessionNotFoundError';
   }
 }
 
@@ -58,6 +109,7 @@ export class MissionService {
     private readonly eventPublisher: MissionCreatedEventPublisher,
     private readonly options: MissionServiceOptions = {},
     private readonly missionKernel = new MissionKernel(),
+    private readonly observationSessionRepository?: MissionObservationSessionRepository,
   ) {}
 
   async createMission(input: CreateMissionInput): Promise<MissionCreationResult> {
@@ -106,6 +158,55 @@ export class MissionService {
     return { mission: transition.mission, event };
   }
 
+  async startObservation(input: MissionObservationTransitionInput): Promise<MissionObservationStartResult> {
+    const mission = await this.loadMission(input.missionId);
+    const transition = this.missionKernel.transition(mission, 'observation', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+    const session: MissionObservationSession = {
+      id: this.options.createObservationSessionId?.() ?? createMissionId(),
+      missionId: transition.mission.id,
+      startedAt: transition.mission.updatedAt,
+    };
+    const event = this.createMissionEvent('mission.observation_started', transition.mission, input);
+
+    await this.missionRepository.save(transition.mission);
+    await this.getObservationSessionRepository().start(session);
+    await this.eventPublisher.publish(event);
+
+    return { mission: transition.mission, session, event };
+  }
+
+  async completeObservation(input: MissionObservationTransitionInput): Promise<MissionObservationCompletionResult> {
+    const mission = await this.loadMission(input.missionId);
+    const activeSession = await this.getObservationSessionRepository().findActiveByMissionId(input.missionId);
+
+    if (activeSession === undefined) {
+      throw new MissionObservationSessionNotFoundError(input.missionId);
+    }
+
+    const transition = this.missionKernel.transition(mission, 'authorization', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+    const completedSession: MissionObservationSession = {
+      ...activeSession,
+      completedAt: transition.mission.updatedAt,
+      durationMs: calculateDurationMs(activeSession.startedAt, transition.mission.updatedAt),
+    };
+
+    await this.missionRepository.save(transition.mission);
+    await this.getObservationSessionRepository().complete(completedSession);
+    await this.eventPublisher.publish(transition.event);
+
+    return { mission: transition.mission, session: completedSession, event: transition.event };
+  }
+
   private async loadMission(missionId: UUID): Promise<Mission> {
     const mission = await this.missionRepository.findById(missionId);
 
@@ -114,6 +215,14 @@ export class MissionService {
     }
 
     return mission;
+  }
+
+  private getObservationSessionRepository(): MissionObservationSessionRepository {
+    if (this.observationSessionRepository === undefined) {
+      throw new MissionObservationSessionNotFoundError('observation-session-repository');
+    }
+
+    return this.observationSessionRepository;
   }
 
   private createMissionRecord(input: CreateMissionInput): Mission {
@@ -152,7 +261,9 @@ export class MissionService {
     });
   }
 
-  private createMissionEvent<TType extends 'mission.briefing_started' | 'mission.briefing_completed'>(
+  private createMissionEvent<
+    TType extends 'mission.briefing_started' | 'mission.briefing_completed' | 'mission.observation_started',
+  >(
     type: TType,
     mission: Mission,
     input: MissionBriefingTransitionInput,
@@ -173,6 +284,10 @@ export class MissionService {
 }
 
 export { InvalidMissionTransitionError };
+
+function calculateDurationMs(startedAt: ISODateTime, completedAt: ISODateTime): number {
+  return Date.parse(completedAt) - Date.parse(startedAt);
+}
 
 function createMissionId(): UUID {
   const randomUUID = globalThis.crypto?.randomUUID;
