@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0030 — Audited MissionCommandDispatcher responsibility after orchestration introduction.
+
 HQ-TASK-0029 — Documented mission command orchestration boundary and future persistence work.
 
 HQ-TASK-0028 — Added mission command execution orchestrator MVP.
