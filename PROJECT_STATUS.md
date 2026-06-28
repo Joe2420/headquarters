@@ -31,6 +31,7 @@
 - HQ-TASK-0033 — Mission Command Persistence Port Contracts
 - HQ-TASK-0034 — Mission Command Persistence Port Audit
 - HQ-TASK-0035 — Mission Command Persistence Orchestrator Port Composition
+- HQ-TASK-0036 — Mission Command Persistence Composition Audit
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -48,4 +49,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0036 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0037 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
