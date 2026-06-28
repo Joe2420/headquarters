@@ -40,6 +40,7 @@
 - HQ-TASK-0042 — Command Chair Placeholder
 - HQ-TASK-0043 — HQOS Service Registry and Kernel Boot Foundation
 - HQ-TASK-0044 — Mission Board Placeholder
+- HQ-TASK-0045 — Create Mission Flow
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -57,4 +58,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0044 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0045 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.

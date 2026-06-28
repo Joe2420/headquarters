@@ -1,9 +1,23 @@
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
+export interface ActiveMission {
+  id: string;
+  campaign: string;
+  objective: string;
+  condition: string;
+  commandAuthority: string;
+  currentState: string;
+  createdAt: string;
+}
+
+export interface MissionDraft {
+  codename: string;
+  objective: string;
+}
 
 interface StartupStatus {
   state: StartupState;
@@ -30,6 +44,7 @@ declare global {
 export function App() {
   const version = globalThis.window?.headquarters?.version ?? '0.1.0';
   const [shellPhase, setShellPhase] = useState<DesktopShellPhase>('security-checkpoint');
+  const [activeMission, setActiveMission] = useState<ActiveMission | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -101,7 +116,7 @@ export function App() {
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase))} />
             ) : (
-              <CommandCenterPlaceholder />
+              <CommandCenter activeMission={activeMission} onCreateMission={setActiveMission} />
             )}
           </section>
 
@@ -147,18 +162,28 @@ function SecurityCheckpoint({ onReportForDuty }: SecurityCheckpointProps) {
 }
 
 export function CommandCenterPlaceholder() {
+  return <CommandCenter />;
+}
+
+interface CommandCenterProps {
+  activeMission?: ActiveMission | undefined;
+  onCreateMission?: ((mission: ActiveMission) => void) | undefined;
+}
+
+export function CommandCenter({ activeMission, onCreateMission }: CommandCenterProps) {
   return (
     <div className="command-placeholder">
       <p className="section-label">Main Content</p>
       <h2>Command Center</h2>
       <p className="muted">Command shell placeholder online.</p>
+      <CreateMissionPanel onCreateMission={onCreateMission} />
       <div className="mission-board-shell" data-object-id="RM-0007">
         <MissionBoard
-          campaign="No active campaign"
-          objective="Awaiting mission creation"
-          condition="Standby"
-          commandAuthority="Local placeholder"
-          currentState="No mission loaded"
+          campaign={activeMission?.campaign ?? 'No active campaign'}
+          objective={activeMission?.objective ?? 'Awaiting mission creation'}
+          condition={activeMission?.condition ?? 'Standby'}
+          commandAuthority={activeMission?.commandAuthority ?? 'Local placeholder'}
+          currentState={activeMission?.currentState ?? 'No mission loaded'}
         />
       </div>
       <CommandChair />
@@ -166,9 +191,71 @@ export function CommandCenterPlaceholder() {
   );
 }
 
+interface CreateMissionPanelProps {
+  onCreateMission?: ((mission: ActiveMission) => void) | undefined;
+}
+
+function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
+  const [codename, setCodename] = useState('');
+  const [objective, setObjective] = useState('');
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const mission = createLocalMission({ codename, objective });
+
+    if (!mission) return;
+
+    onCreateMission?.(mission);
+    setCodename('');
+    setObjective('');
+  }
+
+  return (
+    <form className="create-mission-panel" aria-label="Create mission" onSubmit={handleSubmit}>
+      <div>
+        <p className="section-label">Mission Creation</p>
+        <h3>Create Mission</h3>
+      </div>
+      <label>
+        <span>Mission Codename</span>
+        <input value={codename} onChange={(event) => setCodename(event.target.value)} />
+      </label>
+      <label>
+        <span>Mission Objective</span>
+        <input value={objective} onChange={(event) => setObjective(event.target.value)} />
+      </label>
+      <button className="secondary-action" type="submit">
+        Create Mission
+      </button>
+    </form>
+  );
+}
+
 export function reportForDuty(currentPhase: DesktopShellPhase): DesktopShellPhase {
   if (currentPhase === 'security-checkpoint') return 'command-center';
   return currentPhase;
+}
+
+export function createLocalMission(
+  draft: MissionDraft,
+  options: { id?: string; createdAt?: string } = {},
+): ActiveMission | undefined {
+  const codename = draft.codename.trim();
+  const objective = draft.objective.trim();
+
+  if (!codename || !objective) {
+    return undefined;
+  }
+
+  return {
+    id: options.id ?? crypto.randomUUID(),
+    campaign: codename,
+    objective,
+    condition: 'Briefing',
+    commandAuthority: 'Professional command',
+    currentState: 'briefing',
+    createdAt: options.createdAt ?? new Date().toISOString(),
+  };
 }
 
 function formatStartupState(state: StartupState): string {

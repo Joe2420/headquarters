@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { App, CommandCenterPlaceholder, reportForDuty } from './App';
+import { App, CommandCenter, CommandCenterPlaceholder, createLocalMission, reportForDuty } from './App';
 
 describe('Desktop shell', () => {
   it('renders the security checkpoint startup surface', () => {
@@ -25,7 +25,58 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
 
     expect(html).toContain('Mission Board');
+    expect(html).toContain('Create Mission');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
+  });
+
+  it('creates a local mission from operator input', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    expect(mission).toEqual({
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold the line',
+      condition: 'Briefing',
+      commandAuthority: 'Professional command',
+      currentState: 'briefing',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+  });
+
+  it('does not create a local mission without codename and objective', () => {
+    expect(createLocalMission({ codename: '', objective: 'Hold the line' })).toBeUndefined();
+    expect(createLocalMission({ codename: 'Foundation Patrol', objective: ' ' })).toBeUndefined();
+  });
+
+  it('renders an active mission on the Mission Board', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const html = renderToStaticMarkup(<CommandCenter activeMission={mission} />);
+
+    expect(html).toContain('Foundation Patrol');
+    expect(html).toContain('Hold the line');
+    expect(html).toContain('Briefing');
+    expect(html).toContain('Professional command');
   });
 });
