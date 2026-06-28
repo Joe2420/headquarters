@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -150,6 +151,7 @@ function CommandCenterPlaceholder() {
       <p className="section-label">Main Content</p>
       <h2>Command Center</h2>
       <p className="muted">Command shell placeholder online.</p>
+      <CommandChair />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0042 — Added Command Chair placeholder with local operator command status.
+
 HQ-TASK-0041 — Added Report for Duty desktop shell transition.
 
 HQ-TASK-0040 — Audited mission command persisted execution pipeline boundary.

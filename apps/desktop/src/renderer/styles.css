@@ -52,6 +52,12 @@ h2 {
   font-weight: 700;
 }
 
+h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
 .app-meta,
 .status-list {
   display: grid;
@@ -154,6 +160,42 @@ dd {
 
 .primary-action:hover {
   background: #f1f6ff;
+}
+
+.command-chair {
+  display: grid;
+  gap: 0.85rem;
+  width: min(100%, 420px);
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #242b31;
+  background: #101418;
+}
+
+.command-chair-status {
+  color: #eef3f6;
+  font-weight: 700;
+}
+
+.secondary-action {
+  width: fit-content;
+  min-height: 40px;
+  padding: 0 0.85rem;
+  border: 1px solid #3b4650;
+  background: #171d23;
+  color: #eef3f6;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-action:focus-visible {
+  outline: 2px solid #8fb8ff;
+  outline-offset: 3px;
+}
+
+.secondary-action:hover {
+  border-color: #8fb8ff;
 }
 
 .status-panel {
