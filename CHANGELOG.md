@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0043 — Added HQOS service registry and kernel boot foundation.
+
 HQ-TASK-0042 — Added Command Chair placeholder with local operator command status.
 
 HQ-TASK-0041 — Added Report for Duty desktop shell transition.

@@ -38,6 +38,7 @@
 - HQ-TASK-0040 — Mission Command Persisted Execution Pipeline Audit
 - HQ-TASK-0041 — Desktop Shell: Report for Duty
 - HQ-TASK-0042 — Command Chair Placeholder
+- HQ-TASK-0043 — HQOS Service Registry and Kernel Boot Foundation
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -55,4 +56,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0042 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0043 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
