@@ -51,6 +51,25 @@ describe('MissionRepository', () => {
     database.close();
   });
 
+  it('updates an existing mission record state', () => {
+    const database = openHeadquartersDatabase(createTempDatabasePath());
+    runMigrations(database, loadMigrationsFromDirectory(migrationsDirectory));
+    const repository = new MissionRepository(database);
+    const mission = createMission();
+    const briefingMission: Mission = {
+      ...mission,
+      state: 'briefing',
+      updatedAt: '2026-06-28T20:05:00.000Z',
+    };
+
+    repository.save(mission);
+    repository.save(briefingMission);
+
+    expect(repository.findById(mission.id)).toEqual(briefingMission);
+
+    database.close();
+  });
+
   it('keeps mission creation schema migration idempotent', () => {
     const database = openHeadquartersDatabase(createTempDatabasePath());
     const migrations = loadMigrationsFromDirectory(migrationsDirectory);
