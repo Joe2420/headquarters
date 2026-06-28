@@ -12,6 +12,7 @@ export * from './MissionCommandExecutionOrchestrator';
 export * from './MissionCommandPersistencePort';
 export * from './MissionCommandPersistenceComposition';
 export * from './MissionCommandArchivePersistenceAdapter';
+export * from './MissionCommandPersistedExecutionPipeline';
 export * from './MissionLifecyclePersistence';
 export * from './MissionEventReader';
 export * from './MissionTimelineBuilder';

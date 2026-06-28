@@ -34,6 +34,7 @@
 - HQ-TASK-0036 — Mission Command Persistence Composition Audit
 - HQ-TASK-0037 — Mission Command Archive Persistence Adapter MVP
 - HQ-TASK-0038 — Mission Command Archive Persistence Adapter Audit
+- HQ-TASK-0039 — Mission Command Persisted Execution Pipeline MVP
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -51,4 +52,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0039 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0040 has not started. Future journal implementation requires explicit Founder approval under HDC workflow.
