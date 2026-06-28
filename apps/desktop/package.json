@@ -3,19 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "dist/main/main.js",
+  "main": "dist/main/main.cjs",
   "scripts": {
-    "dev": "pnpm run build:main && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 concurrently -k \"vite --host 127.0.0.1\" \"wait-on tcp:5173 && electron dist/main/main.js\"",
-    "build:main": "tsc -p tsconfig.json",
-    "build": "tsc -p tsconfig.json && vite build",
+    "dev": "corepack pnpm run build:main && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 concurrently -k \"vite --host 127.0.0.1 --strictPort\" \"wait-on http://127.0.0.1:5173 && node scripts/launch-electron-dev.mjs\"",
+    "build:main": "vite build --config vite.main.config.ts",
+    "build": "corepack pnpm run build:main && vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src vite.config.ts",
+    "lint": "eslint src scripts vite.config.ts vite.main.config.ts",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@headquarters/shared": "workspace:*",
     "@headquarters/hqos": "workspace:*",
+    "@headquarters/database": "workspace:*",
     "@headquarters/ui": "workspace:*",
+    "better-sqlite3": "^11.5.0",
     "@vitejs/plugin-react": "^4.3.3",
     "electron": "^33.2.1",
     "vite": "^5.4.10",
@@ -23,6 +25,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "concurrently": "^9.1.0",
