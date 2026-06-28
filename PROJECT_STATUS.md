@@ -42,6 +42,7 @@
 - HQ-TASK-0044 — Mission Board Placeholder
 - HQ-TASK-0045 — Create Mission Flow
 - HQ-TASK-0046 — Archive Write Placeholder
+- HQ-TASK-0047 — Sprint 1 Review Package
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -59,4 +60,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0046 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0047 is implemented on a feature branch and awaiting Founder approval before merge. Sprint 2 implementation should follow the repository roadmap after Founder approval. Future journal implementation requires explicit Founder approval under HDC workflow.

@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0047 — Added Sprint 1 foundation review package.
+
 HQ-TASK-0046 — Added archive write placeholder status for local mission creation.
 
 HQ-TASK-0045 — Added local create mission flow to the Command Center Mission Board.
