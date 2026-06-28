@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { App, reportForDuty } from './App';
+import { App, CommandCenterPlaceholder, reportForDuty } from './App';
 
 describe('Desktop shell', () => {
   it('renders the security checkpoint startup surface', () => {
@@ -19,5 +19,13 @@ describe('Desktop shell', () => {
 
   it('keeps command center phase stable after reporting for duty', () => {
     expect(reportForDuty('command-center')).toBe('command-center');
+  });
+
+  it('renders the Mission Board placeholder in the command center', () => {
+    const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
+
+    expect(html).toContain('Mission Board');
+    expect(html).toContain('Awaiting mission creation');
+    expect(html).toContain('No mission loaded');
   });
 });
