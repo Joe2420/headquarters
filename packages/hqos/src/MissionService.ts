@@ -1,5 +1,6 @@
-import type { HQEvent, Mission, MissionCreatedPayload, UUID } from '@headquarters/shared';
+import type { EventPayloadMap, HeadquartersEventType, HQEvent, Mission, MissionCreatedPayload, UUID } from '@headquarters/shared';
 import { createEventEnvelope } from './events';
+import { InvalidMissionTransitionError, MissionKernel } from './MissionKernel';
 
 export interface CreateMissionInput {
   readonly codename: string;
@@ -10,12 +11,21 @@ export interface CreateMissionInput {
   readonly causationId?: UUID;
 }
 
+export interface MissionBriefingTransitionInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: string;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly reason?: string;
+}
+
 export interface MissionRecordRepository {
   save(mission: Mission): Promise<void> | void;
+  findById(id: UUID): Promise<Mission | undefined> | Mission | undefined;
 }
 
 export interface MissionCreatedEventPublisher {
-  publish(event: HQEvent<MissionCreatedPayload>): Promise<void> | void;
+  publish(event: HQEvent): Promise<void> | void;
 }
 
 export interface MissionServiceOptions {
@@ -30,11 +40,24 @@ export interface MissionCreationResult {
   readonly event: HQEvent<MissionCreatedPayload>;
 }
 
+export interface MissionBriefingTransitionResult<TType extends HeadquartersEventType> {
+  readonly mission: Mission;
+  readonly event: HQEvent<EventPayloadMap[TType]>;
+}
+
+export class MissionNotFoundError extends Error {
+  constructor(readonly missionId: UUID) {
+    super(`Mission ${missionId} was not found.`);
+    this.name = 'MissionNotFoundError';
+  }
+}
+
 export class MissionService {
   constructor(
     private readonly missionRepository: MissionRecordRepository,
     private readonly eventPublisher: MissionCreatedEventPublisher,
     private readonly options: MissionServiceOptions = {},
+    private readonly missionKernel = new MissionKernel(),
   ) {}
 
   async createMission(input: CreateMissionInput): Promise<MissionCreationResult> {
@@ -45,6 +68,52 @@ export class MissionService {
     await this.eventPublisher.publish(event);
 
     return { mission, event };
+  }
+
+  async startBriefing(
+    input: MissionBriefingTransitionInput,
+  ): Promise<MissionBriefingTransitionResult<'mission.briefing_started'>> {
+    const mission = await this.loadMission(input.missionId);
+    const transition = this.missionKernel.transition(mission, 'briefing', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+    const event = this.createMissionEvent('mission.briefing_started', transition.mission, input);
+
+    await this.missionRepository.save(transition.mission);
+    await this.eventPublisher.publish(event);
+
+    return { mission: transition.mission, event };
+  }
+
+  async completeBriefing(
+    input: MissionBriefingTransitionInput,
+  ): Promise<MissionBriefingTransitionResult<'mission.briefing_completed'>> {
+    const mission = await this.loadMission(input.missionId);
+    const transition = this.missionKernel.transition(mission, 'ready', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+    const event = this.createMissionEvent('mission.briefing_completed', transition.mission, input);
+
+    await this.missionRepository.save(transition.mission);
+    await this.eventPublisher.publish(event);
+
+    return { mission: transition.mission, event };
+  }
+
+  private async loadMission(missionId: UUID): Promise<Mission> {
+    const mission = await this.missionRepository.findById(missionId);
+
+    if (mission === undefined) {
+      throw new MissionNotFoundError(missionId);
+    }
+
+    return mission;
   }
 
   private createMissionRecord(input: CreateMissionInput): Mission {
@@ -82,7 +151,28 @@ export class MissionService {
       },
     });
   }
+
+  private createMissionEvent<TType extends 'mission.briefing_started' | 'mission.briefing_completed'>(
+    type: TType,
+    mission: Mission,
+    input: MissionBriefingTransitionInput,
+  ): HQEvent<EventPayloadMap[TType]> {
+    return createEventEnvelope({
+      type,
+      source: this.options.source ?? 'MissionService',
+      occurredAt: input.requestedAt ?? mission.updatedAt,
+      missionId: mission.id,
+      ...(mission.campaignId !== undefined ? { campaignId: mission.campaignId } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+      payload: {
+        missionId: mission.id,
+      },
+    });
+  }
 }
+
+export { InvalidMissionTransitionError };
 
 function createMissionId(): UUID {
   const randomUUID = globalThis.crypto?.randomUUID;

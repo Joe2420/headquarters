@@ -39,6 +39,12 @@ export class MissionRepository {
         @createdAt,
         @updatedAt
       )
+      ON CONFLICT(id) DO UPDATE SET
+        campaign_id = excluded.campaign_id,
+        codename = excluded.codename,
+        state = excluded.state,
+        objective = excluded.objective,
+        updated_at = excluded.updated_at
     `).run({
       id: mission.id,
       campaignId: mission.campaignId ?? null,

@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0049 — Added briefing start and completion transitions to MissionService.
+
 HQ-TASK-0048 — Added Mission Creation Service with mission record persistence and MissionCreated event emission.
 
 HQ-TASK-0047 — Added Sprint 1 foundation review package.
