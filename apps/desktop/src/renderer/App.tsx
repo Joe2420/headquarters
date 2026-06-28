@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 type StartupState = 'loading' | 'ready' | 'failed';
+export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
 
 interface StartupStatus {
   state: StartupState;
@@ -26,6 +27,7 @@ declare global {
 
 export function App() {
   const version = globalThis.window?.headquarters?.version ?? '0.1.0';
+  const [shellPhase, setShellPhase] = useState<DesktopShellPhase>('security-checkpoint');
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -94,9 +96,11 @@ export function App() {
 
         <main className="shell-main">
           <section className="workspace-panel" aria-label="Main content">
-            <p className="section-label">Main Content</p>
-            <h2>Command Center</h2>
-            <p className="muted">Desktop shell online.</p>
+            {shellPhase === 'security-checkpoint' ? (
+              <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase))} />
+            ) : (
+              <CommandCenterPlaceholder />
+            )}
           </section>
 
           <aside className="status-panel" aria-label="Status area">
@@ -121,6 +125,38 @@ export function App() {
       </div>
     </div>
   );
+}
+
+interface SecurityCheckpointProps {
+  onReportForDuty: () => void;
+}
+
+function SecurityCheckpoint({ onReportForDuty }: SecurityCheckpointProps) {
+  return (
+    <div className="checkpoint-surface">
+      <p className="section-label">Security Checkpoint</p>
+      <h2>Report for Duty</h2>
+      <p className="muted">Headquarters is standing by for command assumption.</p>
+      <button className="primary-action" type="button" onClick={onReportForDuty}>
+        REPORT FOR DUTY
+      </button>
+    </div>
+  );
+}
+
+function CommandCenterPlaceholder() {
+  return (
+    <div className="command-placeholder">
+      <p className="section-label">Main Content</p>
+      <h2>Command Center</h2>
+      <p className="muted">Command shell placeholder online.</p>
+    </div>
+  );
+}
+
+export function reportForDuty(currentPhase: DesktopShellPhase): DesktopShellPhase {
+  if (currentPhase === 'security-checkpoint') return 'command-center';
+  return currentPhase;
 }
 
 function formatStartupState(state: StartupState): string {
