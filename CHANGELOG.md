@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0040 — Audited mission command persisted execution pipeline boundary.
+
 HQ-TASK-0039 — Added mission command persisted execution pipeline MVP.
 
 HQ-TASK-0038 — Audited mission command archive persistence adapter boundary.
