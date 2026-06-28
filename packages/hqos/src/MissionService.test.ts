@@ -3,6 +3,7 @@ import type { HQEvent, Mission } from '@headquarters/shared';
 import { EventBus } from './EventBus';
 import {
   InvalidMissionTransitionError,
+  MissionAuthorizationStateError,
   MissionNotFoundError,
   MissionObservationSessionNotFoundError,
   MissionService,
@@ -363,6 +364,134 @@ describe('MissionService', () => {
     );
     expect(save).not.toHaveBeenCalled();
     expect(complete).not.toHaveBeenCalled();
+    expect(publish).not.toHaveBeenCalled();
+  });
+
+  it('requests authorization and emits deterministic approval events', async () => {
+    const mission = createMission('authorization');
+    const publish = vi.fn();
+    const createEventId = vi
+      .fn()
+      .mockReturnValueOnce('55555555-5555-4555-8555-555555555555')
+      .mockReturnValueOnce('66666666-6666-4666-8666-666666666666');
+    const service = new MissionService(
+      {
+        save: vi.fn(),
+        findById: () => mission,
+      },
+      { publish },
+      {
+        createEventId,
+        source: 'MissionServiceTest',
+      },
+    );
+
+    const result = await service.requestAuthorization({
+      missionId,
+      requestedAt,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      setupSummary: 'Breakout retest is complete.',
+      riskPlanned: 0.5,
+      invalidation: 'Close below the briefing level.',
+      operatorJustification: 'Checklist complete and risk is defined.',
+    });
+
+    expect(result.decision).toEqual({
+      decision: 'approved',
+      reason: 'Manual authorization fields are complete.',
+      confidence: 1,
+      evidenceRefs: ['operatorJustification', 'invalidation'],
+    });
+    expect(result.requestEvent).toEqual({
+      id: '55555555-5555-4555-8555-555555555555',
+      type: 'mission.authorization_requested',
+      version: 1,
+      occurredAt: requestedAt,
+      source: 'MissionServiceTest',
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      priority: 'amber',
+      payload: {
+        missionId,
+        setupSummary: 'Breakout retest is complete.',
+        riskPlanned: 0.5,
+        invalidation: 'Close below the briefing level.',
+        operatorJustification: 'Checklist complete and risk is defined.',
+      },
+    });
+    expect(result.responseEvent).toEqual({
+      id: '66666666-6666-4666-8666-666666666666',
+      type: 'mission.authorized',
+      version: 1,
+      occurredAt: requestedAt,
+      source: 'MissionServiceTest',
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      priority: 'green',
+      payload: {
+        missionId,
+        confidence: 1,
+        evidenceRefs: ['operatorJustification', 'invalidation'],
+      },
+    });
+    expect(publish).toHaveBeenCalledTimes(2);
+    expect(publish).toHaveBeenNthCalledWith(1, result.requestEvent);
+    expect(publish).toHaveBeenNthCalledWith(2, result.responseEvent);
+  });
+
+  it('requests authorization and emits deterministic denial events when manual fields are incomplete', async () => {
+    const mission = createMission('authorization');
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save: vi.fn(),
+        findById: () => mission,
+      },
+      { publish },
+      { source: 'MissionServiceTest' },
+    );
+
+    const result = await service.requestAuthorization({
+      missionId,
+      requestedAt,
+      setupSummary: 'Setup noted without a complete operator justification.',
+    });
+
+    expect(result.decision).toEqual({
+      decision: 'denied',
+      reason: 'Manual authorization requires operator justification and invalidation.',
+      evidenceRefs: ['operatorJustification', 'invalidation'],
+    });
+    expect(result.responseEvent).toMatchObject({
+      type: 'mission.authorization_denied',
+      occurredAt: requestedAt,
+      source: 'MissionServiceTest',
+      missionId,
+      priority: 'red',
+      payload: {
+        missionId,
+        reason: 'Manual authorization requires operator justification and invalidation.',
+        evidenceRefs: ['operatorJustification', 'invalidation'],
+      },
+    });
+    expect(publish).toHaveBeenCalledTimes(2);
+    expect(publish).toHaveBeenNthCalledWith(1, result.requestEvent);
+    expect(publish).toHaveBeenNthCalledWith(2, result.responseEvent);
+  });
+
+  it('rejects authorization requests outside authorization state before event publication', async () => {
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save: vi.fn(),
+        findById: () => createMission('observation'),
+      },
+      { publish },
+    );
+
+    await expect(service.requestAuthorization({ missionId, requestedAt })).rejects.toBeInstanceOf(
+      MissionAuthorizationStateError,
+    );
     expect(publish).not.toHaveBeenCalled();
   });
 });

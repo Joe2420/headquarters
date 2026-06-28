@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0051 — Added manual authorization request MVP with deterministic approval and denial events.
+
 HQ-TASK-0050 — Added observation session tracking with duration calculation and mission events.
 
 HQ-TASK-0049 — Added briefing start and completion transitions to MissionService.
