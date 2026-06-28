@@ -60,4 +60,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0047 is implemented on a feature branch and awaiting Founder approval before merge. Sprint 2 implementation should follow the repository roadmap after Founder approval. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0047 has been merged into develop. Sprint 2 implementation should follow the repository roadmap after Founder approval and roadmap alignment. Future journal implementation requires explicit Founder approval under HDC workflow.
