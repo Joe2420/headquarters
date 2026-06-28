@@ -31,6 +31,7 @@ describe('App startup wiring', () => {
         '001_initial',
         '002_archive_events',
         '003_mission_creation_fields',
+        '004_observation_sessions',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
     } finally {
@@ -46,6 +47,7 @@ describe('App startup wiring', () => {
         '001_initial',
         '002_archive_events',
         '003_mission_creation_fields',
+        '004_observation_sessions',
       ]);
     } finally {
       secondStartup.close();

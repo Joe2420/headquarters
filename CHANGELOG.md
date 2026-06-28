@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0050 — Added observation session tracking with duration calculation and mission events.
+
 HQ-TASK-0049 — Added briefing start and completion transitions to MissionService.
 
 HQ-TASK-0048 — Added Mission Creation Service with mission record persistence and MissionCreated event emission.
