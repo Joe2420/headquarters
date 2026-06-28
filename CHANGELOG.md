@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0038 — Audited mission command archive persistence adapter boundary.
+
 HQ-TASK-0037 — Added mission command archive persistence adapter MVP.
 
 HQ-TASK-0036 — Audited mission command persistence composition boundary.
