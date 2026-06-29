@@ -34,6 +34,17 @@ export interface MissionDebriefDraft {
   lesson: string;
 }
 
+export interface MissionAuthorizationDraft {
+  operatorJustification: string;
+  invalidation: string;
+}
+
+export interface MissionAuthorizationStatus {
+  missionId: string;
+  decision: 'approved' | 'denied';
+  reason: string;
+}
+
 export interface MissionDebrief {
   id: string;
   missionId: string;
@@ -99,6 +110,7 @@ export function App() {
   const [shellPhase, setShellPhase] = useState<DesktopShellPhase>('security-checkpoint');
   const [activeMission, setActiveMission] = useState<ActiveMission | undefined>();
   const [archiveWrite, setArchiveWrite] = useState<ArchiveWritePlaceholder | undefined>();
+  const [authorizationStatus, setAuthorizationStatus] = useState<MissionAuthorizationStatus | undefined>();
   const [missionDebrief, setMissionDebrief] = useState<MissionDebrief | undefined>();
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
@@ -181,13 +193,18 @@ export function App() {
               <CommandCenter
                 activeMission={activeMission}
                 archiveWrite={archiveWrite}
+                authorizationStatus={authorizationStatus}
                 missionDebrief={missionDebrief}
                 archiveSummary={archiveSummary}
                 onCreateMission={(mission) => {
                   setActiveMission(mission);
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
+                  setAuthorizationStatus(undefined);
                   setMissionDebrief(undefined);
                   setArchiveSummary(undefined);
+                }}
+                onRequestAuthorization={(authorization) => {
+                  setAuthorizationStatus(authorization);
                 }}
                 onReturnToBase={() => {
                   setActiveMission((mission) => requestLocalReturnToBase(mission));
@@ -253,9 +270,11 @@ export function CommandCenterPlaceholder() {
 interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
   missionDebrief?: MissionDebrief | undefined;
   archiveSummary?: LocalMissionArchiveSummary | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
+  onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
   onReturnToBase?: (() => void) | undefined;
   onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
   onArchiveMission?: (() => void) | undefined;
@@ -264,9 +283,11 @@ interface CommandCenterProps {
 export function CommandCenter({
   activeMission,
   archiveWrite,
+  authorizationStatus,
   missionDebrief,
   archiveSummary,
   onCreateMission,
+  onRequestAuthorization,
   onReturnToBase,
   onSaveDebrief,
   onArchiveMission,
@@ -295,6 +316,11 @@ export function CommandCenter({
       </section>
 
       <section className="command-center-panels" aria-label="Operational panels">
+        <MissionAuthorizationPanel
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          onRequestAuthorization={onRequestAuthorization}
+        />
         <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
         <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} onSaveDebrief={onSaveDebrief} />
         <MissionArchiveSummaryPanel
@@ -307,6 +333,57 @@ export function CommandCenter({
         <CommandChair />
       </section>
     </div>
+  );
+}
+
+interface MissionAuthorizationPanelProps {
+  activeMission?: ActiveMission | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
+}
+
+function MissionAuthorizationPanel({
+  activeMission,
+  authorizationStatus,
+  onRequestAuthorization,
+}: MissionAuthorizationPanelProps) {
+  const [operatorJustification, setOperatorJustification] = useState('');
+  const [invalidation, setInvalidation] = useState('');
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const result = evaluateLocalMissionAuthorization(activeMission, {
+      operatorJustification,
+      invalidation,
+    });
+
+    if (!result) return;
+
+    onRequestAuthorization?.(result);
+    setOperatorJustification('');
+    setInvalidation('');
+  }
+
+  return (
+    <form className="mission-authorization-panel" aria-label="Mission authorization" onSubmit={handleSubmit}>
+      <div>
+        <p className="section-label">Authorization</p>
+        <h3>Mission Authorization</h3>
+      </div>
+      <label>
+        <span>Operator Justification</span>
+        <input value={operatorJustification} onChange={(event) => setOperatorJustification(event.target.value)} />
+      </label>
+      <label>
+        <span>Invalidation</span>
+        <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
+      </label>
+      <button className="secondary-action" type="submit" disabled={!activeMission}>
+        Request Authorization
+      </button>
+      <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+    </form>
   );
 }
 
@@ -647,6 +724,33 @@ export function createArchiveWritePlaceholder(
   };
 }
 
+export function evaluateLocalMissionAuthorization(
+  mission: ActiveMission | undefined,
+  draft: MissionAuthorizationDraft,
+): MissionAuthorizationStatus | undefined {
+  if (mission === undefined) return undefined;
+
+  if (hasContent(draft.operatorJustification) && hasContent(draft.invalidation)) {
+    return {
+      missionId: mission.id,
+      decision: 'approved',
+      reason: 'Manual authorization fields are complete.',
+    };
+  }
+
+  return {
+    missionId: mission.id,
+    decision: 'denied',
+    reason: 'Manual authorization requires operator justification and invalidation.',
+  };
+}
+
+export function formatAuthorizationStatus(status?: MissionAuthorizationStatus): string {
+  if (status?.decision === 'approved') return 'Authorization approved';
+  if (status?.decision === 'denied') return 'Authorization denied';
+  return 'Awaiting authorization request';
+}
+
 export function formatArchiveWriteStatus(archiveWrite?: ArchiveWritePlaceholder): string {
   if (archiveWrite?.status === 'queued') return 'Queued placeholder';
   return 'Not started';
@@ -701,4 +805,8 @@ export function formatMigrationStatus(status: StartupStatus): string {
 export function formatStartupError(status: StartupStatus): string {
   if (!status.error) return '';
   return status.error;
+}
+
+function hasContent(value: string): boolean {
+  return value.trim().length > 0;
 }

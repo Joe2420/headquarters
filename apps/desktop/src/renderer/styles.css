@@ -228,6 +228,7 @@ dd {
   outline-offset: 2px;
 }
 
+.mission-authorization-panel,
 .mission-closing-panel,
 .debrief-panel,
 .mission-archive-summary-panel,
@@ -240,8 +241,35 @@ dd {
   background: #0f1215;
 }
 
+.mission-authorization-panel,
 .debrief-panel {
   background: #101418;
+}
+
+.mission-authorization-panel label,
+.debrief-panel label {
+  display: grid;
+  gap: 0.35rem;
+  color: #aab7c1;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.mission-authorization-panel input,
+.debrief-panel input {
+  min-height: 40px;
+  box-sizing: border-box;
+  border: 1px solid #3b4650;
+  background: #0b0d0f;
+  color: #eef3f6;
+  font: inherit;
+  padding: 0 0.75rem;
+}
+
+.mission-authorization-panel input:focus-visible,
+.debrief-panel input:focus-visible {
+  outline: 2px solid #8fb8ff;
+  outline-offset: 2px;
 }
 
 .mission-closing-panel dl,
