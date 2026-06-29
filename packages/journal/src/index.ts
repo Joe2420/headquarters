@@ -4,3 +4,4 @@ export * from './TradeReview';
 export * from './GrowthEvent';
 export * from './JournalTimeline';
 export * from './JournalSearch';
+export * from './JournalArchive';

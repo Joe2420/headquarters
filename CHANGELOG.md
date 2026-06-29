@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0078 — Added Journal archive contracts for immutable raw evidence views.
+
 HQ-TASK-0077 — Added deterministic Journal entry search helpers.
 
 HQ-TASK-0076 — Added a read-only Journal timeline model.
