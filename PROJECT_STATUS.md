@@ -74,6 +74,9 @@
 - HQ-TASK-0076 — Journal Timeline Read Model
 - HQ-TASK-0077 — Journal Search
 - HQ-TASK-0078 — Journal Archive
+- HQ-TASK-0079 — Sprint 5 Journal System Review Package
+
+Current milestone gate: Sprint 5 Journal System is complete through HIG-TASK-042 / HQ-TASK-0079.
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
