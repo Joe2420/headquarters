@@ -21,6 +21,7 @@ import {
   formatDebriefStatus,
   formatHqosStatus,
   formatMigrationStatus,
+  formatMissionHistoryStatus,
   formatMissionDetailState,
   formatMissionDetailValue,
   formatMissionClosingState,
@@ -31,11 +32,13 @@ import {
   formatTimelineViewerStatus,
   getPrimaryNavigationItems,
   listArchivedMissionSummaries,
+  listMissionHistory,
   mapMissionRecordToActiveMission,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
   reportForDuty,
   requestLocalReturnToBase,
+  upsertMissionHistory,
 } from './App';
 
 describe('Desktop shell', () => {
@@ -166,12 +169,14 @@ describe('Desktop shell', () => {
     expect(html).toContain('Archived Mission Summary');
     expect(html).toContain('Mission Archive Viewer');
     expect(html).toContain('Timeline Viewer');
+    expect(html).toContain('Mission History');
     expect(html).toContain('Archive Placeholder');
     expect(html).toContain('Not started');
     expect(html).toContain('Awaiting debrief');
     expect(html).toContain('Awaiting archive');
     expect(html).toContain('No archived missions');
     expect(html).toContain('No timeline entries');
+    expect(html).toContain('No mission history');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
     expect(html).toContain('No mission lifecycle loaded');
@@ -740,6 +745,90 @@ describe('Desktop shell', () => {
     expect(html).toContain('1 timeline entry');
     expect(html).toContain('Idle to Briefing');
     expect(html).toContain('Mission created');
+  });
+
+  it('tracks mission history snapshots without mutating source arrays', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const history = upsertMissionHistory([], mission);
+    const closingMission = requestLocalReturnToBase(mission);
+
+    if (!closingMission) throw new Error('Expected closing mission fixture');
+
+    const updatedHistory = upsertMissionHistory(history, closingMission);
+    const listedHistory = listMissionHistory(updatedHistory);
+
+    expect(history).toEqual([mission]);
+    expect(updatedHistory).toEqual([closingMission]);
+    expect(listedHistory).toEqual(updatedHistory);
+    expect(listedHistory).not.toBe(updatedHistory);
+    expect(listMissionHistory(undefined)).toEqual([]);
+    expect(formatMissionHistoryStatus([])).toBe('No mission history');
+    expect(formatMissionHistoryStatus(updatedHistory)).toBe('1 mission recorded');
+  });
+
+  it('appends multiple missions to history in creation order', () => {
+    const firstMission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+    const secondMission = createLocalMission(
+      {
+        codename: 'Second Patrol',
+        objective: 'Review the close',
+      },
+      {
+        createdAt: '2026-01-01T00:30:00.000Z',
+        id: 'mission-002',
+      },
+    );
+
+    if (!firstMission || !secondMission) throw new Error('Expected mission history fixtures');
+
+    const history = upsertMissionHistory(upsertMissionHistory([], firstMission), secondMission);
+
+    expect(history.map((mission) => mission.id)).toEqual(['mission-001', 'mission-002']);
+    expect(formatMissionHistoryStatus(history)).toBe('2 missions recorded');
+  });
+
+  it('renders mission history as a read-only surface', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const html = renderToStaticMarkup(<CommandCenter missionHistory={[mission]} />);
+
+    expect(html).toContain('aria-label="Mission history"');
+    expect(html).toContain('1 mission recorded');
+    expect(html).toContain('Foundation Patrol');
+    expect(html).toContain('Briefing');
+    expect(html).toContain('2026-01-01T00:00:00.000Z');
   });
 
   it('does not create an archived mission summary before debrief', () => {
