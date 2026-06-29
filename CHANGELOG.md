@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0071 — Added Sprint 4 mission operations review package.
+
 HQ-TASK-0070 — Added a read-only desktop mission history surface.
 
 HQ-TASK-0069 — Added a read-only desktop mission timeline viewer.
