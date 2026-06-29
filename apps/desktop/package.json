@@ -16,6 +16,7 @@
   "dependencies": {
     "@headquarters/database": "workspace:*",
     "@headquarters/hqos": "workspace:*",
+    "@headquarters/journal": "workspace:*",
     "@headquarters/shared": "workspace:*",
     "@headquarters/ui": "workspace:*",
     "@vitejs/plugin-react": "^4.3.3",

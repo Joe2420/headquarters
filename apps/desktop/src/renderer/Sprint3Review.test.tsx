@@ -25,10 +25,10 @@ describe('Sprint 3 desktop experience review', () => {
     expect(commandCenterHtml).toContain('Archive Placeholder');
   });
 
-  it('keeps Sprint 3 navigation lightweight and non-routing', () => {
+  it('keeps Sprint 3 navigation lightweight while exposing stabilized rooms', () => {
     const navigationItems = getPrimaryNavigationItems('command');
 
-    expect(navigationItems.map((item) => item.id)).toEqual(['command', 'missions', 'archive', 'settings']);
+    expect(navigationItems.map((item) => item.id)).toEqual(['command', 'missions', 'journal', 'archive', 'settings']);
     expect(navigationItems.filter((item) => item.active)).toEqual([
       { id: 'command', label: 'Command', active: true },
     ]);

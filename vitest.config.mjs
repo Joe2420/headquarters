@@ -10,6 +10,7 @@ export default defineConfig({
       '@headquarters/shared': resolve(rootDir, 'packages/shared/src/index.ts'),
       '@headquarters/hqos': resolve(rootDir, 'packages/hqos/src/index.ts'),
       '@headquarters/database': resolve(rootDir, 'packages/database/src/index.ts'),
+      '@headquarters/journal': resolve(rootDir, 'packages/journal/src/index.ts'),
       '@headquarters/ai-runtime': resolve(rootDir, 'packages/ai-runtime/src/index.ts'),
       '@headquarters/ui': resolve(rootDir, 'packages/ui/src/index.ts'),
     },

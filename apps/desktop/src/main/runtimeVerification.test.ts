@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 interface DesktopPackageManifest {
@@ -8,7 +9,8 @@ interface DesktopPackageManifest {
 }
 
 function readDesktopPackage(): DesktopPackageManifest {
-  return JSON.parse(readFileSync(join(process.cwd(), 'apps/desktop/package.json'), 'utf8')) as DesktopPackageManifest;
+  const desktopDirectory = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+  return JSON.parse(readFileSync(join(desktopDirectory, 'package.json'), 'utf8')) as DesktopPackageManifest;
 }
 
 describe('Desktop runtime launch contract', () => {
