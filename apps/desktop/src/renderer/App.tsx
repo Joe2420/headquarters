@@ -55,6 +55,21 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
+export type NavigationAreaId = 'command' | 'missions' | 'archive' | 'settings';
+
+export interface PrimaryNavigationItem {
+  id: NavigationAreaId;
+  label: string;
+  active: boolean;
+}
+
+const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
+  { id: 'command', label: 'Command' },
+  { id: 'missions', label: 'Missions' },
+  { id: 'archive', label: 'Archive' },
+  { id: 'settings', label: 'Settings' },
+];
+
 export interface StartupStatus {
   state: StartupState;
   database: {
@@ -144,10 +159,16 @@ export function App() {
 
       <div className="shell-body">
         <nav className="shell-nav" aria-label="Primary">
-          <span className="nav-item active">Command</span>
-          <span className="nav-item">Missions</span>
-          <span className="nav-item">Archive</span>
-          <span className="nav-item">Settings</span>
+          {getPrimaryNavigationItems('command').map((item) => (
+            <span
+              key={item.id}
+              className={item.active ? 'nav-item active' : 'nav-item'}
+              data-nav-id={item.id}
+              aria-current={item.active ? 'page' : undefined}
+            >
+              {item.label}
+            </span>
+          ))}
         </nav>
 
         <main className="shell-main">
@@ -472,6 +493,13 @@ export function reportForDuty(currentPhase: DesktopShellPhase): ReportForDutyTra
     to: currentPhase,
     changed: false,
   };
+}
+
+export function getPrimaryNavigationItems(activeArea: NavigationAreaId): PrimaryNavigationItem[] {
+  return primaryNavigation.map((item) => ({
+    ...item,
+    active: item.id === activeArea,
+  }));
 }
 
 export function createLocalMission(
