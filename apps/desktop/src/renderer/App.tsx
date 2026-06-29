@@ -132,6 +132,9 @@ export function App() {
                   setActiveMission(mission);
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
                 }}
+                onReturnToBase={() => {
+                  setActiveMission((mission) => requestLocalReturnToBase(mission));
+                }}
               />
             )}
           </section>
@@ -185,9 +188,10 @@ interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
+  onReturnToBase?: (() => void) | undefined;
 }
 
-export function CommandCenter({ activeMission, archiveWrite, onCreateMission }: CommandCenterProps) {
+export function CommandCenter({ activeMission, archiveWrite, onCreateMission, onReturnToBase }: CommandCenterProps) {
   return (
     <div className="command-placeholder">
       <p className="section-label">Main Content</p>
@@ -203,6 +207,7 @@ export function CommandCenter({ activeMission, archiveWrite, onCreateMission }: 
           currentState={activeMission?.currentState ?? 'No mission loaded'}
         />
       </div>
+      <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
       <ArchiveWritePanel archiveWrite={archiveWrite} />
       <CommandChair />
     </div>
@@ -246,6 +251,29 @@ function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
         Create Mission
       </button>
     </form>
+  );
+}
+
+interface MissionClosingPanelProps {
+  activeMission?: ActiveMission | undefined;
+  onReturnToBase?: (() => void) | undefined;
+}
+
+function MissionClosingPanel({ activeMission, onReturnToBase }: MissionClosingPanelProps) {
+  return (
+    <section className="mission-closing-panel" aria-label="Mission closing state">
+      <div>
+        <p className="section-label">Return To Base</p>
+        <h3>Mission Closing</h3>
+      </div>
+      <dl>
+        <dt>Status</dt>
+        <dd>{formatMissionClosingState(activeMission)}</dd>
+      </dl>
+      <button className="secondary-action" type="button" onClick={onReturnToBase} disabled={!activeMission}>
+        Return To Base
+      </button>
+    </section>
   );
 }
 
@@ -297,6 +325,16 @@ export function createLocalMission(
   };
 }
 
+export function requestLocalReturnToBase(mission: ActiveMission | undefined): ActiveMission | undefined {
+  if (mission === undefined) return undefined;
+
+  return {
+    ...mission,
+    condition: 'Closing',
+    currentState: 'return_to_base',
+  };
+}
+
 export function createArchiveWritePlaceholder(
   mission: ActiveMission,
   options: { id?: string; createdAt?: string } = {},
@@ -313,6 +351,12 @@ export function createArchiveWritePlaceholder(
 export function formatArchiveWriteStatus(archiveWrite?: ArchiveWritePlaceholder): string {
   if (archiveWrite?.status === 'queued') return 'Queued placeholder';
   return 'Not started';
+}
+
+export function formatMissionClosingState(mission?: ActiveMission): string {
+  if (mission?.currentState === 'return_to_base') return 'Returning to base';
+  if (mission) return 'Active mission open';
+  return 'No mission loaded';
 }
 
 function formatStartupState(state: StartupState): string {

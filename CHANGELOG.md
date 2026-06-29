@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0052 — Added Return To Base MVP with mission closing state and events.
+
 HQ-TASK-0051 — Added manual authorization request MVP with deterministic approval and denial events.
 
 HQ-TASK-0050 — Added observation session tracking with duration calculation and mission events.

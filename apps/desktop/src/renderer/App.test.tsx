@@ -7,7 +7,9 @@ import {
   createArchiveWritePlaceholder,
   createLocalMission,
   formatArchiveWriteStatus,
+  formatMissionClosingState,
   reportForDuty,
+  requestLocalReturnToBase,
 } from './App';
 
 describe('Desktop shell', () => {
@@ -34,6 +36,7 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
+    expect(html).toContain('Mission Closing');
     expect(html).toContain('Archive Placeholder');
     expect(html).toContain('Not started');
     expect(html).toContain('Awaiting mission creation');
@@ -88,6 +91,36 @@ describe('Desktop shell', () => {
     expect(html).toContain('Hold the line');
     expect(html).toContain('Briefing');
     expect(html).toContain('Professional command');
+    expect(html).toContain('Active mission open');
+  });
+
+  it('updates local mission display to return-to-base closing state', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const closingMission = requestLocalReturnToBase(mission);
+
+    expect(closingMission).toEqual({
+      ...mission,
+      condition: 'Closing',
+      currentState: 'return_to_base',
+    });
+    expect(formatMissionClosingState(closingMission)).toBe('Returning to base');
+  });
+
+  it('keeps return-to-base helper safe when no mission is loaded', () => {
+    expect(requestLocalReturnToBase(undefined)).toBeUndefined();
+    expect(formatMissionClosingState(undefined)).toBe('No mission loaded');
   });
 
   it('creates a deterministic archive write placeholder for a local mission', () => {
