@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0055 — Added Sprint 2 review package validating mission lifecycle event trace reconstruction.
+
 HQ-TASK-0054 — Added Mission Archive MVP summary builder and archived mission summary display.
 
 HQ-TASK-0053 — Added Debrief MVP with behavior-first debrief persistence and archive guard.
