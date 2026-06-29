@@ -133,6 +133,7 @@ export function App() {
   const [authorizationStatus, setAuthorizationStatus] = useState<MissionAuthorizationStatus | undefined>();
   const [missionDebrief, setMissionDebrief] = useState<MissionDebrief | undefined>();
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
+  const [archivedMissionSummaries, setArchivedMissionSummaries] = useState<LocalMissionArchiveSummary[]>([]);
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -216,6 +217,7 @@ export function App() {
                 authorizationStatus={authorizationStatus}
                 missionDebrief={missionDebrief}
                 archiveSummary={archiveSummary}
+                archivedMissionSummaries={archivedMissionSummaries}
                 onCreateMission={(mission) => {
                   setActiveMission(mission);
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
@@ -234,7 +236,12 @@ export function App() {
                   setActiveMission((mission) => markLocalMissionDebriefed(mission));
                 }}
                 onArchiveMission={() => {
-                  setArchiveSummary(createLocalMissionArchiveSummary(activeMission, missionDebrief, archiveWrite));
+                  const summary = createLocalMissionArchiveSummary(activeMission, missionDebrief, archiveWrite);
+
+                  setArchiveSummary(summary);
+                  if (summary) {
+                    setArchivedMissionSummaries((summaries) => [...summaries, summary]);
+                  }
                   setActiveMission((mission) => markLocalMissionArchived(mission));
                 }}
               />
@@ -293,6 +300,7 @@ interface CommandCenterProps {
   authorizationStatus?: MissionAuthorizationStatus | undefined;
   missionDebrief?: MissionDebrief | undefined;
   archiveSummary?: LocalMissionArchiveSummary | undefined;
+  archivedMissionSummaries?: LocalMissionArchiveSummary[] | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
   onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
   onReturnToBase?: (() => void) | undefined;
@@ -306,6 +314,7 @@ export function CommandCenter({
   authorizationStatus,
   missionDebrief,
   archiveSummary,
+  archivedMissionSummaries,
   onCreateMission,
   onRequestAuthorization,
   onReturnToBase,
@@ -351,10 +360,38 @@ export function CommandCenter({
           missionDebrief={missionDebrief}
           onArchiveMission={onArchiveMission}
         />
+        <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
         <ArchiveWritePanel archiveWrite={archiveWrite} />
         <CommandChair />
       </section>
     </div>
+  );
+}
+
+interface MissionArchiveViewerPanelProps {
+  archiveSummaries?: LocalMissionArchiveSummary[] | undefined;
+}
+
+function MissionArchiveViewerPanel({ archiveSummaries }: MissionArchiveViewerPanelProps) {
+  const summaries = listArchivedMissionSummaries(archiveSummaries);
+
+  return (
+    <section className="mission-archive-viewer-panel" aria-label="Mission archive viewer">
+      <div>
+        <p className="section-label">Archive Viewer</p>
+        <h3>Mission Archive Viewer</h3>
+      </div>
+      <p className="muted">{formatArchiveViewerStatus(summaries)}</p>
+      <ol className="mission-archive-list">
+        {summaries.map((summary) => (
+          <li key={`${summary.missionId}-${summary.archivedAt}`}>
+            <span>{summary.codename}</span>
+            <strong>{summary.eventCount} events</strong>
+            <time dateTime={summary.archivedAt}>{summary.archivedAt}</time>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -893,6 +930,18 @@ export function formatDebriefStatus(debrief?: MissionDebrief): string {
 export function formatArchiveSummaryStatus(summary?: LocalMissionArchiveSummary): string {
   if (summary) return 'Archived summary ready';
   return 'Awaiting archive';
+}
+
+export function listArchivedMissionSummaries(
+  summaries: LocalMissionArchiveSummary[] | undefined,
+): LocalMissionArchiveSummary[] {
+  return summaries ? [...summaries] : [];
+}
+
+export function formatArchiveViewerStatus(summaries: LocalMissionArchiveSummary[]): string {
+  if (summaries.length === 0) return 'No archived missions';
+  if (summaries.length === 1) return '1 archived mission';
+  return `${summaries.length} archived missions`;
 }
 
 function formatStartupState(state: StartupState): string {

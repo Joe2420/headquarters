@@ -14,6 +14,7 @@ import {
   evaluateLocalMissionAuthorization,
   formatArchiveWriteStatus,
   formatArchiveSummaryStatus,
+  formatArchiveViewerStatus,
   formatAuthorizationStatus,
   formatDatabaseStatus,
   formatDebriefStatus,
@@ -26,6 +27,7 @@ import {
   formatMissionLifecycleSummary,
   formatStartupError,
   getPrimaryNavigationItems,
+  listArchivedMissionSummaries,
   mapMissionRecordToActiveMission,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
@@ -159,10 +161,12 @@ describe('Desktop shell', () => {
     expect(html).toContain('Mission Closing');
     expect(html).toContain('Mission Debrief');
     expect(html).toContain('Archived Mission Summary');
+    expect(html).toContain('Mission Archive Viewer');
     expect(html).toContain('Archive Placeholder');
     expect(html).toContain('Not started');
     expect(html).toContain('Awaiting debrief');
     expect(html).toContain('Awaiting archive');
+    expect(html).toContain('No archived missions');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
     expect(html).toContain('No mission lifecycle loaded');
@@ -581,6 +585,54 @@ describe('Desktop shell', () => {
       eventCount: 2,
     });
     expect(formatArchiveSummaryStatus(summary)).toBe('Archived summary ready');
+  });
+
+  it('lists archived mission summaries without mutating the source array', () => {
+    const summaries = [
+      {
+        missionId: 'mission-001',
+        codename: 'Foundation Patrol',
+        archivedAt: '2026-01-01T00:20:00.000Z',
+        eventCount: 2,
+      },
+      {
+        missionId: 'mission-002',
+        codename: 'Second Patrol',
+        archivedAt: '2026-01-01T00:30:00.000Z',
+        eventCount: 1,
+      },
+    ];
+
+    const listed = listArchivedMissionSummaries(summaries);
+    const firstSummary = summaries[0];
+
+    if (!firstSummary) throw new Error('Expected archived mission summary fixture');
+
+    expect(listed).toEqual(summaries);
+    expect(listed).not.toBe(summaries);
+    expect(listArchivedMissionSummaries(undefined)).toEqual([]);
+    expect(formatArchiveViewerStatus([])).toBe('No archived missions');
+    expect(formatArchiveViewerStatus([firstSummary])).toBe('1 archived mission');
+    expect(formatArchiveViewerStatus(summaries)).toBe('2 archived missions');
+  });
+
+  it('renders archived mission summaries in the archive viewer', () => {
+    const summaries = [
+      {
+        missionId: 'mission-001',
+        codename: 'Foundation Patrol',
+        archivedAt: '2026-01-01T00:20:00.000Z',
+        eventCount: 2,
+      },
+    ];
+
+    const html = renderToStaticMarkup(<CommandCenter archivedMissionSummaries={summaries} />);
+
+    expect(html).toContain('aria-label="Mission archive viewer"');
+    expect(html).toContain('1 archived mission');
+    expect(html).toContain('Foundation Patrol');
+    expect(html).toContain('2 events');
+    expect(html).toContain('2026-01-01T00:20:00.000Z');
   });
 
   it('does not create an archived mission summary before debrief', () => {
