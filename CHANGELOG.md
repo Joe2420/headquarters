@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0062 — Added a lightweight primary navigation framework for desktop orientation.
+
 HQ-TASK-0061 — Hardened Mission Board as a read-only mission summary surface.
 
 HQ-TASK-0060 — Added a read-only HQOS status dashboard with deterministic startup diagnostics.

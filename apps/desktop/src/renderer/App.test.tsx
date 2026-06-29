@@ -17,6 +17,7 @@ import {
   formatMigrationStatus,
   formatMissionClosingState,
   formatStartupError,
+  getPrimaryNavigationItems,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
   reportForDuty,
@@ -33,6 +34,29 @@ describe('Desktop shell', () => {
     expect(html).toContain('Status');
     expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
+  });
+
+  it('renders a lightweight primary navigation framework with command active', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('aria-label="Primary"');
+    expect(html).toContain('data-nav-id="command"');
+    expect(html).toContain('data-nav-id="missions"');
+    expect(html).toContain('data-nav-id="archive"');
+    expect(html).toContain('data-nav-id="settings"');
+    expect(html).toContain('aria-current="page"');
+  });
+
+  it('derives exactly one active primary navigation item', () => {
+    const items = getPrimaryNavigationItems('command');
+
+    expect(items).toEqual([
+      { id: 'command', label: 'Command', active: true },
+      { id: 'missions', label: 'Missions', active: false },
+      { id: 'archive', label: 'Archive', active: false },
+      { id: 'settings', label: 'Settings', active: false },
+    ]);
+    expect(items.filter((item) => item.active)).toHaveLength(1);
   });
 
   it('formats startup status dashboard states deterministically', () => {
