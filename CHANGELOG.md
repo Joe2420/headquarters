@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0075 — Added journal-derived growth event capture contracts.
+
 HQ-TASK-0074 — Added behavior-first trade review capture contracts.
 
 HQ-TASK-0073 — Added behavior-focused daily reflection capture contracts.

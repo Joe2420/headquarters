@@ -70,6 +70,7 @@
 - HQ-TASK-0072 — Journal Entry Subsystem Foundation
 - HQ-TASK-0073 — Daily Reflection Journal Capture
 - HQ-TASK-0074 — Trade Review Journal Capture
+- HQ-TASK-0075 — Journal Growth Event Capture
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
