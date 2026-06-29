@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
-import type { Mission } from '@headquarters/shared';
+import type { Mission, MissionState } from '@headquarters/shared';
 import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
@@ -45,6 +45,14 @@ export interface MissionAuthorizationStatus {
   reason: string;
 }
 
+export type MissionLifecycleStepStatus = 'completed' | 'current' | 'pending';
+
+export interface MissionLifecycleStep {
+  state: MissionState;
+  label: string;
+  status: MissionLifecycleStepStatus;
+}
+
 export interface MissionDebrief {
   id: string;
   missionId: string;
@@ -80,6 +88,18 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'missions', label: 'Missions' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
+];
+
+export const missionLifecyclePath: readonly MissionState[] = [
+  'idle',
+  'briefing',
+  'ready',
+  'observation',
+  'authorization',
+  'deployed',
+  'return_to_base',
+  'debrief',
+  'archived',
 ];
 
 export interface StartupStatus {
@@ -316,6 +336,7 @@ export function CommandCenter({
       </section>
 
       <section className="command-center-panels" aria-label="Operational panels">
+        <MissionLifecyclePanel activeMission={activeMission} />
         <MissionAuthorizationPanel
           activeMission={activeMission}
           authorizationStatus={authorizationStatus}
@@ -333,6 +354,32 @@ export function CommandCenter({
         <CommandChair />
       </section>
     </div>
+  );
+}
+
+interface MissionLifecyclePanelProps {
+  activeMission?: ActiveMission | undefined;
+}
+
+function MissionLifecyclePanel({ activeMission }: MissionLifecyclePanelProps) {
+  const steps = buildMissionLifecycleSteps(activeMission);
+
+  return (
+    <section className="mission-lifecycle-panel" aria-label="Mission lifecycle">
+      <div>
+        <p className="section-label">Lifecycle</p>
+        <h3>Mission Lifecycle</h3>
+      </div>
+      <ol className="mission-lifecycle-list">
+        {steps.map((step) => (
+          <li key={step.state} data-step-status={step.status}>
+            <span>{step.label}</span>
+            <strong>{formatMissionLifecycleStepStatus(step.status)}</strong>
+          </li>
+        ))}
+      </ol>
+      <p className="muted">{formatMissionLifecycleSummary(activeMission)}</p>
+    </section>
   );
 }
 
@@ -638,6 +685,42 @@ export function formatMissionStateForDisplay(state: Mission['state']): string {
     .split('_')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
+}
+
+export function buildMissionLifecycleSteps(mission?: ActiveMission): MissionLifecycleStep[] {
+  const currentState = parseMissionState(mission?.currentState);
+  const currentIndex = currentState ? missionLifecyclePath.indexOf(currentState) : -1;
+
+  return missionLifecyclePath.map((state, index) => ({
+    state,
+    label: formatMissionStateForDisplay(state),
+    status: getMissionLifecycleStepStatus(index, currentIndex),
+  }));
+}
+
+export function formatMissionLifecycleSummary(mission?: ActiveMission): string {
+  const currentState = parseMissionState(mission?.currentState);
+
+  if (currentState === undefined) return 'No mission lifecycle loaded';
+  return `Current lifecycle state: ${formatMissionStateForDisplay(currentState)}`;
+}
+
+export function formatMissionLifecycleStepStatus(status: MissionLifecycleStepStatus): string {
+  if (status === 'completed') return 'Complete';
+  if (status === 'current') return 'Current';
+  return 'Pending';
+}
+
+function getMissionLifecycleStepStatus(index: number, currentIndex: number): MissionLifecycleStepStatus {
+  if (currentIndex < 0) return 'pending';
+  if (index < currentIndex) return 'completed';
+  if (index === currentIndex) return 'current';
+  return 'pending';
+}
+
+function parseMissionState(state?: string): MissionState | undefined {
+  if (state === undefined) return undefined;
+  return missionLifecyclePath.find((candidate) => candidate === state);
 }
 
 export function requestLocalReturnToBase(mission: ActiveMission | undefined): ActiveMission | undefined {

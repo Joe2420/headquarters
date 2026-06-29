@@ -229,6 +229,7 @@ dd {
 }
 
 .mission-authorization-panel,
+.mission-lifecycle-panel,
 .mission-closing-panel,
 .debrief-panel,
 .mission-archive-summary-panel,
@@ -280,6 +281,42 @@ dd {
   grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
   gap: 0.55rem 1rem;
   margin: 0;
+}
+
+.mission-lifecycle-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mission-lifecycle-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 0.65rem;
+  border-left: 2px solid #3b4650;
+  background: #101418;
+  color: #aab7c1;
+}
+
+.mission-lifecycle-list li[data-step-status="completed"] {
+  color: #d9e7ff;
+  border-left-color: #8fb8ff;
+}
+
+.mission-lifecycle-list li[data-step-status="current"] {
+  color: #eef3f6;
+  border-left-color: #d9e7ff;
+  background: #171d23;
+}
+
+.mission-lifecycle-list strong {
+  font-size: 0.74rem;
+  text-transform: uppercase;
 }
 
 .mission-board-shell section {

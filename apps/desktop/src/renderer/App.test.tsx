@@ -5,6 +5,7 @@ import {
   CommandCenter,
   CommandCenterPlaceholder,
   type StartupStatus,
+  buildMissionLifecycleSteps,
   createArchiveWritePlaceholder,
   createDesktopMission,
   createLocalDebrief,
@@ -19,6 +20,8 @@ import {
   formatHqosStatus,
   formatMigrationStatus,
   formatMissionClosingState,
+  formatMissionLifecycleStepStatus,
+  formatMissionLifecycleSummary,
   formatStartupError,
   getPrimaryNavigationItems,
   mapMissionRecordToActiveMission,
@@ -148,6 +151,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Operational panels"');
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
+    expect(html).toContain('Mission Lifecycle');
     expect(html).toContain('Mission Authorization');
     expect(html).toContain('Mission Closing');
     expect(html).toContain('Mission Debrief');
@@ -158,6 +162,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Awaiting archive');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
+    expect(html).toContain('No mission lifecycle loaded');
   });
 
   it('creates a local mission from operator input', () => {
@@ -339,11 +344,77 @@ describe('Desktop shell', () => {
       currentState: 'return_to_base',
     });
     expect(formatMissionClosingState(closingMission)).toBe('Returning to base');
+    expect(formatMissionLifecycleSummary(closingMission)).toBe('Current lifecycle state: Return To Base');
   });
 
   it('keeps return-to-base helper safe when no mission is loaded', () => {
     expect(requestLocalReturnToBase(undefined)).toBeUndefined();
     expect(formatMissionClosingState(undefined)).toBe('No mission loaded');
+    expect(formatMissionLifecycleSummary(undefined)).toBe('No mission lifecycle loaded');
+  });
+
+  it('builds a read-only mission lifecycle path without transition rules', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    expect(buildMissionLifecycleSteps(undefined).map((step) => step.status)).toEqual([
+      'pending',
+      'pending',
+      'pending',
+      'pending',
+      'pending',
+      'pending',
+      'pending',
+      'pending',
+      'pending',
+    ]);
+
+    expect(buildMissionLifecycleSteps(mission)).toEqual([
+      { state: 'idle', label: 'Idle', status: 'completed' },
+      { state: 'briefing', label: 'Briefing', status: 'current' },
+      { state: 'ready', label: 'Ready', status: 'pending' },
+      { state: 'observation', label: 'Observation', status: 'pending' },
+      { state: 'authorization', label: 'Authorization', status: 'pending' },
+      { state: 'deployed', label: 'Deployed', status: 'pending' },
+      { state: 'return_to_base', label: 'Return To Base', status: 'pending' },
+      { state: 'debrief', label: 'Debrief', status: 'pending' },
+      { state: 'archived', label: 'Archived', status: 'pending' },
+    ]);
+    expect(formatMissionLifecycleStepStatus('completed')).toBe('Complete');
+    expect(formatMissionLifecycleStepStatus('current')).toBe('Current');
+    expect(formatMissionLifecycleStepStatus('pending')).toBe('Pending');
+  });
+
+  it('renders lifecycle progress for an active mission', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const html = renderToStaticMarkup(<CommandCenter activeMission={markLocalMissionArchived(mission)} />);
+
+    expect(html).toContain('aria-label="Mission lifecycle"');
+    expect(html).toContain('data-step-status="completed"');
+    expect(html).toContain('data-step-status="current"');
+    expect(html).toContain('Current lifecycle state: Archived');
   });
 
   it('creates a local behavior-first mission debrief', () => {
