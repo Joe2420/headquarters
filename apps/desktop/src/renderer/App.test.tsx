@@ -6,6 +6,7 @@ import {
   CommandCenterPlaceholder,
   type StartupStatus,
   createArchiveWritePlaceholder,
+  createDesktopMission,
   createLocalDebrief,
   createLocalMissionArchiveSummary,
   createLocalMission,
@@ -18,6 +19,7 @@ import {
   formatMissionClosingState,
   formatStartupError,
   getPrimaryNavigationItems,
+  mapMissionRecordToActiveMission,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
   reportForDuty,
@@ -176,6 +178,68 @@ describe('Desktop shell', () => {
       currentState: 'briefing',
       createdAt: '2026-01-01T00:00:00.000Z',
     });
+  });
+
+  it('maps a persisted mission record into active desktop mission context', () => {
+    expect(mapMissionRecordToActiveMission({
+      id: 'mission-001',
+      codename: 'Foundation Patrol',
+      objective: 'Hold the line',
+      state: 'idle',
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    })).toEqual({
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold the line',
+      condition: 'Idle',
+      commandAuthority: 'Professional command',
+      currentState: 'idle',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+  });
+
+  it('creates a desktop mission through the Headquarters bridge when available', async () => {
+    const originalWindow = globalThis.window;
+    const headquartersWindow = {
+      headquarters: {
+        createMission: async () => ({
+          mission: {
+            id: 'mission-001',
+            codename: 'Foundation Patrol',
+            objective: 'Hold the line',
+            state: 'idle' as const,
+            createdAt: '2026-01-01T00:00:00.000Z',
+            updatedAt: '2026-01-01T00:00:00.000Z',
+          },
+        }),
+      },
+    } as unknown as Window & typeof globalThis;
+
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: headquartersWindow,
+    });
+
+    try {
+      await expect(createDesktopMission({
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      })).resolves.toEqual({
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold the line',
+        condition: 'Idle',
+        commandAuthority: 'Professional command',
+        currentState: 'idle',
+        createdAt: '2026-01-01T00:00:00.000Z',
+      });
+    } finally {
+      Object.defineProperty(globalThis, 'window', {
+        configurable: true,
+        value: originalWindow,
+      });
+    }
   });
 
   it('does not create a local mission without codename and objective', () => {

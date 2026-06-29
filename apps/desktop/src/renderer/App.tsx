@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
+import type { Mission } from '@headquarters/shared';
 import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
@@ -88,6 +89,7 @@ declare global {
     headquarters?: {
       version?: string;
       getStartupStatus?: () => Promise<StartupStatus>;
+      createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
     };
   }
 }
@@ -309,20 +311,20 @@ export function CommandCenter({
 }
 
 interface CreateMissionPanelProps {
-  onCreateMission?: ((mission: ActiveMission) => void) | undefined;
+  onCreateMission?: ((mission: ActiveMission) => void | Promise<void>) | undefined;
 }
 
 function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
   const [codename, setCodename] = useState('');
   const [objective, setObjective] = useState('');
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const mission = createLocalMission({ codename, objective });
+    const mission = await createDesktopMission({ codename, objective });
 
     if (!mission) return;
 
-    onCreateMission?.(mission);
+    await onCreateMission?.(mission);
     setCodename('');
     setObjective('');
   }
@@ -346,6 +348,24 @@ function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
       </button>
     </form>
   );
+}
+
+export async function createDesktopMission(draft: MissionDraft): Promise<ActiveMission | undefined> {
+  const codename = draft.codename.trim();
+  const objective = draft.objective.trim();
+
+  if (!codename || !objective) {
+    return undefined;
+  }
+
+  const createMission = globalThis.window?.headquarters?.createMission;
+
+  if (createMission === undefined) {
+    return createLocalMission({ codename, objective });
+  }
+
+  const result = await createMission({ codename, objective });
+  return mapMissionRecordToActiveMission(result.mission);
 }
 
 interface MissionClosingPanelProps {
@@ -522,6 +542,25 @@ export function createLocalMission(
     currentState: 'briefing',
     createdAt: options.createdAt ?? new Date().toISOString(),
   };
+}
+
+export function mapMissionRecordToActiveMission(mission: Mission): ActiveMission {
+  return {
+    id: mission.id,
+    campaign: mission.codename,
+    objective: mission.objective ?? 'Awaiting mission objective',
+    condition: formatMissionStateForDisplay(mission.state),
+    commandAuthority: 'Professional command',
+    currentState: mission.state,
+    createdAt: mission.createdAt,
+  };
+}
+
+export function formatMissionStateForDisplay(state: Mission['state']): string {
+  return state
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 export function requestLocalReturnToBase(mission: ActiveMission | undefined): ActiveMission | undefined {
