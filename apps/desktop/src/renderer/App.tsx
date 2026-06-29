@@ -248,30 +248,38 @@ export function CommandCenter({
   onArchiveMission,
 }: CommandCenterProps) {
   return (
-    <div className="command-placeholder">
-      <p className="section-label">Main Content</p>
-      <h2>Command Center</h2>
-      <p className="muted">Command shell placeholder online.</p>
-      <CreateMissionPanel onCreateMission={onCreateMission} />
-      <div className="mission-board-shell" data-object-id="RM-0007">
-        <MissionBoard
-          campaign={activeMission?.campaign ?? 'No active campaign'}
-          objective={activeMission?.objective ?? 'Awaiting mission creation'}
-          condition={activeMission?.condition ?? 'Standby'}
-          commandAuthority={activeMission?.commandAuthority ?? 'Local placeholder'}
-          currentState={activeMission?.currentState ?? 'No mission loaded'}
+    <div className="command-center-layout" data-layout="command-center">
+      <section className="command-center-header" aria-label="Command center status">
+        <p className="section-label">Main Content</p>
+        <h2>Command Center</h2>
+        <p className="muted">Command shell placeholder online.</p>
+      </section>
+
+      <section className="command-center-primary" aria-label="Mission operations">
+        <CreateMissionPanel onCreateMission={onCreateMission} />
+        <div className="mission-board-shell" data-object-id="RM-0007">
+          <MissionBoard
+            campaign={activeMission?.campaign ?? 'No active campaign'}
+            objective={activeMission?.objective ?? 'Awaiting mission creation'}
+            condition={activeMission?.condition ?? 'Standby'}
+            commandAuthority={activeMission?.commandAuthority ?? 'Local placeholder'}
+            currentState={activeMission?.currentState ?? 'No mission loaded'}
+          />
+        </div>
+      </section>
+
+      <section className="command-center-panels" aria-label="Operational panels">
+        <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
+        <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} onSaveDebrief={onSaveDebrief} />
+        <MissionArchiveSummaryPanel
+          activeMission={activeMission}
+          archiveSummary={archiveSummary}
+          missionDebrief={missionDebrief}
+          onArchiveMission={onArchiveMission}
         />
-      </div>
-      <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
-      <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} onSaveDebrief={onSaveDebrief} />
-      <MissionArchiveSummaryPanel
-        activeMission={activeMission}
-        archiveSummary={archiveSummary}
-        missionDebrief={missionDebrief}
-        onArchiveMission={onArchiveMission}
-      />
-      <ArchiveWritePanel archiveWrite={archiveWrite} />
-      <CommandChair />
+        <ArchiveWritePanel archiveWrite={archiveWrite} />
+        <CommandChair />
+      </section>
     </div>
   );
 }

@@ -60,6 +60,10 @@ describe('Desktop shell', () => {
   it('renders the Mission Board placeholder in the command center', () => {
     const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
 
+    expect(html).toContain('data-layout="command-center"');
+    expect(html).toContain('aria-label="Command center status"');
+    expect(html).toContain('aria-label="Mission operations"');
+    expect(html).toContain('aria-label="Operational panels"');
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
     expect(html).toContain('Mission Closing');

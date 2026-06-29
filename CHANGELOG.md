@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0059 — Added a stable Command Center layout MVP for first launchable use.
+
 HQ-TASK-0058 — Hardened the Report for Duty flow with deterministic repeated activation behavior.
 
 HQ-TASK-0057 — Added desktop runtime launch contract verification for the first launchable shell.
