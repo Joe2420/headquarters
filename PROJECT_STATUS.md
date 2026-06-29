@@ -60,6 +60,7 @@
 - HQ-TASK-0062 — Navigation Framework MVP
 - HQ-TASK-0063 — Sprint 3 Review Package
 - HQ-TASK-0064 — Mission Creation Desktop Experience
+- HQ-TASK-0065 — Mission Authorization Desktop Experience
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -77,4 +78,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0064 is implemented on a feature branch and awaiting merge. Sprint 4 Mission Operations is in progress through HIG-TASK-027.
+HQ-TASK-0065 is implemented on a feature branch and awaiting merge. Sprint 4 Mission Operations is in progress through HIG-TASK-028.

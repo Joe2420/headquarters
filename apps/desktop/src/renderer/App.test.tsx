@@ -10,8 +10,10 @@ import {
   createLocalDebrief,
   createLocalMissionArchiveSummary,
   createLocalMission,
+  evaluateLocalMissionAuthorization,
   formatArchiveWriteStatus,
   formatArchiveSummaryStatus,
+  formatAuthorizationStatus,
   formatDatabaseStatus,
   formatDebriefStatus,
   formatHqosStatus,
@@ -146,6 +148,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Operational panels"');
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
+    expect(html).toContain('Mission Authorization');
     expect(html).toContain('Mission Closing');
     expect(html).toContain('Mission Debrief');
     expect(html).toContain('Archived Mission Summary');
@@ -245,6 +248,48 @@ describe('Desktop shell', () => {
   it('does not create a local mission without codename and objective', () => {
     expect(createLocalMission({ codename: '', objective: 'Hold the line' })).toBeUndefined();
     expect(createLocalMission({ codename: 'Foundation Patrol', objective: ' ' })).toBeUndefined();
+  });
+
+  it('evaluates mission authorization with deterministic rule-based results', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const approved = evaluateLocalMissionAuthorization(mission, {
+      operatorJustification: 'Setup matches the plan.',
+      invalidation: 'Exit if structure breaks.',
+    });
+    const denied = evaluateLocalMissionAuthorization(mission, {
+      operatorJustification: 'Setup matches the plan.',
+      invalidation: '',
+    });
+
+    expect(approved).toEqual({
+      missionId: 'mission-001',
+      decision: 'approved',
+      reason: 'Manual authorization fields are complete.',
+    });
+    expect(formatAuthorizationStatus(approved)).toBe('Authorization approved');
+
+    expect(denied).toEqual({
+      missionId: 'mission-001',
+      decision: 'denied',
+      reason: 'Manual authorization requires operator justification and invalidation.',
+    });
+    expect(formatAuthorizationStatus(denied)).toBe('Authorization denied');
+    expect(evaluateLocalMissionAuthorization(undefined, {
+      operatorJustification: 'Setup matches the plan.',
+      invalidation: 'Exit if structure breaks.',
+    })).toBeUndefined();
   });
 
   it('renders an active mission on the Mission Board', () => {
