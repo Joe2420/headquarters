@@ -306,6 +306,11 @@ dd {
   background: #101418;
 }
 
+.status-panel h2 {
+  margin: 0.2rem 0 1rem;
+  font-size: 1rem;
+}
+
 .section-label {
   color: #93a4b1;
   font-size: 0.75rem;
