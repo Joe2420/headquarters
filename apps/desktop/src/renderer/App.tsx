@@ -55,7 +55,7 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
-interface StartupStatus {
+export interface StartupStatus {
   state: StartupState;
   database: {
     connected: boolean;
@@ -183,21 +183,22 @@ export function App() {
 
           <aside className="status-panel" aria-label="Status area">
             <p className="section-label">Status</p>
+            <h2>HQOS Status</h2>
             <dl className="status-list">
               <div>
                 <dt>HQOS</dt>
-                <dd>{startupStatus.state === 'failed' ? 'Limited' : 'Ready'}</dd>
+                <dd>{formatHqosStatus(startupStatus)}</dd>
               </div>
               <div>
                 <dt>Database</dt>
-                <dd>{startupStatus.database.connected ? 'Connected' : 'Offline'}</dd>
+                <dd>{formatDatabaseStatus(startupStatus)}</dd>
               </div>
               <div>
                 <dt>Migrations</dt>
                 <dd>{formatMigrationStatus(startupStatus)}</dd>
               </div>
             </dl>
-            {startupStatus.error ? <p className="status-error">{startupStatus.error}</p> : null}
+            {startupStatus.error ? <p className="status-error">{formatStartupError(startupStatus)}</p> : null}
           </aside>
         </main>
       </div>
@@ -604,7 +605,19 @@ function formatStartupState(state: StartupState): string {
   return 'Starting';
 }
 
-function formatMigrationStatus(status: StartupStatus): string {
+export function formatHqosStatus(status: StartupStatus): string {
+  if (status.state === 'loading') return 'Starting';
+  if (status.state === 'failed') return 'Limited';
+  return 'Ready';
+}
+
+export function formatDatabaseStatus(status: StartupStatus): string {
+  if (status.state === 'loading') return 'Checking';
+  if (!status.database.connected) return 'Offline';
+  return 'Connected';
+}
+
+export function formatMigrationStatus(status: StartupStatus): string {
   if (status.state === 'loading') return 'Pending';
   if (status.state === 'failed') return 'Not applied';
 
@@ -612,5 +625,11 @@ function formatMigrationStatus(status: StartupStatus): string {
   const current = status.migrations.skipped.length;
 
   if (changed === 0 && current > 0) return 'Current';
+  if (changed > 0 && current > 0) return `${changed} applied, ${current} current`;
   return `${changed} applied`;
+}
+
+export function formatStartupError(status: StartupStatus): string {
+  if (!status.error) return '';
+  return status.error;
 }

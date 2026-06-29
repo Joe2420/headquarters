@@ -4,14 +4,19 @@ import {
   App,
   CommandCenter,
   CommandCenterPlaceholder,
+  type StartupStatus,
   createArchiveWritePlaceholder,
   createLocalDebrief,
   createLocalMissionArchiveSummary,
   createLocalMission,
   formatArchiveWriteStatus,
   formatArchiveSummaryStatus,
+  formatDatabaseStatus,
   formatDebriefStatus,
+  formatHqosStatus,
+  formatMigrationStatus,
   formatMissionClosingState,
+  formatStartupError,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
   reportForDuty,
@@ -26,7 +31,56 @@ describe('Desktop shell', () => {
     expect(html).toContain('Security Checkpoint');
     expect(html).toContain('REPORT FOR DUTY');
     expect(html).toContain('Status');
+    expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
+  });
+
+  it('formats startup status dashboard states deterministically', () => {
+    const loadingStatus: StartupStatus = {
+      state: 'loading',
+      database: {
+        connected: false,
+      },
+      migrations: {
+        applied: [],
+        skipped: [],
+      },
+    };
+    const readyStatus: StartupStatus = {
+      state: 'ready',
+      database: {
+        connected: true,
+        path: 'local.db',
+      },
+      migrations: {
+        applied: ['001_initial'],
+        skipped: ['002_archive'],
+      },
+    };
+    const failedStatus: StartupStatus = {
+      state: 'failed',
+      database: {
+        connected: false,
+      },
+      migrations: {
+        applied: [],
+        skipped: [],
+      },
+      error: 'startup failed',
+    };
+
+    expect(formatHqosStatus(loadingStatus)).toBe('Starting');
+    expect(formatDatabaseStatus(loadingStatus)).toBe('Checking');
+    expect(formatMigrationStatus(loadingStatus)).toBe('Pending');
+
+    expect(formatHqosStatus(readyStatus)).toBe('Ready');
+    expect(formatDatabaseStatus(readyStatus)).toBe('Connected');
+    expect(formatMigrationStatus(readyStatus)).toBe('1 applied, 1 current');
+
+    expect(formatHqosStatus(failedStatus)).toBe('Limited');
+    expect(formatDatabaseStatus(failedStatus)).toBe('Offline');
+    expect(formatMigrationStatus(failedStatus)).toBe('Not applied');
+    expect(formatStartupError(failedStatus)).toBe('startup failed');
   });
 
   it('transitions from security checkpoint to command center', () => {
