@@ -49,6 +49,12 @@ export interface LocalMissionArchiveSummary {
   eventCount: number;
 }
 
+export interface ReportForDutyTransition {
+  from: DesktopShellPhase;
+  to: DesktopShellPhase;
+  changed: boolean;
+}
+
 interface StartupStatus {
   state: StartupState;
   database: {
@@ -147,7 +153,7 @@ export function App() {
         <main className="shell-main">
           <section className="workspace-panel" aria-label="Main content">
             {shellPhase === 'security-checkpoint' ? (
-              <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase))} />
+              <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
             ) : (
               <CommandCenter
                 activeMission={activeMission}
@@ -441,9 +447,20 @@ function ArchiveWritePanel({ archiveWrite }: ArchiveWritePanelProps) {
   );
 }
 
-export function reportForDuty(currentPhase: DesktopShellPhase): DesktopShellPhase {
-  if (currentPhase === 'security-checkpoint') return 'command-center';
-  return currentPhase;
+export function reportForDuty(currentPhase: DesktopShellPhase): ReportForDutyTransition {
+  if (currentPhase === 'security-checkpoint') {
+    return {
+      from: currentPhase,
+      to: 'command-center',
+      changed: true,
+    };
+  }
+
+  return {
+    from: currentPhase,
+    to: currentPhase,
+    changed: false,
+  };
 }
 
 export function createLocalMission(

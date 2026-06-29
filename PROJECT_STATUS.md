@@ -53,6 +53,7 @@
 - HQ-TASK-0055 — Sprint 2 Review Package
 - HQ-TASK-0056 — Sprint 3 through Sprint 12 HIG Backlog Roadmap
 - HQ-TASK-0057 — Desktop Runtime Verification
+- HQ-TASK-0058 — Report for Duty Flow
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -70,4 +71,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0057 is implemented on a feature branch and awaiting merge. Sprint 3 Desktop Experience is in progress through HIG-TASK-020. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0058 is implemented on a feature branch and awaiting merge. Sprint 3 Desktop Experience is in progress through HIG-TASK-021. Future journal implementation requires explicit Founder approval under HDC workflow.

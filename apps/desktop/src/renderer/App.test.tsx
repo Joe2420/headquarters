@@ -30,11 +30,31 @@ describe('Desktop shell', () => {
   });
 
   it('transitions from security checkpoint to command center', () => {
-    expect(reportForDuty('security-checkpoint')).toBe('command-center');
+    expect(reportForDuty('security-checkpoint')).toEqual({
+      from: 'security-checkpoint',
+      to: 'command-center',
+      changed: true,
+    });
   });
 
   it('keeps command center phase stable after reporting for duty', () => {
-    expect(reportForDuty('command-center')).toBe('command-center');
+    expect(reportForDuty('command-center')).toEqual({
+      from: 'command-center',
+      to: 'command-center',
+      changed: false,
+    });
+  });
+
+  it('keeps repeated report-for-duty activation idempotent', () => {
+    const firstTransition = reportForDuty('security-checkpoint');
+    const repeatedTransition = reportForDuty(firstTransition.to);
+
+    expect(firstTransition.to).toBe('command-center');
+    expect(repeatedTransition).toEqual({
+      from: 'command-center',
+      to: 'command-center',
+      changed: false,
+    });
   });
 
   it('renders the Mission Board placeholder in the command center', () => {
