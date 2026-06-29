@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0076 — Added a read-only Journal timeline model.
+
 HQ-TASK-0075 — Added journal-derived growth event capture contracts.
 
 HQ-TASK-0074 — Added behavior-first trade review capture contracts.
