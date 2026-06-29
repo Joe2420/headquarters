@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0053 — Added Debrief MVP with behavior-first debrief persistence and archive guard.
+
 HQ-TASK-0052 — Added Return To Base MVP with mission closing state and events.
 
 HQ-TASK-0051 — Added manual authorization request MVP with deterministic approval and denial events.

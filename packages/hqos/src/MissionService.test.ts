@@ -4,9 +4,12 @@ import { EventBus } from './EventBus';
 import {
   InvalidMissionTransitionError,
   MissionAuthorizationStateError,
+  MissionDebriefNotFoundError,
+  MissionDebriefRepositoryNotConfiguredError,
   MissionNotFoundError,
   MissionObservationSessionNotFoundError,
   MissionService,
+  type MissionDebriefRecord,
   type MissionObservationSession,
 } from './MissionService';
 
@@ -569,6 +572,166 @@ describe('MissionService', () => {
 
     await expect(service.requestReturnToBase({ missionId, requestedAt })).rejects.toBeInstanceOf(
       InvalidMissionTransitionError,
+    );
+    expect(save).not.toHaveBeenCalled();
+    expect(publish).not.toHaveBeenCalled();
+  });
+
+  it('saves a behavior-first debrief and moves mission into debrief state', async () => {
+    const mission = createMission('return_to_base');
+    const save = vi.fn();
+    const publish = vi.fn();
+    const saveDebrief = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => mission,
+      },
+      { publish },
+      {
+        createDebriefId: () => '55555555-5555-4555-8555-555555555555',
+      },
+      undefined,
+      undefined,
+      undefined,
+      {
+        save: saveDebrief,
+        findByMissionId: () => undefined,
+      },
+    );
+
+    const result = await service.saveDebrief({
+      missionId,
+      requestedAt,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      behaviorSummary: 'Stayed patient through the close.',
+      disciplineNotes: 'Followed the stop plan.',
+      lesson: 'Write invalidation before deployment.',
+    });
+
+    expect(result.mission).toEqual({
+      ...mission,
+      state: 'debrief',
+      updatedAt: requestedAt,
+    });
+    expect(result.debrief).toEqual({
+      id: '55555555-5555-4555-8555-555555555555',
+      missionId,
+      behaviorSummary: 'Stayed patient through the close.',
+      disciplineNotes: 'Followed the stop plan.',
+      lesson: 'Write invalidation before deployment.',
+      createdAt: requestedAt,
+    });
+    expect(result.event).toMatchObject({
+      type: 'mission.state.changed',
+      occurredAt: requestedAt,
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      payload: {
+        missionId,
+        from: 'return_to_base',
+        to: 'debrief',
+        reason: 'Mission debrief saved.',
+      },
+    });
+    expect(save).toHaveBeenCalledWith(result.mission);
+    expect(saveDebrief).toHaveBeenCalledWith(result.debrief);
+    expect(publish).toHaveBeenCalledWith(result.event);
+  });
+
+  it('requires a debrief repository before saving debriefs', async () => {
+    const service = new MissionService(
+      {
+        save: vi.fn(),
+        findById: () => createMission('return_to_base'),
+      },
+      { publish: vi.fn() },
+    );
+
+    await expect(
+      service.saveDebrief({
+        missionId,
+        requestedAt,
+        behaviorSummary: 'Stayed patient.',
+        disciplineNotes: 'Followed plan.',
+        lesson: 'Prepare earlier.',
+      }),
+    ).rejects.toBeInstanceOf(MissionDebriefRepositoryNotConfiguredError);
+  });
+
+  it('archives only after a debrief exists', async () => {
+    const mission = createMission('debrief');
+    const debrief: MissionDebriefRecord = {
+      id: '55555555-5555-4555-8555-555555555555',
+      missionId,
+      behaviorSummary: 'Stayed patient through the close.',
+      disciplineNotes: 'Followed the stop plan.',
+      lesson: 'Write invalidation before deployment.',
+      createdAt: '2026-06-28T20:05:00.000Z',
+    };
+    const save = vi.fn();
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => mission,
+      },
+      { publish },
+      {},
+      undefined,
+      undefined,
+      undefined,
+      {
+        save: vi.fn(),
+        findByMissionId: () => debrief,
+      },
+    );
+
+    const result = await service.archiveAfterDebrief({
+      missionId,
+      requestedAt,
+      reason: 'Debrief complete.',
+    });
+
+    expect(result.mission).toEqual({
+      ...mission,
+      state: 'archived',
+      updatedAt: requestedAt,
+    });
+    expect(result.event).toMatchObject({
+      type: 'mission.state.changed',
+      payload: {
+        missionId,
+        from: 'debrief',
+        to: 'archived',
+        reason: 'Debrief complete.',
+      },
+    });
+    expect(save).toHaveBeenCalledWith(result.mission);
+    expect(publish).toHaveBeenCalledWith(result.event);
+  });
+
+  it('rejects archive transition when no debrief exists', async () => {
+    const save = vi.fn();
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => createMission('debrief'),
+      },
+      { publish },
+      {},
+      undefined,
+      undefined,
+      undefined,
+      {
+        save: vi.fn(),
+        findByMissionId: () => undefined,
+      },
+    );
+
+    await expect(service.archiveAfterDebrief({ missionId, requestedAt })).rejects.toBeInstanceOf(
+      MissionDebriefNotFoundError,
     );
     expect(save).not.toHaveBeenCalled();
     expect(publish).not.toHaveBeenCalled();
