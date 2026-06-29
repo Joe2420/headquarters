@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0067 — Added a read-only desktop mission details surface.
+
 HQ-TASK-0066 — Added a read-only desktop mission lifecycle path.
 
 HQ-TASK-0065 — Added deterministic desktop mission authorization experience.
