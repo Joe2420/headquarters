@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0063 — Added Sprint 3 desktop experience review package.
+
 HQ-TASK-0062 — Added a lightweight primary navigation framework for desktop orientation.
 
 HQ-TASK-0061 — Hardened Mission Board as a read-only mission summary surface.
