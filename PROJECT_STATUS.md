@@ -64,6 +64,7 @@
 - HQ-TASK-0066 — Mission Lifecycle Desktop Experience
 - HQ-TASK-0067 — Mission Details Desktop Experience
 - HQ-TASK-0068 — Mission Archive Viewer Desktop Experience
+- HQ-TASK-0069 — Mission Timeline Viewer Desktop Experience
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -81,4 +82,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0068 is implemented on a feature branch and awaiting merge. Sprint 4 Mission Operations is in progress through HIG-TASK-031.
+HQ-TASK-0069 is implemented on a feature branch and awaiting merge. Sprint 4 Mission Operations is in progress through HIG-TASK-032.
