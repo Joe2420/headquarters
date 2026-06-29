@@ -36,6 +36,30 @@ export interface MissionObservationTransitionInput {
   readonly reason?: string;
 }
 
+export interface MissionAuthorizationRequestInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: ISODateTime;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly setupSummary?: string;
+  readonly riskPlanned?: number;
+  readonly invalidation?: string;
+  readonly operatorJustification?: string;
+}
+
+export type MissionAuthorizationDecision = 'approved' | 'denied';
+
+export interface MissionAuthorizationRuleResult {
+  readonly decision: MissionAuthorizationDecision;
+  readonly reason?: string;
+  readonly confidence?: number;
+  readonly evidenceRefs?: string[];
+}
+
+export interface MissionAuthorizationPolicy {
+  evaluate(input: MissionAuthorizationRequestInput, mission: Mission): MissionAuthorizationRuleResult;
+}
+
 export interface MissionObservationSession {
   readonly id: UUID;
   readonly missionId: UUID;
@@ -89,6 +113,15 @@ export interface MissionObservationCompletionResult {
   readonly event: HQEvent<MissionStateChangedPayload>;
 }
 
+export interface MissionAuthorizationRequestResult {
+  readonly mission: Mission;
+  readonly requestEvent: HQEvent<EventPayloadMap['mission.authorization_requested']>;
+  readonly responseEvent:
+    | HQEvent<EventPayloadMap['mission.authorized']>
+    | HQEvent<EventPayloadMap['mission.authorization_denied']>;
+  readonly decision: MissionAuthorizationRuleResult;
+}
+
 export class MissionNotFoundError extends Error {
   constructor(readonly missionId: UUID) {
     super(`Mission ${missionId} was not found.`);
@@ -103,6 +136,16 @@ export class MissionObservationSessionNotFoundError extends Error {
   }
 }
 
+export class MissionAuthorizationStateError extends Error {
+  constructor(
+    readonly missionId: UUID,
+    readonly state: Mission['state'],
+  ) {
+    super(`Mission ${missionId} is not ready for authorization request from state ${state}.`);
+    this.name = 'MissionAuthorizationStateError';
+  }
+}
+
 export class MissionService {
   constructor(
     private readonly missionRepository: MissionRecordRepository,
@@ -110,6 +153,7 @@ export class MissionService {
     private readonly options: MissionServiceOptions = {},
     private readonly missionKernel = new MissionKernel(),
     private readonly observationSessionRepository?: MissionObservationSessionRepository,
+    private readonly authorizationPolicy: MissionAuthorizationPolicy = defaultMissionAuthorizationPolicy,
   ) {}
 
   async createMission(input: CreateMissionInput): Promise<MissionCreationResult> {
@@ -207,6 +251,28 @@ export class MissionService {
     return { mission: transition.mission, session: completedSession, event: transition.event };
   }
 
+  async requestAuthorization(input: MissionAuthorizationRequestInput): Promise<MissionAuthorizationRequestResult> {
+    const mission = await this.loadMission(input.missionId);
+
+    if (mission.state !== 'authorization') {
+      throw new MissionAuthorizationStateError(mission.id, mission.state);
+    }
+
+    const requestEvent = this.createAuthorizationRequestedEvent(mission, input);
+    const decision = this.authorizationPolicy.evaluate(input, mission);
+    const responseEvent = this.createAuthorizationResponseEvent(mission, input, decision);
+
+    await this.eventPublisher.publish(requestEvent);
+    await this.eventPublisher.publish(responseEvent);
+
+    return {
+      mission,
+      requestEvent,
+      responseEvent,
+      decision,
+    };
+  }
+
   private async loadMission(missionId: UUID): Promise<Mission> {
     const mission = await this.missionRepository.findById(missionId);
 
@@ -281,12 +347,98 @@ export class MissionService {
       },
     });
   }
+
+  private createAuthorizationRequestedEvent(
+    mission: Mission,
+    input: MissionAuthorizationRequestInput,
+  ): HQEvent<EventPayloadMap['mission.authorization_requested']> {
+    return createEventEnvelope({
+      ...(this.options.createEventId !== undefined ? { id: this.options.createEventId() } : {}),
+      type: 'mission.authorization_requested',
+      source: this.options.source ?? 'MissionService',
+      occurredAt: input.requestedAt ?? mission.updatedAt,
+      missionId: mission.id,
+      ...(mission.campaignId !== undefined ? { campaignId: mission.campaignId } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+      payload: {
+        missionId: mission.id,
+        ...(input.setupSummary !== undefined ? { setupSummary: input.setupSummary } : {}),
+        ...(input.riskPlanned !== undefined ? { riskPlanned: input.riskPlanned } : {}),
+        ...(input.invalidation !== undefined ? { invalidation: input.invalidation } : {}),
+        ...(input.operatorJustification !== undefined ? { operatorJustification: input.operatorJustification } : {}),
+      },
+    });
+  }
+
+  private createAuthorizationResponseEvent(
+    mission: Mission,
+    input: MissionAuthorizationRequestInput,
+    decision: MissionAuthorizationRuleResult,
+  ):
+    | HQEvent<EventPayloadMap['mission.authorized']>
+    | HQEvent<EventPayloadMap['mission.authorization_denied']> {
+    const baseEvent = {
+      ...(this.options.createEventId !== undefined ? { id: this.options.createEventId() } : {}),
+      source: this.options.source ?? 'MissionService',
+      occurredAt: input.requestedAt ?? mission.updatedAt,
+      missionId: mission.id,
+      ...(mission.campaignId !== undefined ? { campaignId: mission.campaignId } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    };
+
+    if (decision.decision === 'approved') {
+      return createEventEnvelope({
+        ...baseEvent,
+        type: 'mission.authorized',
+        payload: {
+          missionId: mission.id,
+          ...(decision.confidence !== undefined ? { confidence: decision.confidence } : {}),
+          ...(decision.evidenceRefs !== undefined ? { evidenceRefs: [...decision.evidenceRefs] } : {}),
+        },
+      });
+    }
+
+    return createEventEnvelope({
+      ...baseEvent,
+      type: 'mission.authorization_denied',
+      payload: {
+        missionId: mission.id,
+        ...(decision.reason !== undefined ? { reason: decision.reason } : {}),
+        ...(decision.evidenceRefs !== undefined ? { evidenceRefs: [...decision.evidenceRefs] } : {}),
+      },
+    });
+  }
 }
 
 export { InvalidMissionTransitionError };
 
+export const defaultMissionAuthorizationPolicy: MissionAuthorizationPolicy = {
+  evaluate(input) {
+    if (hasContent(input.operatorJustification) && hasContent(input.invalidation)) {
+      return {
+        decision: 'approved',
+        reason: 'Manual authorization fields are complete.',
+        confidence: 1,
+        evidenceRefs: ['operatorJustification', 'invalidation'],
+      };
+    }
+
+    return {
+      decision: 'denied',
+      reason: 'Manual authorization requires operator justification and invalidation.',
+      evidenceRefs: ['operatorJustification', 'invalidation'],
+    };
+  },
+};
+
 function calculateDurationMs(startedAt: ISODateTime, completedAt: ISODateTime): number {
   return Date.parse(completedAt) - Date.parse(startedAt);
+}
+
+function hasContent(value: string | undefined): boolean {
+  return value !== undefined && value.trim().length > 0;
 }
 
 function createMissionId(): UUID {

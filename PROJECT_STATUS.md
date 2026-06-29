@@ -46,6 +46,7 @@
 - HQ-TASK-0048 — Mission Creation Service
 - HQ-TASK-0049 — Briefing State
 - HQ-TASK-0050 — Observation State
+- HQ-TASK-0051 — Authorization Request MVP
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -63,4 +64,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0050 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0051 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
