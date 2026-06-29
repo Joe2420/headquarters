@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0070 — Added a read-only desktop mission history surface.
+
 HQ-TASK-0069 — Added a read-only desktop mission timeline viewer.
 
 HQ-TASK-0068 — Added a read-only desktop archive viewer for mission summaries.

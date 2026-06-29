@@ -135,6 +135,7 @@ export function App() {
   const [missionDebrief, setMissionDebrief] = useState<MissionDebrief | undefined>();
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [archivedMissionSummaries, setArchivedMissionSummaries] = useState<LocalMissionArchiveSummary[]>([]);
+  const [missionHistory, setMissionHistory] = useState<ActiveMission[]>([]);
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -219,8 +220,10 @@ export function App() {
                 missionDebrief={missionDebrief}
                 archiveSummary={archiveSummary}
                 archivedMissionSummaries={archivedMissionSummaries}
+                missionHistory={missionHistory}
                 onCreateMission={(mission) => {
                   setActiveMission(mission);
+                  setMissionHistory((history) => upsertMissionHistory(history, mission));
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
                   setAuthorizationStatus(undefined);
                   setMissionDebrief(undefined);
@@ -230,20 +233,28 @@ export function App() {
                   setAuthorizationStatus(authorization);
                 }}
                 onReturnToBase={() => {
-                  setActiveMission((mission) => requestLocalReturnToBase(mission));
+                  const mission = requestLocalReturnToBase(activeMission);
+
+                  setActiveMission(mission);
+                  if (mission) setMissionHistory((history) => upsertMissionHistory(history, mission));
                 }}
                 onSaveDebrief={(debrief) => {
+                  const mission = markLocalMissionDebriefed(activeMission);
+
                   setMissionDebrief(debrief);
-                  setActiveMission((mission) => markLocalMissionDebriefed(mission));
+                  setActiveMission(mission);
+                  if (mission) setMissionHistory((history) => upsertMissionHistory(history, mission));
                 }}
                 onArchiveMission={() => {
                   const summary = createLocalMissionArchiveSummary(activeMission, missionDebrief, archiveWrite);
+                  const mission = markLocalMissionArchived(activeMission);
 
                   setArchiveSummary(summary);
                   if (summary) {
                     setArchivedMissionSummaries((summaries) => [...summaries, summary]);
                   }
-                  setActiveMission((mission) => markLocalMissionArchived(mission));
+                  setActiveMission(mission);
+                  if (mission) setMissionHistory((history) => upsertMissionHistory(history, mission));
                 }}
               />
             )}
@@ -302,6 +313,7 @@ interface CommandCenterProps {
   missionDebrief?: MissionDebrief | undefined;
   archiveSummary?: LocalMissionArchiveSummary | undefined;
   archivedMissionSummaries?: LocalMissionArchiveSummary[] | undefined;
+  missionHistory?: ActiveMission[] | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
   onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
   onReturnToBase?: (() => void) | undefined;
@@ -316,6 +328,7 @@ export function CommandCenter({
   missionDebrief,
   archiveSummary,
   archivedMissionSummaries,
+  missionHistory,
   onCreateMission,
   onRequestAuthorization,
   onReturnToBase,
@@ -368,10 +381,38 @@ export function CommandCenter({
           missionDebrief={missionDebrief}
           archiveSummary={archiveSummary}
         />
+        <MissionHistoryPanel missionHistory={missionHistory} />
         <ArchiveWritePanel archiveWrite={archiveWrite} />
         <CommandChair />
       </section>
     </div>
+  );
+}
+
+interface MissionHistoryPanelProps {
+  missionHistory?: ActiveMission[] | undefined;
+}
+
+function MissionHistoryPanel({ missionHistory }: MissionHistoryPanelProps) {
+  const missions = listMissionHistory(missionHistory);
+
+  return (
+    <section className="mission-history-panel" aria-label="Mission history">
+      <div>
+        <p className="section-label">History</p>
+        <h3>Mission History</h3>
+      </div>
+      <p className="muted">{formatMissionHistoryStatus(missions)}</p>
+      <ol className="mission-history-list">
+        {missions.map((mission) => (
+          <li key={mission.id}>
+            <span>{mission.campaign}</span>
+            <strong>{formatMissionDetailState(mission)}</strong>
+            <time dateTime={mission.createdAt}>{mission.createdAt}</time>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -1068,6 +1109,24 @@ export function formatTimelineViewerStatus(entries: MissionTimelineExportEntryDT
 
 export function formatMissionTimelineTransition(entry: MissionTimelineExportEntryDTO): string {
   return `${formatMissionStateForDisplay(entry.transition.from)} to ${formatMissionStateForDisplay(entry.transition.to)}`;
+}
+
+export function listMissionHistory(history: ActiveMission[] | undefined): ActiveMission[] {
+  return history ? [...history] : [];
+}
+
+export function upsertMissionHistory(history: ActiveMission[], mission: ActiveMission): ActiveMission[] {
+  const existingIndex = history.findIndex((candidate) => candidate.id === mission.id);
+
+  if (existingIndex === -1) return [...history, mission];
+
+  return history.map((candidate, index) => (index === existingIndex ? mission : candidate));
+}
+
+export function formatMissionHistoryStatus(history: ActiveMission[]): string {
+  if (history.length === 0) return 'No mission history';
+  if (history.length === 1) return '1 mission recorded';
+  return `${history.length} missions recorded`;
 }
 
 function formatStartupState(state: StartupState): string {
