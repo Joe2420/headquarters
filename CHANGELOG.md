@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0057 — Added desktop runtime launch contract verification for the first launchable shell.
+
 HQ-TASK-0056 — Added Sprint 3 through Sprint 12 HIG backlog roadmap covering HIG-TASK-019 through HIG-TASK-100.
 
 HQ-TASK-0055 — Added Sprint 2 review package validating mission lifecycle event trace reconstruction.
