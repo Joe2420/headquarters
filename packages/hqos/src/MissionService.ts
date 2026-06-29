@@ -68,12 +68,39 @@ export interface MissionReturnToBaseInput {
   readonly reason?: string;
 }
 
+export interface MissionDebriefInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: ISODateTime;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly behaviorSummary: string;
+  readonly disciplineNotes: string;
+  readonly lesson: string;
+}
+
+export interface MissionArchiveAfterDebriefInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: ISODateTime;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly reason?: string;
+}
+
 export interface MissionObservationSession {
   readonly id: UUID;
   readonly missionId: UUID;
   readonly startedAt: ISODateTime;
   readonly completedAt?: ISODateTime;
   readonly durationMs?: number;
+}
+
+export interface MissionDebriefRecord {
+  readonly id: UUID;
+  readonly missionId: UUID;
+  readonly behaviorSummary: string;
+  readonly disciplineNotes: string;
+  readonly lesson: string;
+  readonly createdAt: ISODateTime;
 }
 
 export interface MissionRecordRepository {
@@ -87,6 +114,11 @@ export interface MissionObservationSessionRepository {
   findActiveByMissionId(missionId: UUID): Promise<MissionObservationSession | undefined> | MissionObservationSession | undefined;
 }
 
+export interface MissionDebriefRepository {
+  save(debrief: MissionDebriefRecord): Promise<void> | void;
+  findByMissionId(missionId: UUID): Promise<MissionDebriefRecord | undefined> | MissionDebriefRecord | undefined;
+}
+
 export interface MissionCreatedEventPublisher {
   publish(event: HQEvent): Promise<void> | void;
 }
@@ -96,6 +128,7 @@ export interface MissionServiceOptions {
   readonly createMissionId?: () => UUID;
   readonly createEventId?: () => UUID;
   readonly createObservationSessionId?: () => UUID;
+  readonly createDebriefId?: () => UUID;
   readonly source?: string;
 }
 
@@ -136,6 +169,17 @@ export interface MissionReturnToBaseResult {
   readonly transitionEvent: HQEvent<MissionStateChangedPayload>;
 }
 
+export interface MissionDebriefResult {
+  readonly mission: Mission;
+  readonly debrief: MissionDebriefRecord;
+  readonly event: HQEvent<MissionStateChangedPayload>;
+}
+
+export interface MissionArchiveAfterDebriefResult {
+  readonly mission: Mission;
+  readonly event: HQEvent<MissionStateChangedPayload>;
+}
+
 export class MissionNotFoundError extends Error {
   constructor(readonly missionId: UUID) {
     super(`Mission ${missionId} was not found.`);
@@ -147,6 +191,20 @@ export class MissionObservationSessionNotFoundError extends Error {
   constructor(readonly missionId: UUID) {
     super(`Active observation session for mission ${missionId} was not found.`);
     this.name = 'MissionObservationSessionNotFoundError';
+  }
+}
+
+export class MissionDebriefRepositoryNotConfiguredError extends Error {
+  constructor() {
+    super('Mission debrief repository is not configured.');
+    this.name = 'MissionDebriefRepositoryNotConfiguredError';
+  }
+}
+
+export class MissionDebriefNotFoundError extends Error {
+  constructor(readonly missionId: UUID) {
+    super(`Debrief for mission ${missionId} was not found.`);
+    this.name = 'MissionDebriefNotFoundError';
   }
 }
 
@@ -168,6 +226,7 @@ export class MissionService {
     private readonly missionKernel = new MissionKernel(),
     private readonly observationSessionRepository?: MissionObservationSessionRepository,
     private readonly authorizationPolicy: MissionAuthorizationPolicy = defaultMissionAuthorizationPolicy,
+    private readonly debriefRepository?: MissionDebriefRepository,
   ) {}
 
   async createMission(input: CreateMissionInput): Promise<MissionCreationResult> {
@@ -308,6 +367,58 @@ export class MissionService {
     };
   }
 
+  async saveDebrief(input: MissionDebriefInput): Promise<MissionDebriefResult> {
+    const mission = await this.loadMission(input.missionId);
+    const transition = this.missionKernel.transition(mission, 'debrief', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+      reason: 'Mission debrief saved.',
+    });
+    const debrief: MissionDebriefRecord = {
+      id: this.options.createDebriefId?.() ?? createMissionId(),
+      missionId: mission.id,
+      behaviorSummary: input.behaviorSummary,
+      disciplineNotes: input.disciplineNotes,
+      lesson: input.lesson,
+      createdAt: transition.mission.updatedAt,
+    };
+
+    await this.missionRepository.save(transition.mission);
+    await this.getDebriefRepository().save(debrief);
+    await this.eventPublisher.publish(transition.event);
+
+    return {
+      mission: transition.mission,
+      debrief,
+      event: transition.event,
+    };
+  }
+
+  async archiveAfterDebrief(input: MissionArchiveAfterDebriefInput): Promise<MissionArchiveAfterDebriefResult> {
+    const mission = await this.loadMission(input.missionId);
+    const debrief = await this.getDebriefRepository().findByMissionId(input.missionId);
+
+    if (debrief === undefined) {
+      throw new MissionDebriefNotFoundError(input.missionId);
+    }
+
+    const transition = this.missionKernel.transition(mission, 'archived', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+
+    await this.missionRepository.save(transition.mission);
+    await this.eventPublisher.publish(transition.event);
+
+    return {
+      mission: transition.mission,
+      event: transition.event,
+    };
+  }
+
   private async loadMission(missionId: UUID): Promise<Mission> {
     const mission = await this.missionRepository.findById(missionId);
 
@@ -324,6 +435,14 @@ export class MissionService {
     }
 
     return this.observationSessionRepository;
+  }
+
+  private getDebriefRepository(): MissionDebriefRepository {
+    if (this.debriefRepository === undefined) {
+      throw new MissionDebriefRepositoryNotConfiguredError();
+    }
+
+    return this.debriefRepository;
   }
 
   private createMissionRecord(input: CreateMissionInput): Mission {

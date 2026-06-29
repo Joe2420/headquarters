@@ -27,6 +27,21 @@ export interface ArchiveWritePlaceholder {
   createdAt: string;
 }
 
+export interface MissionDebriefDraft {
+  behaviorSummary: string;
+  disciplineNotes: string;
+  lesson: string;
+}
+
+export interface MissionDebrief {
+  id: string;
+  missionId: string;
+  behaviorSummary: string;
+  disciplineNotes: string;
+  lesson: string;
+  createdAt: string;
+}
+
 interface StartupStatus {
   state: StartupState;
   database: {
@@ -54,6 +69,7 @@ export function App() {
   const [shellPhase, setShellPhase] = useState<DesktopShellPhase>('security-checkpoint');
   const [activeMission, setActiveMission] = useState<ActiveMission | undefined>();
   const [archiveWrite, setArchiveWrite] = useState<ArchiveWritePlaceholder | undefined>();
+  const [missionDebrief, setMissionDebrief] = useState<MissionDebrief | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -128,12 +144,18 @@ export function App() {
               <CommandCenter
                 activeMission={activeMission}
                 archiveWrite={archiveWrite}
+                missionDebrief={missionDebrief}
                 onCreateMission={(mission) => {
                   setActiveMission(mission);
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
+                  setMissionDebrief(undefined);
                 }}
                 onReturnToBase={() => {
                   setActiveMission((mission) => requestLocalReturnToBase(mission));
+                }}
+                onSaveDebrief={(debrief) => {
+                  setMissionDebrief(debrief);
+                  setActiveMission((mission) => markLocalMissionDebriefed(mission));
                 }}
               />
             )}
@@ -187,11 +209,20 @@ export function CommandCenterPlaceholder() {
 interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
+  missionDebrief?: MissionDebrief | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
   onReturnToBase?: (() => void) | undefined;
+  onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
 }
 
-export function CommandCenter({ activeMission, archiveWrite, onCreateMission, onReturnToBase }: CommandCenterProps) {
+export function CommandCenter({
+  activeMission,
+  archiveWrite,
+  missionDebrief,
+  onCreateMission,
+  onReturnToBase,
+  onSaveDebrief,
+}: CommandCenterProps) {
   return (
     <div className="command-placeholder">
       <p className="section-label">Main Content</p>
@@ -208,6 +239,7 @@ export function CommandCenter({ activeMission, archiveWrite, onCreateMission, on
         />
       </div>
       <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
+      <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} onSaveDebrief={onSaveDebrief} />
       <ArchiveWritePanel archiveWrite={archiveWrite} />
       <CommandChair />
     </div>
@@ -277,6 +309,59 @@ function MissionClosingPanel({ activeMission, onReturnToBase }: MissionClosingPa
   );
 }
 
+interface DebriefPanelProps {
+  activeMission?: ActiveMission | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
+}
+
+function DebriefPanel({ activeMission, missionDebrief, onSaveDebrief }: DebriefPanelProps) {
+  const [behaviorSummary, setBehaviorSummary] = useState('');
+  const [disciplineNotes, setDisciplineNotes] = useState('');
+  const [lesson, setLesson] = useState('');
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const debrief = createLocalDebrief(activeMission, {
+      behaviorSummary,
+      disciplineNotes,
+      lesson,
+    });
+
+    if (!debrief) return;
+
+    onSaveDebrief?.(debrief);
+    setBehaviorSummary('');
+    setDisciplineNotes('');
+    setLesson('');
+  }
+
+  return (
+    <form className="debrief-panel" aria-label="Mission debrief" onSubmit={handleSubmit}>
+      <div>
+        <p className="section-label">Debrief</p>
+        <h3>Mission Debrief</h3>
+      </div>
+      <label>
+        <span>Behavior Summary</span>
+        <input value={behaviorSummary} onChange={(event) => setBehaviorSummary(event.target.value)} />
+      </label>
+      <label>
+        <span>Discipline Notes</span>
+        <input value={disciplineNotes} onChange={(event) => setDisciplineNotes(event.target.value)} />
+      </label>
+      <label>
+        <span>Lesson</span>
+        <input value={lesson} onChange={(event) => setLesson(event.target.value)} />
+      </label>
+      <button className="secondary-action" type="submit" disabled={!activeMission}>
+        Save Debrief
+      </button>
+      <p className="muted">{formatDebriefStatus(missionDebrief)}</p>
+    </form>
+  );
+}
+
 interface ArchiveWritePanelProps {
   archiveWrite?: ArchiveWritePlaceholder | undefined;
 }
@@ -335,6 +420,39 @@ export function requestLocalReturnToBase(mission: ActiveMission | undefined): Ac
   };
 }
 
+export function markLocalMissionDebriefed(mission: ActiveMission | undefined): ActiveMission | undefined {
+  if (mission === undefined) return undefined;
+
+  return {
+    ...mission,
+    condition: 'Debrief',
+    currentState: 'debrief',
+  };
+}
+
+export function createLocalDebrief(
+  mission: ActiveMission | undefined,
+  draft: MissionDebriefDraft,
+  options: { id?: string; createdAt?: string } = {},
+): MissionDebrief | undefined {
+  const behaviorSummary = draft.behaviorSummary.trim();
+  const disciplineNotes = draft.disciplineNotes.trim();
+  const lesson = draft.lesson.trim();
+
+  if (mission === undefined || !behaviorSummary || !disciplineNotes || !lesson) {
+    return undefined;
+  }
+
+  return {
+    id: options.id ?? crypto.randomUUID(),
+    missionId: mission.id,
+    behaviorSummary,
+    disciplineNotes,
+    lesson,
+    createdAt: options.createdAt ?? new Date().toISOString(),
+  };
+}
+
 export function createArchiveWritePlaceholder(
   mission: ActiveMission,
   options: { id?: string; createdAt?: string } = {},
@@ -357,6 +475,11 @@ export function formatMissionClosingState(mission?: ActiveMission): string {
   if (mission?.currentState === 'return_to_base') return 'Returning to base';
   if (mission) return 'Active mission open';
   return 'No mission loaded';
+}
+
+export function formatDebriefStatus(debrief?: MissionDebrief): string {
+  if (debrief) return 'Debrief saved';
+  return 'Awaiting debrief';
 }
 
 function formatStartupState(state: StartupState): string {

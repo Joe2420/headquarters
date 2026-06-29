@@ -5,9 +5,12 @@ import {
   CommandCenter,
   CommandCenterPlaceholder,
   createArchiveWritePlaceholder,
+  createLocalDebrief,
   createLocalMission,
   formatArchiveWriteStatus,
+  formatDebriefStatus,
   formatMissionClosingState,
+  markLocalMissionDebriefed,
   reportForDuty,
   requestLocalReturnToBase,
 } from './App';
@@ -37,8 +40,10 @@ describe('Desktop shell', () => {
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
     expect(html).toContain('Mission Closing');
+    expect(html).toContain('Mission Debrief');
     expect(html).toContain('Archive Placeholder');
     expect(html).toContain('Not started');
+    expect(html).toContain('Awaiting debrief');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
   });
@@ -121,6 +126,80 @@ describe('Desktop shell', () => {
   it('keeps return-to-base helper safe when no mission is loaded', () => {
     expect(requestLocalReturnToBase(undefined)).toBeUndefined();
     expect(formatMissionClosingState(undefined)).toBe('No mission loaded');
+  });
+
+  it('creates a local behavior-first mission debrief', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const debrief = createLocalDebrief(
+      mission,
+      {
+        behaviorSummary: 'Stayed patient through the close.',
+        disciplineNotes: 'Followed the stop plan.',
+        lesson: 'Write invalidation before deployment.',
+      },
+      {
+        createdAt: '2026-01-01T00:10:00.000Z',
+        id: 'debrief-001',
+      },
+    );
+
+    expect(debrief).toEqual({
+      id: 'debrief-001',
+      missionId: 'mission-001',
+      behaviorSummary: 'Stayed patient through the close.',
+      disciplineNotes: 'Followed the stop plan.',
+      lesson: 'Write invalidation before deployment.',
+      createdAt: '2026-01-01T00:10:00.000Z',
+    });
+    expect(formatDebriefStatus(debrief)).toBe('Debrief saved');
+  });
+
+  it('does not create a local debrief without mission and behavior fields', () => {
+    const mission = createLocalMission({ codename: 'Foundation Patrol', objective: 'Hold the line' });
+
+    expect(createLocalDebrief(undefined, {
+      behaviorSummary: 'Stayed patient.',
+      disciplineNotes: 'Followed plan.',
+      lesson: 'Prepare earlier.',
+    })).toBeUndefined();
+    expect(createLocalDebrief(mission, {
+      behaviorSummary: '',
+      disciplineNotes: 'Followed plan.',
+      lesson: 'Prepare earlier.',
+    })).toBeUndefined();
+  });
+
+  it('updates local mission display to debrief state after saving debrief', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    expect(markLocalMissionDebriefed(mission)).toEqual({
+      ...mission,
+      condition: 'Debrief',
+      currentState: 'debrief',
+    });
   });
 
   it('creates a deterministic archive write placeholder for a local mission', () => {
