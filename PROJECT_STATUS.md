@@ -69,6 +69,7 @@
 - HQ-TASK-0071 — Sprint 4 Review Package
 - HQ-TASK-0072 — Journal Entry Subsystem Foundation
 - HQ-TASK-0073 — Daily Reflection Journal Capture
+- HQ-TASK-0074 — Trade Review Journal Capture
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -86,4 +87,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0073 is implemented on a feature branch and awaiting merge. Sprint 5 Journal System is in progress through HIG-TASK-036.
+HQ-TASK-0074 is implemented on a feature branch and awaiting merge. Sprint 5 Journal System is in progress through HIG-TASK-037.
