@@ -67,6 +67,7 @@
 - HQ-TASK-0069 — Mission Timeline Viewer Desktop Experience
 - HQ-TASK-0070 — Mission History Desktop Experience
 - HQ-TASK-0071 — Sprint 4 Review Package
+- HQ-TASK-0072 — Journal Entry Subsystem Foundation
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -84,4 +85,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 4 Mission Operations is complete through HQ-TASK-0071 / HIG-TASK-034.
+HQ-TASK-0072 is implemented on a feature branch and awaiting merge. Sprint 5 Journal System is in progress through HIG-TASK-035.
