@@ -51,6 +51,7 @@
 - HQ-TASK-0053 — Debrief MVP
 - HQ-TASK-0054 — Mission Archive MVP
 - HQ-TASK-0055 — Sprint 2 Review Package
+- HQ-TASK-0056 — Sprint 3 through Sprint 12 HIG Backlog Roadmap
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -68,4 +69,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 2 Mission Core is complete through HIG-TASK-018. The next implementation task crosses into the next roadmap milestone and requires Founder direction before continuing. Future journal implementation requires explicit Founder approval under HDC workflow.
+Sprint 3 through Sprint 12 HIG backlog documents now define HIG-TASK-019 through HIG-TASK-100. The next executable implementation task is HIG-TASK-020 after Founder approval of the Sprint 3 backlog creation task. Future journal implementation requires explicit Founder approval under HDC workflow.

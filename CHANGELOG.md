@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0056 — Added Sprint 3 through Sprint 12 HIG backlog roadmap covering HIG-TASK-019 through HIG-TASK-100.
+
 HQ-TASK-0055 — Added Sprint 2 review package validating mission lifecycle event trace reconstruction.
 
 HQ-TASK-0054 — Added Mission Archive MVP summary builder and archived mission summary display.

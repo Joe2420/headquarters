@@ -8,3 +8,13 @@ HIG-0006,Codex Task Prompt Template,Codex,CORE,HIG/02_CODEX_PROMPTS/Codex_Task_P
 HIG-0007,Task Acceptance Checklist,Acceptance,CORE,HIG/03_ACCEPTANCE/Task_Acceptance_Checklist.md
 HIG-0008,Implementation Change Control,Change Control,CORE,HIG/04_CHANGE_CONTROL/Implementation_Change_Control.md
 HIG-0009,HDR HTB HIG Usage Guide,Process,CORE,HIG/05_INTERFACE_WITH_HDR_HTB/How_To_Use_HDR_HTB_HIG.md
+HIG-0010,Sprint 3 Desktop Experience Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_3_Desktop_Experience_Backlog.md
+HIG-0011,Sprint 4 Mission Operations Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_4_Mission_Operations_Backlog.md
+HIG-0012,Sprint 5 Journal System Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_5_Journal_System_Backlog.md
+HIG-0013,Sprint 6 Doctrine Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_6_Doctrine_Backlog.md
+HIG-0014,Sprint 7 Academy Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_7_Academy_Backlog.md
+HIG-0015,Sprint 8 Guardian Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_8_Guardian_Backlog.md
+HIG-0016,Sprint 9 Archive Intelligence Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_9_Archive_Intelligence_Backlog.md
+HIG-0017,Sprint 10 Commander Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_10_Commander_Backlog.md
+HIG-0018,Sprint 11 Intelligence Office Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_11_Intelligence_Office_Backlog.md
+HIG-0019,Sprint 12 Beta Backlog,Backlog,IMPORTANT,HIG/01_TASK_BACKLOG/Sprint_12_Beta_Backlog.md
