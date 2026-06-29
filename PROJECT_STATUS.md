@@ -73,6 +73,7 @@
 - HQ-TASK-0075 — Journal Growth Event Capture
 - HQ-TASK-0076 — Journal Timeline Read Model
 - HQ-TASK-0077 — Journal Search
+- HQ-TASK-0078 — Journal Archive
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
