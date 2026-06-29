@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0054 — Added Mission Archive MVP summary builder and archived mission summary display.
+
 HQ-TASK-0053 — Added Debrief MVP with behavior-first debrief persistence and archive guard.
 
 HQ-TASK-0052 — Added Return To Base MVP with mission closing state and events.
