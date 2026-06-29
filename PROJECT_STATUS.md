@@ -71,6 +71,7 @@
 - HQ-TASK-0073 — Daily Reflection Journal Capture
 - HQ-TASK-0074 — Trade Review Journal Capture
 - HQ-TASK-0075 — Journal Growth Event Capture
+- HQ-TASK-0076 — Journal Timeline Read Model
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
