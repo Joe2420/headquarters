@@ -49,6 +49,7 @@
 - HQ-TASK-0051 — Authorization Request MVP
 - HQ-TASK-0052 — Return To Base MVP
 - HQ-TASK-0053 — Debrief MVP
+- HQ-TASK-0054 — Mission Archive MVP
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -66,4 +67,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0053 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0054 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.

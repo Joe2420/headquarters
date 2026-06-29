@@ -6,10 +6,13 @@ import {
   CommandCenterPlaceholder,
   createArchiveWritePlaceholder,
   createLocalDebrief,
+  createLocalMissionArchiveSummary,
   createLocalMission,
   formatArchiveWriteStatus,
+  formatArchiveSummaryStatus,
   formatDebriefStatus,
   formatMissionClosingState,
+  markLocalMissionArchived,
   markLocalMissionDebriefed,
   reportForDuty,
   requestLocalReturnToBase,
@@ -41,9 +44,11 @@ describe('Desktop shell', () => {
     expect(html).toContain('Create Mission');
     expect(html).toContain('Mission Closing');
     expect(html).toContain('Mission Debrief');
+    expect(html).toContain('Archived Mission Summary');
     expect(html).toContain('Archive Placeholder');
     expect(html).toContain('Not started');
     expect(html).toContain('Awaiting debrief');
+    expect(html).toContain('Awaiting archive');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
   });
@@ -199,6 +204,77 @@ describe('Desktop shell', () => {
       ...mission,
       condition: 'Debrief',
       currentState: 'debrief',
+    });
+  });
+
+  it('creates a local archived mission summary only after debrief', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const debrief = createLocalDebrief(
+      mission,
+      {
+        behaviorSummary: 'Stayed patient through the close.',
+        disciplineNotes: 'Followed the stop plan.',
+        lesson: 'Write invalidation before deployment.',
+      },
+      {
+        createdAt: '2026-01-01T00:10:00.000Z',
+        id: 'debrief-001',
+      },
+    );
+    const archiveWrite = createArchiveWritePlaceholder(mission, {
+      createdAt: '2026-01-01T00:01:00.000Z',
+      id: 'archive-placeholder-001',
+    });
+
+    const summary = createLocalMissionArchiveSummary(mission, debrief, archiveWrite, {
+      archivedAt: '2026-01-01T00:20:00.000Z',
+    });
+
+    expect(summary).toEqual({
+      missionId: 'mission-001',
+      codename: 'Foundation Patrol',
+      archivedAt: '2026-01-01T00:20:00.000Z',
+      eventCount: 2,
+    });
+    expect(formatArchiveSummaryStatus(summary)).toBe('Archived summary ready');
+  });
+
+  it('does not create an archived mission summary before debrief', () => {
+    const mission = createLocalMission({ codename: 'Foundation Patrol', objective: 'Hold the line' });
+
+    expect(createLocalMissionArchiveSummary(mission, undefined, undefined)).toBeUndefined();
+  });
+
+  it('updates local mission display to archived state', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    expect(markLocalMissionArchived(mission)).toEqual({
+      ...mission,
+      condition: 'Archived',
+      currentState: 'archived',
     });
   });
 

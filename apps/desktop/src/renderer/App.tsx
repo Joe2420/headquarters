@@ -42,6 +42,13 @@ export interface MissionDebrief {
   createdAt: string;
 }
 
+export interface LocalMissionArchiveSummary {
+  missionId: string;
+  codename: string;
+  archivedAt: string;
+  eventCount: number;
+}
+
 interface StartupStatus {
   state: StartupState;
   database: {
@@ -70,6 +77,7 @@ export function App() {
   const [activeMission, setActiveMission] = useState<ActiveMission | undefined>();
   const [archiveWrite, setArchiveWrite] = useState<ArchiveWritePlaceholder | undefined>();
   const [missionDebrief, setMissionDebrief] = useState<MissionDebrief | undefined>();
+  const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -145,10 +153,12 @@ export function App() {
                 activeMission={activeMission}
                 archiveWrite={archiveWrite}
                 missionDebrief={missionDebrief}
+                archiveSummary={archiveSummary}
                 onCreateMission={(mission) => {
                   setActiveMission(mission);
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
                   setMissionDebrief(undefined);
+                  setArchiveSummary(undefined);
                 }}
                 onReturnToBase={() => {
                   setActiveMission((mission) => requestLocalReturnToBase(mission));
@@ -156,6 +166,10 @@ export function App() {
                 onSaveDebrief={(debrief) => {
                   setMissionDebrief(debrief);
                   setActiveMission((mission) => markLocalMissionDebriefed(mission));
+                }}
+                onArchiveMission={() => {
+                  setArchiveSummary(createLocalMissionArchiveSummary(activeMission, missionDebrief, archiveWrite));
+                  setActiveMission((mission) => markLocalMissionArchived(mission));
                 }}
               />
             )}
@@ -210,18 +224,22 @@ interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
   missionDebrief?: MissionDebrief | undefined;
+  archiveSummary?: LocalMissionArchiveSummary | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
   onReturnToBase?: (() => void) | undefined;
   onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
+  onArchiveMission?: (() => void) | undefined;
 }
 
 export function CommandCenter({
   activeMission,
   archiveWrite,
   missionDebrief,
+  archiveSummary,
   onCreateMission,
   onReturnToBase,
   onSaveDebrief,
+  onArchiveMission,
 }: CommandCenterProps) {
   return (
     <div className="command-placeholder">
@@ -240,6 +258,12 @@ export function CommandCenter({
       </div>
       <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
       <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} onSaveDebrief={onSaveDebrief} />
+      <MissionArchiveSummaryPanel
+        activeMission={activeMission}
+        archiveSummary={archiveSummary}
+        missionDebrief={missionDebrief}
+        onArchiveMission={onArchiveMission}
+      />
       <ArchiveWritePanel archiveWrite={archiveWrite} />
       <CommandChair />
     </div>
@@ -362,6 +386,40 @@ function DebriefPanel({ activeMission, missionDebrief, onSaveDebrief }: DebriefP
   );
 }
 
+interface MissionArchiveSummaryPanelProps {
+  activeMission?: ActiveMission | undefined;
+  archiveSummary?: LocalMissionArchiveSummary | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  onArchiveMission?: (() => void) | undefined;
+}
+
+function MissionArchiveSummaryPanel({
+  activeMission,
+  archiveSummary,
+  missionDebrief,
+  onArchiveMission,
+}: MissionArchiveSummaryPanelProps) {
+  return (
+    <section className="mission-archive-summary-panel" aria-label="Archived mission summary">
+      <div>
+        <p className="section-label">Archive</p>
+        <h3>Archived Mission Summary</h3>
+      </div>
+      <dl>
+        <dt>Status</dt>
+        <dd>{formatArchiveSummaryStatus(archiveSummary)}</dd>
+        <dt>Mission</dt>
+        <dd>{archiveSummary?.codename ?? 'Awaiting archived mission'}</dd>
+        <dt>Events</dt>
+        <dd>{archiveSummary?.eventCount ?? 0}</dd>
+      </dl>
+      <button className="secondary-action" type="button" onClick={onArchiveMission} disabled={!activeMission || !missionDebrief}>
+        Archive Mission
+      </button>
+    </section>
+  );
+}
+
 interface ArchiveWritePanelProps {
   archiveWrite?: ArchiveWritePlaceholder | undefined;
 }
@@ -430,6 +488,16 @@ export function markLocalMissionDebriefed(mission: ActiveMission | undefined): A
   };
 }
 
+export function markLocalMissionArchived(mission: ActiveMission | undefined): ActiveMission | undefined {
+  if (mission === undefined) return undefined;
+
+  return {
+    ...mission,
+    condition: 'Archived',
+    currentState: 'archived',
+  };
+}
+
 export function createLocalDebrief(
   mission: ActiveMission | undefined,
   draft: MissionDebriefDraft,
@@ -450,6 +518,24 @@ export function createLocalDebrief(
     disciplineNotes,
     lesson,
     createdAt: options.createdAt ?? new Date().toISOString(),
+  };
+}
+
+export function createLocalMissionArchiveSummary(
+  mission: ActiveMission | undefined,
+  debrief: MissionDebrief | undefined,
+  archiveWrite: ArchiveWritePlaceholder | undefined,
+  options: { archivedAt?: string } = {},
+): LocalMissionArchiveSummary | undefined {
+  if (mission === undefined || debrief === undefined) {
+    return undefined;
+  }
+
+  return {
+    missionId: mission.id,
+    codename: mission.campaign,
+    archivedAt: options.archivedAt ?? new Date().toISOString(),
+    eventCount: archiveWrite ? 2 : 1,
   };
 }
 
@@ -480,6 +566,11 @@ export function formatMissionClosingState(mission?: ActiveMission): string {
 export function formatDebriefStatus(debrief?: MissionDebrief): string {
   if (debrief) return 'Debrief saved';
   return 'Awaiting debrief';
+}
+
+export function formatArchiveSummaryStatus(summary?: LocalMissionArchiveSummary): string {
+  if (summary) return 'Archived summary ready';
+  return 'Awaiting archive';
 }
 
 function formatStartupState(state: StartupState): string {
