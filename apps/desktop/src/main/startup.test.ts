@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { ArchiveRepository, MissionRepository, openHeadquartersDatabase } from '@headquarters/database';
 import { initializeAppStartup } from './startup';
 
 const tempDirs: string[] = [];
@@ -66,5 +67,39 @@ describe('App startup wiring', () => {
     expect(startup.status.database.connected).toBe(false);
     expect(startup.status.error).toBeTruthy();
     startup.close();
+  });
+
+  it('creates a mission through startup-owned HQOS services and repositories', async () => {
+    const dbPath = createTempDatabasePath();
+    const startup = initializeAppStartup({ dbPath, migrationsDirectory });
+    let missionId = '';
+
+    try {
+      const result = await startup.createMission({
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      });
+
+      missionId = result.mission.id;
+      expect(result.mission.codename).toBe('Foundation Patrol');
+      expect(result.mission.objective).toBe('Hold the line');
+      expect(result.mission.state).toBe('idle');
+    } finally {
+      startup.close();
+    }
+
+    const database = openHeadquartersDatabase(dbPath);
+
+    try {
+      const missions = new MissionRepository(database);
+      const archive = new ArchiveRepository(database);
+      const persistedMission = missions.findById(missionId);
+      const events = archive.list();
+
+      expect(persistedMission?.codename).toBe('Foundation Patrol');
+      expect(events.map((event) => event.type)).toContain('mission.created');
+    } finally {
+      database.close();
+    }
   });
 });

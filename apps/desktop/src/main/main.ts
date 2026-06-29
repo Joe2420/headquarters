@@ -12,6 +12,7 @@ async function createWindow() {
   });
 
   ipcMain.handle('headquarters:get-startup-status', () => startupRuntime?.status);
+  ipcMain.handle('headquarters:create-mission', (_event, input: unknown) => startupRuntime?.createMission(parseCreateMissionInput(input)));
 
   const win = new BrowserWindow({
     width: 1280,
@@ -31,6 +32,23 @@ async function createWindow() {
   } else {
     await win.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
+}
+
+function parseCreateMissionInput(input: unknown): { codename: string; objective: string } {
+  if (typeof input !== 'object' || input === null) {
+    throw new Error('Mission creation input must be an object.');
+  }
+
+  const candidate = input as { codename?: unknown; objective?: unknown };
+
+  if (typeof candidate.codename !== 'string' || typeof candidate.objective !== 'string') {
+    throw new Error('Mission creation requires codename and objective.');
+  }
+
+  return {
+    codename: candidate.codename,
+    objective: candidate.objective,
+  };
 }
 
 app.whenReady().then(createWindow);

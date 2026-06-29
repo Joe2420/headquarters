@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0064 — Connected desktop mission creation to existing HQOS services and repositories.
+
 HQ-TASK-0063 — Added Sprint 3 desktop experience review package.
 
 HQ-TASK-0062 — Added a lightweight primary navigation framework for desktop orientation.
