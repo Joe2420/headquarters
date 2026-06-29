@@ -133,12 +133,39 @@ dd {
   gap: 0.75rem;
 }
 
-.checkpoint-surface,
-.command-placeholder {
+.checkpoint-surface {
   display: grid;
   align-content: start;
   gap: 0.85rem;
   max-width: 620px;
+}
+
+.command-center-layout {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.command-center-header,
+.command-center-primary,
+.command-center-panels {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+}
+
+.command-center-header {
+  max-width: 720px;
+}
+
+.command-center-primary {
+  grid-template-columns: minmax(260px, 420px) minmax(320px, 620px);
+  align-items: start;
+}
+
+.command-center-panels {
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  max-width: 1040px;
 }
 
 .primary-action {
@@ -163,8 +190,7 @@ dd {
 }
 
 .mission-board-shell {
-  width: min(100%, 620px);
-  margin-top: 0.5rem;
+  min-width: 0;
   padding: 1rem;
   border: 1px solid #242b31;
   background: #0f1215;
@@ -173,8 +199,7 @@ dd {
 .create-mission-panel {
   display: grid;
   gap: 0.75rem;
-  width: min(100%, 620px);
-  margin-top: 0.5rem;
+  min-width: 0;
   padding: 1rem;
   border: 1px solid #242b31;
   background: #101418;
@@ -203,16 +228,25 @@ dd {
   outline-offset: 2px;
 }
 
+.mission-closing-panel,
+.debrief-panel,
+.mission-archive-summary-panel,
 .archive-write-panel {
   display: grid;
   gap: 0.75rem;
-  width: min(100%, 620px);
-  margin-top: 0.5rem;
+  min-width: 0;
   padding: 1rem;
   border: 1px solid #242b31;
   background: #0f1215;
 }
 
+.debrief-panel {
+  background: #101418;
+}
+
+.mission-closing-panel dl,
+.debrief-panel dl,
+.mission-archive-summary-panel dl,
 .archive-write-panel dl {
   display: grid;
   grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
@@ -235,8 +269,7 @@ dd {
 .command-chair {
   display: grid;
   gap: 0.85rem;
-  width: min(100%, 420px);
-  margin-top: 0.5rem;
+  min-width: 0;
   padding: 1rem;
   border: 1px solid #242b31;
   background: #101418;
@@ -311,5 +344,10 @@ dd {
   .status-panel {
     border-left: 0;
     border-top: 1px solid #242b31;
+  }
+
+  .command-center-primary,
+  .command-center-panels {
+    grid-template-columns: 1fr;
   }
 }
