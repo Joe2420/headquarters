@@ -176,9 +176,11 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<CommandCenter activeMission={mission} />);
 
     expect(html).toContain('Foundation Patrol');
+    expect(html).toContain('mission-001');
     expect(html).toContain('Hold the line');
     expect(html).toContain('Briefing');
     expect(html).toContain('Professional command');
+    expect(html).toContain('2026-01-01T00:00:00.000Z');
     expect(html).toContain('Active mission open');
   });
 
