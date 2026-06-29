@@ -19,6 +19,8 @@ import {
   formatDebriefStatus,
   formatHqosStatus,
   formatMigrationStatus,
+  formatMissionDetailState,
+  formatMissionDetailValue,
   formatMissionClosingState,
   formatMissionLifecycleStepStatus,
   formatMissionLifecycleSummary,
@@ -152,6 +154,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Mission Board');
     expect(html).toContain('Create Mission');
     expect(html).toContain('Mission Lifecycle');
+    expect(html).toContain('Mission Details');
     expect(html).toContain('Mission Authorization');
     expect(html).toContain('Mission Closing');
     expect(html).toContain('Mission Debrief');
@@ -163,6 +166,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
     expect(html).toContain('No mission lifecycle loaded');
+    expect(html).toContain('Not available');
   });
 
   it('creates a local mission from operator input', () => {
@@ -320,6 +324,50 @@ describe('Desktop shell', () => {
     expect(html).toContain('Professional command');
     expect(html).toContain('2026-01-01T00:00:00.000Z');
     expect(html).toContain('Active mission open');
+  });
+
+  it('formats read-only mission details from typed mission data', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    expect(formatMissionDetailValue(mission.id)).toBe('mission-001');
+    expect(formatMissionDetailValue('')).toBe('Not available');
+    expect(formatMissionDetailValue(undefined)).toBe('Not available');
+    expect(formatMissionDetailState(mission)).toBe('Briefing');
+    expect(formatMissionDetailState(undefined)).toBe('No mission loaded');
+  });
+
+  it('renders mission details as a read-oriented surface', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const html = renderToStaticMarkup(<CommandCenter activeMission={mission} />);
+
+    expect(html).toContain('aria-label="Mission details"');
+    expect(html).toContain('Mission ID');
+    expect(html).toContain('mission-001');
+    expect(html).toContain('Current State');
+    expect(html).toContain('Briefing');
   });
 
   it('updates local mission display to return-to-base closing state', () => {

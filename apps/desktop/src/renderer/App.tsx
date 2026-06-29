@@ -337,6 +337,7 @@ export function CommandCenter({
 
       <section className="command-center-panels" aria-label="Operational panels">
         <MissionLifecyclePanel activeMission={activeMission} />
+        <MissionDetailsPanel activeMission={activeMission} />
         <MissionAuthorizationPanel
           activeMission={activeMission}
           authorizationStatus={authorizationStatus}
@@ -354,6 +355,33 @@ export function CommandCenter({
         <CommandChair />
       </section>
     </div>
+  );
+}
+
+interface MissionDetailsPanelProps {
+  activeMission?: ActiveMission | undefined;
+}
+
+function MissionDetailsPanel({ activeMission }: MissionDetailsPanelProps) {
+  return (
+    <section className="mission-details-panel" aria-label="Mission details">
+      <div>
+        <p className="section-label">Details</p>
+        <h3>Mission Details</h3>
+      </div>
+      <dl>
+        <dt>Mission ID</dt>
+        <dd>{formatMissionDetailValue(activeMission?.id)}</dd>
+        <dt>Codename</dt>
+        <dd>{formatMissionDetailValue(activeMission?.campaign)}</dd>
+        <dt>Objective</dt>
+        <dd>{formatMissionDetailValue(activeMission?.objective)}</dd>
+        <dt>Current State</dt>
+        <dd>{formatMissionDetailState(activeMission)}</dd>
+        <dt>Created</dt>
+        <dd>{formatMissionDetailValue(activeMission?.createdAt)}</dd>
+      </dl>
+    </section>
   );
 }
 
@@ -709,6 +737,18 @@ export function formatMissionLifecycleStepStatus(status: MissionLifecycleStepSta
   if (status === 'completed') return 'Complete';
   if (status === 'current') return 'Current';
   return 'Pending';
+}
+
+export function formatMissionDetailValue(value?: string): string {
+  if (value === undefined || value.trim().length === 0) return 'Not available';
+  return value;
+}
+
+export function formatMissionDetailState(mission?: ActiveMission): string {
+  const currentState = parseMissionState(mission?.currentState);
+
+  if (currentState === undefined) return 'No mission loaded';
+  return formatMissionStateForDisplay(currentState);
 }
 
 function getMissionLifecycleStepStatus(index: number, currentIndex: number): MissionLifecycleStepStatus {

@@ -230,6 +230,7 @@ dd {
 
 .mission-authorization-panel,
 .mission-lifecycle-panel,
+.mission-details-panel,
 .mission-closing-panel,
 .debrief-panel,
 .mission-archive-summary-panel,
@@ -274,6 +275,7 @@ dd {
 }
 
 .mission-closing-panel dl,
+.mission-details-panel dl,
 .debrief-panel dl,
 .mission-archive-summary-panel dl,
 .archive-write-panel dl {
