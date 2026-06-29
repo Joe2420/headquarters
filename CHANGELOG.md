@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0074 — Added behavior-first trade review capture contracts.
+
 HQ-TASK-0073 — Added behavior-focused daily reflection capture contracts.
 
 HQ-TASK-0072 — Added Journal subsystem entry contracts and local-first repository boundary.
