@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
+import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
 import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
@@ -361,10 +362,56 @@ export function CommandCenter({
           onArchiveMission={onArchiveMission}
         />
         <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+        <MissionTimelineViewerPanel
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          missionDebrief={missionDebrief}
+          archiveSummary={archiveSummary}
+        />
         <ArchiveWritePanel archiveWrite={archiveWrite} />
         <CommandChair />
       </section>
     </div>
+  );
+}
+
+interface MissionTimelineViewerPanelProps {
+  activeMission?: ActiveMission | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  archiveSummary?: LocalMissionArchiveSummary | undefined;
+}
+
+function MissionTimelineViewerPanel({
+  activeMission,
+  authorizationStatus,
+  missionDebrief,
+  archiveSummary,
+}: MissionTimelineViewerPanelProps) {
+  const entries = buildDesktopMissionTimelineEntries({
+    activeMission,
+    authorizationStatus,
+    missionDebrief,
+    archiveSummary,
+  });
+
+  return (
+    <section className="mission-timeline-viewer-panel" aria-label="Mission timeline viewer">
+      <div>
+        <p className="section-label">Timeline</p>
+        <h3>Timeline Viewer</h3>
+      </div>
+      <p className="muted">{formatTimelineViewerStatus(entries)}</p>
+      <ol className="mission-timeline-list">
+        {entries.map((entry) => (
+          <li key={entry.eventId}>
+            <span>{formatMissionTimelineTransition(entry)}</span>
+            <time dateTime={entry.occurredAt}>{entry.occurredAt}</time>
+            {entry.reason ? <strong>{entry.reason}</strong> : null}
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -942,6 +989,85 @@ export function formatArchiveViewerStatus(summaries: LocalMissionArchiveSummary[
   if (summaries.length === 0) return 'No archived missions';
   if (summaries.length === 1) return '1 archived mission';
   return `${summaries.length} archived missions`;
+}
+
+export interface DesktopMissionTimelineInput {
+  activeMission?: ActiveMission | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  archiveSummary?: LocalMissionArchiveSummary | undefined;
+}
+
+export function buildDesktopMissionTimelineEntries(
+  input: DesktopMissionTimelineInput,
+): MissionTimelineExportEntryDTO[] {
+  const mission = input.activeMission;
+  if (mission === undefined) return [];
+
+  const missionState = parseMissionState(mission.currentState) ?? 'briefing';
+  const entries: MissionTimelineExportEntryDTO[] = [
+    {
+      eventId: `desktop-${mission.id}-created`,
+      missionId: mission.id,
+      occurredAt: mission.createdAt,
+      transition: {
+        from: 'idle',
+        to: missionState,
+      },
+      reason: 'Mission created',
+    },
+  ];
+
+  if (input.authorizationStatus !== undefined && input.authorizationStatus.missionId === mission.id) {
+    entries.push({
+      eventId: `desktop-${mission.id}-authorization-${input.authorizationStatus.decision}`,
+      missionId: mission.id,
+      occurredAt: mission.createdAt,
+      transition: {
+        from: 'ready',
+        to: 'authorization',
+      },
+      reason: formatAuthorizationStatus(input.authorizationStatus),
+    });
+  }
+
+  if (input.missionDebrief !== undefined && input.missionDebrief.missionId === mission.id) {
+    entries.push({
+      eventId: `desktop-${mission.id}-debrief`,
+      missionId: mission.id,
+      occurredAt: input.missionDebrief.createdAt,
+      transition: {
+        from: 'return_to_base',
+        to: 'debrief',
+      },
+      reason: 'Mission debrief saved',
+    });
+  }
+
+  if (input.archiveSummary !== undefined && input.archiveSummary.missionId === mission.id) {
+    entries.push({
+      eventId: `desktop-${mission.id}-archived`,
+      missionId: mission.id,
+      occurredAt: input.archiveSummary.archivedAt,
+      transition: {
+        from: 'debrief',
+        to: 'archived',
+      },
+      reason: 'Mission archived',
+    });
+  }
+
+  return [...entries].sort((first, second) => first.occurredAt.localeCompare(second.occurredAt));
+}
+
+export function formatTimelineViewerStatus(entries: MissionTimelineExportEntryDTO[]): string {
+  if (entries.length === 0) return 'No timeline entries';
+  if (entries.length === 1) return '1 timeline entry';
+  return `${entries.length} timeline entries`;
+}
+
+export function formatMissionTimelineTransition(entry: MissionTimelineExportEntryDTO): string {
+  return `${formatMissionStateForDisplay(entry.transition.from)} to ${formatMissionStateForDisplay(entry.transition.to)}`;
 }
 
 function formatStartupState(state: StartupState): string {

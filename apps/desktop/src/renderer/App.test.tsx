@@ -6,6 +6,7 @@ import {
   CommandCenterPlaceholder,
   type StartupStatus,
   buildMissionLifecycleSteps,
+  buildDesktopMissionTimelineEntries,
   createArchiveWritePlaceholder,
   createDesktopMission,
   createLocalDebrief,
@@ -25,7 +26,9 @@ import {
   formatMissionClosingState,
   formatMissionLifecycleStepStatus,
   formatMissionLifecycleSummary,
+  formatMissionTimelineTransition,
   formatStartupError,
+  formatTimelineViewerStatus,
   getPrimaryNavigationItems,
   listArchivedMissionSummaries,
   mapMissionRecordToActiveMission,
@@ -162,11 +165,13 @@ describe('Desktop shell', () => {
     expect(html).toContain('Mission Debrief');
     expect(html).toContain('Archived Mission Summary');
     expect(html).toContain('Mission Archive Viewer');
+    expect(html).toContain('Timeline Viewer');
     expect(html).toContain('Archive Placeholder');
     expect(html).toContain('Not started');
     expect(html).toContain('Awaiting debrief');
     expect(html).toContain('Awaiting archive');
     expect(html).toContain('No archived missions');
+    expect(html).toContain('No timeline entries');
     expect(html).toContain('Awaiting mission creation');
     expect(html).toContain('No mission loaded');
     expect(html).toContain('No mission lifecycle loaded');
@@ -633,6 +638,108 @@ describe('Desktop shell', () => {
     expect(html).toContain('Foundation Patrol');
     expect(html).toContain('2 events');
     expect(html).toContain('2026-01-01T00:20:00.000Z');
+  });
+
+  it('builds desktop mission timeline entries in chronological order', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const entries = buildDesktopMissionTimelineEntries({
+      activeMission: markLocalMissionArchived(mission),
+      authorizationStatus: {
+        missionId: 'mission-001',
+        decision: 'approved',
+        reason: 'Manual authorization fields are complete.',
+      },
+      missionDebrief: {
+        id: 'debrief-001',
+        missionId: 'mission-001',
+        behaviorSummary: 'Stayed patient.',
+        disciplineNotes: 'Followed plan.',
+        lesson: 'Prepare earlier.',
+        createdAt: '2026-01-01T00:10:00.000Z',
+      },
+      archiveSummary: {
+        missionId: 'mission-001',
+        codename: 'Foundation Patrol',
+        archivedAt: '2026-01-01T00:20:00.000Z',
+        eventCount: 2,
+      },
+    });
+
+    expect(entries.map((entry) => entry.eventId)).toEqual([
+      'desktop-mission-001-created',
+      'desktop-mission-001-authorization-approved',
+      'desktop-mission-001-debrief',
+      'desktop-mission-001-archived',
+    ]);
+    expect(entries.map((entry) => entry.occurredAt)).toEqual([
+      '2026-01-01T00:00:00.000Z',
+      '2026-01-01T00:00:00.000Z',
+      '2026-01-01T00:10:00.000Z',
+      '2026-01-01T00:20:00.000Z',
+    ]);
+    const firstEntry = entries[0];
+
+    if (!firstEntry) throw new Error('Expected first timeline entry fixture');
+
+    expect(formatTimelineViewerStatus(entries)).toBe('4 timeline entries');
+    expect(formatMissionTimelineTransition(firstEntry)).toBe('Idle to Archived');
+  });
+
+  it('handles empty and single-entry mission timelines', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    expect(buildDesktopMissionTimelineEntries({})).toEqual([]);
+
+    const entries = buildDesktopMissionTimelineEntries({ activeMission: mission });
+
+    expect(entries).toHaveLength(1);
+    expect(formatTimelineViewerStatus([])).toBe('No timeline entries');
+    expect(formatTimelineViewerStatus(entries)).toBe('1 timeline entry');
+  });
+
+  it('renders mission timeline entries in the timeline viewer', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const html = renderToStaticMarkup(<CommandCenter activeMission={mission} />);
+
+    expect(html).toContain('aria-label="Mission timeline viewer"');
+    expect(html).toContain('1 timeline entry');
+    expect(html).toContain('Idle to Briefing');
+    expect(html).toContain('Mission created');
   });
 
   it('does not create an archived mission summary before debrief', () => {
