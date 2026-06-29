@@ -60,6 +60,14 @@ export interface MissionAuthorizationPolicy {
   evaluate(input: MissionAuthorizationRequestInput, mission: Mission): MissionAuthorizationRuleResult;
 }
 
+export interface MissionReturnToBaseInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: ISODateTime;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly reason?: string;
+}
+
 export interface MissionObservationSession {
   readonly id: UUID;
   readonly missionId: UUID;
@@ -120,6 +128,12 @@ export interface MissionAuthorizationRequestResult {
     | HQEvent<EventPayloadMap['mission.authorized']>
     | HQEvent<EventPayloadMap['mission.authorization_denied']>;
   readonly decision: MissionAuthorizationRuleResult;
+}
+
+export interface MissionReturnToBaseResult {
+  readonly mission: Mission;
+  readonly requestEvent: HQEvent<EventPayloadMap['mission.return_to_base_requested']>;
+  readonly transitionEvent: HQEvent<MissionStateChangedPayload>;
 }
 
 export class MissionNotFoundError extends Error {
@@ -273,6 +287,27 @@ export class MissionService {
     };
   }
 
+  async requestReturnToBase(input: MissionReturnToBaseInput): Promise<MissionReturnToBaseResult> {
+    const mission = await this.loadMission(input.missionId);
+    const transition = this.missionKernel.transition(mission, 'return_to_base', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+    const requestEvent = this.createReturnToBaseRequestedEvent(transition.mission, input);
+
+    await this.missionRepository.save(transition.mission);
+    await this.eventPublisher.publish(requestEvent);
+    await this.eventPublisher.publish(transition.event);
+
+    return {
+      mission: transition.mission,
+      requestEvent,
+      transitionEvent: transition.event,
+    };
+  }
+
   private async loadMission(missionId: UUID): Promise<Mission> {
     const mission = await this.missionRepository.findById(missionId);
 
@@ -407,6 +442,26 @@ export class MissionService {
         missionId: mission.id,
         ...(decision.reason !== undefined ? { reason: decision.reason } : {}),
         ...(decision.evidenceRefs !== undefined ? { evidenceRefs: [...decision.evidenceRefs] } : {}),
+      },
+    });
+  }
+
+  private createReturnToBaseRequestedEvent(
+    mission: Mission,
+    input: MissionReturnToBaseInput,
+  ): HQEvent<EventPayloadMap['mission.return_to_base_requested']> {
+    return createEventEnvelope({
+      ...(this.options.createEventId !== undefined ? { id: this.options.createEventId() } : {}),
+      type: 'mission.return_to_base_requested',
+      source: this.options.source ?? 'MissionService',
+      occurredAt: input.requestedAt ?? mission.updatedAt,
+      missionId: mission.id,
+      ...(mission.campaignId !== undefined ? { campaignId: mission.campaignId } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+      payload: {
+        missionId: mission.id,
+        ...(input.reason !== undefined ? { reason: input.reason } : {}),
       },
     });
   }

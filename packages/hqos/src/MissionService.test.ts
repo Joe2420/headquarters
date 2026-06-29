@@ -494,6 +494,85 @@ describe('MissionService', () => {
     );
     expect(publish).not.toHaveBeenCalled();
   });
+
+  it('requests return to base, stores closing state, and emits mission events', async () => {
+    const mission = createMission('deployed');
+    const save = vi.fn();
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => mission,
+      },
+      { publish },
+      {
+        createEventId: () => '55555555-5555-4555-8555-555555555555',
+        source: 'MissionServiceTest',
+      },
+    );
+
+    const result = await service.requestReturnToBase({
+      missionId,
+      requestedAt,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      reason: 'Mission closing protocol initiated.',
+    });
+
+    expect(result.mission).toEqual({
+      ...mission,
+      state: 'return_to_base',
+      updatedAt: requestedAt,
+    });
+    expect(result.requestEvent).toEqual({
+      id: '55555555-5555-4555-8555-555555555555',
+      type: 'mission.return_to_base_requested',
+      version: 1,
+      occurredAt: requestedAt,
+      source: 'MissionServiceTest',
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      priority: 'amber',
+      payload: {
+        missionId,
+        reason: 'Mission closing protocol initiated.',
+      },
+    });
+    expect(result.transitionEvent).toMatchObject({
+      type: 'mission.state.changed',
+      occurredAt: requestedAt,
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      payload: {
+        missionId,
+        from: 'deployed',
+        to: 'return_to_base',
+        reason: 'Mission closing protocol initiated.',
+      },
+    });
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(save).toHaveBeenCalledWith(result.mission);
+    expect(publish).toHaveBeenCalledTimes(2);
+    expect(publish).toHaveBeenNthCalledWith(1, result.requestEvent);
+    expect(publish).toHaveBeenNthCalledWith(2, result.transitionEvent);
+  });
+
+  it('rejects invalid return-to-base transitions before persistence or event publication', async () => {
+    const save = vi.fn();
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => createMission('authorization'),
+      },
+      { publish },
+    );
+
+    await expect(service.requestReturnToBase({ missionId, requestedAt })).rejects.toBeInstanceOf(
+      InvalidMissionTransitionError,
+    );
+    expect(save).not.toHaveBeenCalled();
+    expect(publish).not.toHaveBeenCalled();
+  });
 });
 
 function createMission(state: Mission['state']): Mission {
