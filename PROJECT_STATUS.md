@@ -56,6 +56,7 @@
 - HQ-TASK-0058 — Report for Duty Flow
 - HQ-TASK-0059 — Command Center Layout MVP
 - HQ-TASK-0060 — HQOS Status Dashboard
+- HQ-TASK-0061 — Mission Board Read Only
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -73,4 +74,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0060 is implemented on a feature branch and awaiting merge. Sprint 3 Desktop Experience is in progress through HIG-TASK-023. Future journal implementation requires explicit Founder approval under HDC workflow.
+HQ-TASK-0061 is implemented on a feature branch and awaiting merge. Sprint 3 Desktop Experience is in progress through HIG-TASK-024. Future journal implementation requires explicit Founder approval under HDC workflow.

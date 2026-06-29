@@ -260,11 +260,13 @@ export function CommandCenter({
         <CreateMissionPanel onCreateMission={onCreateMission} />
         <div className="mission-board-shell" data-object-id="RM-0007">
           <MissionBoard
+            missionId={activeMission?.id}
             campaign={activeMission?.campaign ?? 'No active campaign'}
             objective={activeMission?.objective ?? 'Awaiting mission creation'}
             condition={activeMission?.condition ?? 'Standby'}
             commandAuthority={activeMission?.commandAuthority ?? 'Local placeholder'}
             currentState={activeMission?.currentState ?? 'No mission loaded'}
+            createdAt={activeMission?.createdAt}
           />
         </div>
       </section>

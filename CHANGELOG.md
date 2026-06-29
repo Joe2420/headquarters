@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0061 — Hardened Mission Board as a read-only mission summary surface.
+
 HQ-TASK-0060 — Added a read-only HQOS status dashboard with deterministic startup diagnostics.
 
 HQ-TASK-0059 — Added a stable Command Center layout MVP for first launchable use.
