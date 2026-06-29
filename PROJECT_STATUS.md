@@ -50,6 +50,7 @@
 - HQ-TASK-0052 — Return To Base MVP
 - HQ-TASK-0053 — Debrief MVP
 - HQ-TASK-0054 — Mission Archive MVP
+- HQ-TASK-0055 — Sprint 2 Review Package
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -67,4 +68,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-HQ-TASK-0054 is implemented on a feature branch and awaiting Founder approval before merge. Future journal implementation requires explicit Founder approval under HDC workflow.
+Sprint 2 Mission Core is complete through HIG-TASK-018. The next implementation task crosses into the next roadmap milestone and requires Founder direction before continuing. Future journal implementation requires explicit Founder approval under HDC workflow.
