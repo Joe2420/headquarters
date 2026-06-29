@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0073 — Added behavior-focused daily reflection capture contracts.
+
 HQ-TASK-0072 — Added Journal subsystem entry contracts and local-first repository boundary.
 
 HQ-TASK-0071 — Added Sprint 4 mission operations review package.
