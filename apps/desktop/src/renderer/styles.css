@@ -234,6 +234,7 @@ dd {
 .mission-closing-panel,
 .debrief-panel,
 .mission-archive-summary-panel,
+.mission-archive-viewer-panel,
 .archive-write-panel {
   display: grid;
   gap: 0.75rem;
@@ -283,6 +284,30 @@ dd {
   grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
   gap: 0.55rem 1rem;
   margin: 0;
+}
+
+.mission-archive-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mission-archive-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 0.75rem;
+  min-height: 40px;
+  padding: 0.55rem 0.65rem;
+  background: #101418;
+  border-left: 2px solid #8fb8ff;
+}
+
+.mission-archive-list time {
+  grid-column: 1 / -1;
+  color: #93a4b1;
+  font-size: 0.78rem;
 }
 
 .mission-lifecycle-list {
