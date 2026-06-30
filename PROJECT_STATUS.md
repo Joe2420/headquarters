@@ -83,8 +83,9 @@
 - HQ-TASK-0085 — Doctrine History
 - HQ-TASK-0086 — Doctrine Diff
 - HQ-TASK-0087 — Trading Plan Integration
+- HQ-TASK-0088 — Sprint 6 Doctrine Review
 
-Current milestone gate: Sprint 6 Doctrine is in progress through HIG-TASK-049 / HQ-TASK-0087.
+Current milestone gate: Sprint 6 Doctrine is complete through HIG-TASK-050 / HQ-TASK-0088.
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -102,4 +103,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 6 Doctrine is in progress through HIG-TASK-049 / HQ-TASK-0087.
+Sprint 6 Doctrine is complete through HIG-TASK-050 / HQ-TASK-0088.

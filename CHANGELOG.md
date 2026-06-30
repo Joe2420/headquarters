@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0088 — Added Sprint 6 Doctrine review package.
+
 HQ-TASK-0087 — Added read-only Trading Plan references to accepted Doctrine.
 
 HQ-TASK-0086 — Added read-only Doctrine diff helpers and viewer panel.
