@@ -146,6 +146,9 @@ importers:
 
   packages/doctrine:
     dependencies:
+      '@headquarters/journal':
+        specifier: workspace:*
+        version: link:../journal
       '@headquarters/shared':
         specifier: workspace:*
         version: link:../shared
