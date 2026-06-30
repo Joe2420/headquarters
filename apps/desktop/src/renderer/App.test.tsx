@@ -62,6 +62,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('data-nav-id="command"');
     expect(html).toContain('data-nav-id="missions"');
     expect(html).toContain('data-nav-id="journal"');
+    expect(html).toContain('data-nav-id="doctrine"');
     expect(html).toContain('data-nav-id="archive"');
     expect(html).toContain('data-nav-id="settings"');
     expect(html).toContain('aria-current="page"');
@@ -74,6 +75,7 @@ describe('Desktop shell', () => {
       { id: 'command', label: 'Command', active: true },
       { id: 'missions', label: 'Missions', active: false },
       { id: 'journal', label: 'Journal', active: false },
+      { id: 'doctrine', label: 'Doctrine', active: false },
       { id: 'archive', label: 'Archive', active: false },
       { id: 'settings', label: 'Settings', active: false },
     ]);

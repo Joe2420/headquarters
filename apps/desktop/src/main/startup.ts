@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import {
   ArchiveRepository,
+  DoctrineRepository,
   type HeadquartersDatabase,
   loadMigrationsFromDirectory,
   MissionDebriefRepository,
@@ -11,6 +12,7 @@ import {
   runMigrations,
 } from '@headquarters/database';
 import { MissionService } from '@headquarters/hqos';
+import type { DoctrineRecord } from '@headquarters/doctrine';
 import type { Mission } from '@headquarters/shared';
 
 export type StartupState = 'ready' | 'failed';
@@ -35,6 +37,10 @@ export interface DesktopCreateMissionInput {
 
 export interface DesktopCreateMissionResult {
   mission: Mission;
+}
+
+export interface DesktopDoctrineListResult {
+  records: DoctrineRecord[];
 }
 
 export interface DesktopMissionCommandInput {
@@ -75,6 +81,7 @@ export interface DesktopDebriefResult {
 
 export interface AppStartupRuntime {
   status: AppStartupStatus;
+  listDoctrineRecords: () => Promise<DesktopDoctrineListResult>;
   createMission: (input: DesktopCreateMissionInput) => Promise<DesktopCreateMissionResult>;
   startBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   completeBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
@@ -103,6 +110,7 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       : loadDefaultMigrations();
     const migrationResult = runMigrations(database, migrations);
     const missionService = createMissionService(database);
+    const doctrineRepository = new DoctrineRepository(database);
 
     return {
       status: {
@@ -113,6 +121,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
         },
         migrations: migrationResult,
       },
+      listDoctrineRecords: async () => ({
+        records: doctrineRepository.list(),
+      }),
       createMission: async (input) => {
         const result = await missionService.createMission(input);
         return {
@@ -194,6 +205,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
         },
         error: error instanceof Error ? error.message : 'Unknown startup failure',
       },
+      listDoctrineRecords: async () => ({
+        records: [],
+      }),
       createMission: async () => {
         throw new Error('Desktop startup is not ready for mission creation.');
       },

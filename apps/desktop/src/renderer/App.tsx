@@ -2,6 +2,7 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
+import type { DoctrineRecord } from '@headquarters/doctrine';
 import {
   archiveJournalEntry,
   buildJournalTimeline,
@@ -91,7 +92,7 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
-export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'archive' | 'settings';
+export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'doctrine' | 'archive' | 'settings';
 export type HeadquartersRoomId = NavigationAreaId;
 
 export interface PrimaryNavigationItem {
@@ -104,6 +105,7 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'command', label: 'Command' },
   { id: 'missions', label: 'Missions' },
   { id: 'journal', label: 'Journal' },
+  { id: 'doctrine', label: 'Doctrine' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
 ];
@@ -138,6 +140,7 @@ declare global {
     headquarters?: {
       version?: string;
       getStartupStatus?: () => Promise<StartupStatus>;
+      listDoctrineRecords?: () => Promise<{ records: DoctrineRecord[] }>;
       createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
       startBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       completeBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
@@ -168,6 +171,7 @@ export function App() {
   const [tradeReviews, setTradeReviews] = useState<TradeReview[]>([]);
   const [growthEvents, setGrowthEvents] = useState<GrowthEvent[]>([]);
   const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
+  const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -200,6 +204,22 @@ export function App() {
           },
           error: error instanceof Error ? error.message : 'Unable to read startup status',
         });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    globalThis.window?.headquarters?.listDoctrineRecords?.()
+      .then((result) => {
+        if (active && result) setDoctrineRecords(result.records);
+      })
+      .catch(() => {
+        if (active) setDoctrineRecords([]);
       });
 
     return () => {
@@ -260,6 +280,7 @@ export function App() {
                 tradeReviews,
                 growthEvents,
                 archivedJournalEntries,
+                doctrineRecords,
                 onCreateMission: async (mission) => {
                   setActiveMission(mission);
                   setMissionHistory((history) => upsertMissionHistory(history, mission));
@@ -333,6 +354,7 @@ interface HeadquartersRoomContext {
   tradeReviews: TradeReview[];
   growthEvents: GrowthEvent[];
   archivedJournalEntries: ArchivedJournalEntry[];
+  doctrineRecords: DoctrineRecord[];
   onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   onMissionChanged: (mission: ActiveMission) => void;
   onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
@@ -379,6 +401,10 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
         onArchiveJournalEntry={context.onArchiveJournalEntry}
       />
     );
+  }
+
+  if (room === 'doctrine') {
+    return <DoctrineRoom doctrineRecords={context.doctrineRecords} />;
   }
 
   if (room === 'archive') {
@@ -1424,6 +1450,45 @@ function ArchiveRoom({
         </section>
       </section>
     </div>
+  );
+}
+
+function DoctrineRoom({ doctrineRecords }: { doctrineRecords: DoctrineRecord[] }) {
+  return (
+    <div className="room-layout" data-room-id="doctrine-room">
+      <section className="command-center-header" aria-label="Doctrine room status">
+        <p className="section-label">Doctrine Chamber</p>
+        <h2>Doctrine Viewer</h2>
+        <p className="muted">Validated rules are visible here as read-only institutional memory.</p>
+      </section>
+      <section className="command-center-panels" aria-label="Doctrine workspace">
+        <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+      </section>
+    </div>
+  );
+}
+
+function DoctrineViewerPanel({ doctrineRecords }: { doctrineRecords: DoctrineRecord[] }) {
+  return (
+    <section className="journal-panel" aria-label="Doctrine viewer">
+      <p className="section-label">Doctrine</p>
+      <h3>Doctrine Records</h3>
+      {doctrineRecords.length === 0 ? (
+        <p className="muted">No doctrine records have been accepted yet.</p>
+      ) : (
+        <div className="timeline-list">
+          {doctrineRecords.map((record) => (
+            <article className="timeline-item" key={record.id}>
+              <strong>{record.title}</strong>
+              <span>{record.summary}</span>
+              <span>
+                {record.confidence} from {record.source.sourceType}: {record.source.sourceId}
+              </span>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 
