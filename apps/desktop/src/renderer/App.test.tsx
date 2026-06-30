@@ -4,6 +4,7 @@ import {
   App,
   CommandCenter,
   CommandCenterPlaceholder,
+  type ActiveMission,
   type StartupStatus,
   buildMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
@@ -30,6 +31,7 @@ import {
   formatMissionTimelineTransition,
   formatStartupError,
   formatTimelineViewerStatus,
+  getMissionNextAction,
   getPrimaryNavigationItems,
   listArchivedMissionSummaries,
   listMissionHistory,
@@ -59,6 +61,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Primary"');
     expect(html).toContain('data-nav-id="command"');
     expect(html).toContain('data-nav-id="missions"');
+    expect(html).toContain('data-nav-id="journal"');
     expect(html).toContain('data-nav-id="archive"');
     expect(html).toContain('data-nav-id="settings"');
     expect(html).toContain('aria-current="page"');
@@ -70,10 +73,38 @@ describe('Desktop shell', () => {
     expect(items).toEqual([
       { id: 'command', label: 'Command', active: true },
       { id: 'missions', label: 'Missions', active: false },
+      { id: 'journal', label: 'Journal', active: false },
       { id: 'archive', label: 'Archive', active: false },
       { id: 'settings', label: 'Settings', active: false },
     ]);
     expect(items.filter((item) => item.active)).toHaveLength(1);
+  });
+
+  it('derives the valid next mission action from the current mission state', () => {
+    const missionWithState = (currentState: string): ActiveMission => ({
+      id: `mission-${currentState}`,
+      campaign: 'Foundation',
+      objective: 'Hold the line',
+      condition: 'Ready',
+      commandAuthority: 'Operator',
+      currentState,
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+
+    expect(getMissionNextAction().disabled).toBe(true);
+
+    expect(getMissionNextAction(missionWithState('idle'))).toMatchObject({
+      buttonLabel: 'Start Briefing',
+      disabled: false,
+    });
+    expect(getMissionNextAction(missionWithState('authorization'))).toMatchObject({
+      buttonLabel: 'Evaluate Authorization',
+      disabled: false,
+    });
+    expect(getMissionNextAction(missionWithState('return_to_base'))).toMatchObject({
+      buttonLabel: 'Save Debrief',
+      disabled: false,
+    });
   });
 
   it('formats startup status dashboard states deterministically', () => {

@@ -68,6 +68,14 @@ export interface MissionReturnToBaseInput {
   readonly reason?: string;
 }
 
+export interface MissionDeploymentDeclarationInput {
+  readonly missionId: UUID;
+  readonly requestedAt?: ISODateTime;
+  readonly correlationId?: UUID;
+  readonly causationId?: UUID;
+  readonly reason?: string;
+}
+
 export interface MissionDebriefInput {
   readonly missionId: UUID;
   readonly requestedAt?: ISODateTime;
@@ -166,6 +174,12 @@ export interface MissionAuthorizationRequestResult {
 export interface MissionReturnToBaseResult {
   readonly mission: Mission;
   readonly requestEvent: HQEvent<EventPayloadMap['mission.return_to_base_requested']>;
+  readonly transitionEvent: HQEvent<MissionStateChangedPayload>;
+}
+
+export interface MissionDeploymentDeclarationResult {
+  readonly mission: Mission;
+  readonly event: HQEvent<EventPayloadMap['mission.deployment_declared']>;
   readonly transitionEvent: HQEvent<MissionStateChangedPayload>;
 }
 
@@ -343,6 +357,27 @@ export class MissionService {
       requestEvent,
       responseEvent,
       decision,
+    };
+  }
+
+  async declareDeployment(input: MissionDeploymentDeclarationInput): Promise<MissionDeploymentDeclarationResult> {
+    const mission = await this.loadMission(input.missionId);
+    const transition = this.missionKernel.transition(mission, 'deployed', {
+      ...(input.requestedAt !== undefined ? { occurredAt: input.requestedAt } : {}),
+      ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+    });
+    const event = this.createDeploymentDeclaredEvent(transition.mission, input);
+
+    await this.missionRepository.save(transition.mission);
+    await this.eventPublisher.publish(event);
+    await this.eventPublisher.publish(transition.event);
+
+    return {
+      mission: transition.mission,
+      event,
+      transitionEvent: transition.event,
     };
   }
 
@@ -581,6 +616,25 @@ export class MissionService {
       payload: {
         missionId: mission.id,
         ...(input.reason !== undefined ? { reason: input.reason } : {}),
+      },
+    });
+  }
+
+  private createDeploymentDeclaredEvent(
+    mission: Mission,
+    input: MissionDeploymentDeclarationInput,
+  ): HQEvent<EventPayloadMap['mission.deployment_declared']> {
+    return createEventEnvelope({
+      ...(this.options.createEventId !== undefined ? { id: this.options.createEventId() } : {}),
+      type: 'mission.deployment_declared',
+      source: this.options.source ?? 'MissionService',
+      occurredAt: input.requestedAt ?? mission.updatedAt,
+      missionId: mission.id,
+      ...(mission.campaignId !== undefined ? { campaignId: mission.campaignId } : {}),
+      ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),
+      ...(input.causationId !== undefined ? { causationId: input.causationId } : {}),
+      payload: {
+        missionId: mission.id,
       },
     });
   }

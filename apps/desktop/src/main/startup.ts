@@ -4,7 +4,9 @@ import {
   ArchiveRepository,
   type HeadquartersDatabase,
   loadMigrationsFromDirectory,
+  MissionDebriefRepository,
   MissionRepository,
+  ObservationSessionRepository,
   openHeadquartersDatabase,
   runMigrations,
 } from '@headquarters/database';
@@ -35,9 +37,54 @@ export interface DesktopCreateMissionResult {
   mission: Mission;
 }
 
+export interface DesktopMissionCommandInput {
+  missionId: string;
+  reason?: string;
+}
+
+export interface DesktopAuthorizationInput {
+  missionId: string;
+  operatorJustification: string;
+  invalidation: string;
+}
+
+export interface DesktopAuthorizationResult {
+  mission: Mission;
+  decision: 'approved' | 'denied';
+  reason: string;
+}
+
+export interface DesktopDebriefInput {
+  missionId: string;
+  behaviorSummary: string;
+  disciplineNotes: string;
+  lesson: string;
+}
+
+export interface DesktopDebriefResult {
+  mission: Mission;
+  debrief: {
+    id: string;
+    missionId: string;
+    behaviorSummary: string;
+    disciplineNotes: string;
+    lesson: string;
+    createdAt: string;
+  };
+}
+
 export interface AppStartupRuntime {
   status: AppStartupStatus;
   createMission: (input: DesktopCreateMissionInput) => Promise<DesktopCreateMissionResult>;
+  startBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  completeBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  startObservation: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  completeObservation: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  requestAuthorization: (input: DesktopAuthorizationInput) => Promise<DesktopAuthorizationResult>;
+  declareDeployment: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  requestReturnToBase: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  saveDebrief: (input: DesktopDebriefInput) => Promise<DesktopDebriefResult>;
+  archiveAfterDebrief: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   close: () => void;
 }
 
@@ -72,6 +119,63 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
           mission: result.mission,
         };
       },
+      startBriefing: async (input) => {
+        const result = await missionService.startBriefing(input);
+        return {
+          mission: result.mission,
+        };
+      },
+      completeBriefing: async (input) => {
+        const result = await missionService.completeBriefing(input);
+        return {
+          mission: result.mission,
+        };
+      },
+      startObservation: async (input) => {
+        const result = await missionService.startObservation(input);
+        return {
+          mission: result.mission,
+        };
+      },
+      completeObservation: async (input) => {
+        const result = await missionService.completeObservation(input);
+        return {
+          mission: result.mission,
+        };
+      },
+      requestAuthorization: async (input) => {
+        const result = await missionService.requestAuthorization(input);
+        return {
+          mission: result.mission,
+          decision: result.decision.decision,
+          reason: result.decision.reason ?? 'Authorization evaluated.',
+        };
+      },
+      declareDeployment: async (input) => {
+        const result = await missionService.declareDeployment(input);
+        return {
+          mission: result.mission,
+        };
+      },
+      requestReturnToBase: async (input) => {
+        const result = await missionService.requestReturnToBase(input);
+        return {
+          mission: result.mission,
+        };
+      },
+      saveDebrief: async (input) => {
+        const result = await missionService.saveDebrief(input);
+        return {
+          mission: result.mission,
+          debrief: result.debrief,
+        };
+      },
+      archiveAfterDebrief: async (input) => {
+        const result = await missionService.archiveAfterDebrief(input);
+        return {
+          mission: result.mission,
+        };
+      },
       close: () => database?.close(),
     };
   } catch (error) {
@@ -93,6 +197,33 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       createMission: async () => {
         throw new Error('Desktop startup is not ready for mission creation.');
       },
+      startBriefing: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      completeBriefing: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      startObservation: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      completeObservation: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      requestAuthorization: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      declareDeployment: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      requestReturnToBase: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      saveDebrief: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      archiveAfterDebrief: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
       close: () => undefined,
     };
   }
@@ -101,6 +232,8 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
 function createMissionService(database: HeadquartersDatabase): MissionService {
   const missionRepository = new MissionRepository(database);
   const archiveRepository = new ArchiveRepository(database);
+  const observationSessionRepository = new ObservationSessionRepository(database);
+  const debriefRepository = new MissionDebriefRepository(database);
 
   return new MissionService(
     missionRepository,
@@ -110,6 +243,10 @@ function createMissionService(database: HeadquartersDatabase): MissionService {
     {
       source: 'DesktopMissionCreation',
     },
+    undefined,
+    observationSessionRepository,
+    undefined,
+    debriefRepository,
   );
 }
 

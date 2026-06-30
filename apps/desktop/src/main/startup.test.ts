@@ -1,12 +1,15 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ArchiveRepository, MissionRepository, openHeadquartersDatabase } from '@headquarters/database';
 import { initializeAppStartup } from './startup';
 
 const tempDirs: string[] = [];
-const migrationsDirectory = join(process.cwd(), 'packages/database/migrations');
+const desktopDirectory = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+const workspaceDirectory = dirname(dirname(desktopDirectory));
+const migrationsDirectory = join(workspaceDirectory, 'packages/database/migrations');
 
 function createTempDatabasePath(): string {
   const directory = mkdtempSync(join(tmpdir(), 'headquarters-startup-'));

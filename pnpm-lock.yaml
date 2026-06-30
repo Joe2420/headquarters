@@ -41,6 +41,9 @@ importers:
       '@headquarters/hqos':
         specifier: workspace:*
         version: link:../../packages/hqos
+      '@headquarters/journal':
+        specifier: workspace:*
+        version: link:../../packages/journal
       '@headquarters/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -140,6 +143,16 @@ importers:
       '@headquarters/database':
         specifier: workspace:*
         version: link:../database
+      '@headquarters/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/journal:
+    dependencies:
       '@headquarters/shared':
         specifier: workspace:*
         version: link:../shared

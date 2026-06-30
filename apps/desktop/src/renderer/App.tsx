@@ -2,6 +2,21 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
+import {
+  archiveJournalEntry,
+  buildJournalTimeline,
+  createDailyReflection,
+  createGrowthEvent,
+  createJournalEntry,
+  createTradeReview,
+  searchJournalEntries,
+  type ArchivedJournalEntry,
+  type DailyReflection,
+  type GrowthEvent,
+  type JournalEntry,
+  type JournalTimeline,
+  type TradeReview,
+} from '@headquarters/journal';
 import { CommandChair } from './CommandChair';
 
 type StartupState = 'loading' | 'ready' | 'failed';
@@ -76,7 +91,8 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
-export type NavigationAreaId = 'command' | 'missions' | 'archive' | 'settings';
+export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'archive' | 'settings';
+export type HeadquartersRoomId = NavigationAreaId;
 
 export interface PrimaryNavigationItem {
   id: NavigationAreaId;
@@ -87,6 +103,7 @@ export interface PrimaryNavigationItem {
 const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'command', label: 'Command' },
   { id: 'missions', label: 'Missions' },
+  { id: 'journal', label: 'Journal' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
 ];
@@ -122,6 +139,15 @@ declare global {
       version?: string;
       getStartupStatus?: () => Promise<StartupStatus>;
       createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
+      startBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      completeBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      startObservation?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      completeObservation?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      requestAuthorization?: (input: MissionAuthorizationDraft & { missionId: string }) => Promise<MissionAuthorizationStatus & { mission: Mission }>;
+      declareDeployment?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      requestReturnToBase?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      saveDebrief?: (input: MissionDebriefDraft & { missionId: string }) => Promise<{ mission: Mission; debrief: MissionDebrief }>;
+      archiveAfterDebrief?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
     };
   }
 }
@@ -129,6 +155,7 @@ declare global {
 export function App() {
   const version = globalThis.window?.headquarters?.version ?? '0.1.0';
   const [shellPhase, setShellPhase] = useState<DesktopShellPhase>('security-checkpoint');
+  const [activeRoom, setActiveRoom] = useState<HeadquartersRoomId>('command');
   const [activeMission, setActiveMission] = useState<ActiveMission | undefined>();
   const [archiveWrite, setArchiveWrite] = useState<ArchiveWritePlaceholder | undefined>();
   const [authorizationStatus, setAuthorizationStatus] = useState<MissionAuthorizationStatus | undefined>();
@@ -136,6 +163,11 @@ export function App() {
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [archivedMissionSummaries, setArchivedMissionSummaries] = useState<LocalMissionArchiveSummary[]>([]);
   const [missionHistory, setMissionHistory] = useState<ActiveMission[]>([]);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [dailyReflections, setDailyReflections] = useState<DailyReflection[]>([]);
+  const [tradeReviews, setTradeReviews] = useState<TradeReview[]>([]);
+  const [growthEvents, setGrowthEvents] = useState<GrowthEvent[]>([]);
+  const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -196,15 +228,17 @@ export function App() {
 
       <div className="shell-body">
         <nav className="shell-nav" aria-label="Primary">
-          {getPrimaryNavigationItems('command').map((item) => (
-            <span
+          {getPrimaryNavigationItems(activeRoom).map((item) => (
+            <button
               key={item.id}
               className={item.active ? 'nav-item active' : 'nav-item'}
               data-nav-id={item.id}
               aria-current={item.active ? 'page' : undefined}
+              type="button"
+              onClick={() => setActiveRoom(item.id)}
             >
               {item.label}
-            </span>
+            </button>
           ))}
         </nav>
 
@@ -213,50 +247,47 @@ export function App() {
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
             ) : (
-              <CommandCenter
-                activeMission={activeMission}
-                archiveWrite={archiveWrite}
-                authorizationStatus={authorizationStatus}
-                missionDebrief={missionDebrief}
-                archiveSummary={archiveSummary}
-                archivedMissionSummaries={archivedMissionSummaries}
-                missionHistory={missionHistory}
-                onCreateMission={(mission) => {
+              renderHeadquartersRoom(activeRoom, {
+                activeMission,
+                archiveWrite,
+                authorizationStatus,
+                missionDebrief,
+                archiveSummary,
+                archivedMissionSummaries,
+                missionHistory,
+                journalEntries,
+                dailyReflections,
+                tradeReviews,
+                growthEvents,
+                archivedJournalEntries,
+                onCreateMission: async (mission) => {
                   setActiveMission(mission);
                   setMissionHistory((history) => upsertMissionHistory(history, mission));
                   setArchiveWrite(createArchiveWritePlaceholder(mission));
                   setAuthorizationStatus(undefined);
                   setMissionDebrief(undefined);
                   setArchiveSummary(undefined);
-                }}
-                onRequestAuthorization={(authorization) => {
+                },
+                onMissionChanged: (mission) => {
+                  setActiveMission(mission);
+                  setMissionHistory((history) => upsertMissionHistory(history, mission));
+                },
+                onRequestAuthorization: (authorization) => {
                   setAuthorizationStatus(authorization);
-                }}
-                onReturnToBase={() => {
-                  const mission = requestLocalReturnToBase(activeMission);
-
-                  setActiveMission(mission);
-                  if (mission) setMissionHistory((history) => upsertMissionHistory(history, mission));
-                }}
-                onSaveDebrief={(debrief) => {
-                  const mission = markLocalMissionDebriefed(activeMission);
-
+                },
+                onSaveDebrief: (debrief) => {
                   setMissionDebrief(debrief);
-                  setActiveMission(mission);
-                  if (mission) setMissionHistory((history) => upsertMissionHistory(history, mission));
-                }}
-                onArchiveMission={() => {
-                  const summary = createLocalMissionArchiveSummary(activeMission, missionDebrief, archiveWrite);
-                  const mission = markLocalMissionArchived(activeMission);
-
+                },
+                onArchiveMission: (summary) => {
                   setArchiveSummary(summary);
-                  if (summary) {
-                    setArchivedMissionSummaries((summaries) => [...summaries, summary]);
-                  }
-                  setActiveMission(mission);
-                  if (mission) setMissionHistory((history) => upsertMissionHistory(history, mission));
-                }}
-              />
+                  if (summary) setArchivedMissionSummaries((summaries) => [...summaries, summary]);
+                },
+                onCreateJournalEntry: (entry) => setJournalEntries((entries) => [...entries, entry]),
+                onCreateDailyReflection: (reflection) => setDailyReflections((entries) => [...entries, reflection]),
+                onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
+                onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
+                onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
+              })
             )}
           </section>
 
@@ -289,6 +320,89 @@ interface SecurityCheckpointProps {
   onReportForDuty: () => void;
 }
 
+interface HeadquartersRoomContext {
+  activeMission?: ActiveMission | undefined;
+  archiveWrite?: ArchiveWritePlaceholder | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  archiveSummary?: LocalMissionArchiveSummary | undefined;
+  archivedMissionSummaries: LocalMissionArchiveSummary[];
+  missionHistory: ActiveMission[];
+  journalEntries: JournalEntry[];
+  dailyReflections: DailyReflection[];
+  tradeReviews: TradeReview[];
+  growthEvents: GrowthEvent[];
+  archivedJournalEntries: ArchivedJournalEntry[];
+  onCreateMission: (mission: ActiveMission) => void | Promise<void>;
+  onMissionChanged: (mission: ActiveMission) => void;
+  onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
+  onSaveDebrief: (debrief: MissionDebrief) => void;
+  onArchiveMission: (summary: LocalMissionArchiveSummary | undefined) => void;
+  onCreateJournalEntry: (entry: JournalEntry) => void;
+  onCreateDailyReflection: (reflection: DailyReflection) => void;
+  onCreateTradeReview: (review: TradeReview) => void;
+  onCreateGrowthEvent: (event: GrowthEvent) => void;
+  onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
+}
+
+function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersRoomContext) {
+  if (room === 'missions') {
+    return (
+      <MissionRoom
+        activeMission={context.activeMission}
+        archiveWrite={context.archiveWrite}
+        authorizationStatus={context.authorizationStatus}
+        missionDebrief={context.missionDebrief}
+        archiveSummary={context.archiveSummary}
+        missionHistory={context.missionHistory}
+        onCreateMission={context.onCreateMission}
+        onMissionChanged={context.onMissionChanged}
+        onRequestAuthorization={context.onRequestAuthorization}
+        onSaveDebrief={context.onSaveDebrief}
+        onArchiveMission={context.onArchiveMission}
+      />
+    );
+  }
+
+  if (room === 'journal') {
+    return (
+      <JournalRoom
+        journalEntries={context.journalEntries}
+        dailyReflections={context.dailyReflections}
+        tradeReviews={context.tradeReviews}
+        growthEvents={context.growthEvents}
+        archivedJournalEntries={context.archivedJournalEntries}
+        onCreateJournalEntry={context.onCreateJournalEntry}
+        onCreateDailyReflection={context.onCreateDailyReflection}
+        onCreateTradeReview={context.onCreateTradeReview}
+        onCreateGrowthEvent={context.onCreateGrowthEvent}
+        onArchiveJournalEntry={context.onArchiveJournalEntry}
+      />
+    );
+  }
+
+  if (room === 'archive') {
+    return (
+      <ArchiveRoom
+        archivedMissionSummaries={context.archivedMissionSummaries}
+        archivedJournalEntries={context.archivedJournalEntries}
+      />
+    );
+  }
+
+  if (room === 'settings') {
+    return <SettingsRoom />;
+  }
+
+  return (
+    <CommandOverview
+      activeMission={context.activeMission}
+      startupSubsystemCount={4}
+      missionHistory={context.missionHistory}
+    />
+  );
+}
+
 function SecurityCheckpoint({ onReportForDuty }: SecurityCheckpointProps) {
   return (
     <div className="checkpoint-surface">
@@ -306,6 +420,52 @@ export function CommandCenterPlaceholder() {
   return <CommandCenter />;
 }
 
+interface CommandOverviewProps {
+  activeMission?: ActiveMission | undefined;
+  startupSubsystemCount: number;
+  missionHistory: ActiveMission[];
+}
+
+function CommandOverview({ activeMission, startupSubsystemCount, missionHistory }: CommandOverviewProps) {
+  return (
+    <div className="command-center-layout" data-layout="command-center">
+      <section className="command-center-header" aria-label="Command center overview">
+        <p className="section-label">Command Center</p>
+        <h2>Headquarters Overview</h2>
+        <p className="muted">Operational overview, active mission summary, HQOS status, and navigation hub.</p>
+      </section>
+      <section className="command-center-panels" aria-label="Command center dashboard">
+        <MissionDetailsPanel activeMission={activeMission} />
+        <MissionLifecyclePanel activeMission={activeMission} />
+        <MissionHistoryPanel missionHistory={missionHistory} />
+        <section className="hqos-dashboard-panel" aria-label="HQOS dashboard">
+          <p className="section-label">HQOS</p>
+          <h3>Subsystem Dashboard</h3>
+          <p className="muted">{startupSubsystemCount} completed subsystem areas are available from navigation.</p>
+        </section>
+        <CommandChair />
+      </section>
+    </div>
+  );
+}
+
+interface MissionRoomProps extends CommandCenterProps {
+  onMissionChanged?: ((mission: ActiveMission) => void) | undefined;
+}
+
+function MissionRoom(props: MissionRoomProps) {
+  return (
+    <div className="room-layout" data-room-id="mission-room">
+      <section className="command-center-header" aria-label="Mission room status">
+        <p className="section-label">Mission Room</p>
+        <h2>Mission Operations</h2>
+        <p className="muted">Mission Board, lifecycle, authorization, debrief, timeline, and history.</p>
+      </section>
+      <CommandCenter {...props} />
+    </div>
+  );
+}
+
 interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
@@ -315,10 +475,10 @@ interface CommandCenterProps {
   archivedMissionSummaries?: LocalMissionArchiveSummary[] | undefined;
   missionHistory?: ActiveMission[] | undefined;
   onCreateMission?: ((mission: ActiveMission) => void) | undefined;
+  onMissionChanged?: ((mission: ActiveMission) => void) | undefined;
   onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
-  onReturnToBase?: (() => void) | undefined;
   onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
-  onArchiveMission?: (() => void) | undefined;
+  onArchiveMission?: ((summary: LocalMissionArchiveSummary | undefined) => void) | undefined;
 }
 
 export function CommandCenter({
@@ -330,8 +490,8 @@ export function CommandCenter({
   archivedMissionSummaries,
   missionHistory,
   onCreateMission,
+  onMissionChanged,
   onRequestAuthorization,
-  onReturnToBase,
   onSaveDebrief,
   onArchiveMission,
 }: CommandCenterProps) {
@@ -360,19 +520,26 @@ export function CommandCenter({
 
       <section className="command-center-panels" aria-label="Operational panels">
         <MissionLifecyclePanel activeMission={activeMission} />
+        <MissionNextActionPanel
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          missionDebrief={missionDebrief}
+          onMissionChanged={onMissionChanged}
+          onRequestAuthorization={onRequestAuthorization}
+          onSaveDebrief={onSaveDebrief}
+          onArchiveMission={onArchiveMission}
+        />
         <MissionDetailsPanel activeMission={activeMission} />
         <MissionAuthorizationPanel
           activeMission={activeMission}
           authorizationStatus={authorizationStatus}
-          onRequestAuthorization={onRequestAuthorization}
         />
-        <MissionClosingPanel activeMission={activeMission} onReturnToBase={onReturnToBase} />
-        <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} onSaveDebrief={onSaveDebrief} />
+        <MissionClosingPanel activeMission={activeMission} />
+        <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} />
         <MissionArchiveSummaryPanel
           activeMission={activeMission}
           archiveSummary={archiveSummary}
           missionDebrief={missionDebrief}
-          onArchiveMission={onArchiveMission}
         />
         <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
         <MissionTimelineViewerPanel
@@ -536,54 +703,170 @@ function MissionLifecyclePanel({ activeMission }: MissionLifecyclePanelProps) {
   );
 }
 
+interface MissionNextActionPanelProps {
+  activeMission?: ActiveMission | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  onMissionChanged?: ((mission: ActiveMission) => void) | undefined;
+  onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
+  onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
+  onArchiveMission?: ((summary: LocalMissionArchiveSummary | undefined) => void) | undefined;
+}
+
+function MissionNextActionPanel({
+  activeMission,
+  authorizationStatus,
+  missionDebrief,
+  onMissionChanged,
+  onRequestAuthorization,
+  onSaveDebrief,
+  onArchiveMission,
+}: MissionNextActionPanelProps) {
+  const [operatorJustification, setOperatorJustification] = useState('');
+  const [invalidation, setInvalidation] = useState('');
+  const [behaviorSummary, setBehaviorSummary] = useState('');
+  const [disciplineNotes, setDisciplineNotes] = useState('');
+  const [lesson, setLesson] = useState('');
+
+  async function handleNextAction(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (activeMission === undefined) return;
+
+    const currentState = parseMissionState(activeMission.currentState);
+
+    if (currentState === 'idle') {
+      onMissionChanged?.(await startDesktopBriefing(activeMission));
+      return;
+    }
+
+    if (currentState === 'briefing') {
+      onMissionChanged?.(await completeDesktopBriefing(activeMission));
+      return;
+    }
+
+    if (currentState === 'ready') {
+      onMissionChanged?.(await startDesktopObservation(activeMission));
+      return;
+    }
+
+    if (currentState === 'observation') {
+      onMissionChanged?.(await completeDesktopObservation(activeMission));
+      return;
+    }
+
+    if (currentState === 'authorization') {
+      const authorization = await requestDesktopAuthorization(activeMission, {
+        operatorJustification,
+        invalidation,
+      });
+
+      if (authorization === undefined) return;
+
+      onRequestAuthorization?.(authorization);
+      setOperatorJustification('');
+      setInvalidation('');
+
+      if (authorization.decision === 'approved') {
+        onMissionChanged?.(await declareDesktopDeployment(activeMission));
+      }
+      return;
+    }
+
+    if (currentState === 'deployed') {
+      onMissionChanged?.(await requestDesktopReturnToBase(activeMission));
+      return;
+    }
+
+    if (currentState === 'return_to_base') {
+      const result = await saveDesktopDebrief(activeMission, {
+        behaviorSummary,
+        disciplineNotes,
+        lesson,
+      });
+
+      if (result === undefined) return;
+
+      onSaveDebrief?.(result.debrief);
+      onMissionChanged?.(result.mission);
+      setBehaviorSummary('');
+      setDisciplineNotes('');
+      setLesson('');
+      return;
+    }
+
+    if (currentState === 'debrief') {
+      const archiveSummary = createLocalMissionArchiveSummary(activeMission, missionDebrief, undefined);
+      const mission = await archiveDesktopMission(activeMission);
+
+      onArchiveMission?.(archiveSummary);
+      onMissionChanged?.(mission);
+    }
+  }
+
+  const nextAction = getMissionNextAction(activeMission);
+  const currentState = parseMissionState(activeMission?.currentState);
+
+  return (
+    <form className="mission-next-action-panel" aria-label="Mission next action" onSubmit={handleNextAction}>
+      <div>
+        <p className="section-label">Next Action</p>
+        <h3>{nextAction.label}</h3>
+      </div>
+      <p className="muted">{nextAction.description}</p>
+      {currentState === 'authorization' ? (
+        <>
+          <label>
+            <span>Operator Justification</span>
+            <input value={operatorJustification} onChange={(event) => setOperatorJustification(event.target.value)} />
+          </label>
+          <label>
+            <span>Invalidation</span>
+            <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
+          </label>
+        </>
+      ) : null}
+      {currentState === 'return_to_base' ? (
+        <>
+          <label>
+            <span>Behavior Summary</span>
+            <input value={behaviorSummary} onChange={(event) => setBehaviorSummary(event.target.value)} />
+          </label>
+          <label>
+            <span>Discipline Notes</span>
+            <input value={disciplineNotes} onChange={(event) => setDisciplineNotes(event.target.value)} />
+          </label>
+          <label>
+            <span>Lesson</span>
+            <input value={lesson} onChange={(event) => setLesson(event.target.value)} />
+          </label>
+        </>
+      ) : null}
+      <button className="secondary-action" type="submit" disabled={nextAction.disabled}>
+        {nextAction.buttonLabel}
+      </button>
+      <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+    </form>
+  );
+}
+
 interface MissionAuthorizationPanelProps {
   activeMission?: ActiveMission | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
-  onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
 }
 
 function MissionAuthorizationPanel({
   activeMission,
   authorizationStatus,
-  onRequestAuthorization,
 }: MissionAuthorizationPanelProps) {
-  const [operatorJustification, setOperatorJustification] = useState('');
-  const [invalidation, setInvalidation] = useState('');
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const result = evaluateLocalMissionAuthorization(activeMission, {
-      operatorJustification,
-      invalidation,
-    });
-
-    if (!result) return;
-
-    onRequestAuthorization?.(result);
-    setOperatorJustification('');
-    setInvalidation('');
-  }
-
   return (
-    <form className="mission-authorization-panel" aria-label="Mission authorization" onSubmit={handleSubmit}>
+    <section className="mission-authorization-panel" aria-label="Mission authorization">
       <div>
         <p className="section-label">Authorization</p>
         <h3>Mission Authorization</h3>
       </div>
-      <label>
-        <span>Operator Justification</span>
-        <input value={operatorJustification} onChange={(event) => setOperatorJustification(event.target.value)} />
-      </label>
-      <label>
-        <span>Invalidation</span>
-        <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
-      </label>
-      <button className="secondary-action" type="submit" disabled={!activeMission}>
-        Request Authorization
-      </button>
+      <p className="muted">{formatMissionAuthorizationAvailability(activeMission)}</p>
       <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
-    </form>
+    </section>
   );
 }
 
@@ -645,12 +928,115 @@ export async function createDesktopMission(draft: MissionDraft): Promise<ActiveM
   return mapMissionRecordToActiveMission(result.mission);
 }
 
-interface MissionClosingPanelProps {
-  activeMission?: ActiveMission | undefined;
-  onReturnToBase?: (() => void) | undefined;
+export async function startDesktopBriefing(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.startBriefing;
+  if (bridge === undefined) return transitionLocalMission(mission, 'briefing');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Mission briefing started from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
 }
 
-function MissionClosingPanel({ activeMission, onReturnToBase }: MissionClosingPanelProps) {
+export async function completeDesktopBriefing(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.completeBriefing;
+  if (bridge === undefined) return transitionLocalMission(mission, 'ready');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Mission briefing completed from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function startDesktopObservation(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.startObservation;
+  if (bridge === undefined) return transitionLocalMission(mission, 'observation');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Observation started from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function completeDesktopObservation(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.completeObservation;
+  if (bridge === undefined) return transitionLocalMission(mission, 'authorization');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Observation completed from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function requestDesktopAuthorization(
+  mission: ActiveMission,
+  draft: MissionAuthorizationDraft,
+): Promise<MissionAuthorizationStatus | undefined> {
+  const bridge = globalThis.window?.headquarters?.requestAuthorization;
+  if (bridge === undefined) return evaluateLocalMissionAuthorization(mission, draft);
+
+  const result = await bridge({
+    missionId: mission.id,
+    operatorJustification: draft.operatorJustification,
+    invalidation: draft.invalidation,
+  });
+
+  return {
+    missionId: mission.id,
+    decision: result.decision,
+    reason: result.reason,
+  };
+}
+
+export async function declareDesktopDeployment(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.declareDeployment;
+  if (bridge === undefined) return transitionLocalMission(mission, 'deployed');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Manual deployment declared from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function requestDesktopReturnToBase(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.requestReturnToBase;
+  if (bridge === undefined) return transitionLocalMission(mission, 'return_to_base');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Return to base requested from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function saveDesktopDebrief(
+  mission: ActiveMission,
+  draft: MissionDebriefDraft,
+): Promise<{ mission: ActiveMission; debrief: MissionDebrief } | undefined> {
+  const bridge = globalThis.window?.headquarters?.saveDebrief;
+  if (bridge === undefined) {
+    const debrief = createLocalDebrief(mission, draft);
+    if (debrief === undefined) return undefined;
+
+    return {
+      mission: transitionLocalMission(mission, 'debrief'),
+      debrief,
+    };
+  }
+
+  const result = await bridge({
+    missionId: mission.id,
+    behaviorSummary: draft.behaviorSummary,
+    disciplineNotes: draft.disciplineNotes,
+    lesson: draft.lesson,
+  });
+
+  return {
+    mission: mapMissionRecordToActiveMission(result.mission),
+    debrief: result.debrief,
+  };
+}
+
+export async function archiveDesktopMission(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.archiveAfterDebrief;
+  if (bridge === undefined) return transitionLocalMission(mission, 'archived');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Mission archived from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+interface MissionClosingPanelProps {
+  activeMission?: ActiveMission | undefined;
+}
+
+function MissionClosingPanel({ activeMission }: MissionClosingPanelProps) {
   return (
     <section className="mission-closing-panel" aria-label="Mission closing state">
       <div>
@@ -661,9 +1047,6 @@ function MissionClosingPanel({ activeMission, onReturnToBase }: MissionClosingPa
         <dt>Status</dt>
         <dd>{formatMissionClosingState(activeMission)}</dd>
       </dl>
-      <button className="secondary-action" type="button" onClick={onReturnToBase} disabled={!activeMission}>
-        Return To Base
-      </button>
     </section>
   );
 }
@@ -671,53 +1054,17 @@ function MissionClosingPanel({ activeMission, onReturnToBase }: MissionClosingPa
 interface DebriefPanelProps {
   activeMission?: ActiveMission | undefined;
   missionDebrief?: MissionDebrief | undefined;
-  onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
 }
 
-function DebriefPanel({ activeMission, missionDebrief, onSaveDebrief }: DebriefPanelProps) {
-  const [behaviorSummary, setBehaviorSummary] = useState('');
-  const [disciplineNotes, setDisciplineNotes] = useState('');
-  const [lesson, setLesson] = useState('');
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const debrief = createLocalDebrief(activeMission, {
-      behaviorSummary,
-      disciplineNotes,
-      lesson,
-    });
-
-    if (!debrief) return;
-
-    onSaveDebrief?.(debrief);
-    setBehaviorSummary('');
-    setDisciplineNotes('');
-    setLesson('');
-  }
-
+function DebriefPanel({ missionDebrief }: DebriefPanelProps) {
   return (
-    <form className="debrief-panel" aria-label="Mission debrief" onSubmit={handleSubmit}>
+    <section className="debrief-panel" aria-label="Mission debrief">
       <div>
         <p className="section-label">Debrief</p>
         <h3>Mission Debrief</h3>
       </div>
-      <label>
-        <span>Behavior Summary</span>
-        <input value={behaviorSummary} onChange={(event) => setBehaviorSummary(event.target.value)} />
-      </label>
-      <label>
-        <span>Discipline Notes</span>
-        <input value={disciplineNotes} onChange={(event) => setDisciplineNotes(event.target.value)} />
-      </label>
-      <label>
-        <span>Lesson</span>
-        <input value={lesson} onChange={(event) => setLesson(event.target.value)} />
-      </label>
-      <button className="secondary-action" type="submit" disabled={!activeMission}>
-        Save Debrief
-      </button>
       <p className="muted">{formatDebriefStatus(missionDebrief)}</p>
-    </form>
+    </section>
   );
 }
 
@@ -725,14 +1072,10 @@ interface MissionArchiveSummaryPanelProps {
   activeMission?: ActiveMission | undefined;
   archiveSummary?: LocalMissionArchiveSummary | undefined;
   missionDebrief?: MissionDebrief | undefined;
-  onArchiveMission?: (() => void) | undefined;
 }
 
 function MissionArchiveSummaryPanel({
-  activeMission,
   archiveSummary,
-  missionDebrief,
-  onArchiveMission,
 }: MissionArchiveSummaryPanelProps) {
   return (
     <section className="mission-archive-summary-panel" aria-label="Archived mission summary">
@@ -748,9 +1091,6 @@ function MissionArchiveSummaryPanel({
         <dt>Events</dt>
         <dd>{archiveSummary?.eventCount ?? 0}</dd>
       </dl>
-      <button className="secondary-action" type="button" onClick={onArchiveMission} disabled={!activeMission || !missionDebrief}>
-        Archive Mission
-      </button>
     </section>
   );
 }
@@ -772,6 +1112,327 @@ function ArchiveWritePanel({ archiveWrite }: ArchiveWritePanelProps) {
         <dt>Artifact</dt>
         <dd>{archiveWrite?.title ?? 'Awaiting mission creation'}</dd>
       </dl>
+    </section>
+  );
+}
+
+interface JournalRoomProps {
+  journalEntries: JournalEntry[];
+  dailyReflections: DailyReflection[];
+  tradeReviews: TradeReview[];
+  growthEvents: GrowthEvent[];
+  archivedJournalEntries: ArchivedJournalEntry[];
+  onCreateJournalEntry: (entry: JournalEntry) => void;
+  onCreateDailyReflection: (reflection: DailyReflection) => void;
+  onCreateTradeReview: (review: TradeReview) => void;
+  onCreateGrowthEvent: (event: GrowthEvent) => void;
+  onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
+}
+
+function JournalRoom({
+  journalEntries,
+  dailyReflections,
+  tradeReviews,
+  growthEvents,
+  archivedJournalEntries,
+  onCreateJournalEntry,
+  onCreateDailyReflection,
+  onCreateTradeReview,
+  onCreateGrowthEvent,
+  onArchiveJournalEntry,
+}: JournalRoomProps) {
+  const [entryContent, setEntryContent] = useState('');
+  const [entryMood, setEntryMood] = useState('');
+  const [entryMarketConditions, setEntryMarketConditions] = useState('');
+  const [reflectionSummary, setReflectionSummary] = useState('');
+  const [reflectionEmotion, setReflectionEmotion] = useState('');
+  const [tradeId, setTradeId] = useState('');
+  const [tradeLesson, setTradeLesson] = useState('');
+  const [growthTitle, setGrowthTitle] = useState('');
+  const [growthDescription, setGrowthDescription] = useState('');
+  const [searchText, setSearchText] = useState('');
+
+  const timeline = buildJournalTimeline({
+    journalEntries,
+    dailyReflections,
+    tradeReviews,
+    growthEvents,
+  });
+  const searchResult = searchJournalEntries(journalEntries, { text: searchText });
+
+  function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const entry = createJournalEntry({
+      content: entryContent,
+      entryDate: getTodayDate(),
+      mood: entryMood,
+      marketConditions: entryMarketConditions,
+    });
+
+    if (entry === undefined) return;
+
+    onCreateJournalEntry(entry);
+    setEntryContent('');
+    setEntryMood('');
+    setEntryMarketConditions('');
+  }
+
+  function handleReflectionSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const reflection = createDailyReflection({
+      reflectionDate: getTodayDate(),
+      behaviorSummary: reflectionSummary,
+      emotionalState: reflectionEmotion,
+      disciplineObservation: reflectionSummary,
+      ...(journalEntries[0] !== undefined ? { journalEntryId: journalEntries[0].id } : {}),
+    });
+
+    if (reflection === undefined) return;
+
+    onCreateDailyReflection(reflection);
+    setReflectionSummary('');
+    setReflectionEmotion('');
+  }
+
+  function handleTradeReviewSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const review = createTradeReview({
+      tradeId,
+      reviewDate: getTodayDate(),
+      followedPlan: true,
+      emotionalState: 'Operator supplied review',
+      whatWentWell: tradeLesson,
+      whatToImprove: tradeLesson,
+      lessonsLearned: tradeLesson,
+      wouldTakeAgain: true,
+      ...(journalEntries[0] !== undefined ? { journalEntryId: journalEntries[0].id } : {}),
+    });
+
+    if (review === undefined) return;
+
+    onCreateTradeReview(review);
+    setTradeId('');
+    setTradeLesson('');
+  }
+
+  function handleGrowthEventSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const sourceEntry = journalEntries[0];
+    if (sourceEntry === undefined) return;
+
+    const growthEvent = createGrowthEvent({
+      eventDate: getTodayDate(),
+      title: growthTitle,
+      description: growthDescription,
+      category: 'process_improvement',
+      evidence: {
+        sourceType: 'journal_entry',
+        sourceId: sourceEntry.id,
+      },
+    });
+
+    if (growthEvent === undefined) return;
+
+    onCreateGrowthEvent(growthEvent);
+    setGrowthTitle('');
+    setGrowthDescription('');
+  }
+
+  return (
+    <div className="room-layout" data-room-id="journal-room">
+      <section className="command-center-header" aria-label="Journal room status">
+        <p className="section-label">Journal Room</p>
+        <h2>Journal System</h2>
+        <p className="muted">Entry, reflection, trade review, growth event, timeline, search, and archive surfaces.</p>
+      </section>
+
+      <section className="command-center-panels" aria-label="Journal workspace">
+        <form className="journal-panel" aria-label="Journal entry" onSubmit={handleJournalEntrySubmit}>
+          <p className="section-label">Journal Entry</p>
+          <h3>Commander's Log</h3>
+          <label>
+            <span>Raw Content</span>
+            <input value={entryContent} onChange={(event) => setEntryContent(event.target.value)} />
+          </label>
+          <label>
+            <span>Mood</span>
+            <input value={entryMood} onChange={(event) => setEntryMood(event.target.value)} />
+          </label>
+          <label>
+            <span>Market Conditions</span>
+            <input value={entryMarketConditions} onChange={(event) => setEntryMarketConditions(event.target.value)} />
+          </label>
+          <button className="secondary-action" type="submit">Save Journal Entry</button>
+          <p className="muted">{formatJournalCount(journalEntries.length, 'journal entry', 'journal entries')}</p>
+        </form>
+
+        <form className="journal-panel" aria-label="Daily reflection" onSubmit={handleReflectionSubmit}>
+          <p className="section-label">Daily Reflection</p>
+          <h3>Daily Reflection</h3>
+          <label>
+            <span>Behavior Summary</span>
+            <input value={reflectionSummary} onChange={(event) => setReflectionSummary(event.target.value)} />
+          </label>
+          <label>
+            <span>Emotional State</span>
+            <input value={reflectionEmotion} onChange={(event) => setReflectionEmotion(event.target.value)} />
+          </label>
+          <button className="secondary-action" type="submit">Save Reflection</button>
+          <p className="muted">{formatJournalCount(dailyReflections.length, 'reflection', 'reflections')}</p>
+        </form>
+
+        <form className="journal-panel" aria-label="Trade review" onSubmit={handleTradeReviewSubmit}>
+          <p className="section-label">Trade Review</p>
+          <h3>Trade Review</h3>
+          <label>
+            <span>Trade ID</span>
+            <input value={tradeId} onChange={(event) => setTradeId(event.target.value)} />
+          </label>
+          <label>
+            <span>Lesson</span>
+            <input value={tradeLesson} onChange={(event) => setTradeLesson(event.target.value)} />
+          </label>
+          <button className="secondary-action" type="submit">Save Trade Review</button>
+          <p className="muted">{formatJournalCount(tradeReviews.length, 'trade review', 'trade reviews')}</p>
+        </form>
+
+        <form className="journal-panel" aria-label="Growth events" onSubmit={handleGrowthEventSubmit}>
+          <p className="section-label">Growth Events</p>
+          <h3>Growth Events</h3>
+          <label>
+            <span>Title</span>
+            <input value={growthTitle} onChange={(event) => setGrowthTitle(event.target.value)} />
+          </label>
+          <label>
+            <span>Description</span>
+            <input value={growthDescription} onChange={(event) => setGrowthDescription(event.target.value)} />
+          </label>
+          <button className="secondary-action" type="submit" disabled={journalEntries.length === 0}>
+            Save Growth Event
+          </button>
+          <p className="muted">{formatJournalCount(growthEvents.length, 'growth event', 'growth events')}</p>
+        </form>
+
+        <JournalTimelinePanel timeline={timeline} />
+        <JournalSearchPanel
+          searchText={searchText}
+          onSearchTextChange={setSearchText}
+          resultCount={searchResult.total}
+        />
+        <JournalArchivePanel
+          journalEntries={journalEntries}
+          archivedJournalEntries={archivedJournalEntries}
+          onArchiveJournalEntry={onArchiveJournalEntry}
+        />
+      </section>
+    </div>
+  );
+}
+
+function JournalTimelinePanel({ timeline }: { timeline: JournalTimeline }) {
+  return (
+    <section className="journal-panel" aria-label="Journal timeline">
+      <p className="section-label">Timeline</p>
+      <h3>Journal Timeline</h3>
+      <p className="muted">{formatJournalCount(timeline.entries.length, 'timeline entry', 'timeline entries')}</p>
+      <ol className="mission-timeline-list">
+        {timeline.entries.map((entry) => (
+          <li key={entry.id}>
+            <span>{entry.title}</span>
+            <time dateTime={entry.occurredAt}>{entry.occurredAt}</time>
+            <strong>{entry.type}</strong>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function JournalSearchPanel({
+  searchText,
+  onSearchTextChange,
+  resultCount,
+}: {
+  searchText: string;
+  onSearchTextChange: (value: string) => void;
+  resultCount: number;
+}) {
+  return (
+    <section className="journal-panel" aria-label="Journal search">
+      <p className="section-label">Search</p>
+      <h3>Journal Search</h3>
+      <label>
+        <span>Search Text</span>
+        <input value={searchText} onChange={(event) => onSearchTextChange(event.target.value)} />
+      </label>
+      <p className="muted">{formatJournalCount(resultCount, 'search result', 'search results')}</p>
+    </section>
+  );
+}
+
+function JournalArchivePanel({
+  journalEntries,
+  archivedJournalEntries,
+  onArchiveJournalEntry,
+}: {
+  journalEntries: JournalEntry[];
+  archivedJournalEntries: ArchivedJournalEntry[];
+  onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
+}) {
+  function handleArchiveFirstEntry() {
+    const entry = journalEntries[0];
+    if (entry === undefined) return;
+
+    onArchiveJournalEntry(archiveJournalEntry(entry, {
+      classificationStatus: entry.classificationStatus,
+      tags: ['desktop-review'],
+    }));
+  }
+
+  return (
+    <section className="journal-panel" aria-label="Journal archive">
+      <p className="section-label">Archive</p>
+      <h3>Journal Archive</h3>
+      <button className="secondary-action" type="button" onClick={handleArchiveFirstEntry} disabled={journalEntries.length === 0}>
+        Archive First Entry
+      </button>
+      <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
+    </section>
+  );
+}
+
+function ArchiveRoom({
+  archivedMissionSummaries,
+  archivedJournalEntries,
+}: {
+  archivedMissionSummaries: LocalMissionArchiveSummary[];
+  archivedJournalEntries: ArchivedJournalEntry[];
+}) {
+  return (
+    <div className="room-layout" data-room-id="archive-room">
+      <section className="command-center-header" aria-label="Archive room status">
+        <p className="section-label">Archive Room</p>
+        <h2>Archive</h2>
+        <p className="muted">Mission archive, Journal archive, and historical views.</p>
+      </section>
+      <section className="command-center-panels" aria-label="Archive workspace">
+        <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+        <section className="journal-panel" aria-label="Journal archive overview">
+          <p className="section-label">Journal Archive</p>
+          <h3>Journal Archive</h3>
+          <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
+        </section>
+      </section>
+    </div>
+  );
+}
+
+function SettingsRoom() {
+  return (
+    <section className="room-layout" data-room-id="settings-room" aria-label="Settings room">
+      <p className="section-label">Settings</p>
+      <h2>Settings</h2>
+      <p className="muted">No completed settings workflow is available yet.</p>
     </section>
   );
 }
@@ -883,9 +1544,116 @@ function getMissionLifecycleStepStatus(index: number, currentIndex: number): Mis
   return 'pending';
 }
 
+export interface MissionNextAction {
+  readonly label: string;
+  readonly description: string;
+  readonly buttonLabel: string;
+  readonly disabled: boolean;
+}
+
+export function getMissionNextAction(mission?: ActiveMission): MissionNextAction {
+  const currentState = parseMissionState(mission?.currentState);
+
+  if (currentState === undefined) {
+    return {
+      label: 'No Active Mission',
+      description: 'Create a mission before lifecycle actions are available.',
+      buttonLabel: 'Awaiting Mission',
+      disabled: true,
+    };
+  }
+
+  if (currentState === 'idle') {
+    return {
+      label: 'Start Briefing',
+      description: 'Move the mission from idle into briefing.',
+      buttonLabel: 'Start Briefing',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'briefing') {
+    return {
+      label: 'Complete Briefing',
+      description: 'Confirm the briefing is complete and move to ready.',
+      buttonLabel: 'Complete Briefing',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'ready') {
+    return {
+      label: 'Start Observation',
+      description: 'Begin the observation workflow before authorization.',
+      buttonLabel: 'Start Observation',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'observation') {
+    return {
+      label: 'Complete Observation',
+      description: 'Complete observation and move to authorization.',
+      buttonLabel: 'Complete Observation',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'authorization') {
+    return {
+      label: 'Authorize Mission',
+      description: 'Provide justification and invalidation. Approval declares deployment; denial keeps authorization open.',
+      buttonLabel: 'Evaluate Authorization',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'deployed') {
+    return {
+      label: 'Return To Base',
+      description: 'Close active deployment and return to base.',
+      buttonLabel: 'Return To Base',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'return_to_base') {
+    return {
+      label: 'Save Debrief',
+      description: 'Capture behavior, discipline, and lesson evidence.',
+      buttonLabel: 'Save Debrief',
+      disabled: false,
+    };
+  }
+
+  if (currentState === 'debrief') {
+    return {
+      label: 'Archive Mission',
+      description: 'Archive the debriefed mission.',
+      buttonLabel: 'Archive Mission',
+      disabled: false,
+    };
+  }
+
+  return {
+    label: 'Mission Archived',
+    description: 'This mission lifecycle is complete.',
+    buttonLabel: 'Archived',
+    disabled: true,
+  };
+}
+
 function parseMissionState(state?: string): MissionState | undefined {
   if (state === undefined) return undefined;
   return missionLifecyclePath.find((candidate) => candidate === state);
+}
+
+function transitionLocalMission(mission: ActiveMission, nextState: MissionState): ActiveMission {
+  return {
+    ...mission,
+    condition: formatMissionStateForDisplay(nextState),
+    currentState: nextState,
+  };
 }
 
 export function requestLocalReturnToBase(mission: ActiveMission | undefined): ActiveMission | undefined {
@@ -997,6 +1765,14 @@ export function formatAuthorizationStatus(status?: MissionAuthorizationStatus): 
   if (status?.decision === 'approved') return 'Authorization approved';
   if (status?.decision === 'denied') return 'Authorization denied';
   return 'Awaiting authorization request';
+}
+
+export function formatMissionAuthorizationAvailability(mission?: ActiveMission): string {
+  if (parseMissionState(mission?.currentState) === 'authorization') {
+    return 'Authorization interaction is available as the valid next action.';
+  }
+
+  return 'Authorization is locked until the mission reaches authorization state.';
 }
 
 export function formatArchiveWriteStatus(archiveWrite?: ArchiveWritePlaceholder): string {
@@ -1166,4 +1942,14 @@ export function formatStartupError(status: StartupStatus): string {
 
 function hasContent(value: string): boolean {
   return value.trim().length > 0;
+}
+
+function getTodayDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function formatJournalCount(count: number, singular: string, plural: string): string {
+  if (count === 0) return `No ${plural}`;
+  if (count === 1) return `1 ${singular}`;
+  return `${count} ${plural}`;
 }

@@ -498,6 +498,83 @@ describe('MissionService', () => {
     expect(publish).not.toHaveBeenCalled();
   });
 
+  it('declares deployment, stores deployed state, and emits mission events', async () => {
+    const mission = createMission('authorization');
+    const save = vi.fn();
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => mission,
+      },
+      { publish },
+      {
+        createEventId: () => '55555555-5555-4555-8555-555555555555',
+        source: 'MissionServiceTest',
+      },
+    );
+
+    const result = await service.declareDeployment({
+      missionId,
+      requestedAt,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      reason: 'Manual deployment declared.',
+    });
+
+    expect(result.mission).toEqual({
+      ...mission,
+      state: 'deployed',
+      updatedAt: requestedAt,
+    });
+    expect(result.event).toEqual({
+      id: '55555555-5555-4555-8555-555555555555',
+      type: 'mission.deployment_declared',
+      version: 1,
+      occurredAt: requestedAt,
+      source: 'MissionServiceTest',
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      priority: 'amber',
+      payload: {
+        missionId,
+      },
+    });
+    expect(result.transitionEvent).toMatchObject({
+      type: 'mission.state.changed',
+      occurredAt: requestedAt,
+      missionId,
+      correlationId: '44444444-4444-4444-8444-444444444444',
+      payload: {
+        missionId,
+        from: 'authorization',
+        to: 'deployed',
+        reason: 'Manual deployment declared.',
+      },
+    });
+    expect(save).toHaveBeenCalledWith(result.mission);
+    expect(publish).toHaveBeenCalledTimes(2);
+    expect(publish).toHaveBeenNthCalledWith(1, result.event);
+    expect(publish).toHaveBeenNthCalledWith(2, result.transitionEvent);
+  });
+
+  it('rejects invalid deployment transitions before persistence or event publication', async () => {
+    const save = vi.fn();
+    const publish = vi.fn();
+    const service = new MissionService(
+      {
+        save,
+        findById: () => createMission('ready'),
+      },
+      { publish },
+    );
+
+    await expect(service.declareDeployment({ missionId, requestedAt })).rejects.toBeInstanceOf(
+      InvalidMissionTransitionError,
+    );
+    expect(save).not.toHaveBeenCalled();
+    expect(publish).not.toHaveBeenCalled();
+  });
+
   it('requests return to base, stores closing state, and emits mission events', async () => {
     const mission = createMission('deployed');
     const save = vi.fn();
