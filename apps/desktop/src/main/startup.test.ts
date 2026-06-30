@@ -37,6 +37,7 @@ describe('App startup wiring', () => {
         '003_mission_creation_fields',
         '004_observation_sessions',
         '005_mission_debriefs',
+        '006_doctrine_records',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
     } finally {
@@ -54,6 +55,7 @@ describe('App startup wiring', () => {
         '003_mission_creation_fields',
         '004_observation_sessions',
         '005_mission_debriefs',
+        '006_doctrine_records',
       ]);
     } finally {
       secondStartup.close();

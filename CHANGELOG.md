@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+HQ-TASK-0081 — Added Doctrine repository contracts and SQLite persistence.
+
+HQ-TASK-0080 — Stabilized completed Mission and Journal workflows in the desktop shell.
+
 HQ-TASK-0079 — Added Sprint 5 Journal System review package.
 
 HQ-TASK-0078 — Added Journal archive contracts for immutable raw evidence views.
