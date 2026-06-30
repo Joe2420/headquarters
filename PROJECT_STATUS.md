@@ -87,6 +87,12 @@
 
 Current milestone gate: Sprint 6 Doctrine is complete through HIG-TASK-050 / HQ-TASK-0088.
 
+## Post-Sprint UX Alignment
+
+- HQ-TASK-0081 — Headquarters UX Repository Alignment
+
+Current alignment gate: Headquarters UX refinement is complete pending Founder inspection.
+
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
 Status: documented.
@@ -104,3 +110,5 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 ## Current Gate
 
 Sprint 6 Doctrine is complete through HIG-TASK-050 / HQ-TASK-0088.
+
+Post-Sprint UX alignment is complete on feature/HQ-TASK-0081 pending Founder inspection.

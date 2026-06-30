@@ -9,6 +9,7 @@ import {
   buildDefaultTradingPlanDoctrineReferences,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
+  buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   createArchiveWritePlaceholder,
   createDesktopMission,
@@ -33,7 +34,11 @@ import {
   formatMissionTimelineTransition,
   formatStartupError,
   formatTimelineViewerStatus,
+  getCommanderMessage,
   getMissionNextAction,
+  getMissionNotificationSummary,
+  getMissionPhaseWorkspaceDescription,
+  getMissionPhaseWorkspaceTitle,
   getPrimaryNavigationItems,
   listArchivedMissionSummaries,
   listMissionHistory,
@@ -110,6 +115,61 @@ describe('Desktop shell', () => {
       buttonLabel: 'Save Debrief',
       disabled: false,
     });
+  });
+
+  it('updates Commander guidance from mission lifecycle state', () => {
+    const mission: ActiveMission = {
+      id: 'mission-authorization',
+      campaign: 'Foundation',
+      objective: 'Hold the line',
+      condition: 'Authorization',
+      commandAuthority: 'Operator',
+      currentState: 'authorization',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    expect(getCommanderMessage().title).toBe('Report accepted. Stand by for tasking.');
+    expect(getCommanderMessage(mission)).toEqual({
+      title: 'Authorization required.',
+      body: 'Provide justification and invalidation before deployment can be declared.',
+    });
+  });
+
+  it('keeps Mission Room lifecycle visibility progressive', () => {
+    const mission: ActiveMission = {
+      id: 'mission-observation',
+      campaign: 'Foundation',
+      objective: 'Observe the setup',
+      condition: 'Observation',
+      commandAuthority: 'Operator',
+      currentState: 'observation',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    expect(buildVisibleMissionLifecycleSteps(mission).map((step) => step.state)).toEqual([
+      'idle',
+      'briefing',
+      'ready',
+      'observation',
+    ]);
+    expect(getMissionPhaseWorkspaceTitle()).toBe('Mission Creation');
+    expect(getMissionPhaseWorkspaceTitle(mission)).toBe('Observation');
+    expect(getMissionPhaseWorkspaceDescription(mission)).toBe('Complete observation and move to authorization.');
+  });
+
+  it('keeps the Headquarters overview focused on operator guidance', () => {
+    const mission: ActiveMission = {
+      id: 'mission-001',
+      campaign: 'Foundation',
+      objective: 'Hold the line',
+      condition: 'Ready',
+      commandAuthority: 'Operator',
+      currentState: 'ready',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    expect(getMissionNotificationSummary(undefined, [])).toBe('No active mission');
+    expect(getMissionNotificationSummary(mission, [mission])).toBe('1 mission record tracked');
   });
 
   it('promotes doctrine candidates through the desktop bridge only with complete evidence context', async () => {
