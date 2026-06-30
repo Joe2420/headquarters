@@ -12,6 +12,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@headquarters/database": "workspace:*",
     "@headquarters/hqos": "workspace:*",
     "@headquarters/shared": "workspace:*"
   },

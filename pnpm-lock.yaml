@@ -131,6 +131,9 @@ importers:
 
   packages/archive-intelligence:
     dependencies:
+      '@headquarters/database':
+        specifier: workspace:*
+        version: link:../database
       '@headquarters/hqos':
         specifier: workspace:*
         version: link:../hqos

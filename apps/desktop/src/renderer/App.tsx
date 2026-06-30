@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { EventEnvelope, Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
-import { inspectArchiveEvents, type ArchiveEventInspection } from '@headquarters/archive-intelligence';
+import { inspectArchiveEvents, inspectArchiveSessions, type ArchiveEventInspection, type ArchiveSessionInspection } from '@headquarters/archive-intelligence';
 import {
   buildAcademyConsistency,
   buildAcademyRecognitions,
@@ -1964,6 +1964,7 @@ function ArchiveRoom({
   archivedJournalEntries: ArchivedJournalEntry[];
 }) {
   const eventInspections = buildDesktopArchiveEventInspections(archivedMissionSummaries, archivedJournalEntries);
+  const sessionInspections = buildDesktopArchiveSessionInspections();
 
   return (
     <div className="room-layout" data-room-id="archive-room">
@@ -1975,6 +1976,7 @@ function ArchiveRoom({
       <section className="command-center-panels" aria-label="Archive workspace">
         <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
         <ArchiveEventExplorerPanel eventInspections={eventInspections} />
+        <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
         <section className="journal-panel" aria-label="Journal archive overview">
           <p className="section-label">Journal Archive</p>
           <h3>Journal Archive</h3>
@@ -1983,6 +1985,10 @@ function ArchiveRoom({
       </section>
     </div>
   );
+}
+
+export function buildDesktopArchiveSessionInspections(): readonly ArchiveSessionInspection[] {
+  return inspectArchiveSessions([]);
 }
 
 export function buildDesktopArchiveEventInspections(
@@ -2038,6 +2044,29 @@ function ArchiveEventExplorerPanel({ eventInspections }: { eventInspections: rea
         </ul>
       ) : (
         <p className="muted">No archive events available for inspection.</p>
+      )}
+    </section>
+  );
+}
+
+function ArchiveSessionExplorerPanel({ sessionInspections }: { sessionInspections: readonly ArchiveSessionInspection[] }) {
+  return (
+    <section className="journal-panel" aria-label="Archive session explorer">
+      <p className="section-label">Session Explorer</p>
+      <h3>Archive Sessions</h3>
+      <p className="muted">{formatJournalCount(sessionInspections.length, 'session inspected', 'sessions inspected')}</p>
+      {sessionInspections.length > 0 ? (
+        <ul className="mission-archive-list">
+          {sessionInspections.map((session) => (
+            <li key={session.id}>
+              <strong>{session.missionId}</strong>
+              <span>{session.status}</span>
+              <time>{session.startedAt}</time>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="muted">No archive sessions available for inspection.</p>
       )}
     </section>
   );
