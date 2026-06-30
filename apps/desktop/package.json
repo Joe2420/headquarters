@@ -14,6 +14,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@headquarters/academy": "workspace:*",
     "@headquarters/database": "workspace:*",
     "@headquarters/doctrine": "workspace:*",
     "@headquarters/hqos": "workspace:*",

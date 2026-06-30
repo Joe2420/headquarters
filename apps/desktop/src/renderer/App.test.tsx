@@ -2,11 +2,13 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
   App,
+  AcademyRoom,
   CommandCenter,
   CommandCenterPlaceholder,
   type ActiveMission,
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
+  buildDesktopAcademyDashboard,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -17,6 +19,7 @@ import {
   createLocalMissionArchiveSummary,
   createLocalMission,
   evaluateLocalMissionAuthorization,
+  formatAcademyDashboardStatus,
   formatArchiveWriteStatus,
   formatArchiveSummaryStatus,
   formatArchiveViewerStatus,
@@ -70,6 +73,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('data-nav-id="command"');
     expect(html).toContain('data-nav-id="missions"');
     expect(html).toContain('data-nav-id="journal"');
+    expect(html).toContain('data-nav-id="academy"');
     expect(html).toContain('data-nav-id="doctrine"');
     expect(html).toContain('data-nav-id="archive"');
     expect(html).toContain('data-nav-id="settings"');
@@ -83,11 +87,72 @@ describe('Desktop shell', () => {
       { id: 'command', label: 'Command', active: true },
       { id: 'missions', label: 'Missions', active: false },
       { id: 'journal', label: 'Journal', active: false },
+      { id: 'academy', label: 'Academy', active: false },
       { id: 'doctrine', label: 'Doctrine', active: false },
       { id: 'archive', label: 'Archive', active: false },
       { id: 'settings', label: 'Settings', active: false },
     ]);
     expect(items.filter((item) => item.active)).toHaveLength(1);
+  });
+
+  it('derives an Academy dashboard from journal growth evidence', () => {
+    const dashboard = buildDesktopAcademyDashboard([
+      {
+        id: 'growth-001',
+        eventDate: '2026-06-28',
+        title: 'Held the plan',
+        description: 'Followed process instead of reacting.',
+        category: 'discipline',
+        evidence: {
+          sourceType: 'journal_entry',
+          sourceId: 'journal-001',
+        },
+        rewardStatus: 'not_awarded',
+        createdAt: '2026-06-28T00:00:00.000Z',
+      },
+      {
+        id: 'growth-002',
+        eventDate: '2026-06-29',
+        title: 'Waited',
+        description: 'Waited for confirmation.',
+        category: 'patience',
+        evidence: {
+          sourceType: 'journal_entry',
+          sourceId: 'journal-002',
+        },
+        rewardStatus: 'not_awarded',
+        createdAt: '2026-06-29T00:00:00.000Z',
+      },
+    ]);
+
+    expect(dashboard).toMatchObject({
+      totalGrowthEvents: 2,
+      totalXp: 27,
+      levelTitle: 'Foundation',
+      recognitionCount: 0,
+      activeDays: 2,
+      longestDailyStreak: 2,
+      hasGrowthEvidence: true,
+    });
+    expect(formatAcademyDashboardStatus(dashboard)).toBe('27 XP across 2 growth events');
+  });
+
+  it('formats an empty Academy dashboard state safely', () => {
+    const dashboard = buildDesktopAcademyDashboard([]);
+
+    expect(dashboard.hasGrowthEvidence).toBe(false);
+    expect(formatAcademyDashboardStatus(dashboard)).toBe('No Academy growth evidence yet');
+  });
+
+  it('renders the Academy dashboard room as a read-oriented growth surface', () => {
+    const html = renderToStaticMarkup(<AcademyRoom growthEvents={[]} />);
+
+    expect(html).toContain('data-room-id="academy-room"');
+    expect(html).toContain('Academy Dashboard');
+    expect(html).toContain('Growth Standing');
+    expect(html).toContain('Quiet Recognition');
+    expect(html).toContain('Consistency Tracking');
+    expect(html).toContain('No Academy growth evidence yet');
   });
 
   it('derives the valid next mission action from the current mission state', () => {

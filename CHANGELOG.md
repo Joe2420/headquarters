@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0095 — Added read-oriented Academy dashboard in the desktop shell.
+
 HQ-TASK-0094 — Added deterministic Academy consistency tracking helpers.
 
 HQ-TASK-0093 — Added behavior-focused Academy statistics helpers.
