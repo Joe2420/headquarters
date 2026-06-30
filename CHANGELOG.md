@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0113 - Added Sprint 9 Archive Intelligence review package.
+
 HQ-TASK-0112 - Added Archive Intelligence dashboard.
 
 HQ-TASK-0111 - Added deterministic Archive Intelligence pattern detection.
