@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0103 - Added Guardian alert contracts and desktop display.
+
 HQ-TASK-0102 - Added Guardian psychology warning rules.
 
 HQ-TASK-0101 - Added Guardian session limit tracking.

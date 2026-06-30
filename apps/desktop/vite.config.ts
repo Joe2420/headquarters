@@ -9,6 +9,7 @@ export default defineConfig({
       '@headquarters/academy': resolve(__dirname, '../../packages/academy/src/index.ts'),
       '@headquarters/database': resolve(__dirname, '../../packages/database/src/index.ts'),
       '@headquarters/doctrine': resolve(__dirname, '../../packages/doctrine/src/index.ts'),
+      '@headquarters/guardian': resolve(__dirname, '../../packages/guardian/src/index.ts'),
       '@headquarters/hqos': resolve(__dirname, '../../packages/hqos/src/index.ts'),
       '@headquarters/journal': resolve(__dirname, '../../packages/journal/src/index.ts'),
       '@headquarters/shared': resolve(__dirname, '../../packages/shared/src/index.ts'),

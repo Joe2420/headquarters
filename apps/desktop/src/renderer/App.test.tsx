@@ -6,11 +6,13 @@ import {
   CommandCenter,
   CommandCenterPlaceholder,
   DoctrineRoom,
+  GuardianRoom,
   JournalRoom,
   type ActiveMission,
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
   buildDesktopAcademyDashboard,
+  buildDesktopGuardianAlerts,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -81,6 +83,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('data-nav-id="journal"');
     expect(html).toContain('data-nav-id="academy"');
     expect(html).toContain('data-nav-id="doctrine"');
+    expect(html).toContain('data-nav-id="guardian"');
     expect(html).toContain('data-nav-id="archive"');
     expect(html).toContain('data-nav-id="settings"');
     expect(html).toContain('aria-current="page"');
@@ -95,6 +98,7 @@ describe('Desktop shell', () => {
       { id: 'journal', label: 'Journal', active: false },
       { id: 'academy', label: 'Academy', active: false },
       { id: 'doctrine', label: 'Doctrine', active: false },
+      { id: 'guardian', label: 'Guardian', active: false },
       { id: 'archive', label: 'Archive', active: false },
       { id: 'settings', label: 'Settings', active: false },
     ]);
@@ -159,6 +163,17 @@ describe('Desktop shell', () => {
     expect(html).toContain('Quiet Recognition');
     expect(html).toContain('Consistency Tracking');
     expect(html).toContain('No Academy growth evidence yet');
+  });
+
+  it('derives and renders Guardian alerts in the Guardian room', () => {
+    const alerts = buildDesktopGuardianAlerts();
+    const html = renderToStaticMarkup(<GuardianRoom />);
+
+    expect(alerts.map((alert) => alert.priority)).toEqual(['low', 'medium']);
+    expect(html).toContain('data-room-id="guardian-room"');
+    expect(html).toContain('Guardian Alerts');
+    expect(html).toContain('Rule Monitoring');
+    expect(html).toContain('Risk Monitoring');
   });
 
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {

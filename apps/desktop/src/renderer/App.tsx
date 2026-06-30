@@ -9,6 +9,7 @@ import {
   createAcademyGrowthEventFromJournal,
   type AcademyRecognition,
 } from '@headquarters/academy';
+import { buildGuardianAlerts, type GuardianAlert } from '@headquarters/guardian';
 import {
   buildTradingPlanDoctrineReferences,
   diffDoctrineRecords,
@@ -115,7 +116,7 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
-export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'academy' | 'doctrine' | 'archive' | 'settings';
+export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'academy' | 'doctrine' | 'guardian' | 'archive' | 'settings';
 export type HeadquartersRoomId = NavigationAreaId;
 
 export interface PrimaryNavigationItem {
@@ -138,6 +139,7 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'journal', label: 'Journal' },
   { id: 'academy', label: 'Academy' },
   { id: 'doctrine', label: 'Doctrine' },
+  { id: 'guardian', label: 'Guardian' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
 ];
@@ -505,6 +507,10 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
 
   if (room === 'academy') {
     return <AcademyRoom growthEvents={context.growthEvents} />;
+  }
+
+  if (room === 'guardian') {
+    return <GuardianRoom />;
   }
 
   if (room === 'archive') {
@@ -1821,6 +1827,51 @@ export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
           </dl>
           <p className="muted">Consistency is derived from behavior evidence, not financial outcome.</p>
         </section>
+      </section>
+    </div>
+  );
+}
+
+export function buildDesktopGuardianAlerts(): readonly GuardianAlert[] {
+  return buildGuardianAlerts([
+    {
+      id: 'rule-monitoring',
+      title: 'Rule Monitoring',
+      detail: 'Guardian rules are explicit and deterministic.',
+      severity: 'notice',
+    },
+    {
+      id: 'risk-monitoring',
+      title: 'Risk Monitoring',
+      detail: 'Risk state is monitored from approved inputs only.',
+      severity: 'caution',
+    },
+  ]);
+}
+
+export function GuardianRoom() {
+  const alerts = buildDesktopGuardianAlerts();
+
+  return (
+    <div className="room-layout" data-room-id="guardian-room">
+      <section className="command-center-header" aria-label="Guardian room status">
+        <p className="section-label">Guardian Wing</p>
+        <h2>Guardian Alerts</h2>
+        <p className="muted">Protective alerts are typed, traceable, and not connected to notification systems yet.</p>
+      </section>
+
+      <section className="command-center-panels" aria-label="Guardian alerts">
+        {alerts.map((alert) => (
+          <section className="journal-panel" aria-label={alert.title} key={alert.id}>
+            <p className="section-label">{alert.priority}</p>
+            <h3>{alert.title}</h3>
+            <p className="muted">{alert.message}</p>
+            <dl>
+              <dt>Source</dt>
+              <dd>{alert.sourceId}</dd>
+            </dl>
+          </section>
+        ))}
       </section>
     </div>
   );
