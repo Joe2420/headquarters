@@ -100,8 +100,9 @@
 - HQ-TASK-0102 — Guardian Psychology Warnings
 - HQ-TASK-0103 — Guardian Alerts
 - HQ-TASK-0104 — Guardian Lockout System
+- HQ-TASK-0105 — Sprint 8 Guardian Review Package
 
-Current milestone gate: Sprint 8 Guardian is in progress through HIG-TASK-065 / HQ-TASK-0104.
+Current milestone gate: Sprint 8 Guardian is complete through HIG-TASK-066 / HQ-TASK-0105.
 
 ## Post-Sprint UX Alignment
 
@@ -126,6 +127,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 8 Guardian is in progress through HIG-TASK-065 / HQ-TASK-0104.
+Sprint 8 Guardian is complete through HIG-TASK-066 / HQ-TASK-0105.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
