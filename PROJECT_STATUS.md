@@ -98,8 +98,9 @@
 - HQ-TASK-0100 — Guardian Daily Limits
 - HQ-TASK-0101 — Guardian Session Limits
 - HQ-TASK-0102 — Guardian Psychology Warnings
+- HQ-TASK-0103 — Guardian Alerts
 
-Current milestone gate: Sprint 8 Guardian is in progress through HIG-TASK-063 / HQ-TASK-0102.
+Current milestone gate: Sprint 8 Guardian is in progress through HIG-TASK-064 / HQ-TASK-0103.
 
 ## Post-Sprint UX Alignment
 
@@ -124,6 +125,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 8 Guardian is in progress through HIG-TASK-063 / HQ-TASK-0102.
+Sprint 8 Guardian is in progress through HIG-TASK-064 / HQ-TASK-0103.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.

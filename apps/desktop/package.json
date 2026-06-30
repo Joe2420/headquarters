@@ -17,6 +17,7 @@
     "@headquarters/academy": "workspace:*",
     "@headquarters/database": "workspace:*",
     "@headquarters/doctrine": "workspace:*",
+    "@headquarters/guardian": "workspace:*",
     "@headquarters/hqos": "workspace:*",
     "@headquarters/journal": "workspace:*",
     "@headquarters/shared": "workspace:*",

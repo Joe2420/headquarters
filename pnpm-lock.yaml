@@ -44,6 +44,9 @@ importers:
       '@headquarters/doctrine':
         specifier: workspace:*
         version: link:../../packages/doctrine
+      '@headquarters/guardian':
+        specifier: workspace:*
+        version: link:../../packages/guardian
       '@headquarters/hqos':
         specifier: workspace:*
         version: link:../../packages/hqos
@@ -168,6 +171,12 @@ importers:
       '@headquarters/shared':
         specifier: workspace:*
         version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/guardian:
     devDependencies:
       typescript:
         specifier: ^5.6.3
