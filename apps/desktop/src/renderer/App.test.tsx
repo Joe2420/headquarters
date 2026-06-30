@@ -13,6 +13,7 @@ import {
   buildDefaultTradingPlanDoctrineReferences,
   buildDesktopAcademyDashboard,
   buildDesktopGuardianAlerts,
+  buildDesktopGuardianLockoutState,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -167,13 +168,16 @@ describe('Desktop shell', () => {
 
   it('derives and renders Guardian alerts in the Guardian room', () => {
     const alerts = buildDesktopGuardianAlerts();
+    const lockout = buildDesktopGuardianLockoutState();
     const html = renderToStaticMarkup(<GuardianRoom />);
 
     expect(alerts.map((alert) => alert.priority)).toEqual(['low', 'medium']);
+    expect(lockout.status).toBe('unlocked');
     expect(html).toContain('data-room-id="guardian-room"');
     expect(html).toContain('Guardian Alerts');
     expect(html).toContain('Rule Monitoring');
     expect(html).toContain('Risk Monitoring');
+    expect(html).toContain('Lockout State');
   });
 
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {

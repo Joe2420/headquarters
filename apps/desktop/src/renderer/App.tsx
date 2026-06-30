@@ -9,7 +9,7 @@ import {
   createAcademyGrowthEventFromJournal,
   type AcademyRecognition,
 } from '@headquarters/academy';
-import { buildGuardianAlerts, type GuardianAlert } from '@headquarters/guardian';
+import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   buildTradingPlanDoctrineReferences,
   diffDoctrineRecords,
@@ -1849,8 +1849,24 @@ export function buildDesktopGuardianAlerts(): readonly GuardianAlert[] {
   ]);
 }
 
+export function buildDesktopGuardianLockoutState(): GuardianLockoutState {
+  return evaluateGuardianLockout([
+    {
+      id: 'daily-limit',
+      reason: 'Daily limit breached.',
+      active: false,
+    },
+    {
+      id: 'repeated-override',
+      reason: 'Repeated override attempt.',
+      active: false,
+    },
+  ]);
+}
+
 export function GuardianRoom() {
   const alerts = buildDesktopGuardianAlerts();
+  const lockout = buildDesktopGuardianLockoutState();
 
   return (
     <div className="room-layout" data-room-id="guardian-room">
@@ -1872,6 +1888,15 @@ export function GuardianRoom() {
             </dl>
           </section>
         ))}
+        <section className="journal-panel" aria-label="Guardian lockout">
+          <p className="section-label">{lockout.status}</p>
+          <h3>Lockout State</h3>
+          <p className="muted">{lockout.explanation}</p>
+          <dl>
+            <dt>Active Rules</dt>
+            <dd>{lockout.activeRuleIds.length}</dd>
+          </dl>
+        </section>
       </section>
     </div>
   );
