@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
-import type { DoctrineHistoryEntry, DoctrineRecord } from '@headquarters/doctrine';
+import { diffDoctrineRecords, type DoctrineDiff, type DoctrineHistoryEntry, type DoctrineRecord } from '@headquarters/doctrine';
 import {
   archiveJournalEntry,
   buildJournalTimeline,
@@ -1532,6 +1532,7 @@ function DoctrineRoom({
       </section>
       <section className="command-center-panels" aria-label="Doctrine workspace">
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+        <DoctrineDiffPanel diff={buildDoctrineDiffPreview(doctrineRecords)} />
         <DoctrineHistoryPanel historyEntries={doctrineHistory} />
         <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
       </section>
@@ -1630,6 +1631,40 @@ function DoctrineHistoryPanel({ historyEntries }: { historyEntries: DoctrineHist
       )}
     </section>
   );
+}
+
+function DoctrineDiffPanel({ diff }: { diff: DoctrineDiff | undefined }) {
+  return (
+    <section className="journal-panel" aria-label="Doctrine diff">
+      <p className="section-label">Diff</p>
+      <h3>Doctrine Diff</h3>
+      {diff === undefined ? (
+        <p className="muted">At least two doctrine records are required for comparison.</p>
+      ) : diff.changed ? (
+        <div className="timeline-list">
+          {diff.changes.map((change) => (
+            <article className="timeline-item" key={change.field}>
+              <strong>{change.field}</strong>
+              <span>Before: {change.before}</span>
+              <span>After: {change.after}</span>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p className="muted">No doctrine differences found between the selected records.</p>
+      )}
+    </section>
+  );
+}
+
+export function buildDoctrineDiffPreview(records: readonly DoctrineRecord[]): DoctrineDiff | undefined {
+  if (records.length < 2) return undefined;
+
+  const [firstRecord, secondRecord] = records;
+
+  if (firstRecord === undefined || secondRecord === undefined) return undefined;
+
+  return diffDoctrineRecords(firstRecord, secondRecord);
 }
 
 function DoctrineViewerPanel({ doctrineRecords }: { doctrineRecords: DoctrineRecord[] }) {

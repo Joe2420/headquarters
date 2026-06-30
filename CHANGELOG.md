@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0086 — Added read-only Doctrine diff helpers and viewer panel.
+
 HQ-TASK-0085 — Added read-only Doctrine history tracking.
 
 HQ-TASK-0084 — Added explicit manual Doctrine candidate promotion.

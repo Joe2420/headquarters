@@ -6,6 +6,7 @@ import {
   CommandCenterPlaceholder,
   type ActiveMission,
   type StartupStatus,
+  buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   createArchiveWritePlaceholder,
@@ -163,6 +164,41 @@ describe('Desktop shell', () => {
       configurable: true,
       value: originalWindow,
     });
+  });
+
+  it('builds a read-only doctrine diff preview when two doctrine records are present', () => {
+    const firstRecord = {
+      id: 'doctrine-001',
+      title: 'Wait for confirmation',
+      summary: 'Wait for confirmation before entry.',
+      confidence: 'candidate' as const,
+      source: {
+        sourceType: 'journal_entry' as const,
+        sourceId: 'journal-001',
+      },
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    };
+    const secondRecord = {
+      ...firstRecord,
+      id: 'doctrine-002',
+      title: 'Wait for clean confirmation',
+      confidence: 'validated' as const,
+    };
+
+    expect(buildDoctrineDiffPreview([])).toBeUndefined();
+    expect(buildDoctrineDiffPreview([firstRecord, secondRecord])?.changes).toEqual([
+      {
+        field: 'title',
+        before: 'Wait for confirmation',
+        after: 'Wait for clean confirmation',
+      },
+      {
+        field: 'confidence',
+        before: 'candidate',
+        after: 'validated',
+      },
+    ]);
   });
 
   it('formats startup status dashboard states deterministically', () => {
