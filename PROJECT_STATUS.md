@@ -88,8 +88,9 @@
 - HQ-TASK-0090 — Academy Growth Events
 - HQ-TASK-0091 — Academy Level System
 - HQ-TASK-0092 — Academy Recognition
+- HQ-TASK-0093 — Academy Statistics
 
-Current milestone gate: Sprint 7 Academy is in progress through HIG-TASK-054 / HQ-TASK-0092.
+Current milestone gate: Sprint 7 Academy is in progress through HIG-TASK-055 / HQ-TASK-0093.
 
 ## Post-Sprint UX Alignment
 
@@ -113,6 +114,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 7 Academy is in progress through HIG-TASK-054 / HQ-TASK-0092.
+Sprint 7 Academy is in progress through HIG-TASK-055 / HQ-TASK-0093.
 
 Post-Sprint UX alignment is complete and merged.
