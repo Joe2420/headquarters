@@ -1,12 +1,17 @@
 import type { GrowthEvent, GrowthEventCategory } from '@headquarters/journal';
 import type { UUID } from '@headquarters/shared';
+import {
+  createAcademyGrowthEventFromJournal,
+  type AcademyGrowthEvent,
+  type AcademyGrowthEventEvidence,
+} from './AcademyGrowthEvent';
 
 export interface AcademyXpAward {
   readonly growthEventId: UUID;
   readonly category: GrowthEventCategory;
   readonly xp: number;
   readonly reason: string;
-  readonly evidence: GrowthEvent['evidence'];
+  readonly evidence: AcademyGrowthEventEvidence;
 }
 
 export interface AcademyXpSummary {
@@ -30,7 +35,7 @@ const CATEGORY_REASONS: Readonly<Record<GrowthEventCategory, string>> = {
   process_improvement: 'Process improvement behavior',
 };
 
-export function calculateAcademyXp(events: readonly GrowthEvent[]): AcademyXpSummary {
+export function calculateAcademyXp(events: readonly AcademyGrowthEvent[]): AcademyXpSummary {
   const awards = events.map(createXpAward);
 
   return {
@@ -39,11 +44,15 @@ export function calculateAcademyXp(events: readonly GrowthEvent[]): AcademyXpSum
   };
 }
 
+export function calculateAcademyXpFromJournalGrowthEvents(events: readonly GrowthEvent[]): AcademyXpSummary {
+  return calculateAcademyXp(events.map(createAcademyGrowthEventFromJournal));
+}
+
 export function getAcademyXpForCategory(category: GrowthEventCategory): number {
   return CATEGORY_XP[category];
 }
 
-function createXpAward(event: GrowthEvent): AcademyXpAward {
+function createXpAward(event: AcademyGrowthEvent): AcademyXpAward {
   return {
     growthEventId: event.id,
     category: event.category,

@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0090 — Added Academy growth event evidence contracts for traceable Journal and mission sources.
+
 HQ-TASK-0089 — Added Academy XP engine foundation for behavior-based growth.
 
 HQ-TASK-0081 — Refined Headquarters desktop UX around Commander guidance and room architecture.

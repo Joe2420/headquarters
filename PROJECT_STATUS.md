@@ -85,8 +85,9 @@
 - HQ-TASK-0087 — Trading Plan Integration
 - HQ-TASK-0088 — Sprint 6 Doctrine Review
 - HQ-TASK-0089 — Academy XP Engine
+- HQ-TASK-0090 — Academy Growth Events
 
-Current milestone gate: Sprint 7 Academy is in progress through HIG-TASK-051 / HQ-TASK-0089.
+Current milestone gate: Sprint 7 Academy is in progress through HIG-TASK-052 / HQ-TASK-0090.
 
 ## Post-Sprint UX Alignment
 
@@ -110,6 +111,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 7 Academy is in progress through HIG-TASK-051 / HQ-TASK-0089.
+Sprint 7 Academy is in progress through HIG-TASK-052 / HQ-TASK-0090.
 
 Post-Sprint UX alignment is complete and merged.
