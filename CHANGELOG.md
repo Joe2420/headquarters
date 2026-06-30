@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0081 — Refined Headquarters desktop UX around Commander guidance and room architecture.
+
 HQ-TASK-0088 — Added Sprint 6 Doctrine review package.
 
 HQ-TASK-0087 — Added read-only Trading Plan references to accepted Doctrine.

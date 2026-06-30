@@ -495,23 +495,47 @@ interface CommandOverviewProps {
 }
 
 function CommandOverview({ activeMission, startupSubsystemCount, missionHistory }: CommandOverviewProps) {
+  const nextAction = getMissionNextAction(activeMission);
+
   return (
     <div className="command-center-layout" data-layout="command-center">
       <section className="command-center-header" aria-label="Command center overview">
         <p className="section-label">Command Center</p>
         <h2>Headquarters Overview</h2>
-        <p className="muted">Operational overview, active mission summary, HQOS status, and navigation hub.</p>
+        <p className="muted">Commander guidance, current objective, HQOS status, and navigation hub.</p>
       </section>
       <section className="command-center-panels" aria-label="Command center dashboard">
-        <MissionDetailsPanel activeMission={activeMission} />
-        <MissionLifecyclePanel activeMission={activeMission} />
-        <MissionHistoryPanel missionHistory={missionHistory} />
+        <section className="hqos-dashboard-panel" aria-label="Commander guidance">
+          <p className="section-label">Commander</p>
+          <h3>{getCommanderMessage(activeMission).title}</h3>
+          <p className="muted">{getCommanderMessage(activeMission).body}</p>
+        </section>
+        <section className="hqos-dashboard-panel" aria-label="Current mission summary">
+          <p className="section-label">Current Mission</p>
+          <h3>{activeMission?.campaign ?? 'No Active Mission'}</h3>
+          <p className="muted">{activeMission?.objective ?? 'Create a mission in the Mission Room to begin operations.'}</p>
+          <strong>{formatMissionDetailState(activeMission)}</strong>
+        </section>
+        <section className="hqos-dashboard-panel" aria-label="Next required action">
+          <p className="section-label">Next Required Action</p>
+          <h3>{nextAction.label}</h3>
+          <p className="muted">{nextAction.description}</p>
+        </section>
         <section className="hqos-dashboard-panel" aria-label="HQOS dashboard">
           <p className="section-label">HQOS</p>
           <h3>Subsystem Dashboard</h3>
           <p className="muted">{startupSubsystemCount} completed subsystem areas are available from navigation.</p>
         </section>
-        <CommandChair />
+        <section className="hqos-dashboard-panel" aria-label="Notifications">
+          <p className="section-label">Notifications</p>
+          <h3>{getMissionNotificationSummary(activeMission, missionHistory)}</h3>
+          <p className="muted">Detailed workflow, timeline, and history live inside the Mission Room.</p>
+        </section>
+        <section className="hqos-dashboard-panel" aria-label="Navigation hub">
+          <p className="section-label">Navigation Hub</p>
+          <h3>Rooms Online</h3>
+          <p className="muted">Mission, Journal, Archive, Doctrine, and Settings are reachable from primary navigation.</p>
+        </section>
       </section>
     </div>
   );
@@ -527,9 +551,9 @@ function MissionRoom(props: MissionRoomProps) {
       <section className="command-center-header" aria-label="Mission room status">
         <p className="section-label">Mission Room</p>
         <h2>Mission Operations</h2>
-        <p className="muted">Mission Board, lifecycle, authorization, debrief, timeline, and history.</p>
+        <p className="muted">Guided mission workflow, active phase workspace, timeline, history, and archive summary.</p>
       </section>
-      <CommandCenter {...props} />
+      <MissionWorkflowView {...props} />
     </div>
   );
 }
@@ -547,6 +571,169 @@ interface CommandCenterProps {
   onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
   onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
   onArchiveMission?: ((summary: LocalMissionArchiveSummary | undefined) => void) | undefined;
+}
+
+function MissionWorkflowView({
+  activeMission,
+  archiveWrite,
+  authorizationStatus,
+  missionDebrief,
+  archiveSummary,
+  archivedMissionSummaries,
+  missionHistory,
+  onCreateMission,
+  onMissionChanged,
+  onRequestAuthorization,
+  onSaveDebrief,
+  onArchiveMission,
+}: CommandCenterProps) {
+  const visibleSteps = buildVisibleMissionLifecycleSteps(activeMission);
+
+  return (
+    <div className="command-center-layout" data-layout="mission-workflow">
+      <section className="command-center-panels" aria-label="Mission workflow">
+        <MissionCommanderPanel activeMission={activeMission} />
+        <CurrentMissionPhaseWorkspace
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          missionDebrief={missionDebrief}
+          archiveSummary={archiveSummary}
+          onCreateMission={onCreateMission}
+          onMissionChanged={onMissionChanged}
+          onRequestAuthorization={onRequestAuthorization}
+          onSaveDebrief={onSaveDebrief}
+          onArchiveMission={onArchiveMission}
+        />
+        <MissionCompletedPhasesPanel steps={visibleSteps.filter((step) => step.status === 'completed')} />
+        <MissionTimelineViewerPanel
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          missionDebrief={missionDebrief}
+          archiveSummary={archiveSummary}
+        />
+        <MissionHistoryPanel missionHistory={missionHistory} />
+        <MissionDetailsPanel activeMission={activeMission} />
+        <MissionArchiveSummaryPanel
+          activeMission={activeMission}
+          archiveSummary={archiveSummary}
+          missionDebrief={missionDebrief}
+        />
+        <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+        <ArchiveWritePanel archiveWrite={archiveWrite} />
+      </section>
+    </div>
+  );
+}
+
+function MissionCommanderPanel({ activeMission }: { activeMission?: ActiveMission | undefined }) {
+  const message = getCommanderMessage(activeMission);
+
+  return (
+    <section className="hqos-dashboard-panel" aria-label="Commander workflow guidance">
+      <p className="section-label">Commander</p>
+      <h3>{message.title}</h3>
+      <p className="muted">{message.body}</p>
+    </section>
+  );
+}
+
+function CurrentMissionPhaseWorkspace({
+  activeMission,
+  authorizationStatus,
+  missionDebrief,
+  archiveSummary,
+  onCreateMission,
+  onMissionChanged,
+  onRequestAuthorization,
+  onSaveDebrief,
+  onArchiveMission,
+}: Pick<CommandCenterProps,
+  | 'activeMission'
+  | 'authorizationStatus'
+  | 'missionDebrief'
+  | 'archiveSummary'
+  | 'onCreateMission'
+  | 'onMissionChanged'
+  | 'onRequestAuthorization'
+  | 'onSaveDebrief'
+  | 'onArchiveMission'
+>) {
+  const currentState = parseMissionState(activeMission?.currentState);
+
+  return (
+    <section className="mission-next-action-panel" aria-label="Current mission phase workspace">
+      <div>
+        <p className="section-label">Active Phase</p>
+        <h3>{getMissionPhaseWorkspaceTitle(activeMission)}</h3>
+      </div>
+      <p className="muted">{getMissionPhaseWorkspaceDescription(activeMission)}</p>
+      {activeMission === undefined ? (
+        <CreateMissionPanel onCreateMission={onCreateMission} />
+      ) : (
+        <>
+          <div className="mission-board-shell" data-object-id="RM-0007">
+            <MissionBoard
+              missionId={activeMission.id}
+              campaign={activeMission.campaign}
+              objective={activeMission.objective}
+              condition={activeMission.condition}
+              commandAuthority={activeMission.commandAuthority}
+              currentState={activeMission.currentState}
+              createdAt={activeMission.createdAt}
+            />
+          </div>
+          <MissionNextActionPanel
+            activeMission={activeMission}
+            authorizationStatus={authorizationStatus}
+            missionDebrief={missionDebrief}
+            onMissionChanged={onMissionChanged}
+            onRequestAuthorization={onRequestAuthorization}
+            onSaveDebrief={onSaveDebrief}
+            onArchiveMission={onArchiveMission}
+          />
+          {currentState === 'authorization' ? (
+            <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
+          ) : null}
+          {currentState === 'return_to_base' || currentState === 'debrief' || currentState === 'archived' ? (
+            <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} />
+          ) : null}
+          {currentState === 'debrief' || currentState === 'archived' ? (
+            <MissionClosingPanel activeMission={activeMission} />
+          ) : null}
+          {currentState === 'archived' ? (
+            <MissionArchiveSummaryPanel
+              activeMission={activeMission}
+              archiveSummary={archiveSummary}
+              missionDebrief={missionDebrief}
+            />
+          ) : null}
+        </>
+      )}
+    </section>
+  );
+}
+
+function MissionCompletedPhasesPanel({ steps }: { steps: MissionLifecycleStep[] }) {
+  return (
+    <section className="mission-lifecycle-panel" aria-label="Completed mission phases">
+      <div>
+        <p className="section-label">Completed Phases</p>
+        <h3>Progress Summary</h3>
+      </div>
+      {steps.length === 0 ? (
+        <p className="muted">No mission phases have been completed yet.</p>
+      ) : (
+        <ol>
+          {steps.map((step) => (
+            <li key={step.state}>
+              <span>{step.label}</span>
+              <strong>{formatMissionLifecycleStepStatus(step.status)}</strong>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
 }
 
 export function CommandCenter({
@@ -1854,6 +2041,113 @@ export interface MissionNextAction {
   readonly description: string;
   readonly buttonLabel: string;
   readonly disabled: boolean;
+}
+
+export interface CommanderMessage {
+  readonly title: string;
+  readonly body: string;
+}
+
+export function getCommanderMessage(mission?: ActiveMission): CommanderMessage {
+  const currentState = parseMissionState(mission?.currentState);
+
+  if (currentState === undefined) {
+    return {
+      title: 'Report accepted. Stand by for tasking.',
+      body: 'Create a mission in the Mission Room. Headquarters will guide one phase at a time.',
+    };
+  }
+
+  if (currentState === 'idle') {
+    return {
+      title: 'Mission created. Begin briefing.',
+      body: 'Review the objective and move the mission into briefing when you are ready.',
+    };
+  }
+
+  if (currentState === 'briefing') {
+    return {
+      title: 'Briefing in progress.',
+      body: 'Confirm the mission objective before observation begins.',
+    };
+  }
+
+  if (currentState === 'ready') {
+    return {
+      title: 'Ready for observation.',
+      body: 'Begin observation. Waiting is work; do not rush authorization.',
+    };
+  }
+
+  if (currentState === 'observation') {
+    return {
+      title: 'Observe without participating.',
+      body: 'Complete observation only when the mission has enough evidence for authorization.',
+    };
+  }
+
+  if (currentState === 'authorization') {
+    return {
+      title: 'Authorization required.',
+      body: 'Provide justification and invalidation before deployment can be declared.',
+    };
+  }
+
+  if (currentState === 'deployed') {
+    return {
+      title: 'Mission deployed.',
+      body: 'Execute the authorized plan, then request return to base.',
+    };
+  }
+
+  if (currentState === 'return_to_base') {
+    return {
+      title: 'Return to base.',
+      body: 'Capture behavior, discipline, and the lesson before archive.',
+    };
+  }
+
+  if (currentState === 'debrief') {
+    return {
+      title: 'Debrief complete.',
+      body: 'Archive the mission so the record becomes institutional memory.',
+    };
+  }
+
+  return {
+    title: 'Mission archived.',
+    body: 'This mission is complete. Review history or create the next mission when appropriate.',
+  };
+}
+
+export function buildVisibleMissionLifecycleSteps(mission?: ActiveMission): MissionLifecycleStep[] {
+  return buildMissionLifecycleSteps(mission).filter((step) => step.status !== 'pending');
+}
+
+export function getMissionPhaseWorkspaceTitle(mission?: ActiveMission): string {
+  const currentState = parseMissionState(mission?.currentState);
+  if (currentState === undefined) return 'Mission Creation';
+  return formatMissionStateForDisplay(currentState);
+}
+
+export function getMissionPhaseWorkspaceDescription(mission?: ActiveMission): string {
+  const currentState = parseMissionState(mission?.currentState);
+
+  if (currentState === undefined) return 'Create the mission before Headquarters unlocks lifecycle phases.';
+  if (currentState === 'authorization') return 'Authorization requires operator justification and invalidation.';
+  if (currentState === 'return_to_base') return 'Return to base requires behavior-first debrief evidence.';
+  if (currentState === 'archived') return 'The mission is archived and available for historical review.';
+
+  return getMissionNextAction(mission).description;
+}
+
+export function getMissionNotificationSummary(
+  activeMission: ActiveMission | undefined,
+  missionHistory: readonly ActiveMission[],
+): string {
+  if (activeMission === undefined) return 'No active mission';
+  if (activeMission.currentState === 'archived') return 'Mission archived';
+  return `${missionHistory.length} mission record${missionHistory.length === 1 ? '' : 's'} tracked`;
 }
 
 export function getMissionNextAction(mission?: ActiveMission): MissionNextAction {
