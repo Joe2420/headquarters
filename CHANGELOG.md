@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0085 — Added read-only Doctrine history tracking.
+
 HQ-TASK-0084 — Added explicit manual Doctrine candidate promotion.
 
 HQ-TASK-0083 — Added deterministic Doctrine candidate extraction from approved journal evidence.

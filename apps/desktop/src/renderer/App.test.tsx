@@ -125,12 +125,19 @@ describe('Desktop shell', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-01-01T00:00:00.000Z',
     };
+    const historyEntry = {
+      id: 'history-001',
+      doctrineId: 'doctrine-001',
+      action: 'promoted' as const,
+      summary: 'Promoted candidate to doctrine: Wait for confirmation',
+      occurredAt: '2026-01-01T00:00:00.000Z',
+    };
 
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
       value: {
         headquarters: {
-          promoteDoctrineCandidate: async () => ({ record: promotedRecord }),
+          promoteDoctrineCandidate: async () => ({ record: promotedRecord, historyEntry }),
         },
       },
     });
@@ -142,7 +149,7 @@ describe('Desktop shell', () => {
       sourceId: 'journal-001',
       archiveId: 'archive-001',
       excerpt: 'Wait for confirmation before entry.',
-    })).resolves.toEqual(promotedRecord);
+    })).resolves.toEqual({ record: promotedRecord, historyEntry });
     await expect(promoteDesktopDoctrineCandidate({
       candidateId: '',
       title: 'Wait for confirmation',
