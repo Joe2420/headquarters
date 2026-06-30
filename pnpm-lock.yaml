@@ -38,6 +38,9 @@ importers:
       '@headquarters/academy':
         specifier: workspace:*
         version: link:../../packages/academy
+      '@headquarters/archive-intelligence':
+        specifier: workspace:*
+        version: link:../../packages/archive-intelligence
       '@headquarters/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -118,6 +121,19 @@ importers:
 
   packages/ai-runtime:
     dependencies:
+      '@headquarters/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/archive-intelligence:
+    dependencies:
+      '@headquarters/hqos':
+        specifier: workspace:*
+        version: link:../hqos
       '@headquarters/shared':
         specifier: workspace:*
         version: link:../shared

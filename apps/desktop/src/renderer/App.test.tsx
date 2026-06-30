@@ -11,6 +11,7 @@ import {
   type ActiveMission,
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
+  buildDesktopArchiveEventInspections,
   buildDesktopAcademyDashboard,
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
@@ -1025,6 +1026,54 @@ describe('Desktop shell', () => {
     expect(html).toContain('Foundation Patrol');
     expect(html).toContain('2 events');
     expect(html).toContain('2026-01-01T00:20:00.000Z');
+  });
+
+  it('derives read-only Archive event inspections for the Archive room explorer', () => {
+    const archiveSummary = {
+      missionId: 'mission-archive-001',
+      codename: 'Foundation Patrol',
+      archivedAt: '2026-01-01T00:20:00.000Z',
+      eventCount: 2,
+    };
+    const archivedJournalEntry = {
+      id: 'journal-archive-001',
+      journalEntryId: 'journal-001',
+      archivedAt: '2026-01-01T00:15:00.000Z',
+      rawEntry: {
+        id: 'journal-001',
+        entryDate: '2026-01-01',
+        rawContent: 'A controlled archive note.',
+        source: 'manual' as const,
+        attachmentReferences: [],
+        classificationStatus: 'unclassified' as const,
+        createdAt: '2026-01-01T00:10:00.000Z',
+        updatedAt: '2026-01-01T00:10:00.000Z',
+      },
+      metadata: {
+        classificationStatus: 'unclassified' as const,
+        tags: ['reflection'],
+      },
+    };
+
+    expect(buildDesktopArchiveEventInspections([archiveSummary], [archivedJournalEntry])).toEqual([
+      {
+        id: 'archive-event-journal-archive-001',
+        type: 'archive.artifact_written',
+        occurredAt: '2026-01-01T00:15:00.000Z',
+        source: 'archives',
+        priority: 'green',
+        payloadPreview: 'classificationStatus, entryDate, tags',
+      },
+      {
+        id: 'archive-event-mission-archive-001',
+        type: 'mission.archived',
+        occurredAt: '2026-01-01T00:20:00.000Z',
+        source: 'archives',
+        priority: 'green',
+        missionId: 'mission-archive-001',
+        payloadPreview: 'codename, eventCount',
+      },
+    ]);
   });
 
   it('builds desktop mission timeline entries in chronological order', () => {

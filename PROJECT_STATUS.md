@@ -104,8 +104,9 @@
 - HQ-TASK-0106 — Archive Intelligence Advanced Search
 - HQ-TASK-0107 — Archive Intelligence Replay Preparation
 - HQ-TASK-0108 — Archive Intelligence Timeline Filters
+- HQ-TASK-0109 — Archive Intelligence Event Explorer
 
-Current milestone gate: Sprint 9 Archive Intelligence is in progress through HIG-TASK-069 / HQ-TASK-0108.
+Current milestone gate: Sprint 9 Archive Intelligence is in progress through HIG-TASK-070 / HQ-TASK-0109.
 
 ## Post-Sprint UX Alignment
 
@@ -130,6 +131,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 9 Archive Intelligence is in progress through HIG-TASK-069 / HQ-TASK-0108.
+Sprint 9 Archive Intelligence is in progress through HIG-TASK-070 / HQ-TASK-0109.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.

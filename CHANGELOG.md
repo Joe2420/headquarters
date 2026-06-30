@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0109 - Added Archive Intelligence event explorer.
+
 HQ-TASK-0108 - Added Archive Intelligence timeline filters.
 
 HQ-TASK-0107 - Added Archive Intelligence replay preparation.
