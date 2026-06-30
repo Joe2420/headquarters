@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0106 - Added Archive Intelligence advanced search.
+
 HQ-TASK-0105 - Added Sprint 8 Guardian review package.
 
 HQ-TASK-0104 - Added Guardian lockout system foundation.
