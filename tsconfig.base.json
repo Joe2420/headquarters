@@ -17,6 +17,7 @@
       "@headquarters/journal": ["packages/journal/src/index.ts"],
       "@headquarters/doctrine": ["packages/doctrine/src/index.ts"],
       "@headquarters/academy": ["packages/academy/src/index.ts"],
+      "@headquarters/guardian": ["packages/guardian/src/index.ts"],
       "@headquarters/database": ["packages/database/src/index.ts"],
       "@headquarters/ai-runtime": ["packages/ai-runtime/src/index.ts"],
       "@headquarters/ui": ["packages/ui/src/index.ts"],
