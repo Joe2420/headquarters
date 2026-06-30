@@ -18,11 +18,11 @@ describe('Sprint 3 desktop experience review', () => {
     });
 
     expect(commandCenterHtml).toContain('data-layout="command-center"');
-    expect(commandCenterHtml).toContain('Mission Board');
-    expect(commandCenterHtml).toContain('Create Mission');
-    expect(commandCenterHtml).toContain('Mission Closing');
-    expect(commandCenterHtml).toContain('Mission Debrief');
-    expect(commandCenterHtml).toContain('Archive Placeholder');
+    expect(commandCenterHtml).toContain('Headquarters Overview');
+    expect(commandCenterHtml).toContain('Commander');
+    expect(commandCenterHtml).toContain('Current Mission');
+    expect(commandCenterHtml).toContain('Next Required Action');
+    expect(commandCenterHtml).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
   });
 
   it('keeps Sprint 3 navigation lightweight while exposing stabilized rooms', () => {

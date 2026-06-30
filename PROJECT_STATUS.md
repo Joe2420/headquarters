@@ -91,14 +91,16 @@
 - HQ-TASK-0093 — Academy Statistics
 - HQ-TASK-0094 — Academy Consistency Tracking
 - HQ-TASK-0095 — Academy Dashboard
+- HQ-TASK-0096 — Headquarters UX Repository Vision Alignment
 
 Current milestone gate: Sprint 7 Academy is in progress through HIG-TASK-057 / HQ-TASK-0095.
 
 ## Post-Sprint UX Alignment
 
 - HQ-TASK-0081 — Headquarters UX Repository Alignment
+- HQ-TASK-0096 — Headquarters UX Repository Vision Alignment
 
-Current alignment gate: Headquarters UX refinement is complete pending Founder inspection.
+Current alignment gate: Headquarters UX refinement is complete through HQ-TASK-0096 pending Founder inspection.
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -118,4 +120,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 Sprint 7 Academy is in progress through HIG-TASK-057 / HQ-TASK-0095.
 
-Post-Sprint UX alignment is complete and merged.
+Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.

@@ -5,6 +5,8 @@ import {
   AcademyRoom,
   CommandCenter,
   CommandCenterPlaceholder,
+  DoctrineRoom,
+  JournalRoom,
   type ActiveMission,
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
@@ -35,9 +37,13 @@ import {
   formatMissionLifecycleStepStatus,
   formatMissionLifecycleSummary,
   formatMissionTimelineTransition,
+  formatRecentDoctrineHighlight,
+  formatRecentGrowthHighlight,
   formatStartupError,
   formatTimelineViewerStatus,
   getCommanderMessage,
+  getJournalCommanderPrompt,
+  getJournalWorkflowSteps,
   getMissionNextAction,
   getMissionNotificationSummary,
   getMissionPhaseWorkspaceDescription,
@@ -153,6 +159,97 @@ describe('Desktop shell', () => {
     expect(html).toContain('Quiet Recognition');
     expect(html).toContain('Consistency Tracking');
     expect(html).toContain('No Academy growth evidence yet');
+  });
+
+  it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {
+    const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
+
+    expect(html).toContain('Headquarters Overview');
+    expect(html).toContain('aria-label="Commander guidance"');
+    expect(html).toContain('aria-label="Next required action"');
+    expect(html).toContain('aria-label="Headquarters supporting information"');
+    expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
+    expect(html).not.toContain('aria-label="Mission operations"');
+    expect(html).not.toContain('Mission Debrief');
+  });
+
+  it('defines a deterministic guided Journal workflow sequence', () => {
+    expect(getJournalWorkflowSteps().map((step) => step.id)).toEqual([
+      'entry',
+      'reflection',
+      'trade-review',
+      'growth',
+      'timeline',
+      'search',
+      'archive',
+    ]);
+    expect(getJournalCommanderPrompt('entry')).toBe('Start with the record. Capture what happened before judging it.');
+    expect(getJournalCommanderPrompt('archive')).toBe('Archive only completed evidence. Keep raw journal history intact.');
+  });
+
+  it('renders Journal as a guided writing flow with one active workspace', () => {
+    const html = renderToStaticMarkup(<JournalRoom
+      journalEntries={[]}
+      dailyReflections={[]}
+      tradeReviews={[]}
+      growthEvents={[]}
+      archivedJournalEntries={[]}
+      onCreateJournalEntry={() => undefined}
+      onCreateDailyReflection={() => undefined}
+      onCreateTradeReview={() => undefined}
+      onCreateGrowthEvent={() => undefined}
+      onArchiveJournalEntry={() => undefined}
+    />);
+
+    expect(html).toContain('Guided Journal');
+    expect(html).toContain('aria-label="Journal Commander prompt"');
+    expect(html).toContain('aria-current="step"');
+    expect(html).toContain('aria-label="Journal entry"');
+    expect(html).not.toContain('aria-label="Daily reflection"');
+    expect(html).not.toContain('aria-label="Journal archive"');
+  });
+
+  it('renders Doctrine as a review chamber with manual candidate promotion visible', () => {
+    const html = renderToStaticMarkup(<DoctrineRoom
+      doctrineRecords={[]}
+      doctrineHistory={[]}
+      onPromoteDoctrineCandidate={() => undefined}
+    />);
+
+    expect(html).toContain('Doctrine Review');
+    expect(html).toContain('aria-label="Doctrine Commander prompt"');
+    expect(html).toContain('Review the lesson before it becomes law.');
+    expect(html).toContain('aria-label="Manual doctrine promotion"');
+  });
+
+  it('formats recent Headquarters highlights without exposing subsystem detail in Command', () => {
+    expect(formatRecentGrowthHighlight([])).toBe('No growth highlights yet');
+    expect(formatRecentDoctrineHighlight([])).toBe('No doctrine highlights yet');
+    expect(formatRecentGrowthHighlight([{
+      id: 'growth-001',
+      eventDate: '2026-06-29',
+      title: 'Waited for confirmation',
+      description: 'Stayed with the plan.',
+      category: 'discipline',
+      evidence: {
+        sourceType: 'journal_entry',
+        sourceId: 'journal-001',
+      },
+      rewardStatus: 'not_awarded',
+      createdAt: '2026-06-29T00:00:00.000Z',
+    }])).toBe('Waited for confirmation');
+    expect(formatRecentDoctrineHighlight([{
+      id: 'doctrine-001',
+      title: 'Wait for clean confirmation',
+      summary: 'No entry before confirmation.',
+      confidence: 'validated',
+      source: {
+        sourceType: 'journal_entry',
+        sourceId: 'journal-001',
+      },
+      createdAt: '2026-06-29T00:00:00.000Z',
+      updatedAt: '2026-06-29T00:00:00.000Z',
+    }])).toBe('Wait for clean confirmation');
   });
 
   it('derives the valid next mission action from the current mission state', () => {
@@ -434,35 +531,19 @@ describe('Desktop shell', () => {
     });
   });
 
-  it('renders the Mission Board placeholder in the command center', () => {
+  it('renders the Headquarters overview in the command center placeholder', () => {
     const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
 
     expect(html).toContain('data-layout="command-center"');
-    expect(html).toContain('aria-label="Command center status"');
-    expect(html).toContain('aria-label="Mission operations"');
-    expect(html).toContain('aria-label="Operational panels"');
-    expect(html).toContain('Mission Board');
-    expect(html).toContain('Create Mission');
-    expect(html).toContain('Mission Lifecycle');
-    expect(html).toContain('Mission Details');
-    expect(html).toContain('Mission Authorization');
-    expect(html).toContain('Mission Closing');
-    expect(html).toContain('Mission Debrief');
-    expect(html).toContain('Archived Mission Summary');
-    expect(html).toContain('Mission Archive Viewer');
-    expect(html).toContain('Timeline Viewer');
-    expect(html).toContain('Mission History');
-    expect(html).toContain('Archive Placeholder');
-    expect(html).toContain('Not started');
-    expect(html).toContain('Awaiting debrief');
-    expect(html).toContain('Awaiting archive');
-    expect(html).toContain('No archived missions');
-    expect(html).toContain('No timeline entries');
-    expect(html).toContain('No mission history');
-    expect(html).toContain('Awaiting mission creation');
+    expect(html).toContain('Headquarters Overview');
+    expect(html).toContain('Commander');
+    expect(html).toContain('Current Mission');
+    expect(html).toContain('Next Required Action');
+    expect(html).toContain('HQOS');
     expect(html).toContain('No mission loaded');
-    expect(html).toContain('No mission lifecycle loaded');
-    expect(html).toContain('Not available');
+    expect(html).toContain('No growth highlights yet');
+    expect(html).toContain('No doctrine highlights yet');
+    expect(html).not.toContain('Mission Debrief');
   });
 
   it('creates a local mission from operator input', () => {
