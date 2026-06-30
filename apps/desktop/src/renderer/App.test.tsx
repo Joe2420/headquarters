@@ -12,6 +12,7 @@ import {
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
   buildDesktopArchiveEventInspections,
+  buildDesktopArchiveSessionInspections,
   buildDesktopAcademyDashboard,
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
@@ -1074,6 +1075,10 @@ describe('Desktop shell', () => {
         payloadPreview: 'codename, eventCount',
       },
     ]);
+  });
+
+  it('handles the current empty desktop Archive session explorer state', () => {
+    expect(buildDesktopArchiveSessionInspections()).toEqual([]);
   });
 
   it('builds desktop mission timeline entries in chronological order', () => {

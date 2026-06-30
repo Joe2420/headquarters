@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0110 - Added Archive Intelligence session explorer.
+
 HQ-TASK-0109 - Added Archive Intelligence event explorer.
 
 HQ-TASK-0108 - Added Archive Intelligence timeline filters.
