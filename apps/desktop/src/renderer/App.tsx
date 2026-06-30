@@ -1,7 +1,8 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
-import type { Mission, MissionState } from '@headquarters/shared';
+import type { EventEnvelope, Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
+import { inspectArchiveEvents, type ArchiveEventInspection } from '@headquarters/archive-intelligence';
 import {
   buildAcademyConsistency,
   buildAcademyRecognitions,
@@ -1962,6 +1963,8 @@ function ArchiveRoom({
   archivedMissionSummaries: LocalMissionArchiveSummary[];
   archivedJournalEntries: ArchivedJournalEntry[];
 }) {
+  const eventInspections = buildDesktopArchiveEventInspections(archivedMissionSummaries, archivedJournalEntries);
+
   return (
     <div className="room-layout" data-room-id="archive-room">
       <section className="command-center-header" aria-label="Archive room status">
@@ -1971,6 +1974,7 @@ function ArchiveRoom({
       </section>
       <section className="command-center-panels" aria-label="Archive workspace">
         <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+        <ArchiveEventExplorerPanel eventInspections={eventInspections} />
         <section className="journal-panel" aria-label="Journal archive overview">
           <p className="section-label">Journal Archive</p>
           <h3>Journal Archive</h3>
@@ -1978,6 +1982,64 @@ function ArchiveRoom({
         </section>
       </section>
     </div>
+  );
+}
+
+export function buildDesktopArchiveEventInspections(
+  archivedMissionSummaries: readonly LocalMissionArchiveSummary[],
+  archivedJournalEntries: readonly ArchivedJournalEntry[],
+): readonly ArchiveEventInspection[] {
+  const missionEvents: EventEnvelope[] = archivedMissionSummaries.map((summary) => ({
+    id: `archive-event-${summary.missionId}`,
+    type: 'mission.archived',
+    version: 1,
+    occurredAt: summary.archivedAt,
+    source: 'archives',
+    missionId: summary.missionId,
+    priority: 'green',
+    payload: {
+      codename: summary.codename,
+      eventCount: summary.eventCount,
+    },
+  }));
+
+  const journalEvents: EventEnvelope[] = archivedJournalEntries.map((entry) => ({
+    id: `archive-event-${entry.id}`,
+    type: 'archive.artifact_written',
+    version: 1,
+    occurredAt: entry.archivedAt,
+    source: 'archives',
+    priority: 'green',
+    payload: {
+      entryDate: entry.rawEntry.entryDate,
+      classificationStatus: entry.metadata.classificationStatus,
+      tags: entry.metadata.tags,
+    },
+  }));
+
+  return inspectArchiveEvents([...missionEvents, ...journalEvents].sort((left, right) => left.occurredAt.localeCompare(right.occurredAt)));
+}
+
+function ArchiveEventExplorerPanel({ eventInspections }: { eventInspections: readonly ArchiveEventInspection[] }) {
+  return (
+    <section className="journal-panel" aria-label="Archive event explorer">
+      <p className="section-label">Event Explorer</p>
+      <h3>Archive Events</h3>
+      <p className="muted">{formatJournalCount(eventInspections.length, 'event inspected', 'events inspected')}</p>
+      {eventInspections.length > 0 ? (
+        <ul className="mission-archive-list">
+          {eventInspections.map((event) => (
+            <li key={event.id}>
+              <strong>{event.type}</strong>
+              <span>{event.payloadPreview}</span>
+              <time>{event.occurredAt}</time>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="muted">No archive events available for inspection.</p>
+      )}
+    </section>
   );
 }
 
