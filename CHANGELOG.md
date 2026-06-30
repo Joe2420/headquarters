@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0094 — Added deterministic Academy consistency tracking helpers.
+
 HQ-TASK-0093 — Added behavior-focused Academy statistics helpers.
 
 HQ-TASK-0092 — Added calm Academy recognition helpers for behavior-based milestones.
