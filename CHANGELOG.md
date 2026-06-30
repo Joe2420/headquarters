@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0097 - Added Sprint 7 Academy review package.
+
 HQ-TASK-0096 - Aligned desktop Headquarters UX with Commander-led room architecture.
 
 HQ-TASK-0095 — Added read-oriented Academy dashboard in the desktop shell.
