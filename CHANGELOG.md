@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0092 — Added calm Academy recognition helpers for behavior-based milestones.
+
 HQ-TASK-0091 — Added deterministic Academy level progression rules from behavior XP.
 
 HQ-TASK-0090 — Added Academy growth event evidence contracts for traceable Journal and mission sources.
