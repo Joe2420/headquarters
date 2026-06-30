@@ -84,8 +84,9 @@
 - HQ-TASK-0086 — Doctrine Diff
 - HQ-TASK-0087 — Trading Plan Integration
 - HQ-TASK-0088 — Sprint 6 Doctrine Review
+- HQ-TASK-0089 — Academy XP Engine
 
-Current milestone gate: Sprint 6 Doctrine is complete through HIG-TASK-050 / HQ-TASK-0088.
+Current milestone gate: Sprint 7 Academy is in progress through HIG-TASK-051 / HQ-TASK-0089.
 
 ## Post-Sprint UX Alignment
 
@@ -109,6 +110,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 6 Doctrine is complete through HIG-TASK-050 / HQ-TASK-0088.
+Sprint 7 Academy is in progress through HIG-TASK-051 / HQ-TASK-0089.
 
-Post-Sprint UX alignment is complete on feature/HQ-TASK-0081 pending Founder inspection.
+Post-Sprint UX alignment is complete and merged.
