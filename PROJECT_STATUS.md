@@ -94,8 +94,9 @@
 - HQ-TASK-0097 — Sprint 7 Academy Review Package
 - HQ-TASK-0096 — Headquarters UX Repository Vision Alignment
 - HQ-TASK-0098 — Guardian Rule Monitoring
+- HQ-TASK-0099 — Guardian Risk Monitoring
 
-Current milestone gate: Sprint 8 Guardian is in progress through HIG-TASK-059 / HQ-TASK-0098.
+Current milestone gate: Sprint 8 Guardian is in progress through HIG-TASK-060 / HQ-TASK-0099.
 
 ## Post-Sprint UX Alignment
 
@@ -120,6 +121,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 8 Guardian is in progress through HIG-TASK-059 / HQ-TASK-0098.
+Sprint 8 Guardian is in progress through HIG-TASK-060 / HQ-TASK-0099.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
