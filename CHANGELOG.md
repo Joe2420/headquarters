@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0101 - Added Guardian session limit tracking.
+
 HQ-TASK-0100 - Added Guardian daily limit tracking.
 
 HQ-TASK-0099 - Added Guardian risk monitoring behavior.
