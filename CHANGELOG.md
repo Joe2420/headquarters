@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0091 — Added deterministic Academy level progression rules from behavior XP.
+
 HQ-TASK-0090 — Added Academy growth event evidence contracts for traceable Journal and mission sources.
 
 HQ-TASK-0089 — Added Academy XP engine foundation for behavior-based growth.
