@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      '@headquarters/academy': resolve(__dirname, '../../packages/academy/src/index.ts'),
       '@headquarters/database': resolve(__dirname, '../../packages/database/src/index.ts'),
       '@headquarters/doctrine': resolve(__dirname, '../../packages/doctrine/src/index.ts'),
       '@headquarters/hqos': resolve(__dirname, '../../packages/hqos/src/index.ts'),

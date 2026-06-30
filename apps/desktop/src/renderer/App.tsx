@@ -3,6 +3,13 @@ import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
 import {
+  buildAcademyConsistency,
+  buildAcademyRecognitions,
+  buildAcademyStatistics,
+  createAcademyGrowthEventFromJournal,
+  type AcademyRecognition,
+} from '@headquarters/academy';
+import {
   buildTradingPlanDoctrineReferences,
   diffDoctrineRecords,
   type DoctrineDiff,
@@ -108,7 +115,7 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
-export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'doctrine' | 'archive' | 'settings';
+export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'academy' | 'doctrine' | 'archive' | 'settings';
 export type HeadquartersRoomId = NavigationAreaId;
 
 export interface PrimaryNavigationItem {
@@ -121,6 +128,7 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'command', label: 'Command' },
   { id: 'missions', label: 'Missions' },
   { id: 'journal', label: 'Journal' },
+  { id: 'academy', label: 'Academy' },
   { id: 'doctrine', label: 'Doctrine' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
@@ -447,6 +455,10 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
         onPromoteDoctrineCandidate={context.onPromoteDoctrineCandidate}
       />
     );
+  }
+
+  if (room === 'academy') {
+    return <AcademyRoom growthEvents={context.growthEvents} />;
   }
 
   if (room === 'archive') {
@@ -1626,6 +1638,96 @@ function JournalTimelinePanel({ timeline }: { timeline: JournalTimeline }) {
         ))}
       </ol>
     </section>
+  );
+}
+
+export interface DesktopAcademyDashboard {
+  readonly totalGrowthEvents: number;
+  readonly totalXp: number;
+  readonly levelTitle: string;
+  readonly recognitionCount: number;
+  readonly activeDays: number;
+  readonly longestDailyStreak: number;
+  readonly hasGrowthEvidence: boolean;
+  readonly recognitions: readonly AcademyRecognition[];
+}
+
+export function buildDesktopAcademyDashboard(growthEvents: readonly GrowthEvent[]): DesktopAcademyDashboard {
+  const academyEvents = growthEvents.map(createAcademyGrowthEventFromJournal);
+  const statistics = buildAcademyStatistics(academyEvents);
+  const consistency = buildAcademyConsistency(academyEvents);
+  const recognitions = buildAcademyRecognitions(academyEvents);
+
+  return {
+    totalGrowthEvents: statistics.totalGrowthEvents,
+    totalXp: statistics.totalXp,
+    levelTitle: statistics.level.title,
+    recognitionCount: statistics.recognitionCount,
+    activeDays: consistency.activeDays,
+    longestDailyStreak: consistency.longestDailyStreak,
+    hasGrowthEvidence: statistics.hasGrowthEvidence,
+    recognitions,
+  };
+}
+
+export function formatAcademyDashboardStatus(dashboard: DesktopAcademyDashboard): string {
+  if (!dashboard.hasGrowthEvidence) return 'No Academy growth evidence yet';
+  return `${dashboard.totalXp} XP across ${dashboard.totalGrowthEvents} growth events`;
+}
+
+export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
+  const dashboard = buildDesktopAcademyDashboard(growthEvents);
+
+  return (
+    <div className="room-layout" data-room-id="academy-room">
+      <section className="command-center-header" aria-label="Academy room status">
+        <p className="section-label">Academy Room</p>
+        <h2>Academy Dashboard</h2>
+        <p className="muted">Behavior growth, levels, recognition, statistics, and consistency from approved evidence.</p>
+      </section>
+
+      <section className="command-center-panels" aria-label="Academy dashboard">
+        <section className="journal-panel" aria-label="Academy status">
+          <p className="section-label">Status</p>
+          <h3>Growth Standing</h3>
+          <dl>
+            <dt>XP</dt>
+            <dd>{dashboard.totalXp}</dd>
+            <dt>Level</dt>
+            <dd>{dashboard.levelTitle}</dd>
+            <dt>Growth Events</dt>
+            <dd>{dashboard.totalGrowthEvents}</dd>
+          </dl>
+          <p className="muted">{formatAcademyDashboardStatus(dashboard)}</p>
+        </section>
+
+        <section className="journal-panel" aria-label="Academy recognition">
+          <p className="section-label">Recognition</p>
+          <h3>Quiet Recognition</h3>
+          <p className="muted">{formatJournalCount(dashboard.recognitionCount, 'recognition', 'recognitions')}</p>
+          <ol className="mission-timeline-list">
+            {dashboard.recognitions.map((recognition) => (
+              <li key={recognition.id}>
+                <span>{recognition.title}</span>
+                <strong>{recognition.type}</strong>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="journal-panel" aria-label="Academy consistency">
+          <p className="section-label">Consistency</p>
+          <h3>Consistency Tracking</h3>
+          <dl>
+            <dt>Active Days</dt>
+            <dd>{dashboard.activeDays}</dd>
+            <dt>Longest Streak</dt>
+            <dd>{dashboard.longestDailyStreak}</dd>
+          </dl>
+          <p className="muted">Consistency is derived from behavior evidence, not financial outcome.</p>
+        </section>
+      </section>
+    </div>
   );
 }
 
