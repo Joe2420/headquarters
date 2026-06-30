@@ -107,4 +107,14 @@ describe('App startup wiring', () => {
       database.close();
     }
   });
+
+  it('exposes doctrine records through a read-only startup query', async () => {
+    const startup = initializeAppStartup({ dbPath: createTempDatabasePath(), migrationsDirectory });
+
+    try {
+      await expect(startup.listDoctrineRecords()).resolves.toEqual({ records: [] });
+    } finally {
+      startup.close();
+    }
+  });
 });

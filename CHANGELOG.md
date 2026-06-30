@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0082 — Added a read-only Doctrine Viewer in the Doctrine Chamber.
+
 HQ-TASK-0081 — Added Doctrine repository contracts and SQLite persistence.
 
 HQ-TASK-0080 — Stabilized completed Mission and Journal workflows in the desktop shell.

@@ -77,8 +77,9 @@
 - HQ-TASK-0079 — Sprint 5 Journal System Review Package
 - HQ-TASK-0080 — Desktop Mission and Journal Workflow Stabilization
 - HQ-TASK-0081 — Doctrine Repository
+- HQ-TASK-0082 — Doctrine Viewer
 
-Current milestone gate: Sprint 6 Doctrine is in progress through HIG-TASK-043 / HQ-TASK-0081.
+Current milestone gate: Sprint 6 Doctrine is in progress through HIG-TASK-044 / HQ-TASK-0082.
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -96,4 +97,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 6 Doctrine is in progress through HIG-TASK-043 / HQ-TASK-0081.
+Sprint 6 Doctrine is in progress through HIG-TASK-044 / HQ-TASK-0082.

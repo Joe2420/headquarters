@@ -38,6 +38,9 @@ importers:
       '@headquarters/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@headquarters/doctrine':
+        specifier: workspace:*
+        version: link:../../packages/doctrine
       '@headquarters/hqos':
         specifier: workspace:*
         version: link:../../packages/hqos

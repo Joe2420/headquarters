@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@headquarters/database": "workspace:*",
+    "@headquarters/doctrine": "workspace:*",
     "@headquarters/hqos": "workspace:*",
     "@headquarters/journal": "workspace:*",
     "@headquarters/shared": "workspace:*",
