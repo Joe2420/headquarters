@@ -13,6 +13,7 @@ async function createWindow() {
 
   ipcMain.handle('headquarters:get-startup-status', () => startupRuntime?.status);
   ipcMain.handle('headquarters:list-doctrine-records', () => startupRuntime?.listDoctrineRecords());
+  ipcMain.handle('headquarters:promote-doctrine-candidate', (_event, input: unknown) => startupRuntime?.promoteDoctrineCandidate(parseDoctrinePromotionInput(input)));
   ipcMain.handle('headquarters:create-mission', (_event, input: unknown) => startupRuntime?.createMission(parseCreateMissionInput(input)));
   ipcMain.handle('headquarters:start-briefing', (_event, input: unknown) => startupRuntime?.startBriefing(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:complete-briefing', (_event, input: unknown) => startupRuntime?.completeBriefing(parseMissionCommandInput(input)));
@@ -139,6 +140,48 @@ function parseDebriefInput(input: unknown): {
     behaviorSummary: candidate.behaviorSummary,
     disciplineNotes: candidate.disciplineNotes,
     lesson: candidate.lesson,
+  };
+}
+
+function parseDoctrinePromotionInput(input: unknown): {
+  candidateId: string;
+  title: string;
+  summary: string;
+  sourceId: string;
+  archiveId: string;
+  excerpt: string;
+} {
+  if (typeof input !== 'object' || input === null) {
+    throw new Error('Doctrine promotion input must be an object.');
+  }
+
+  const candidate = input as {
+    candidateId?: unknown;
+    title?: unknown;
+    summary?: unknown;
+    sourceId?: unknown;
+    archiveId?: unknown;
+    excerpt?: unknown;
+  };
+
+  if (
+    typeof candidate.candidateId !== 'string'
+    || typeof candidate.title !== 'string'
+    || typeof candidate.summary !== 'string'
+    || typeof candidate.sourceId !== 'string'
+    || typeof candidate.archiveId !== 'string'
+    || typeof candidate.excerpt !== 'string'
+  ) {
+    throw new Error('Doctrine promotion requires candidateId, title, summary, sourceId, archiveId, and excerpt.');
+  }
+
+  return {
+    candidateId: candidate.candidateId,
+    title: candidate.title,
+    summary: candidate.summary,
+    sourceId: candidate.sourceId,
+    archiveId: candidate.archiveId,
+    excerpt: candidate.excerpt,
   };
 }
 

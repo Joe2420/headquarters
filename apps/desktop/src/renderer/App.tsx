@@ -37,6 +37,15 @@ export interface MissionDraft {
   objective: string;
 }
 
+export interface DoctrinePromotionDraft {
+  candidateId: string;
+  title: string;
+  summary: string;
+  sourceId: string;
+  archiveId: string;
+  excerpt: string;
+}
+
 export interface ArchiveWritePlaceholder {
   id: string;
   missionId: string;
@@ -141,6 +150,7 @@ declare global {
       version?: string;
       getStartupStatus?: () => Promise<StartupStatus>;
       listDoctrineRecords?: () => Promise<{ records: DoctrineRecord[] }>;
+      promoteDoctrineCandidate?: (input: DoctrinePromotionDraft) => Promise<{ record: DoctrineRecord }>;
       createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
       startBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       completeBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
@@ -308,6 +318,7 @@ export function App() {
                 onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
                 onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
                 onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
+                onPromoteDoctrineCandidate: (record) => setDoctrineRecords((records) => [...records, record]),
               })
             )}
           </section>
@@ -365,6 +376,7 @@ interface HeadquartersRoomContext {
   onCreateTradeReview: (review: TradeReview) => void;
   onCreateGrowthEvent: (event: GrowthEvent) => void;
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
+  onPromoteDoctrineCandidate: (record: DoctrineRecord) => void;
 }
 
 function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersRoomContext) {
@@ -404,7 +416,12 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   }
 
   if (room === 'doctrine') {
-    return <DoctrineRoom doctrineRecords={context.doctrineRecords} />;
+    return (
+      <DoctrineRoom
+        doctrineRecords={context.doctrineRecords}
+        onPromoteDoctrineCandidate={context.onPromoteDoctrineCandidate}
+      />
+    );
   }
 
   if (room === 'archive') {
@@ -1058,6 +1075,30 @@ export async function archiveDesktopMission(mission: ActiveMission): Promise<Act
   return mapMissionRecordToActiveMission(result.mission);
 }
 
+export async function promoteDesktopDoctrineCandidate(draft: DoctrinePromotionDraft): Promise<DoctrineRecord | undefined> {
+  const candidateId = draft.candidateId.trim();
+  const title = draft.title.trim();
+  const summary = draft.summary.trim();
+  const sourceId = draft.sourceId.trim();
+  const archiveId = draft.archiveId.trim();
+  const excerpt = draft.excerpt.trim();
+
+  if (!candidateId || !title || !summary || !sourceId || !archiveId || !excerpt) {
+    return undefined;
+  }
+
+  const result = await globalThis.window?.headquarters?.promoteDoctrineCandidate?.({
+    candidateId,
+    title,
+    summary,
+    sourceId,
+    archiveId,
+    excerpt,
+  });
+
+  return result?.record;
+}
+
 interface MissionClosingPanelProps {
   activeMission?: ActiveMission | undefined;
 }
@@ -1453,7 +1494,13 @@ function ArchiveRoom({
   );
 }
 
-function DoctrineRoom({ doctrineRecords }: { doctrineRecords: DoctrineRecord[] }) {
+function DoctrineRoom({
+  doctrineRecords,
+  onPromoteDoctrineCandidate,
+}: {
+  doctrineRecords: DoctrineRecord[];
+  onPromoteDoctrineCandidate: (record: DoctrineRecord) => void;
+}) {
   return (
     <div className="room-layout" data-room-id="doctrine-room">
       <section className="command-center-header" aria-label="Doctrine room status">
@@ -1463,8 +1510,78 @@ function DoctrineRoom({ doctrineRecords }: { doctrineRecords: DoctrineRecord[] }
       </section>
       <section className="command-center-panels" aria-label="Doctrine workspace">
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+        <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
       </section>
     </div>
+  );
+}
+
+function DoctrinePromotionPanel({
+  onPromoteDoctrineCandidate,
+}: {
+  onPromoteDoctrineCandidate: (record: DoctrineRecord) => void;
+}) {
+  const [candidateId, setCandidateId] = useState('');
+  const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState('');
+  const [sourceId, setSourceId] = useState('');
+  const [archiveId, setArchiveId] = useState('');
+  const [excerpt, setExcerpt] = useState('');
+
+  async function handlePromotion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const record = await promoteDesktopDoctrineCandidate({
+      candidateId,
+      title,
+      summary,
+      sourceId,
+      archiveId,
+      excerpt,
+    });
+
+    if (record === undefined) return;
+
+    onPromoteDoctrineCandidate(record);
+    setCandidateId('');
+    setTitle('');
+    setSummary('');
+    setSourceId('');
+    setArchiveId('');
+    setExcerpt('');
+  }
+
+  return (
+    <form className="journal-panel" aria-label="Manual doctrine promotion" onSubmit={handlePromotion}>
+      <p className="section-label">Manual Promotion</p>
+      <h3>Promote Candidate</h3>
+      <label>
+        <span>Candidate Id</span>
+        <input value={candidateId} onChange={(event) => setCandidateId(event.target.value)} placeholder="candidate-001" />
+      </label>
+      <label>
+        <span>Title</span>
+        <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Wait for confirmation" />
+      </label>
+      <label>
+        <span>Summary</span>
+        <textarea value={summary} onChange={(event) => setSummary(event.target.value)} placeholder="Doctrine summary" />
+      </label>
+      <label>
+        <span>Source Journal Entry Id</span>
+        <input value={sourceId} onChange={(event) => setSourceId(event.target.value)} placeholder="journal-001" />
+      </label>
+      <label>
+        <span>Source Archive Id</span>
+        <input value={archiveId} onChange={(event) => setArchiveId(event.target.value)} placeholder="archive-001" />
+      </label>
+      <label>
+        <span>Source Excerpt</span>
+        <textarea value={excerpt} onChange={(event) => setExcerpt(event.target.value)} placeholder="Evidence excerpt" />
+      </label>
+      <button className="secondary-action" type="submit">
+        Promote Candidate
+      </button>
+    </form>
   );
 }
 
