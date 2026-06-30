@@ -38,6 +38,7 @@ describe('App startup wiring', () => {
         '004_observation_sessions',
         '005_mission_debriefs',
         '006_doctrine_records',
+        '007_doctrine_history',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
     } finally {
@@ -56,6 +57,7 @@ describe('App startup wiring', () => {
         '004_observation_sessions',
         '005_mission_debriefs',
         '006_doctrine_records',
+        '007_doctrine_history',
       ]);
     } finally {
       secondStartup.close();
@@ -138,7 +140,10 @@ describe('App startup wiring', () => {
         sourceId: 'journal-001',
         excerpt: 'Wait for confirmation before entry.',
       });
+      expect(result.historyEntry.doctrineId).toBe(result.record.id);
+      expect(result.historyEntry.action).toBe('promoted');
       await expect(startup.listDoctrineRecords()).resolves.toEqual({ records: [result.record] });
+      await expect(startup.listDoctrineHistory()).resolves.toEqual({ entries: [result.historyEntry] });
     } finally {
       startup.close();
     }

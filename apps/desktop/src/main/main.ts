@@ -13,6 +13,7 @@ async function createWindow() {
 
   ipcMain.handle('headquarters:get-startup-status', () => startupRuntime?.status);
   ipcMain.handle('headquarters:list-doctrine-records', () => startupRuntime?.listDoctrineRecords());
+  ipcMain.handle('headquarters:list-doctrine-history', () => startupRuntime?.listDoctrineHistory());
   ipcMain.handle('headquarters:promote-doctrine-candidate', (_event, input: unknown) => startupRuntime?.promoteDoctrineCandidate(parseDoctrinePromotionInput(input)));
   ipcMain.handle('headquarters:create-mission', (_event, input: unknown) => startupRuntime?.createMission(parseCreateMissionInput(input)));
   ipcMain.handle('headquarters:start-briefing', (_event, input: unknown) => startupRuntime?.startBriefing(parseMissionCommandInput(input)));

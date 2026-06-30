@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('headquarters', {
   version: '0.1.0',
   getStartupStatus: () => ipcRenderer.invoke('headquarters:get-startup-status'),
   listDoctrineRecords: () => ipcRenderer.invoke('headquarters:list-doctrine-records'),
+  listDoctrineHistory: () => ipcRenderer.invoke('headquarters:list-doctrine-history'),
   promoteDoctrineCandidate: (input: unknown) => ipcRenderer.invoke('headquarters:promote-doctrine-candidate', input),
   createMission: (input: unknown) => ipcRenderer.invoke('headquarters:create-mission', input),
   startBriefing: (input: unknown) => ipcRenderer.invoke('headquarters:start-briefing', input),

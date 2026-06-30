@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
-import type { DoctrineRecord } from '@headquarters/doctrine';
+import type { DoctrineHistoryEntry, DoctrineRecord } from '@headquarters/doctrine';
 import {
   archiveJournalEntry,
   buildJournalTimeline,
@@ -150,7 +150,11 @@ declare global {
       version?: string;
       getStartupStatus?: () => Promise<StartupStatus>;
       listDoctrineRecords?: () => Promise<{ records: DoctrineRecord[] }>;
-      promoteDoctrineCandidate?: (input: DoctrinePromotionDraft) => Promise<{ record: DoctrineRecord }>;
+      listDoctrineHistory?: () => Promise<{ entries: DoctrineHistoryEntry[] }>;
+      promoteDoctrineCandidate?: (input: DoctrinePromotionDraft) => Promise<{
+        record: DoctrineRecord;
+        historyEntry: DoctrineHistoryEntry;
+      }>;
       createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
       startBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       completeBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
@@ -182,6 +186,7 @@ export function App() {
   const [growthEvents, setGrowthEvents] = useState<GrowthEvent[]>([]);
   const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
   const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
+  const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -224,12 +229,19 @@ export function App() {
   useEffect(() => {
     let active = true;
 
-    globalThis.window?.headquarters?.listDoctrineRecords?.()
-      .then((result) => {
-        if (active && result) setDoctrineRecords(result.records);
+    Promise.all([
+      globalThis.window?.headquarters?.listDoctrineRecords?.(),
+      globalThis.window?.headquarters?.listDoctrineHistory?.(),
+    ])
+      .then(([recordsResult, historyResult]) => {
+        if (!active) return;
+        if (recordsResult) setDoctrineRecords(recordsResult.records);
+        if (historyResult) setDoctrineHistory(historyResult.entries);
       })
       .catch(() => {
-        if (active) setDoctrineRecords([]);
+        if (!active) return;
+        setDoctrineRecords([]);
+        setDoctrineHistory([]);
       });
 
     return () => {
@@ -291,6 +303,7 @@ export function App() {
                 growthEvents,
                 archivedJournalEntries,
                 doctrineRecords,
+                doctrineHistory,
                 onCreateMission: async (mission) => {
                   setActiveMission(mission);
                   setMissionHistory((history) => upsertMissionHistory(history, mission));
@@ -318,7 +331,10 @@ export function App() {
                 onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
                 onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
                 onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
-                onPromoteDoctrineCandidate: (record) => setDoctrineRecords((records) => [...records, record]),
+                onPromoteDoctrineCandidate: (record, historyEntry) => {
+                  setDoctrineRecords((records) => [...records, record]);
+                  setDoctrineHistory((entries) => [...entries, historyEntry]);
+                },
               })
             )}
           </section>
@@ -366,6 +382,7 @@ interface HeadquartersRoomContext {
   growthEvents: GrowthEvent[];
   archivedJournalEntries: ArchivedJournalEntry[];
   doctrineRecords: DoctrineRecord[];
+  doctrineHistory: DoctrineHistoryEntry[];
   onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   onMissionChanged: (mission: ActiveMission) => void;
   onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
@@ -376,7 +393,7 @@ interface HeadquartersRoomContext {
   onCreateTradeReview: (review: TradeReview) => void;
   onCreateGrowthEvent: (event: GrowthEvent) => void;
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
-  onPromoteDoctrineCandidate: (record: DoctrineRecord) => void;
+  onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
 }
 
 function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersRoomContext) {
@@ -419,6 +436,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
     return (
       <DoctrineRoom
         doctrineRecords={context.doctrineRecords}
+        doctrineHistory={context.doctrineHistory}
         onPromoteDoctrineCandidate={context.onPromoteDoctrineCandidate}
       />
     );
@@ -1075,7 +1093,9 @@ export async function archiveDesktopMission(mission: ActiveMission): Promise<Act
   return mapMissionRecordToActiveMission(result.mission);
 }
 
-export async function promoteDesktopDoctrineCandidate(draft: DoctrinePromotionDraft): Promise<DoctrineRecord | undefined> {
+export async function promoteDesktopDoctrineCandidate(
+  draft: DoctrinePromotionDraft,
+): Promise<{ record: DoctrineRecord; historyEntry: DoctrineHistoryEntry } | undefined> {
   const candidateId = draft.candidateId.trim();
   const title = draft.title.trim();
   const summary = draft.summary.trim();
@@ -1096,7 +1116,7 @@ export async function promoteDesktopDoctrineCandidate(draft: DoctrinePromotionDr
     excerpt,
   });
 
-  return result?.record;
+  return result;
 }
 
 interface MissionClosingPanelProps {
@@ -1496,10 +1516,12 @@ function ArchiveRoom({
 
 function DoctrineRoom({
   doctrineRecords,
+  doctrineHistory,
   onPromoteDoctrineCandidate,
 }: {
   doctrineRecords: DoctrineRecord[];
-  onPromoteDoctrineCandidate: (record: DoctrineRecord) => void;
+  doctrineHistory: DoctrineHistoryEntry[];
+  onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
 }) {
   return (
     <div className="room-layout" data-room-id="doctrine-room">
@@ -1510,6 +1532,7 @@ function DoctrineRoom({
       </section>
       <section className="command-center-panels" aria-label="Doctrine workspace">
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+        <DoctrineHistoryPanel historyEntries={doctrineHistory} />
         <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
       </section>
     </div>
@@ -1519,7 +1542,7 @@ function DoctrineRoom({
 function DoctrinePromotionPanel({
   onPromoteDoctrineCandidate,
 }: {
-  onPromoteDoctrineCandidate: (record: DoctrineRecord) => void;
+  onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
 }) {
   const [candidateId, setCandidateId] = useState('');
   const [title, setTitle] = useState('');
@@ -1530,7 +1553,7 @@ function DoctrinePromotionPanel({
 
   async function handlePromotion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const record = await promoteDesktopDoctrineCandidate({
+    const result = await promoteDesktopDoctrineCandidate({
       candidateId,
       title,
       summary,
@@ -1539,9 +1562,9 @@ function DoctrinePromotionPanel({
       excerpt,
     });
 
-    if (record === undefined) return;
+    if (result === undefined) return;
 
-    onPromoteDoctrineCandidate(record);
+    onPromoteDoctrineCandidate(result.record, result.historyEntry);
     setCandidateId('');
     setTitle('');
     setSummary('');
@@ -1582,6 +1605,30 @@ function DoctrinePromotionPanel({
         Promote Candidate
       </button>
     </form>
+  );
+}
+
+function DoctrineHistoryPanel({ historyEntries }: { historyEntries: DoctrineHistoryEntry[] }) {
+  return (
+    <section className="journal-panel" aria-label="Doctrine history">
+      <p className="section-label">History</p>
+      <h3>Doctrine History</h3>
+      {historyEntries.length === 0 ? (
+        <p className="muted">No doctrine history has been recorded yet.</p>
+      ) : (
+        <div className="timeline-list">
+          {historyEntries.map((entry) => (
+            <article className="timeline-item" key={entry.id}>
+              <strong>{entry.action}</strong>
+              <span>{entry.summary}</span>
+              <span>
+                Doctrine {entry.doctrineId} at {entry.occurredAt}
+              </span>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 
