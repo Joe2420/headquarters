@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0087 — Added read-only Trading Plan references to accepted Doctrine.
+
 HQ-TASK-0086 — Added read-only Doctrine diff helpers and viewer panel.
 
 HQ-TASK-0085 — Added read-only Doctrine history tracking.

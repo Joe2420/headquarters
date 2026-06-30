@@ -2,7 +2,14 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
-import { diffDoctrineRecords, type DoctrineDiff, type DoctrineHistoryEntry, type DoctrineRecord } from '@headquarters/doctrine';
+import {
+  buildTradingPlanDoctrineReferences,
+  diffDoctrineRecords,
+  type DoctrineDiff,
+  type DoctrineHistoryEntry,
+  type DoctrineRecord,
+  type TradingPlanDoctrineReference,
+} from '@headquarters/doctrine';
 import {
   archiveJournalEntry,
   buildJournalTimeline,
@@ -1533,6 +1540,7 @@ function DoctrineRoom({
       <section className="command-center-panels" aria-label="Doctrine workspace">
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
         <DoctrineDiffPanel diff={buildDoctrineDiffPreview(doctrineRecords)} />
+        <TradingPlanDoctrinePanel references={buildDefaultTradingPlanDoctrineReferences(doctrineRecords)} />
         <DoctrineHistoryPanel historyEntries={doctrineHistory} />
         <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
       </section>
@@ -1665,6 +1673,39 @@ export function buildDoctrineDiffPreview(records: readonly DoctrineRecord[]): Do
   if (firstRecord === undefined || secondRecord === undefined) return undefined;
 
   return diffDoctrineRecords(firstRecord, secondRecord);
+}
+
+export function buildDefaultTradingPlanDoctrineReferences(
+  records: readonly DoctrineRecord[],
+): TradingPlanDoctrineReference[] {
+  return buildTradingPlanDoctrineReferences({
+    id: 'primary-trading-plan',
+    name: 'Primary Trading Plan',
+  }, records);
+}
+
+function TradingPlanDoctrinePanel({ references }: { references: TradingPlanDoctrineReference[] }) {
+  return (
+    <section className="journal-panel" aria-label="Trading plan doctrine references">
+      <p className="section-label">Trading Plan</p>
+      <h3>Plan Doctrine</h3>
+      {references.length === 0 ? (
+        <p className="muted">No accepted doctrine is available for the trading plan yet.</p>
+      ) : (
+        <div className="timeline-list">
+          {references.map((reference) => (
+            <article className="timeline-item" key={reference.doctrineId}>
+              <strong>{reference.title}</strong>
+              <span>{reference.summary}</span>
+              <span>
+                {reference.tradingPlanName} references {reference.doctrineId}
+              </span>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
 
 function DoctrineViewerPanel({ doctrineRecords }: { doctrineRecords: DoctrineRecord[] }) {

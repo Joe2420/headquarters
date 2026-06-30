@@ -6,6 +6,7 @@ import {
   CommandCenterPlaceholder,
   type ActiveMission,
   type StartupStatus,
+  buildDefaultTradingPlanDoctrineReferences,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
@@ -197,6 +198,37 @@ describe('Desktop shell', () => {
         field: 'confidence',
         before: 'candidate',
         after: 'validated',
+      },
+    ]);
+  });
+
+  it('builds read-only trading plan doctrine references from accepted doctrine', () => {
+    const validatedRecord = {
+      id: 'doctrine-001',
+      title: 'Follow the plan',
+      summary: 'Follow the trading plan instead of improvising.',
+      confidence: 'validated' as const,
+      source: {
+        sourceType: 'journal_entry' as const,
+        sourceId: 'journal-001',
+      },
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    };
+    const candidateRecord = {
+      ...validatedRecord,
+      id: 'doctrine-002',
+      confidence: 'candidate' as const,
+    };
+
+    expect(buildDefaultTradingPlanDoctrineReferences([candidateRecord, validatedRecord])).toEqual([
+      {
+        tradingPlanId: 'primary-trading-plan',
+        tradingPlanName: 'Primary Trading Plan',
+        doctrineId: 'doctrine-001',
+        title: 'Follow the plan',
+        summary: 'Follow the trading plan instead of improvising.',
+        sourceId: 'journal-001',
       },
     ]);
   });
