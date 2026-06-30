@@ -38,6 +38,7 @@ import {
   mapMissionRecordToActiveMission,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
+  promoteDesktopDoctrineCandidate,
   reportForDuty,
   requestLocalReturnToBase,
   upsertMissionHistory,
@@ -106,6 +107,54 @@ describe('Desktop shell', () => {
     expect(getMissionNextAction(missionWithState('return_to_base'))).toMatchObject({
       buttonLabel: 'Save Debrief',
       disabled: false,
+    });
+  });
+
+  it('promotes doctrine candidates through the desktop bridge only with complete evidence context', async () => {
+    const originalWindow = globalThis.window;
+    const promotedRecord = {
+      id: 'doctrine-001',
+      title: 'Wait for confirmation',
+      summary: 'Wait for confirmation before entry.',
+      confidence: 'validated' as const,
+      source: {
+        sourceType: 'journal_entry' as const,
+        sourceId: 'journal-001',
+        excerpt: 'Wait for confirmation before entry.',
+      },
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: {
+        headquarters: {
+          promoteDoctrineCandidate: async () => ({ record: promotedRecord }),
+        },
+      },
+    });
+
+    await expect(promoteDesktopDoctrineCandidate({
+      candidateId: 'candidate-001',
+      title: 'Wait for confirmation',
+      summary: 'Wait for confirmation before entry.',
+      sourceId: 'journal-001',
+      archiveId: 'archive-001',
+      excerpt: 'Wait for confirmation before entry.',
+    })).resolves.toEqual(promotedRecord);
+    await expect(promoteDesktopDoctrineCandidate({
+      candidateId: '',
+      title: 'Wait for confirmation',
+      summary: 'Wait for confirmation before entry.',
+      sourceId: 'journal-001',
+      archiveId: 'archive-001',
+      excerpt: 'Wait for confirmation before entry.',
+    })).resolves.toBeUndefined();
+
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
     });
   });
 

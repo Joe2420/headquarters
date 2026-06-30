@@ -12,7 +12,7 @@ import {
   runMigrations,
 } from '@headquarters/database';
 import { MissionService } from '@headquarters/hqos';
-import type { DoctrineRecord } from '@headquarters/doctrine';
+import { promoteDoctrineCandidate, type DoctrineCandidate, type DoctrineRecord } from '@headquarters/doctrine';
 import type { Mission } from '@headquarters/shared';
 
 export type StartupState = 'ready' | 'failed';
@@ -41,6 +41,19 @@ export interface DesktopCreateMissionResult {
 
 export interface DesktopDoctrineListResult {
   records: DoctrineRecord[];
+}
+
+export interface DesktopDoctrinePromotionInput {
+  candidateId: string;
+  title: string;
+  summary: string;
+  sourceId: string;
+  archiveId: string;
+  excerpt: string;
+}
+
+export interface DesktopDoctrinePromotionResult {
+  record: DoctrineRecord;
 }
 
 export interface DesktopMissionCommandInput {
@@ -82,6 +95,7 @@ export interface DesktopDebriefResult {
 export interface AppStartupRuntime {
   status: AppStartupStatus;
   listDoctrineRecords: () => Promise<DesktopDoctrineListResult>;
+  promoteDoctrineCandidate: (input: DesktopDoctrinePromotionInput) => Promise<DesktopDoctrinePromotionResult>;
   createMission: (input: DesktopCreateMissionInput) => Promise<DesktopCreateMissionResult>;
   startBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   completeBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
@@ -124,6 +138,13 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       listDoctrineRecords: async () => ({
         records: doctrineRepository.list(),
       }),
+      promoteDoctrineCandidate: async (input) => {
+        const candidate = mapPromotionInputToCandidate(input);
+        const record = promoteDoctrineCandidate(candidate);
+        return {
+          record: doctrineRepository.save(record),
+        };
+      },
       createMission: async (input) => {
         const result = await missionService.createMission(input);
         return {
@@ -208,6 +229,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       listDoctrineRecords: async () => ({
         records: [],
       }),
+      promoteDoctrineCandidate: async () => {
+        throw new Error('Desktop startup is not ready for doctrine promotion.');
+      },
       createMission: async () => {
         throw new Error('Desktop startup is not ready for mission creation.');
       },
@@ -262,6 +286,22 @@ function createMissionService(database: HeadquartersDatabase): MissionService {
     undefined,
     debriefRepository,
   );
+}
+
+function mapPromotionInputToCandidate(input: DesktopDoctrinePromotionInput): DoctrineCandidate {
+  return {
+    id: input.candidateId,
+    title: input.title,
+    summary: input.summary,
+    status: 'candidate',
+    source: {
+      sourceType: 'journal_entry',
+      sourceId: input.sourceId,
+      archiveId: input.archiveId,
+      excerpt: input.excerpt,
+    },
+    createdAt: new Date().toISOString(),
+  };
 }
 
 export function getDefaultMigrationsDirectory(): string {

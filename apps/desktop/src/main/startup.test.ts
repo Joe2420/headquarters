@@ -117,4 +117,30 @@ describe('App startup wiring', () => {
       startup.close();
     }
   });
+
+  it('promotes a doctrine candidate and exposes the persisted record', async () => {
+    const startup = initializeAppStartup({ dbPath: createTempDatabasePath(), migrationsDirectory });
+
+    try {
+      const result = await startup.promoteDoctrineCandidate({
+        candidateId: 'candidate-001',
+        title: 'Wait for confirmation',
+        summary: 'Wait for confirmation before entry.',
+        sourceId: 'journal-001',
+        archiveId: 'archive-001',
+        excerpt: 'Wait for confirmation before entry.',
+      });
+
+      expect(result.record.title).toBe('Wait for confirmation');
+      expect(result.record.confidence).toBe('validated');
+      expect(result.record.source).toEqual({
+        sourceType: 'journal_entry',
+        sourceId: 'journal-001',
+        excerpt: 'Wait for confirmation before entry.',
+      });
+      await expect(startup.listDoctrineRecords()).resolves.toEqual({ records: [result.record] });
+    } finally {
+      startup.close();
+    }
+  });
 });

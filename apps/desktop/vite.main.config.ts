@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@headquarters/database': resolve(__dirname, '../../packages/database/src/index.ts'),
+      '@headquarters/doctrine': resolve(__dirname, '../../packages/doctrine/src/index.ts'),
       '@headquarters/hqos': resolve(__dirname, '../../packages/hqos/src/index.ts'),
       '@headquarters/shared': resolve(__dirname, '../../packages/shared/src/index.ts'),
       'better-sqlite3': resolve(__dirname, 'src/main/betterSqlite3.ts'),

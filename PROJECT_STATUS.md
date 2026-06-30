@@ -79,8 +79,9 @@
 - HQ-TASK-0081 — Doctrine Repository
 - HQ-TASK-0082 — Doctrine Viewer
 - HQ-TASK-0083 — Doctrine Candidate Extraction
+- HQ-TASK-0084 — Manual Doctrine Candidate Promotion
 
-Current milestone gate: Sprint 6 Doctrine is in progress through HIG-TASK-045 / HQ-TASK-0083.
+Current milestone gate: Sprint 6 Doctrine is in progress through HIG-TASK-046 / HQ-TASK-0084.
 
 ## ARCH-TASK-0001 - Production Journal Integration Architecture
 
@@ -98,4 +99,4 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 6 Doctrine is in progress through HIG-TASK-045 / HQ-TASK-0083.
+Sprint 6 Doctrine is in progress through HIG-TASK-046 / HQ-TASK-0084.
