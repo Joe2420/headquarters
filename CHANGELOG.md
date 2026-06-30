@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0099 - Added Guardian risk monitoring behavior.
+
 HQ-TASK-0098 - Added Guardian rule monitoring foundation.
 
 HQ-TASK-0097 - Added Sprint 7 Academy review package.
