@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0083 — Added deterministic Doctrine candidate extraction from approved journal evidence.
+
 HQ-TASK-0082 — Added a read-only Doctrine Viewer in the Doctrine Chamber.
 
 HQ-TASK-0081 — Added Doctrine repository contracts and SQLite persistence.
