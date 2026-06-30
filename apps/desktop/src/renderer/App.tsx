@@ -2,7 +2,19 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { EventEnvelope, Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
-import { inspectArchiveEvents, inspectArchiveSessions, type ArchiveEventInspection, type ArchiveSessionInspection } from '@headquarters/archive-intelligence';
+import {
+  buildArchiveDashboard,
+  detectArchivePatterns,
+  filterArchiveTimeline,
+  inspectArchiveEvents,
+  inspectArchiveSessions,
+  prepareArchiveReplay,
+  searchArchiveRecords,
+  type ArchiveDashboardSummary,
+  type ArchiveEventInspection,
+  type ArchiveIntelligenceRecord,
+  type ArchiveSessionInspection,
+} from '@headquarters/archive-intelligence';
 import {
   buildAcademyConsistency,
   buildAcademyRecognitions,
@@ -1965,6 +1977,7 @@ function ArchiveRoom({
 }) {
   const eventInspections = buildDesktopArchiveEventInspections(archivedMissionSummaries, archivedJournalEntries);
   const sessionInspections = buildDesktopArchiveSessionInspections();
+  const dashboard = buildDesktopArchiveDashboard(archivedMissionSummaries, archivedJournalEntries);
 
   return (
     <div className="room-layout" data-room-id="archive-room">
@@ -1974,6 +1987,7 @@ function ArchiveRoom({
         <p className="muted">Mission archive, Journal archive, and historical views.</p>
       </section>
       <section className="command-center-panels" aria-label="Archive workspace">
+        <ArchiveDashboardPanel dashboard={dashboard} />
         <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
         <ArchiveEventExplorerPanel eventInspections={eventInspections} />
         <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
@@ -1985,6 +1999,50 @@ function ArchiveRoom({
       </section>
     </div>
   );
+}
+
+export function buildDesktopArchiveRecords(
+  archivedMissionSummaries: readonly LocalMissionArchiveSummary[],
+  archivedJournalEntries: readonly ArchivedJournalEntry[],
+): readonly ArchiveIntelligenceRecord[] {
+  const missionRecords: ArchiveIntelligenceRecord[] = archivedMissionSummaries.map((summary) => ({
+    id: `mission:${summary.missionId}`,
+    type: 'mission',
+    title: summary.codename,
+    summary: `${summary.eventCount} archived mission event${summary.eventCount === 1 ? '' : 's'}`,
+    occurredAt: summary.archivedAt,
+    tags: ['mission', 'archive'],
+  }));
+
+  const journalRecords: ArchiveIntelligenceRecord[] = archivedJournalEntries.map((entry) => ({
+    id: `journal:${entry.id}`,
+    type: 'journal',
+    title: entry.rawEntry.entryDate,
+    summary: entry.rawEntry.rawContent,
+    occurredAt: entry.archivedAt,
+    tags: ['journal', ...entry.metadata.tags],
+  }));
+
+  return [...missionRecords, ...journalRecords].sort((left, right) => left.occurredAt.localeCompare(right.occurredAt));
+}
+
+export function buildDesktopArchiveDashboard(
+  archivedMissionSummaries: readonly LocalMissionArchiveSummary[],
+  archivedJournalEntries: readonly ArchivedJournalEntry[],
+): ArchiveDashboardSummary {
+  const records = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries);
+  const eventInspections = buildDesktopArchiveEventInspections(archivedMissionSummaries, archivedJournalEntries);
+  const sessionInspections = buildDesktopArchiveSessionInspections();
+
+  return buildArchiveDashboard({
+    records,
+    searchResultCount: searchArchiveRecords(records, {}).length,
+    timelineItemCount: filterArchiveTimeline(records, {}).length,
+    eventInspections,
+    sessionInspections,
+    patterns: detectArchivePatterns(records),
+    replayPreparation: prepareArchiveReplay(records, new Date(0).toISOString()),
+  });
 }
 
 export function buildDesktopArchiveSessionInspections(): readonly ArchiveSessionInspection[] {
@@ -2045,6 +2103,34 @@ function ArchiveEventExplorerPanel({ eventInspections }: { eventInspections: rea
       ) : (
         <p className="muted">No archive events available for inspection.</p>
       )}
+    </section>
+  );
+}
+
+function ArchiveDashboardPanel({ dashboard }: { dashboard: ArchiveDashboardSummary }) {
+  return (
+    <section className="journal-panel" aria-label="Archive dashboard">
+      <p className="section-label">Archive Intelligence</p>
+      <h3>Archive Dashboard</h3>
+      <p className="muted">{dashboard.status === 'ready' ? 'Archive intelligence ready' : 'No archive intelligence evidence yet'}</p>
+      <dl className="status-list">
+        <div>
+          <dt>Records</dt>
+          <dd>{dashboard.recordCount}</dd>
+        </div>
+        <div>
+          <dt>Events</dt>
+          <dd>{dashboard.eventCount}</dd>
+        </div>
+        <div>
+          <dt>Sessions</dt>
+          <dd>{dashboard.sessionCount}</dd>
+        </div>
+        <div>
+          <dt>Patterns</dt>
+          <dd>{dashboard.patternCount}</dd>
+        </div>
+      </dl>
     </section>
   );
 }

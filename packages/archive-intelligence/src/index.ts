@@ -1,3 +1,4 @@
+export * from './ArchiveDashboard';
 export * from './ArchiveSearch';
 export * from './EventExplorer';
 export * from './PatternDetection';

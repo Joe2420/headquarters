@@ -12,6 +12,8 @@ import {
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
   buildDesktopArchiveEventInspections,
+  buildDesktopArchiveDashboard,
+  buildDesktopArchiveRecords,
   buildDesktopArchiveSessionInspections,
   buildDesktopAcademyDashboard,
   buildDesktopGuardianAlerts,
@@ -1079,6 +1081,35 @@ describe('Desktop shell', () => {
 
   it('handles the current empty desktop Archive session explorer state', () => {
     expect(buildDesktopArchiveSessionInspections()).toEqual([]);
+  });
+
+  it('builds a read-only Archive dashboard summary from desktop archive data', () => {
+    const archiveSummary = {
+      missionId: 'mission-archive-001',
+      codename: 'Foundation Patrol',
+      archivedAt: '2026-01-01T00:20:00.000Z',
+      eventCount: 2,
+    };
+
+    expect(buildDesktopArchiveRecords([archiveSummary], [])).toEqual([
+      {
+        id: 'mission:mission-archive-001',
+        type: 'mission',
+        title: 'Foundation Patrol',
+        summary: '2 archived mission events',
+        occurredAt: '2026-01-01T00:20:00.000Z',
+        tags: ['mission', 'archive'],
+      },
+    ]);
+    expect(buildDesktopArchiveDashboard([archiveSummary], [])).toMatchObject({
+      recordCount: 1,
+      searchResultCount: 1,
+      timelineItemCount: 1,
+      eventCount: 1,
+      sessionCount: 0,
+      replayItemCount: 1,
+      status: 'ready',
+    });
   });
 
   it('builds desktop mission timeline entries in chronological order', () => {
