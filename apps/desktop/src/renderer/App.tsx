@@ -124,6 +124,14 @@ export interface PrimaryNavigationItem {
   active: boolean;
 }
 
+export type JournalWorkflowStepId = 'entry' | 'reflection' | 'trade-review' | 'growth' | 'timeline' | 'search' | 'archive';
+
+export interface JournalWorkflowStep {
+  id: JournalWorkflowStepId;
+  label: string;
+  description: string;
+}
+
 const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'command', label: 'Command' },
   { id: 'missions', label: 'Missions' },
@@ -132,6 +140,44 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'doctrine', label: 'Doctrine' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
+];
+
+const journalWorkflowSteps: readonly JournalWorkflowStep[] = [
+  {
+    id: 'entry',
+    label: 'Journal Entry',
+    description: 'Capture the raw observation before interpretation.',
+  },
+  {
+    id: 'reflection',
+    label: 'Daily Reflection',
+    description: 'Name the behavior and emotional state.',
+  },
+  {
+    id: 'trade-review',
+    label: 'Trade Review',
+    description: 'Review the trade as evidence, not prediction.',
+  },
+  {
+    id: 'growth',
+    label: 'Growth Events',
+    description: 'Promote journal evidence into growth evidence.',
+  },
+  {
+    id: 'timeline',
+    label: 'Timeline',
+    description: 'Read the journal record in chronological order.',
+  },
+  {
+    id: 'search',
+    label: 'Search',
+    description: 'Find prior journal evidence deterministically.',
+  },
+  {
+    id: 'archive',
+    label: 'Archive',
+    description: 'Move completed evidence into the local archive view.',
+  },
 ];
 
 export const missionLifecyclePath: readonly MissionState[] = [
@@ -479,6 +525,8 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       activeMission={context.activeMission}
       startupSubsystemCount={4}
       missionHistory={context.missionHistory}
+      growthEvents={context.growthEvents}
+      doctrineRecords={context.doctrineRecords}
     />
   );
 }
@@ -497,56 +545,69 @@ function SecurityCheckpoint({ onReportForDuty }: SecurityCheckpointProps) {
 }
 
 export function CommandCenterPlaceholder() {
-  return <CommandCenter />;
+  return <CommandOverview startupSubsystemCount={4} missionHistory={[]} />;
 }
 
 interface CommandOverviewProps {
   activeMission?: ActiveMission | undefined;
   startupSubsystemCount: number;
   missionHistory: ActiveMission[];
+  growthEvents?: GrowthEvent[] | undefined;
+  doctrineRecords?: DoctrineRecord[] | undefined;
 }
 
-function CommandOverview({ activeMission, startupSubsystemCount, missionHistory }: CommandOverviewProps) {
+function CommandOverview({
+  activeMission,
+  startupSubsystemCount,
+  missionHistory,
+  growthEvents = [],
+  doctrineRecords = [],
+}: CommandOverviewProps) {
   const nextAction = getMissionNextAction(activeMission);
+  const commanderMessage = getCommanderMessage(activeMission);
 
   return (
     <div className="command-center-layout" data-layout="command-center">
       <section className="command-center-header" aria-label="Command center overview">
         <p className="section-label">Command Center</p>
         <h2>Headquarters Overview</h2>
-        <p className="muted">Commander guidance, current objective, HQOS status, and navigation hub.</p>
+        <p className="muted">Commander guidance, current objective, next action, HQOS status, and recent evidence.</p>
       </section>
-      <section className="command-center-panels" aria-label="Command center dashboard">
-        <section className="hqos-dashboard-panel" aria-label="Commander guidance">
+      <section className="command-overview-flow" aria-label="Headquarters command flow">
+        <section className="commander-briefing-panel" aria-label="Commander guidance">
           <p className="section-label">Commander</p>
-          <h3>{getCommanderMessage(activeMission).title}</h3>
-          <p className="muted">{getCommanderMessage(activeMission).body}</p>
+          <h3>{commanderMessage.title}</h3>
+          <p className="muted">{commanderMessage.body}</p>
         </section>
-        <section className="hqos-dashboard-panel" aria-label="Current mission summary">
+        <section className="current-objective-panel" aria-label="Current mission summary">
           <p className="section-label">Current Mission</p>
           <h3>{activeMission?.campaign ?? 'No Active Mission'}</h3>
           <p className="muted">{activeMission?.objective ?? 'Create a mission in the Mission Room to begin operations.'}</p>
           <strong>{formatMissionDetailState(activeMission)}</strong>
         </section>
-        <section className="hqos-dashboard-panel" aria-label="Next required action">
+        <section className="current-action-panel" aria-label="Next required action">
           <p className="section-label">Next Required Action</p>
           <h3>{nextAction.label}</h3>
           <p className="muted">{nextAction.description}</p>
         </section>
-        <section className="hqos-dashboard-panel" aria-label="HQOS dashboard">
-          <p className="section-label">HQOS</p>
-          <h3>Subsystem Dashboard</h3>
-          <p className="muted">{startupSubsystemCount} completed subsystem areas are available from navigation.</p>
-        </section>
-        <section className="hqos-dashboard-panel" aria-label="Notifications">
-          <p className="section-label">Notifications</p>
-          <h3>{getMissionNotificationSummary(activeMission, missionHistory)}</h3>
-          <p className="muted">Detailed workflow, timeline, and history live inside the Mission Room.</p>
-        </section>
-        <section className="hqos-dashboard-panel" aria-label="Navigation hub">
-          <p className="section-label">Navigation Hub</p>
-          <h3>Rooms Online</h3>
-          <p className="muted">Mission, Journal, Archive, Doctrine, and Settings are reachable from primary navigation.</p>
+        <section className="supporting-information-panel" aria-label="Headquarters supporting information">
+          <div>
+            <p className="section-label">HQOS</p>
+            <strong>{startupSubsystemCount} subsystem areas online</strong>
+          </div>
+          <div>
+            <p className="section-label">Notifications</p>
+            <strong>{getMissionNotificationSummary(activeMission, missionHistory)}</strong>
+            <span className="muted">Detailed workflow, timeline, and history live inside the Mission Room.</span>
+          </div>
+          <div>
+            <p className="section-label">Recent Growth</p>
+            <strong>{formatRecentGrowthHighlight(growthEvents)}</strong>
+          </div>
+          <div>
+            <p className="section-label">Recent Doctrine</p>
+            <strong>{formatRecentDoctrineHighlight(doctrineRecords)}</strong>
+          </div>
         </section>
       </section>
     </div>
@@ -1422,7 +1483,7 @@ interface JournalRoomProps {
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
 }
 
-function JournalRoom({
+export function JournalRoom({
   journalEntries,
   dailyReflections,
   tradeReviews,
@@ -1434,6 +1495,7 @@ function JournalRoom({
   onCreateGrowthEvent,
   onArchiveJournalEntry,
 }: JournalRoomProps) {
+  const [activeJournalStep, setActiveJournalStep] = useState<JournalWorkflowStepId>('entry');
   const [entryContent, setEntryContent] = useState('');
   const [entryMood, setEntryMood] = useState('');
   const [entryMarketConditions, setEntryMarketConditions] = useState('');
@@ -1452,6 +1514,7 @@ function JournalRoom({
     growthEvents,
   });
   const searchResult = searchJournalEntries(journalEntries, { text: searchText });
+  const activeStep = getJournalWorkflowSteps().find((step) => step.id === activeJournalStep);
 
   function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1535,12 +1598,33 @@ function JournalRoom({
     <div className="room-layout" data-room-id="journal-room">
       <section className="command-center-header" aria-label="Journal room status">
         <p className="section-label">Journal Room</p>
-        <h2>Journal System</h2>
-        <p className="muted">Entry, reflection, trade review, growth event, timeline, search, and archive surfaces.</p>
+        <h2>Guided Journal</h2>
+        <p className="muted">Commander-guided writing flow for entries, reflection, review, growth evidence, timeline, search, and archive.</p>
       </section>
 
-      <section className="command-center-panels" aria-label="Journal workspace">
-        <form className="journal-panel" aria-label="Journal entry" onSubmit={handleJournalEntrySubmit}>
+      <section className="guided-workflow-layout" aria-label="Journal guided workflow">
+        <section className="commander-briefing-panel" aria-label="Journal Commander prompt">
+          <p className="section-label">Commander</p>
+          <h3>{activeStep?.label ?? 'Journal Entry'}</h3>
+          <p className="muted">{getJournalCommanderPrompt(activeJournalStep)}</p>
+        </section>
+        <nav className="workflow-step-list" aria-label="Journal workflow steps">
+          {getJournalWorkflowSteps().map((step) => (
+            <button
+              key={step.id}
+              className={step.id === activeJournalStep ? 'workflow-step active' : 'workflow-step'}
+              type="button"
+              aria-current={step.id === activeJournalStep ? 'step' : undefined}
+              onClick={() => setActiveJournalStep(step.id)}
+            >
+              <span>{step.label}</span>
+              <small>{step.description}</small>
+            </button>
+          ))}
+        </nav>
+
+        {activeJournalStep === 'entry' ? (
+          <form className="journal-panel" aria-label="Journal entry" onSubmit={handleJournalEntrySubmit}>
           <p className="section-label">Journal Entry</p>
           <h3>Commander's Log</h3>
           <label>
@@ -1557,9 +1641,11 @@ function JournalRoom({
           </label>
           <button className="secondary-action" type="submit">Save Journal Entry</button>
           <p className="muted">{formatJournalCount(journalEntries.length, 'journal entry', 'journal entries')}</p>
-        </form>
+          </form>
+        ) : null}
 
-        <form className="journal-panel" aria-label="Daily reflection" onSubmit={handleReflectionSubmit}>
+        {activeJournalStep === 'reflection' ? (
+          <form className="journal-panel" aria-label="Daily reflection" onSubmit={handleReflectionSubmit}>
           <p className="section-label">Daily Reflection</p>
           <h3>Daily Reflection</h3>
           <label>
@@ -1572,9 +1658,11 @@ function JournalRoom({
           </label>
           <button className="secondary-action" type="submit">Save Reflection</button>
           <p className="muted">{formatJournalCount(dailyReflections.length, 'reflection', 'reflections')}</p>
-        </form>
+          </form>
+        ) : null}
 
-        <form className="journal-panel" aria-label="Trade review" onSubmit={handleTradeReviewSubmit}>
+        {activeJournalStep === 'trade-review' ? (
+          <form className="journal-panel" aria-label="Trade review" onSubmit={handleTradeReviewSubmit}>
           <p className="section-label">Trade Review</p>
           <h3>Trade Review</h3>
           <label>
@@ -1587,9 +1675,11 @@ function JournalRoom({
           </label>
           <button className="secondary-action" type="submit">Save Trade Review</button>
           <p className="muted">{formatJournalCount(tradeReviews.length, 'trade review', 'trade reviews')}</p>
-        </form>
+          </form>
+        ) : null}
 
-        <form className="journal-panel" aria-label="Growth events" onSubmit={handleGrowthEventSubmit}>
+        {activeJournalStep === 'growth' ? (
+          <form className="journal-panel" aria-label="Growth events" onSubmit={handleGrowthEventSubmit}>
           <p className="section-label">Growth Events</p>
           <h3>Growth Events</h3>
           <label>
@@ -1604,19 +1694,24 @@ function JournalRoom({
             Save Growth Event
           </button>
           <p className="muted">{formatJournalCount(growthEvents.length, 'growth event', 'growth events')}</p>
-        </form>
+          </form>
+        ) : null}
 
-        <JournalTimelinePanel timeline={timeline} />
-        <JournalSearchPanel
+        {activeJournalStep === 'timeline' ? <JournalTimelinePanel timeline={timeline} /> : null}
+        {activeJournalStep === 'search' ? (
+          <JournalSearchPanel
           searchText={searchText}
           onSearchTextChange={setSearchText}
           resultCount={searchResult.total}
-        />
-        <JournalArchivePanel
+          />
+        ) : null}
+        {activeJournalStep === 'archive' ? (
+          <JournalArchivePanel
           journalEntries={journalEntries}
           archivedJournalEntries={archivedJournalEntries}
           onArchiveJournalEntry={onArchiveJournalEntry}
-        />
+          />
+        ) : null}
       </section>
     </div>
   );
@@ -1810,7 +1905,7 @@ function ArchiveRoom({
   );
 }
 
-function DoctrineRoom({
+export function DoctrineRoom({
   doctrineRecords,
   doctrineHistory,
   onPromoteDoctrineCandidate,
@@ -1823,15 +1918,20 @@ function DoctrineRoom({
     <div className="room-layout" data-room-id="doctrine-room">
       <section className="command-center-header" aria-label="Doctrine room status">
         <p className="section-label">Doctrine Chamber</p>
-        <h2>Doctrine Viewer</h2>
-        <p className="muted">Validated rules are visible here as read-only institutional memory.</p>
+        <h2>Doctrine Review</h2>
+        <p className="muted">Review lessons, candidates, accepted doctrine, history, differences, and trading plan references.</p>
       </section>
-      <section className="command-center-panels" aria-label="Doctrine workspace">
+      <section className="guided-workflow-layout" aria-label="Doctrine workspace">
+        <section className="commander-briefing-panel" aria-label="Doctrine Commander prompt">
+          <p className="section-label">Commander</p>
+          <h3>Review the lesson before it becomes law.</h3>
+          <p className="muted">Doctrine updates only after explicit review. Candidate promotion remains manual and evidence-bound.</p>
+        </section>
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+        <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
         <DoctrineDiffPanel diff={buildDoctrineDiffPreview(doctrineRecords)} />
         <TradingPlanDoctrinePanel references={buildDefaultTradingPlanDoctrineReferences(doctrineRecords)} />
         <DoctrineHistoryPanel historyEntries={doctrineHistory} />
-        <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
       </section>
     </div>
   );
@@ -2054,6 +2154,20 @@ export function getPrimaryNavigationItems(activeArea: NavigationAreaId): Primary
   }));
 }
 
+export function getJournalWorkflowSteps(): JournalWorkflowStep[] {
+  return [...journalWorkflowSteps];
+}
+
+export function getJournalCommanderPrompt(step: JournalWorkflowStepId): string {
+  if (step === 'entry') return 'Start with the record. Capture what happened before judging it.';
+  if (step === 'reflection') return 'Now name the behavior. Headquarters records discipline before outcome.';
+  if (step === 'trade-review') return 'Review the trade as evidence. No prediction, no scoreboard.';
+  if (step === 'growth') return 'Convert proven journal evidence into a growth event when the evidence is ready.';
+  if (step === 'timeline') return 'Read the sequence. The archive speaks in order.';
+  if (step === 'search') return 'Search the record when you need evidence, not memory.';
+  return 'Archive only completed evidence. Keep raw journal history intact.';
+}
+
 export function createLocalMission(
   draft: MissionDraft,
   options: { id?: string; createdAt?: string } = {},
@@ -2250,6 +2364,20 @@ export function getMissionNotificationSummary(
   if (activeMission === undefined) return 'No active mission';
   if (activeMission.currentState === 'archived') return 'Mission archived';
   return `${missionHistory.length} mission record${missionHistory.length === 1 ? '' : 's'} tracked`;
+}
+
+export function formatRecentGrowthHighlight(growthEvents: readonly GrowthEvent[]): string {
+  const latest = growthEvents[growthEvents.length - 1];
+
+  if (latest === undefined) return 'No growth highlights yet';
+  return latest.title;
+}
+
+export function formatRecentDoctrineHighlight(doctrineRecords: readonly DoctrineRecord[]): string {
+  const latest = doctrineRecords[doctrineRecords.length - 1];
+
+  if (latest === undefined) return 'No doctrine highlights yet';
+  return latest.title;
 }
 
 export function getMissionNextAction(mission?: ActiveMission): MissionNextAction {

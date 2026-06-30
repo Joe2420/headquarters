@@ -186,6 +186,71 @@ dd {
   max-width: 1040px;
 }
 
+.command-overview-flow,
+.guided-workflow-layout {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  max-width: 920px;
+}
+
+.commander-briefing-panel,
+.current-objective-panel,
+.current-action-panel,
+.supporting-information-panel {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #242b31;
+  background: #0f1215;
+}
+
+.commander-briefing-panel {
+  border-left: 3px solid #d9e7ff;
+  background: #121820;
+}
+
+.supporting-information-panel {
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+}
+
+.supporting-information-panel div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.workflow-step-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 0.5rem;
+}
+
+.workflow-step {
+  display: grid;
+  gap: 0.2rem;
+  min-height: 56px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #242b31;
+  border-left: 2px solid #3b4650;
+  background: #0f1215;
+  color: #aab7c1;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.workflow-step.active {
+  border-left-color: #d9e7ff;
+  background: #171d23;
+  color: #eef3f6;
+}
+
+.workflow-step small {
+  color: #93a4b1;
+  font-size: 0.78rem;
+}
+
 .primary-action {
   width: fit-content;
   min-height: 44px;
@@ -526,7 +591,9 @@ dd {
   }
 
   .command-center-primary,
-  .command-center-panels {
+  .command-center-panels,
+  .supporting-information-panel,
+  .workflow-step-list {
     grid-template-columns: 1fr;
   }
 }
