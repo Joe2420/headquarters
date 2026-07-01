@@ -28,6 +28,7 @@ import {
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
   buildDesktopRepeatedMistakes,
+  buildDesktopRepeatedSuccesses,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -304,6 +305,43 @@ describe('Desktop shell', () => {
     }]);
     expect(html).toContain('Repeated Mistakes');
     expect(html).toContain('Repeated risk note');
+  });
+
+  it('derives behavior-based repeated successes without profit scoring', () => {
+    const evidenceRecords = [
+      { id: 'journal-001', sourceType: 'journal' as const, summary: 'Patience held', signals: ['growth_event'] },
+      { id: 'journal-002', sourceType: 'journal' as const, summary: 'Patience held again', signals: ['growth_event'] },
+    ];
+    const successes = buildDesktopRepeatedSuccesses(evidenceRecords);
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={[{
+      id: 'journal-001',
+      entryDate: '2026-07-01',
+      rawContent: 'Discipline improved through patience.',
+      source: 'manual',
+      attachmentReferences: [],
+      classificationStatus: 'unclassified',
+      createdAt: '2026-07-01T08:00:00.000Z',
+      updatedAt: '2026-07-01T08:00:00.000Z',
+    }, {
+      id: 'journal-002',
+      entryDate: '2026-07-02',
+      rawContent: 'Discipline improved again by waiting.',
+      source: 'manual',
+      attachmentReferences: [],
+      classificationStatus: 'unclassified',
+      createdAt: '2026-07-02T08:00:00.000Z',
+      updatedAt: '2026-07-02T08:00:00.000Z',
+    }]} />);
+
+    expect(successes).toEqual([{
+      id: 'repeated-success:growth_event',
+      signal: 'growth_event',
+      title: 'Repeated growth behavior',
+      behaviorLanguage: '2 evidence records show repeated growth behavior.',
+      evidenceRecordIds: ['journal-001', 'journal-002'],
+    }]);
+    expect(html).toContain('Repeated Successes');
+    expect(html).toContain('Repeated growth behavior');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {

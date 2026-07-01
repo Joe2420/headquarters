@@ -35,11 +35,13 @@ import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type 
 import {
   classifyJournalEntries,
   analyzeRepeatedMistakes,
+  analyzeRepeatedSuccesses,
   detectIntelligencePatterns,
   type IntelligenceEvidenceRecord,
   type IntelligencePattern,
   type JournalClassification,
   type RepeatedMistake,
+  type RepeatedSuccess,
 } from '@headquarters/intelligence-office';
 import {
   buildTradingPlanDoctrineReferences,
@@ -2379,6 +2381,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
   const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
   const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
   const repeatedMistakes = buildDesktopRepeatedMistakes(evidenceRecords);
+  const repeatedSuccesses = buildDesktopRepeatedSuccesses(evidenceRecords);
 
   return (
     <div className="room-layout" data-room-id="intelligence-center">
@@ -2402,6 +2405,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
         <JournalClassificationPanel classifications={classifications} />
         <IntelligencePatternPanel patterns={patterns} />
         <RepeatedMistakePanel mistakes={repeatedMistakes} />
+        <RepeatedSuccessPanel successes={repeatedSuccesses} />
       </section>
     </div>
   );
@@ -2473,6 +2477,28 @@ function RepeatedMistakePanel({ mistakes }: { mistakes: readonly RepeatedMistake
   );
 }
 
+function RepeatedSuccessPanel({ successes }: { successes: readonly RepeatedSuccess[] }) {
+  return (
+    <section className="journal-panel" aria-label="Repeated successes">
+      <p className="section-label">Successes</p>
+      <h3>Repeated Successes</h3>
+      {successes.length === 0 ? (
+        <p className="muted">No repeated behavior successes are visible yet.</p>
+      ) : (
+        <ol className="mission-archive-list">
+          {successes.map((success) => (
+            <li key={success.id}>
+              <span>{success.title}</span>
+              <strong>{success.signal}</strong>
+              <span>{success.behaviorLanguage}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 export function buildDesktopJournalClassifications(
   journalEntries: readonly JournalEntry[],
 ): readonly JournalClassification[] {
@@ -2500,6 +2526,12 @@ export function buildDesktopRepeatedMistakes(
   evidenceRecords: readonly IntelligenceEvidenceRecord[],
 ): readonly RepeatedMistake[] {
   return analyzeRepeatedMistakes(evidenceRecords);
+}
+
+export function buildDesktopRepeatedSuccesses(
+  evidenceRecords: readonly IntelligenceEvidenceRecord[],
+): readonly RepeatedSuccess[] {
+  return analyzeRepeatedSuccesses(evidenceRecords);
 }
 
 export function formatJournalClassificationStatus(classifications: readonly JournalClassification[]): string {
