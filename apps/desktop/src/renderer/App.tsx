@@ -34,10 +34,12 @@ import {
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   classifyJournalEntries,
+  analyzeRepeatedMistakes,
   detectIntelligencePatterns,
   type IntelligenceEvidenceRecord,
   type IntelligencePattern,
   type JournalClassification,
+  type RepeatedMistake,
 } from '@headquarters/intelligence-office';
 import {
   buildTradingPlanDoctrineReferences,
@@ -2376,6 +2378,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
   const classifications = buildDesktopJournalClassifications(journalEntries);
   const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
   const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
+  const repeatedMistakes = buildDesktopRepeatedMistakes(evidenceRecords);
 
   return (
     <div className="room-layout" data-room-id="intelligence-center">
@@ -2398,6 +2401,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
         </section>
         <JournalClassificationPanel classifications={classifications} />
         <IntelligencePatternPanel patterns={patterns} />
+        <RepeatedMistakePanel mistakes={repeatedMistakes} />
       </section>
     </div>
   );
@@ -2447,6 +2451,28 @@ function IntelligencePatternPanel({ patterns }: { patterns: readonly Intelligenc
   );
 }
 
+function RepeatedMistakePanel({ mistakes }: { mistakes: readonly RepeatedMistake[] }) {
+  return (
+    <section className="journal-panel" aria-label="Repeated mistakes">
+      <p className="section-label">Mistakes</p>
+      <h3>Repeated Mistakes</h3>
+      {mistakes.length === 0 ? (
+        <p className="muted">No repeated operational mistakes are visible yet.</p>
+      ) : (
+        <ol className="mission-archive-list">
+          {mistakes.map((mistake) => (
+            <li key={mistake.id}>
+              <span>{mistake.title}</span>
+              <strong>{mistake.signal}</strong>
+              <span>{mistake.operationalLanguage}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 export function buildDesktopJournalClassifications(
   journalEntries: readonly JournalEntry[],
 ): readonly JournalClassification[] {
@@ -2468,6 +2494,12 @@ export function buildDesktopIntelligencePatterns(
   evidenceRecords: readonly IntelligenceEvidenceRecord[],
 ): readonly IntelligencePattern[] {
   return detectIntelligencePatterns(evidenceRecords);
+}
+
+export function buildDesktopRepeatedMistakes(
+  evidenceRecords: readonly IntelligenceEvidenceRecord[],
+): readonly RepeatedMistake[] {
+  return analyzeRepeatedMistakes(evidenceRecords);
 }
 
 export function formatJournalClassificationStatus(classifications: readonly JournalClassification[]): string {

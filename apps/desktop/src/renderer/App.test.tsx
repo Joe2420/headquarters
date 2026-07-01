@@ -27,6 +27,7 @@ import {
   buildDesktopIntelligenceEvidenceRecords,
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
+  buildDesktopRepeatedMistakes,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -266,6 +267,43 @@ describe('Desktop shell', () => {
     expect(patterns.map((pattern) => pattern.id)).toContain('source-cluster:journal');
     expect(html).toContain('Pattern Reports');
     expect(html).toContain('Repeated signal: lesson');
+  });
+
+  it('derives operational repeated mistake analysis with evidence links', () => {
+    const evidenceRecords = [
+      { id: 'journal-001', sourceType: 'journal' as const, summary: 'Risk note', signals: ['risk_note'] },
+      { id: 'journal-002', sourceType: 'journal' as const, summary: 'Risk note again', signals: ['risk_note'] },
+    ];
+    const mistakes = buildDesktopRepeatedMistakes(evidenceRecords);
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={[{
+      id: 'journal-001',
+      entryDate: '2026-07-01',
+      rawContent: 'Risk note: size was too large.',
+      source: 'manual',
+      attachmentReferences: [],
+      classificationStatus: 'unclassified',
+      createdAt: '2026-07-01T08:00:00.000Z',
+      updatedAt: '2026-07-01T08:00:00.000Z',
+    }, {
+      id: 'journal-002',
+      entryDate: '2026-07-02',
+      rawContent: 'Risk note: loss limit needed attention.',
+      source: 'manual',
+      attachmentReferences: [],
+      classificationStatus: 'unclassified',
+      createdAt: '2026-07-02T08:00:00.000Z',
+      updatedAt: '2026-07-02T08:00:00.000Z',
+    }]} />);
+
+    expect(mistakes).toEqual([{
+      id: 'repeated-mistake:risk_note',
+      signal: 'risk_note',
+      title: 'Repeated risk note',
+      operationalLanguage: '2 evidence records show risk process requiring review.',
+      evidenceRecordIds: ['journal-001', 'journal-002'],
+    }]);
+    expect(html).toContain('Repeated Mistakes');
+    expect(html).toContain('Repeated risk note');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {
