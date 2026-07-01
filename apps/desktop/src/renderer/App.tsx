@@ -22,7 +22,7 @@ import {
   createAcademyGrowthEventFromJournal,
   type AcademyRecognition,
 } from '@headquarters/academy';
-import { buildCommanderDailyBriefing } from '@headquarters/commander';
+import { buildCommanderDailyBriefing, buildCommanderSessionDebrief } from '@headquarters/commander';
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   buildTradingPlanDoctrineReferences,
@@ -665,6 +665,13 @@ function CommandOverview({
     archiveRecordCount: archivedMissionSummaries.length + archivedJournalEntries.length,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
+  const sessionDebrief = buildCommanderSessionDebrief({
+    missionTitle: activeMission?.campaign,
+    missionState: activeMission?.currentState,
+    journalEntryCount: journalEntries.length,
+    archiveRecordCount: archivedMissionSummaries.length + archivedJournalEntries.length,
+    generatedAt: activeMission?.createdAt ?? 'standby',
+  });
 
   return (
     <div className="command-center-layout" data-layout="command-center">
@@ -685,6 +692,19 @@ function CommandOverview({
           <p className="muted">{dailyBriefing.focus}</p>
           <ul className="mission-archive-list">
             {dailyBriefing.evidence.map((item) => (
+              <li key={item}>
+                <span>{item}</span>
+                <strong>Evidence</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="commander-briefing-panel" aria-label="Commander session debrief">
+          <p className="section-label">Session Debrief</p>
+          <h3>{sessionDebrief.summary}</h3>
+          <p className="muted">{sessionDebrief.distinction}</p>
+          <ul className="mission-archive-list">
+            {sessionDebrief.evidence.map((item) => (
               <li key={item}>
                 <span>{item}</span>
                 <strong>Evidence</strong>

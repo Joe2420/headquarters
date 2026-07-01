@@ -110,8 +110,9 @@
 - HQ-TASK-0112 — Archive Intelligence Dashboard
 - HQ-TASK-0113 — Sprint 9 Archive Intelligence Review Package
 - HQ-TASK-0115 — Commander Daily Briefing
+- HQ-TASK-0116 — Commander Session Debrief
 
-Current milestone gate: Sprint 10 Commander is in progress through HIG-TASK-075 / HQ-TASK-0115.
+Current milestone gate: Sprint 10 Commander is in progress through HIG-TASK-076 / HQ-TASK-0116.
 
 ## Post-Sprint UX Alignment
 
@@ -136,6 +137,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 10 Commander is in progress through HIG-TASK-075 / HQ-TASK-0115.
+Sprint 10 Commander is in progress through HIG-TASK-076 / HQ-TASK-0116.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
