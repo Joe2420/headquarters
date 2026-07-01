@@ -19,6 +19,24 @@ body {
   background: #0b0d0f;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 10;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  color: #101418;
+  background: #d9e7ff;
+  font-weight: 800;
+  transform: translateY(-160%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #8fb8ff;
+  outline-offset: 2px;
+}
+
 .shell-header {
   min-height: 84px;
   display: flex;

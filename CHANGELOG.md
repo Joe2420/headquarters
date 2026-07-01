@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0133 - Improved desktop accessibility for beta readiness.
+
 HQ-TASK-0132 - Added startup performance measurement for beta readiness.
 
 HQ-TASK-0131 - Polished desktop shell UI for beta readiness.

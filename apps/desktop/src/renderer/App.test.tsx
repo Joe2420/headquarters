@@ -92,6 +92,7 @@ describe('Desktop shell', () => {
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
     expect(styles).toContain('overflow-wrap: anywhere');
     expect(styles).toContain('.nav-item:hover');
+    expect(styles).toContain('.skip-link:focus-visible');
   });
 
   it('renders the security checkpoint startup surface', () => {
@@ -104,6 +105,16 @@ describe('Desktop shell', () => {
     expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
     expect(html).toContain('Startup');
+  });
+
+  it('renders beta accessibility landmarks and live status semantics', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('href="#main-content"');
+    expect(html).toContain('id="main-content"');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('aria-label="Open Command"');
+    expect(html).toContain('aria-label="Open Ready Room"');
   });
 
   it('renders a lightweight primary navigation framework with command active', () => {
