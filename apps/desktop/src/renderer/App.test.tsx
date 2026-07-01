@@ -25,6 +25,7 @@ import {
   buildDesktopDoctrineSuggestions,
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
+  buildDesktopGrowthAnalysis,
   buildDesktopIntelligenceEvidenceRecords,
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
@@ -374,6 +375,43 @@ describe('Desktop shell', () => {
     }]);
     expect(html).toContain('Doctrine Suggestions');
     expect(html).toContain('Manual promotion required');
+  });
+
+  it('surfaces evidence-based growth analysis from journal and Academy evidence', () => {
+    const journalEntries = [{
+      id: 'journal-001',
+      entryDate: '2026-07-01',
+      rawContent: 'Lesson: discipline and patience improved during the session.',
+      source: 'manual' as const,
+      attachmentReferences: [],
+      classificationStatus: 'unclassified' as const,
+      createdAt: '2026-07-01T08:00:00.000Z',
+      updatedAt: '2026-07-01T08:00:00.000Z',
+    }];
+    const growthEvents = [{
+      id: 'growth-001',
+      eventDate: '2026-07-01',
+      title: 'Patience held',
+      description: 'Waited for the plan instead of forcing entry.',
+      category: 'patience' as const,
+      evidence: {
+        sourceType: 'journal_entry' as const,
+        sourceId: 'journal-001',
+      },
+      rewardStatus: 'not_awarded' as const,
+      createdAt: '2026-07-01T08:00:00.000Z',
+    }];
+    const classifications = buildDesktopJournalClassifications(journalEntries);
+    const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
+    const analysis = buildDesktopGrowthAnalysis(evidenceRecords, growthEvents);
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={journalEntries} growthEvents={growthEvents} />);
+
+    expect(analysis.status).toBe('ready');
+    expect(analysis.journalEvidenceCount).toBe(1);
+    expect(analysis.academyEvidenceCount).toBe(1);
+    expect(analysis.growthCategories).toEqual(['patience']);
+    expect(html).toContain('Growth Analysis');
+    expect(html).toContain('Categories: patience');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {

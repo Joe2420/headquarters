@@ -122,6 +122,7 @@
 - HQ-TASK-0125 — Repeated Mistakes
 - HQ-TASK-0126 — Repeated Successes
 - HQ-TASK-0127 — Doctrine Suggestions
+- HQ-TASK-0128 — Growth Analysis
 
 Current milestone gate: Sprint 10 Commander is complete through HIG-TASK-082 / HQ-TASK-0122.
 
