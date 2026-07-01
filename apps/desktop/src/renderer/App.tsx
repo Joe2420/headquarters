@@ -25,6 +25,7 @@ import {
 import {
   buildCommanderDashboard,
   buildCommanderDailyBriefing,
+  buildCommanderMissionPlanning,
   buildCommanderMonthlyReview,
   buildCommanderSessionDebrief,
   buildCommanderWeeklyReview,
@@ -692,12 +693,19 @@ function CommandOverview({
     academyGrowthEventCount: growthEvents.length,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
+  const missionPlanning = buildCommanderMissionPlanning({
+    missionId: activeMission?.id,
+    missionTitle: activeMission?.campaign,
+    objective: activeMission?.objective,
+    currentState: activeMission?.currentState,
+    generatedAt: activeMission?.createdAt ?? 'standby',
+  });
   const commanderDashboard = buildCommanderDashboard({
     hasDailyBriefing: true,
     hasSessionDebrief: true,
     hasWeeklyReview: true,
     hasMonthlyReview: true,
-    hasMissionPlanning: false,
+    hasMissionPlanning: true,
     objectiveCount: 0,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
@@ -776,6 +784,19 @@ function CommandOverview({
               <li key={section.label}>
                 <span>{section.label}</span>
                 <strong>{section.status}</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="commander-briefing-panel" aria-label="Commander mission planning">
+          <p className="section-label">Mission Planning</p>
+          <h3>{missionPlanning.summary}</h3>
+          <p className="muted">{missionPlanning.constraints.join(' ')}</p>
+          <ul className="mission-archive-list">
+            {missionPlanning.standards.map((standard) => (
+              <li key={standard}>
+                <span>{standard}</span>
+                <strong>Standard</strong>
               </li>
             ))}
           </ul>

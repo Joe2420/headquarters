@@ -318,6 +318,10 @@ describe('Desktop shell', () => {
     expect(html).toContain('Commander Dashboard');
     expect(html).toContain('No chat behavior');
     expect(html).toContain('No avatar behavior');
+    expect(html).toContain('aria-label="Commander mission planning"');
+    expect(html).toContain('Mission Planning');
+    expect(html).toContain('No trade signals');
+    expect(html).toContain('No bypass of HQOS mission logic');
     expect(html).toContain('aria-label="Next required action"');
     expect(html).toContain('aria-label="Headquarters supporting information"');
     expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
