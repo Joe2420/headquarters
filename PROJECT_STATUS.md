@@ -118,6 +118,7 @@
 - HQ-TASK-0121 — Commander Objectives
 - HQ-TASK-0122 — Sprint 10 Commander Review Package
 - HQ-TASK-0123 — Journal Classification
+- HQ-TASK-0124 — Intelligence Office Pattern Detection
 
 Current milestone gate: Sprint 10 Commander is complete through HIG-TASK-082 / HQ-TASK-0122.
 

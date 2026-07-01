@@ -34,6 +34,9 @@ import {
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   classifyJournalEntries,
+  detectIntelligencePatterns,
+  type IntelligenceEvidenceRecord,
+  type IntelligencePattern,
   type JournalClassification,
 } from '@headquarters/intelligence-office';
 import {
@@ -2371,6 +2374,8 @@ export function GuardianRoom() {
 
 export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: JournalEntry[] }) {
   const classifications = buildDesktopJournalClassifications(journalEntries);
+  const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
+  const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
 
   return (
     <div className="room-layout" data-room-id="intelligence-center">
@@ -2392,6 +2397,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
           <p className="muted">{formatJournalClassificationStatus(classifications)}</p>
         </section>
         <JournalClassificationPanel classifications={classifications} />
+        <IntelligencePatternPanel patterns={patterns} />
       </section>
     </div>
   );
@@ -2419,10 +2425,49 @@ function JournalClassificationPanel({ classifications }: { classifications: read
   );
 }
 
+function IntelligencePatternPanel({ patterns }: { patterns: readonly IntelligencePattern[] }) {
+  return (
+    <section className="journal-panel" aria-label="Intelligence patterns">
+      <p className="section-label">Patterns</p>
+      <h3>Pattern Reports</h3>
+      {patterns.length === 0 ? (
+        <p className="muted">No repeated Intelligence patterns are visible yet.</p>
+      ) : (
+        <ol className="mission-archive-list">
+          {patterns.map((pattern) => (
+            <li key={pattern.id}>
+              <span>{pattern.label}</span>
+              <strong>{pattern.kind}</strong>
+              <span>{pattern.explanation}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 export function buildDesktopJournalClassifications(
   journalEntries: readonly JournalEntry[],
 ): readonly JournalClassification[] {
   return classifyJournalEntries(journalEntries);
+}
+
+export function buildDesktopIntelligenceEvidenceRecords(
+  classifications: readonly JournalClassification[],
+): readonly IntelligenceEvidenceRecord[] {
+  return classifications.map((classification) => ({
+    id: classification.entryId,
+    sourceType: 'journal',
+    summary: classification.rawEntry.rawContent,
+    signals: classification.categories,
+  }));
+}
+
+export function buildDesktopIntelligencePatterns(
+  evidenceRecords: readonly IntelligenceEvidenceRecord[],
+): readonly IntelligencePattern[] {
+  return detectIntelligencePatterns(evidenceRecords);
 }
 
 export function formatJournalClassificationStatus(classifications: readonly JournalClassification[]): string {

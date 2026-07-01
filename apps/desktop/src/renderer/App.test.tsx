@@ -24,6 +24,8 @@ import {
   buildDesktopAcademyDashboard,
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
+  buildDesktopIntelligenceEvidenceRecords,
+  buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
@@ -230,6 +232,40 @@ describe('Desktop shell', () => {
     expect(html).toContain('data-room-id="intelligence-center"');
     expect(html).toContain('Journal Classification');
     expect(html).toContain('mission_reflection');
+  });
+
+  it('derives explainable Intelligence patterns from classified journal evidence', () => {
+    const entries = [
+      {
+        id: 'journal-001',
+        entryDate: '2026-07-01',
+        rawContent: 'Lesson: patience and discipline protected the mission.',
+        source: 'manual' as const,
+        attachmentReferences: [],
+        classificationStatus: 'unclassified' as const,
+        createdAt: '2026-07-01T08:00:00.000Z',
+        updatedAt: '2026-07-01T08:00:00.000Z',
+      },
+      {
+        id: 'journal-002',
+        entryDate: '2026-07-02',
+        rawContent: 'Lesson: patience prevented an override.',
+        source: 'manual' as const,
+        attachmentReferences: [],
+        classificationStatus: 'unclassified' as const,
+        createdAt: '2026-07-02T08:00:00.000Z',
+        updatedAt: '2026-07-02T08:00:00.000Z',
+      },
+    ];
+    const classifications = buildDesktopJournalClassifications(entries);
+    const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
+    const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={entries} />);
+
+    expect(patterns.map((pattern) => pattern.id)).toContain('repeated-signal:lesson');
+    expect(patterns.map((pattern) => pattern.id)).toContain('source-cluster:journal');
+    expect(html).toContain('Pattern Reports');
+    expect(html).toContain('Repeated signal: lesson');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {
