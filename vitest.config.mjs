@@ -13,6 +13,7 @@ export default defineConfig({
       '@headquarters/journal': resolve(rootDir, 'packages/journal/src/index.ts'),
       '@headquarters/doctrine': resolve(rootDir, 'packages/doctrine/src/index.ts'),
       '@headquarters/academy': resolve(rootDir, 'packages/academy/src/index.ts'),
+      '@headquarters/commander': resolve(rootDir, 'packages/commander/src/index.ts'),
       '@headquarters/archive-intelligence': resolve(rootDir, 'packages/archive-intelligence/src/index.ts'),
       '@headquarters/guardian': resolve(rootDir, 'packages/guardian/src/index.ts'),
       '@headquarters/ai-runtime': resolve(rootDir, 'packages/ai-runtime/src/index.ts'),

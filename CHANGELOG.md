@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0117 - Added Commander weekly review behavior and Command room display.
+
 HQ-TASK-0116 - Added Commander session debrief behavior and Command room display.
 
 HQ-TASK-0115 - Added Commander daily briefing foundation and Command room display.

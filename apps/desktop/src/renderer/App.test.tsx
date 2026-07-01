@@ -308,6 +308,9 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Commander session debrief"');
     expect(html).toContain('Session Debrief');
     expect(html).toContain('distinct from mission debrief persistence');
+    expect(html).toContain('aria-label="Commander weekly review"');
+    expect(html).toContain('Weekly Review');
+    expect(html).toContain('No approved weekly evidence is available yet');
     expect(html).toContain('aria-label="Next required action"');
     expect(html).toContain('aria-label="Headquarters supporting information"');
     expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
