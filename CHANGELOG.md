@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0138 - Added Sprint 12 final beta readiness review package.
+
 HQ-TASK-0137 - Added Sprint 12 beta testing checklist and known limitations.
 
 HQ-TASK-0136 - Added typed import/export foundation with safe validation.
