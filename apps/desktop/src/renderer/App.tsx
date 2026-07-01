@@ -37,9 +37,11 @@ import {
   analyzeGrowth,
   analyzeRepeatedMistakes,
   analyzeRepeatedSuccesses,
+  buildIntelligenceDashboard,
   detectIntelligencePatterns,
   suggestDoctrineCandidates,
   type DoctrineSuggestion,
+  type IntelligenceDashboard,
   type IntelligenceGrowthAnalysis,
   type IntelligenceEvidenceRecord,
   type IntelligencePattern,
@@ -2394,6 +2396,14 @@ export function IntelligenceCenterRoom({
   const repeatedSuccesses = buildDesktopRepeatedSuccesses(evidenceRecords);
   const doctrineSuggestions = buildDesktopDoctrineSuggestions(evidenceRecords);
   const growthAnalysis = buildDesktopGrowthAnalysis(evidenceRecords, growthEvents);
+  const dashboard = buildDesktopIntelligenceDashboard(
+    classifications,
+    patterns,
+    repeatedMistakes,
+    repeatedSuccesses,
+    doctrineSuggestions,
+    growthAnalysis,
+  );
 
   return (
     <div className="room-layout" data-room-id="intelligence-center">
@@ -2403,6 +2413,7 @@ export function IntelligenceCenterRoom({
         <p className="muted">Deterministic classification preserves raw journal evidence and does not alter source entries.</p>
       </section>
       <section className="command-center-panels" aria-label="Intelligence workspace">
+        <IntelligenceDashboardPanel dashboard={dashboard} />
         <section className="journal-panel" aria-label="Journal classification summary">
           <p className="section-label">Classification</p>
           <h3>Journal Evidence</h3>
@@ -2554,6 +2565,26 @@ function GrowthAnalysisPanel({ analysis }: { analysis: IntelligenceGrowthAnalysi
   );
 }
 
+function IntelligenceDashboardPanel({ dashboard }: { dashboard: IntelligenceDashboard }) {
+  return (
+    <section className="journal-panel" aria-label="Intelligence dashboard">
+      <p className="section-label">Dashboard</p>
+      <h3>Intelligence Dashboard</h3>
+      <p className="muted">{dashboard.summary}</p>
+      <dl>
+        <dt>Patterns</dt>
+        <dd>{dashboard.patternReportCount}</dd>
+        <dt>Mistakes</dt>
+        <dd>{dashboard.repeatedMistakeCount}</dd>
+        <dt>Successes</dt>
+        <dd>{dashboard.repeatedSuccessCount}</dd>
+        <dt>Doctrine Suggestions</dt>
+        <dd>{dashboard.doctrineSuggestionCount}</dd>
+      </dl>
+    </section>
+  );
+}
+
 export function buildDesktopJournalClassifications(
   journalEntries: readonly JournalEntry[],
 ): readonly JournalClassification[] {
@@ -2602,6 +2633,24 @@ export function buildDesktopGrowthAnalysis(
   return analyzeGrowth({
     journalEvidenceRecords: evidenceRecords,
     academyGrowthEvents: growthEvents.map(createAcademyGrowthEventFromJournal),
+  });
+}
+
+export function buildDesktopIntelligenceDashboard(
+  classifications: readonly JournalClassification[],
+  patterns: readonly IntelligencePattern[],
+  repeatedMistakes: readonly RepeatedMistake[],
+  repeatedSuccesses: readonly RepeatedSuccess[],
+  doctrineSuggestions: readonly DoctrineSuggestion[],
+  growthAnalysis: IntelligenceGrowthAnalysis,
+): IntelligenceDashboard {
+  return buildIntelligenceDashboard({
+    classificationCount: classifications.length,
+    patternReports: patterns,
+    repeatedMistakes,
+    repeatedSuccesses,
+    doctrineSuggestions,
+    growthAnalysis,
   });
 }
 

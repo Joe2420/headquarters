@@ -26,6 +26,7 @@ import {
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
   buildDesktopGrowthAnalysis,
+  buildDesktopIntelligenceDashboard,
   buildDesktopIntelligenceEvidenceRecords,
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
@@ -412,6 +413,50 @@ describe('Desktop shell', () => {
     expect(analysis.growthCategories).toEqual(['patience']);
     expect(html).toContain('Growth Analysis');
     expect(html).toContain('Categories: patience');
+  });
+
+  it('renders a read-oriented Intelligence dashboard from existing Intelligence outputs', () => {
+    const journalEntries = [{
+      id: 'journal-001',
+      entryDate: '2026-07-01',
+      rawContent: 'Lesson: discipline and patience improved during the session.',
+      source: 'manual' as const,
+      attachmentReferences: [],
+      classificationStatus: 'unclassified' as const,
+      createdAt: '2026-07-01T08:00:00.000Z',
+      updatedAt: '2026-07-01T08:00:00.000Z',
+    }, {
+      id: 'journal-002',
+      entryDate: '2026-07-02',
+      rawContent: 'Lesson: patience protected the rule again.',
+      source: 'manual' as const,
+      attachmentReferences: [],
+      classificationStatus: 'unclassified' as const,
+      createdAt: '2026-07-02T08:00:00.000Z',
+      updatedAt: '2026-07-02T08:00:00.000Z',
+    }];
+    const classifications = buildDesktopJournalClassifications(journalEntries);
+    const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
+    const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
+    const repeatedMistakes = buildDesktopRepeatedMistakes(evidenceRecords);
+    const repeatedSuccesses = buildDesktopRepeatedSuccesses(evidenceRecords);
+    const doctrineSuggestions = buildDesktopDoctrineSuggestions([]);
+    const growthAnalysis = buildDesktopGrowthAnalysis(evidenceRecords, []);
+    const dashboard = buildDesktopIntelligenceDashboard(
+      classifications,
+      patterns,
+      repeatedMistakes,
+      repeatedSuccesses,
+      doctrineSuggestions,
+      growthAnalysis,
+    );
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={journalEntries} />);
+
+    expect(dashboard.status).toBe('ready');
+    expect(dashboard.classificationCount).toBe(2);
+    expect(dashboard.patternReportCount).toBeGreaterThan(0);
+    expect(html).toContain('Intelligence Dashboard');
+    expect(html).toContain('Doctrine Suggestions');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {

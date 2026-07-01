@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0129 - Added read-oriented Intelligence Office dashboard.
+
 HQ-TASK-0128 - Added evidence-based Intelligence Office growth analysis.
 
 HQ-TASK-0127 - Added traceable doctrine suggestions requiring future manual promotion.
