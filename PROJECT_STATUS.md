@@ -131,6 +131,7 @@
 - HQ-TASK-0134 — Error Recovery
 - HQ-TASK-0135 — Backup
 - HQ-TASK-0136 — Import Export
+- HQ-TASK-0137 — Beta Testing
 
 Current milestone gate: Sprint 11 Intelligence Office is complete through HIG-TASK-090 / HQ-TASK-0130.
 

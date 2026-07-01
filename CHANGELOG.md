@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0137 - Added Sprint 12 beta testing checklist and known limitations.
+
 HQ-TASK-0136 - Added typed import/export foundation with safe validation.
 
 HQ-TASK-0135 - Added deterministic local database backup foundation.
