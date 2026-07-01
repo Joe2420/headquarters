@@ -607,6 +607,13 @@ dd {
   line-height: 1.4;
 }
 
+.status-recovery {
+  margin-top: 0.75rem;
+  color: #aab7c1;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
 @media (max-width: 820px) {
   .shell-header,
   .shell-main,

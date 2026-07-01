@@ -489,6 +489,7 @@ export function App() {
               </div>
             </dl>
             {startupStatus.error ? <p className="status-error">{formatStartupError(startupStatus)}</p> : null}
+            <p className="status-recovery">{formatStartupRecoveryGuidance(startupStatus)}</p>
           </aside>
         </main>
       </div>
@@ -3860,6 +3861,17 @@ export function formatStartupPerformanceStatus(status: StartupStatus): string {
 export function formatStartupError(status: StartupStatus): string {
   if (!status.error) return '';
   return status.error;
+}
+
+export function formatStartupRecoveryGuidance(status: StartupStatus): string {
+  if (status.state === 'loading') return 'Recovery standby while Headquarters checks local infrastructure.';
+  if (status.state === 'ready') return 'No recovery action required.';
+
+  if (!status.database.connected) {
+    return 'Close Headquarters, confirm the local database is available, then restart the desktop shell.';
+  }
+
+  return 'Restart Headquarters and preserve this startup issue for review.';
 }
 
 function hasContent(value: string): boolean {
