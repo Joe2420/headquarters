@@ -64,6 +64,7 @@ import {
   formatRecentGrowthHighlight,
   formatStartupError,
   formatStartupPerformanceStatus,
+  formatStartupRecoveryGuidance,
   formatTimelineViewerStatus,
   getCommanderMessage,
   getJournalCommanderPrompt,
@@ -105,6 +106,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
     expect(html).toContain('Startup');
+    expect(html).toContain('Recovery standby while Headquarters checks local infrastructure.');
   });
 
   it('renders beta accessibility landmarks and live status semantics', () => {
@@ -235,6 +237,31 @@ describe('Desktop shell', () => {
         skipped: [],
       },
     })).toBe('Not measured');
+  });
+
+  it('formats safe startup recovery guidance for beta error recovery', () => {
+    expect(formatStartupRecoveryGuidance({
+      state: 'ready',
+      database: {
+        connected: true,
+      },
+      migrations: {
+        applied: [],
+        skipped: [],
+      },
+    })).toBe('No recovery action required.');
+
+    expect(formatStartupRecoveryGuidance({
+      state: 'failed',
+      database: {
+        connected: false,
+      },
+      migrations: {
+        applied: [],
+        skipped: [],
+      },
+      error: 'database unavailable',
+    })).toBe('Close Headquarters, confirm the local database is available, then restart the desktop shell.');
   });
 
   it('renders the Academy dashboard room as a read-oriented growth surface', () => {
