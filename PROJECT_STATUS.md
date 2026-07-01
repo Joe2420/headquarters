@@ -117,6 +117,7 @@
 - HQ-TASK-0120 — Commander Mission Planning
 - HQ-TASK-0121 — Commander Objectives
 - HQ-TASK-0122 — Sprint 10 Commander Review Package
+- HQ-TASK-0123 — Journal Classification
 
 Current milestone gate: Sprint 10 Commander is complete through HIG-TASK-082 / HQ-TASK-0122.
 

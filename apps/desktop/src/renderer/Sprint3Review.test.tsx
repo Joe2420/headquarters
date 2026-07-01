@@ -39,6 +39,7 @@ describe('Sprint 3 desktop experience review', () => {
       'academy',
       'doctrine',
       'guardian',
+      'intelligence',
       'archive',
       'settings',
     ]);

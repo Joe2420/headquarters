@@ -9,6 +9,7 @@ import {
   DebriefTheater,
   DoctrineRoom,
   GuardianRoom,
+  IntelligenceCenterRoom,
   JournalRoom,
   ObservationRoom,
   ReadyRoom,
@@ -23,6 +24,7 @@ import {
   buildDesktopAcademyDashboard,
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
+  buildDesktopJournalClassifications,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -41,6 +43,7 @@ import {
   formatDatabaseStatus,
   formatDebriefStatus,
   formatHqosStatus,
+  formatJournalClassificationStatus,
   formatMigrationStatus,
   formatMissionHistoryStatus,
   formatMissionDetailState,
@@ -98,6 +101,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('data-nav-id="academy"');
     expect(html).toContain('data-nav-id="doctrine"');
     expect(html).toContain('data-nav-id="guardian"');
+    expect(html).toContain('data-nav-id="intelligence"');
     expect(html).toContain('data-nav-id="archive"');
     expect(html).toContain('data-nav-id="settings"');
     expect(html).toContain('aria-current="page"');
@@ -117,6 +121,7 @@ describe('Desktop shell', () => {
       { id: 'academy', label: 'Academy', active: false },
       { id: 'doctrine', label: 'Doctrine', active: false },
       { id: 'guardian', label: 'Guardian Wing', active: false },
+      { id: 'intelligence', label: 'Intelligence', active: false },
       { id: 'archive', label: 'Archive', active: false },
       { id: 'settings', label: 'Settings', active: false },
     ]);
@@ -198,6 +203,33 @@ describe('Desktop shell', () => {
     expect(html).toContain('Rule Monitoring');
     expect(html).toContain('Risk Monitoring');
     expect(html).toContain('Lockout State');
+  });
+
+  it('renders Intelligence Center journal classifications without mutating raw evidence', () => {
+    const journalEntry = {
+      id: 'journal-001',
+      entryDate: '2026-07-01',
+      rawContent: 'Mission debrief lesson: patience protected the rule.',
+      rawMood: 'calm',
+      rawMarketConditions: 'quiet market session',
+      source: 'manual' as const,
+      attachmentReferences: ['chart-001'],
+      classificationStatus: 'unclassified' as const,
+      createdAt: '2026-07-01T08:00:00.000Z',
+      updatedAt: '2026-07-01T08:00:00.000Z',
+    };
+
+    const classifications = buildDesktopJournalClassifications([journalEntry]);
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={[journalEntry]} />);
+
+    expect(classifications[0]?.categories).toContain('mission_reflection');
+    expect(classifications[0]?.categories).toContain('growth_event');
+    expect(classifications[0]?.rawEntry).toEqual(journalEntry);
+    expect(classifications[0]?.rawEntry).not.toBe(journalEntry);
+    expect(formatJournalClassificationStatus(classifications)).toBe('1 of 1 journal entry classified');
+    expect(html).toContain('data-room-id="intelligence-center"');
+    expect(html).toContain('Journal Classification');
+    expect(html).toContain('mission_reflection');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {
