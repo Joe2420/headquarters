@@ -33,6 +33,10 @@ import {
 } from '@headquarters/commander';
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
+  classifyJournalEntries,
+  type JournalClassification,
+} from '@headquarters/intelligence-office';
+import {
   buildTradingPlanDoctrineReferences,
   diffDoctrineRecords,
   type DoctrineDiff,
@@ -149,6 +153,7 @@ export type NavigationAreaId =
   | 'academy'
   | 'doctrine'
   | 'guardian'
+  | 'intelligence'
   | 'archive'
   | 'settings';
 export type HeadquartersRoomId = NavigationAreaId;
@@ -178,6 +183,7 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'academy', label: 'Academy' },
   { id: 'doctrine', label: 'Doctrine' },
   { id: 'guardian', label: 'Guardian Wing' },
+  { id: 'intelligence', label: 'Intelligence' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
 ];
@@ -595,6 +601,10 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
 
   if (room === 'guardian') {
     return <GuardianRoom />;
+  }
+
+  if (room === 'intelligence') {
+    return <IntelligenceCenterRoom journalEntries={context.journalEntries} />;
   }
 
   if (room === 'archive') {
@@ -2357,6 +2367,71 @@ export function GuardianRoom() {
       </section>
     </div>
   );
+}
+
+export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: JournalEntry[] }) {
+  const classifications = buildDesktopJournalClassifications(journalEntries);
+
+  return (
+    <div className="room-layout" data-room-id="intelligence-center">
+      <section className="command-center-header" aria-label="Intelligence center status">
+        <p className="section-label">Intelligence Center</p>
+        <h2>Journal Classification</h2>
+        <p className="muted">Deterministic classification preserves raw journal evidence and does not alter source entries.</p>
+      </section>
+      <section className="command-center-panels" aria-label="Intelligence workspace">
+        <section className="journal-panel" aria-label="Journal classification summary">
+          <p className="section-label">Classification</p>
+          <h3>Journal Evidence</h3>
+          <dl>
+            <dt>Entries</dt>
+            <dd>{journalEntries.length}</dd>
+            <dt>Classified</dt>
+            <dd>{classifications.filter((classification) => classification.categories.length > 0).length}</dd>
+          </dl>
+          <p className="muted">{formatJournalClassificationStatus(classifications)}</p>
+        </section>
+        <JournalClassificationPanel classifications={classifications} />
+      </section>
+    </div>
+  );
+}
+
+function JournalClassificationPanel({ classifications }: { classifications: readonly JournalClassification[] }) {
+  return (
+    <section className="journal-panel" aria-label="Journal classifications">
+      <p className="section-label">Evidence</p>
+      <h3>Classified Entries</h3>
+      {classifications.length === 0 ? (
+        <p className="muted">No journal entries are available for Intelligence classification yet.</p>
+      ) : (
+        <ol className="mission-archive-list">
+          {classifications.map((classification) => (
+            <li key={classification.entryId}>
+              <span>{classification.entryId}</span>
+              <strong>{classification.categories.length === 0 ? 'unclassified' : classification.categories.join(', ')}</strong>
+              <span>{formatJournalCount(classification.evidence.length, 'evidence point', 'evidence points')}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
+export function buildDesktopJournalClassifications(
+  journalEntries: readonly JournalEntry[],
+): readonly JournalClassification[] {
+  return classifyJournalEntries(journalEntries);
+}
+
+export function formatJournalClassificationStatus(classifications: readonly JournalClassification[]): string {
+  if (classifications.length === 0) return 'No journal evidence classified';
+
+  const classifiedCount = classifications.filter((classification) => classification.categories.length > 0).length;
+  if (classifiedCount === 0) return 'Journal evidence has no approved category matches yet';
+
+  return `${classifiedCount} of ${classifications.length} journal entr${classifications.length === 1 ? 'y' : 'ies'} classified`;
 }
 
 function JournalSearchPanel({

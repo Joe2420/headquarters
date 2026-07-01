@@ -21,6 +21,7 @@
     "@headquarters/doctrine": "workspace:*",
     "@headquarters/guardian": "workspace:*",
     "@headquarters/hqos": "workspace:*",
+    "@headquarters/intelligence-office": "workspace:*",
     "@headquarters/journal": "workspace:*",
     "@headquarters/shared": "workspace:*",
     "@headquarters/ui": "workspace:*",

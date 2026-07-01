@@ -18,6 +18,7 @@
       "@headquarters/doctrine": ["packages/doctrine/src/index.ts"],
       "@headquarters/academy": ["packages/academy/src/index.ts"],
       "@headquarters/commander": ["packages/commander/src/index.ts"],
+      "@headquarters/intelligence-office": ["packages/intelligence-office/src/index.ts"],
       "@headquarters/archive-intelligence": ["packages/archive-intelligence/src/index.ts"],
       "@headquarters/guardian": ["packages/guardian/src/index.ts"],
       "@headquarters/database": ["packages/database/src/index.ts"],
