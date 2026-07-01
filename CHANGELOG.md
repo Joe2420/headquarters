@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0119 - Added Commander dashboard behavior and Command room display.
+
 HQ-TASK-0118 - Added Commander monthly review behavior and Command room display.
 
 HQ-TASK-0117 - Added Commander weekly review behavior and Command room display.

@@ -314,6 +314,10 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Commander monthly review"');
     expect(html).toContain('Monthly Review');
     expect(html).toContain('No traceable monthly evidence is available yet');
+    expect(html).toContain('aria-label="Commander dashboard"');
+    expect(html).toContain('Commander Dashboard');
+    expect(html).toContain('No chat behavior');
+    expect(html).toContain('No avatar behavior');
     expect(html).toContain('aria-label="Next required action"');
     expect(html).toContain('aria-label="Headquarters supporting information"');
     expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');

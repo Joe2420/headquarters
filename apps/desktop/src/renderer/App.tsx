@@ -23,6 +23,7 @@ import {
   type AcademyRecognition,
 } from '@headquarters/academy';
 import {
+  buildCommanderDashboard,
   buildCommanderDailyBriefing,
   buildCommanderMonthlyReview,
   buildCommanderSessionDebrief,
@@ -691,6 +692,15 @@ function CommandOverview({
     academyGrowthEventCount: growthEvents.length,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
+  const commanderDashboard = buildCommanderDashboard({
+    hasDailyBriefing: true,
+    hasSessionDebrief: true,
+    hasWeeklyReview: true,
+    hasMonthlyReview: true,
+    hasMissionPlanning: false,
+    objectiveCount: 0,
+    generatedAt: activeMission?.createdAt ?? 'standby',
+  });
 
   return (
     <div className="command-center-layout" data-layout="command-center">
@@ -753,6 +763,19 @@ function CommandOverview({
               <li key={link.source}>
                 <span>{link.label}</span>
                 <strong>{link.count}</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="commander-briefing-panel" aria-label="Commander dashboard">
+          <p className="section-label">Commander Dashboard</p>
+          <h3>Briefing, reviews, planning, and objectives</h3>
+          <p className="muted">{commanderDashboard.constraints.join(' ')}</p>
+          <ul className="mission-archive-list">
+            {commanderDashboard.sections.map((section) => (
+              <li key={section.label}>
+                <span>{section.label}</span>
+                <strong>{section.status}</strong>
               </li>
             ))}
           </ul>
