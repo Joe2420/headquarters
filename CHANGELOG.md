@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0126 - Added behavior-based repeated success analysis to the Intelligence Office.
+
 HQ-TASK-0125 - Added operational repeated mistake analysis to the Intelligence Office.
 
 HQ-TASK-0124 - Added deterministic Intelligence Office pattern detection and dashboard display.
