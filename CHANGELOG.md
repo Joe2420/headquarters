@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0136 - Added typed import/export foundation with safe validation.
+
 HQ-TASK-0135 - Added deterministic local database backup foundation.
 
 HQ-TASK-0134 - Added explicit desktop startup error recovery guidance.
