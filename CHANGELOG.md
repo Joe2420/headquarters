@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0116 - Added Commander session debrief behavior and Command room display.
+
 HQ-TASK-0115 - Added Commander daily briefing foundation and Command room display.
 
 HQ-TASK-0113 - Added Sprint 9 Archive Intelligence review package.
