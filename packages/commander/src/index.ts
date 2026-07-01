@@ -1,3 +1,4 @@
+export * from './CommanderDashboard';
 export * from './DailyBriefing';
 export * from './MonthlyReview';
 export * from './SessionDebrief';
