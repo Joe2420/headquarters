@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0130 - Added Sprint 11 Intelligence Office review package.
+
 HQ-TASK-0129 - Added read-oriented Intelligence Office dashboard.
 
 HQ-TASK-0128 - Added evidence-based Intelligence Office growth analysis.
