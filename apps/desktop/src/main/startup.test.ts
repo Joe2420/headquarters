@@ -26,7 +26,15 @@ describe('App startup wiring', () => {
 
   it('opens the local database and runs migrations idempotently', () => {
     const dbPath = createTempDatabasePath();
-    const firstStartup = initializeAppStartup({ dbPath, migrationsDirectory });
+    let now = 1000;
+    const firstStartup = initializeAppStartup({
+      dbPath,
+      migrationsDirectory,
+      nowMs: () => {
+        now += 125;
+        return now;
+      },
+    });
 
     try {
       expect(firstStartup.status.state).toBe('ready');
@@ -41,6 +49,12 @@ describe('App startup wiring', () => {
         '007_doctrine_history',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
+      expect(firstStartup.status.performance).toEqual({
+        durationMs: 125,
+        migrationCount: 7,
+        budgetMs: 3000,
+        status: 'within-budget',
+      });
     } finally {
       firstStartup.close();
     }
@@ -65,13 +79,20 @@ describe('App startup wiring', () => {
   });
 
   it('represents startup failure safely', () => {
+    let now = 1000;
     const startup = initializeAppStartup({
       dbPath: createTempDatabasePath(),
       migrationsDirectory: join(process.cwd(), 'missing-migrations-directory'),
+      startupBudgetMs: 100,
+      nowMs: () => {
+        now += 250;
+        return now;
+      },
     });
 
     expect(startup.status.state).toBe('failed');
     expect(startup.status.database.connected).toBe(false);
+    expect(startup.status.performance.status).toBe('over-budget');
     expect(startup.status.error).toBeTruthy();
     startup.close();
   });
