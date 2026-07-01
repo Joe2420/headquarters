@@ -22,6 +22,7 @@ import {
   buildDesktopArchiveRecords,
   buildDesktopArchiveSessionInspections,
   buildDesktopAcademyDashboard,
+  buildDesktopDoctrineSuggestions,
   buildDesktopGuardianAlerts,
   buildDesktopGuardianLockoutState,
   buildDesktopIntelligenceEvidenceRecords,
@@ -342,6 +343,37 @@ describe('Desktop shell', () => {
     }]);
     expect(html).toContain('Repeated Successes');
     expect(html).toContain('Repeated growth behavior');
+  });
+
+  it('surfaces doctrine suggestions as manual-review candidates only', () => {
+    const suggestions = buildDesktopDoctrineSuggestions([
+      {
+        id: 'journal-001',
+        sourceType: 'journal',
+        summary: 'Rule source',
+        signals: ['doctrine_candidate_source'],
+      },
+    ]);
+    const html = renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={[{
+      id: 'journal-001',
+      entryDate: '2026-07-01',
+      rawContent: 'Doctrine rule: never override risk limits.',
+      source: 'manual',
+      attachmentReferences: [],
+      classificationStatus: 'unclassified',
+      createdAt: '2026-07-01T08:00:00.000Z',
+      updatedAt: '2026-07-01T08:00:00.000Z',
+    }]} />);
+
+    expect(suggestions).toEqual([{
+      id: 'doctrine-suggestion:doctrine_candidate_source',
+      title: 'Review doctrine candidate source',
+      rationale: '1 evidence record support manual doctrine review.',
+      evidenceRecordIds: ['journal-001'],
+      requiresManualPromotion: true,
+    }]);
+    expect(html).toContain('Doctrine Suggestions');
+    expect(html).toContain('Manual promotion required');
   });
 
   it('renders the Archive room with HTB archive component alignment', () => {
