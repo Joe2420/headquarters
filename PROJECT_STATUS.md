@@ -115,8 +115,9 @@
 - HQ-TASK-0118 — Commander Monthly Review
 - HQ-TASK-0119 — Commander Dashboard
 - HQ-TASK-0120 — Commander Mission Planning
+- HQ-TASK-0121 — Commander Objectives
 
-Current milestone gate: Sprint 10 Commander is in progress through HIG-TASK-080 / HQ-TASK-0120.
+Current milestone gate: Sprint 10 Commander is in progress through HIG-TASK-081 / HQ-TASK-0121.
 
 ## Post-Sprint UX Alignment
 
@@ -141,6 +142,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 10 Commander is in progress through HIG-TASK-080 / HQ-TASK-0120.
+Sprint 10 Commander is in progress through HIG-TASK-081 / HQ-TASK-0121.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
