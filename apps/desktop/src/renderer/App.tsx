@@ -22,7 +22,12 @@ import {
   createAcademyGrowthEventFromJournal,
   type AcademyRecognition,
 } from '@headquarters/academy';
-import { buildCommanderDailyBriefing, buildCommanderSessionDebrief, buildCommanderWeeklyReview } from '@headquarters/commander';
+import {
+  buildCommanderDailyBriefing,
+  buildCommanderMonthlyReview,
+  buildCommanderSessionDebrief,
+  buildCommanderWeeklyReview,
+} from '@headquarters/commander';
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   buildTradingPlanDoctrineReferences,
@@ -679,6 +684,13 @@ function CommandOverview({
     academyGrowthEventCount: growthEvents.length,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
+  const monthlyReview = buildCommanderMonthlyReview({
+    missionCount: missionHistory.length,
+    journalEntryCount: journalEntries.length,
+    doctrineRecordCount: doctrineRecords.length,
+    academyGrowthEventCount: growthEvents.length,
+    generatedAt: activeMission?.createdAt ?? 'standby',
+  });
 
   return (
     <div className="command-center-layout" data-layout="command-center">
@@ -728,6 +740,19 @@ function CommandOverview({
               <li key={item}>
                 <span>{item}</span>
                 <strong>Evidence</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="commander-briefing-panel" aria-label="Commander monthly review">
+          <p className="section-label">Monthly Review</p>
+          <h3>{monthlyReview.summary}</h3>
+          <p className="muted">{monthlyReview.institutionalNote}</p>
+          <ul className="mission-archive-list">
+            {monthlyReview.evidenceLinks.map((link) => (
+              <li key={link.source}>
+                <span>{link.label}</span>
+                <strong>{link.count}</strong>
               </li>
             ))}
           </ul>
