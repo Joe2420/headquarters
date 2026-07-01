@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0124 - Added deterministic Intelligence Office pattern detection and dashboard display.
+
 HQ-TASK-0123 - Added deterministic Journal Intelligence classification and Intelligence Center display.
 
 HQ-TASK-0122 - Added Sprint 10 Commander review package.
