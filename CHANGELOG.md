@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0122 - Added Sprint 10 Commander review package.
+
 HQ-TASK-0121 - Added Commander objective representation and Command room display.
 
 HQ-TASK-0120 - Added Commander mission planning support and Command room display.
