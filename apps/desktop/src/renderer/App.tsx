@@ -261,6 +261,12 @@ export interface StartupStatus {
     applied: string[];
     skipped: string[];
   };
+  performance?: {
+    durationMs: number;
+    migrationCount: number;
+    budgetMs: number;
+    status: 'within-budget' | 'over-budget';
+  };
   error?: string;
 }
 
@@ -474,6 +480,10 @@ export function App() {
               <div>
                 <dt>Migrations</dt>
                 <dd>{formatMigrationStatus(startupStatus)}</dd>
+              </div>
+              <div>
+                <dt>Startup</dt>
+                <dd>{formatStartupPerformanceStatus(startupStatus)}</dd>
               </div>
             </dl>
             {startupStatus.error ? <p className="status-error">{formatStartupError(startupStatus)}</p> : null}
@@ -3837,6 +3847,12 @@ export function formatMigrationStatus(status: StartupStatus): string {
   if (changed === 0 && current > 0) return 'Current';
   if (changed > 0 && current > 0) return `${changed} applied, ${current} current`;
   return `${changed} applied`;
+}
+
+export function formatStartupPerformanceStatus(status: StartupStatus): string {
+  if (!status.performance) return 'Not measured';
+
+  return `${status.performance.durationMs}ms / ${status.performance.budgetMs}ms ${status.performance.status}`;
 }
 
 export function formatStartupError(status: StartupStatus): string {

@@ -63,6 +63,7 @@ import {
   formatRecentDoctrineHighlight,
   formatRecentGrowthHighlight,
   formatStartupError,
+  formatStartupPerformanceStatus,
   formatTimelineViewerStatus,
   getCommanderMessage,
   getJournalCommanderPrompt,
@@ -102,6 +103,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Status');
     expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
+    expect(html).toContain('Startup');
   });
 
   it('renders a lightweight primary navigation framework with command active', () => {
@@ -192,6 +194,36 @@ describe('Desktop shell', () => {
 
     expect(dashboard.hasGrowthEvidence).toBe(false);
     expect(formatAcademyDashboardStatus(dashboard)).toBe('No Academy growth evidence yet');
+  });
+
+  it('formats startup performance measurements for the beta status panel', () => {
+    expect(formatStartupPerformanceStatus({
+      state: 'ready',
+      database: {
+        connected: true,
+      },
+      migrations: {
+        applied: [],
+        skipped: [],
+      },
+      performance: {
+        durationMs: 725,
+        migrationCount: 7,
+        budgetMs: 3000,
+        status: 'within-budget',
+      },
+    })).toBe('725ms / 3000ms within-budget');
+
+    expect(formatStartupPerformanceStatus({
+      state: 'loading',
+      database: {
+        connected: false,
+      },
+      migrations: {
+        applied: [],
+        skipped: [],
+      },
+    })).toBe('Not measured');
   });
 
   it('renders the Academy dashboard room as a read-oriented growth surface', () => {

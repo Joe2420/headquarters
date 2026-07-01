@@ -21,6 +21,7 @@ import {
   type DoctrineRecord,
 } from '@headquarters/doctrine';
 import type { Mission } from '@headquarters/shared';
+import { summarizeStartupPerformance, type StartupPerformanceSummary } from './startupPerformance';
 
 export type StartupState = 'ready' | 'failed';
 
@@ -34,6 +35,7 @@ export interface AppStartupStatus {
     applied: string[];
     skipped: string[];
   };
+  performance: StartupPerformanceSummary;
   error?: string;
 }
 
@@ -125,10 +127,13 @@ export interface AppStartupRuntime {
 export interface AppStartupOptions {
   dbPath: string;
   migrationsDirectory?: string;
+  nowMs?: () => number;
+  startupBudgetMs?: number;
 }
 
 export function initializeAppStartup(options: AppStartupOptions): AppStartupRuntime {
   let database: HeadquartersDatabase | undefined;
+  const startedAtMs = readNowMs(options);
 
   try {
     database = openHeadquartersDatabase(options.dbPath);
@@ -136,6 +141,12 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       ? loadMigrationsFromDirectory(options.migrationsDirectory)
       : loadDefaultMigrations();
     const migrationResult = runMigrations(database, migrations);
+    const performance = summarizeStartupPerformance({
+      startedAtMs,
+      completedAtMs: readNowMs(options),
+      migrationCount: migrationResult.applied.length + migrationResult.skipped.length,
+      budgetMs: options.startupBudgetMs ?? 3000,
+    });
     const missionService = createMissionService(database);
     const doctrineRepository = new DoctrineRepository(database);
     const doctrineHistoryRepository = new DoctrineHistoryRepository(database);
@@ -148,6 +159,7 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
           path: options.dbPath,
         },
         migrations: migrationResult,
+        performance,
       },
       listDoctrineRecords: async () => ({
         records: doctrineRepository.list(),
@@ -232,6 +244,12 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
     };
   } catch (error) {
     database?.close();
+    const performance = summarizeStartupPerformance({
+      startedAtMs,
+      completedAtMs: readNowMs(options),
+      migrationCount: 0,
+      budgetMs: options.startupBudgetMs ?? 3000,
+    });
 
     return {
       status: {
@@ -244,6 +262,7 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
           applied: [],
           skipped: [],
         },
+        performance,
         error: error instanceof Error ? error.message : 'Unknown startup failure',
       },
       listDoctrineRecords: async () => ({
@@ -288,6 +307,10 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       close: () => undefined,
     };
   }
+}
+
+function readNowMs(options: AppStartupOptions): number {
+  return options.nowMs?.() ?? Date.now();
 }
 
 function createMissionService(database: HeadquartersDatabase): MissionService {

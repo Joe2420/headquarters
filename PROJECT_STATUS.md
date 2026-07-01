@@ -126,6 +126,7 @@
 - HQ-TASK-0129 — Intelligence Dashboard
 - HQ-TASK-0130 — Sprint 11 Intelligence Office Review Package
 - HQ-TASK-0131 — UI Polish
+- HQ-TASK-0132 — Performance
 
 Current milestone gate: Sprint 11 Intelligence Office is complete through HIG-TASK-090 / HQ-TASK-0130.
 
