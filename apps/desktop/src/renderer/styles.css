@@ -2,12 +2,14 @@
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #0b0d0f;
   color: #eef3f6;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   background: #0b0d0f;
+  line-height: 1.5;
 }
 
 .hq-shell {
@@ -26,6 +28,7 @@ body {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #242b31;
   background: #101418;
+  box-sizing: border-box;
 }
 
 .classification {
@@ -99,12 +102,14 @@ dd {
   padding: 1rem;
   border-right: 1px solid #242b31;
   background: #0f1215;
+  overflow-y: auto;
 }
 
 .nav-item {
   min-height: 40px;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   padding: 0 0.75rem;
   color: #aab7c1;
   border-left: 2px solid transparent;
@@ -115,6 +120,11 @@ dd {
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+.nav-item:hover {
+  color: #eef3f6;
+  background: #141a20;
 }
 
 .nav-item.active {
@@ -137,6 +147,7 @@ dd {
 .workspace-panel,
 .status-panel {
   padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .workspace-panel {
@@ -204,6 +215,7 @@ dd {
   padding: 1rem;
   border: 1px solid #242b31;
   background: #0f1215;
+  overflow-wrap: anywhere;
 }
 
 .commander-briefing-panel {
@@ -330,6 +342,8 @@ dd {
   padding: 1rem;
   border: 1px solid #242b31;
   background: #0f1215;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
 }
 
 .mission-authorization-panel,
@@ -449,6 +463,7 @@ dd {
   padding: 0.55rem 0.65rem;
   background: #101418;
   border-left: 2px solid #8fb8ff;
+  overflow-wrap: anywhere;
 }
 
 .mission-archive-list time {
@@ -540,9 +555,16 @@ dd {
   border-color: #8fb8ff;
 }
 
+.primary-action:disabled,
+.secondary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
 .status-panel {
   border-left: 1px solid #242b31;
   background: #101418;
+  overflow-wrap: anywhere;
 }
 
 .status-panel h2 {
@@ -585,6 +607,10 @@ dd {
     border-bottom: 1px solid #242b31;
   }
 
+  .nav-item {
+    min-width: max-content;
+  }
+
   .status-panel {
     border-left: 0;
     border-top: 1px solid #242b31;
@@ -595,5 +621,16 @@ dd {
   .supporting-information-panel,
   .workflow-step-list {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

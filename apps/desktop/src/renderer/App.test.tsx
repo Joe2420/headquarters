@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
@@ -83,6 +84,15 @@ import {
 } from './App';
 
 describe('Desktop shell', () => {
+  it('keeps beta UI polish aligned with reduced motion and stable shell layout', () => {
+    const styles = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
+
+    expect(styles).toContain('color-scheme: dark');
+    expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(styles).toContain('overflow-wrap: anywhere');
+    expect(styles).toContain('.nav-item:hover');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
