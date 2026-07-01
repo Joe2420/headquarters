@@ -12,6 +12,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@headquarters/academy": "workspace:*",
     "@headquarters/journal": "workspace:*"
   },
   "devDependencies": {

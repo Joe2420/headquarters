@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0128 - Added evidence-based Intelligence Office growth analysis.
+
 HQ-TASK-0127 - Added traceable doctrine suggestions requiring future manual promotion.
 
 HQ-TASK-0126 - Added behavior-based repeated success analysis to the Intelligence Office.

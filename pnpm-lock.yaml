@@ -228,6 +228,9 @@ importers:
 
   packages/intelligence-office:
     dependencies:
+      '@headquarters/academy':
+        specifier: workspace:*
+        version: link:../academy
       '@headquarters/journal':
         specifier: workspace:*
         version: link:../journal

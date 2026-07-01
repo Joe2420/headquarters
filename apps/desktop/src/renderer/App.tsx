@@ -34,11 +34,13 @@ import {
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   classifyJournalEntries,
+  analyzeGrowth,
   analyzeRepeatedMistakes,
   analyzeRepeatedSuccesses,
   detectIntelligencePatterns,
   suggestDoctrineCandidates,
   type DoctrineSuggestion,
+  type IntelligenceGrowthAnalysis,
   type IntelligenceEvidenceRecord,
   type IntelligencePattern,
   type JournalClassification,
@@ -613,7 +615,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   }
 
   if (room === 'intelligence') {
-    return <IntelligenceCenterRoom journalEntries={context.journalEntries} />;
+    return <IntelligenceCenterRoom journalEntries={context.journalEntries} growthEvents={context.growthEvents} />;
   }
 
   if (room === 'archive') {
@@ -2378,13 +2380,20 @@ export function GuardianRoom() {
   );
 }
 
-export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: JournalEntry[] }) {
+export function IntelligenceCenterRoom({
+  journalEntries,
+  growthEvents = [],
+}: {
+  journalEntries: JournalEntry[];
+  growthEvents?: GrowthEvent[];
+}) {
   const classifications = buildDesktopJournalClassifications(journalEntries);
   const evidenceRecords = buildDesktopIntelligenceEvidenceRecords(classifications);
   const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
   const repeatedMistakes = buildDesktopRepeatedMistakes(evidenceRecords);
   const repeatedSuccesses = buildDesktopRepeatedSuccesses(evidenceRecords);
   const doctrineSuggestions = buildDesktopDoctrineSuggestions(evidenceRecords);
+  const growthAnalysis = buildDesktopGrowthAnalysis(evidenceRecords, growthEvents);
 
   return (
     <div className="room-layout" data-room-id="intelligence-center">
@@ -2410,6 +2419,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
         <RepeatedMistakePanel mistakes={repeatedMistakes} />
         <RepeatedSuccessPanel successes={repeatedSuccesses} />
         <DoctrineSuggestionPanel suggestions={doctrineSuggestions} />
+        <GrowthAnalysisPanel analysis={growthAnalysis} />
       </section>
     </div>
   );
@@ -2525,6 +2535,25 @@ function DoctrineSuggestionPanel({ suggestions }: { suggestions: readonly Doctri
   );
 }
 
+function GrowthAnalysisPanel({ analysis }: { analysis: IntelligenceGrowthAnalysis }) {
+  return (
+    <section className="journal-panel" aria-label="Growth analysis">
+      <p className="section-label">Growth</p>
+      <h3>Growth Analysis</h3>
+      <dl>
+        <dt>Journal Evidence</dt>
+        <dd>{analysis.journalEvidenceCount}</dd>
+        <dt>Academy Evidence</dt>
+        <dd>{analysis.academyEvidenceCount}</dd>
+      </dl>
+      <p className="muted">{analysis.summary}</p>
+      {analysis.growthCategories.length > 0 ? (
+        <p className="muted">Categories: {analysis.growthCategories.join(', ')}</p>
+      ) : null}
+    </section>
+  );
+}
+
 export function buildDesktopJournalClassifications(
   journalEntries: readonly JournalEntry[],
 ): readonly JournalClassification[] {
@@ -2564,6 +2593,16 @@ export function buildDesktopDoctrineSuggestions(
   evidenceRecords: readonly IntelligenceEvidenceRecord[],
 ): readonly DoctrineSuggestion[] {
   return suggestDoctrineCandidates(evidenceRecords);
+}
+
+export function buildDesktopGrowthAnalysis(
+  evidenceRecords: readonly IntelligenceEvidenceRecord[],
+  growthEvents: readonly GrowthEvent[],
+): IntelligenceGrowthAnalysis {
+  return analyzeGrowth({
+    journalEvidenceRecords: evidenceRecords,
+    academyGrowthEvents: growthEvents.map(createAcademyGrowthEventFromJournal),
+  });
 }
 
 export function formatJournalClassificationStatus(classifications: readonly JournalClassification[]): string {
