@@ -134,8 +134,9 @@
 - HQ-TASK-0137 — Beta Testing
 - HQ-TASK-0138 — Final Review
 - HQ-TASK-0139 — Release Candidate
+- HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 11 Intelligence Office is complete through HIG-TASK-090 / HQ-TASK-0130.
+Current milestone gate: Sprint 12 Polish & Beta is complete through HIG-TASK-100 / HQ-TASK-0140.
 
 ## Post-Sprint UX Alignment
 
@@ -160,6 +161,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 11 Intelligence Office is complete through HIG-TASK-090 / HQ-TASK-0130.
+Sprint 12 Polish & Beta is complete through HIG-TASK-100 / HQ-TASK-0140.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
