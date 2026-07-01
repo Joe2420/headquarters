@@ -133,6 +133,7 @@
 - HQ-TASK-0136 — Import Export
 - HQ-TASK-0137 — Beta Testing
 - HQ-TASK-0138 — Final Review
+- HQ-TASK-0139 — Release Candidate
 
 Current milestone gate: Sprint 11 Intelligence Office is complete through HIG-TASK-090 / HQ-TASK-0130.
 
