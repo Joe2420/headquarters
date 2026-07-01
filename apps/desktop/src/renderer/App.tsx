@@ -27,6 +27,7 @@ import {
   buildCommanderDailyBriefing,
   buildCommanderMissionPlanning,
   buildCommanderMonthlyReview,
+  buildCommanderObjectives,
   buildCommanderSessionDebrief,
   buildCommanderWeeklyReview,
 } from '@headquarters/commander';
@@ -700,13 +701,19 @@ function CommandOverview({
     currentState: activeMission?.currentState,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
+  const commanderObjectives = buildCommanderObjectives({
+    activeMissionId: activeMission?.id,
+    activeMissionTitle: activeMission?.campaign,
+    activeMissionObjective: activeMission?.objective,
+    generatedAt: activeMission?.createdAt ?? 'standby',
+  });
   const commanderDashboard = buildCommanderDashboard({
     hasDailyBriefing: true,
     hasSessionDebrief: true,
     hasWeeklyReview: true,
     hasMonthlyReview: true,
     hasMissionPlanning: true,
-    objectiveCount: 0,
+    objectiveCount: commanderObjectives.objectives.length,
     generatedAt: activeMission?.createdAt ?? 'standby',
   });
 
@@ -797,6 +804,24 @@ function CommandOverview({
               <li key={standard}>
                 <span>{standard}</span>
                 <strong>Standard</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="commander-briefing-panel" aria-label="Commander objectives">
+          <p className="section-label">Objectives</p>
+          <h3>{commanderObjectives.summary}</h3>
+          <p className="muted">{commanderObjectives.constraints.join(' ')}</p>
+          <ul className="mission-archive-list">
+            {commanderObjectives.objectives.length === 0 ? (
+              <li>
+                <span>No active Commander objective</span>
+                <strong>Pending</strong>
+              </li>
+            ) : commanderObjectives.objectives.map((objective) => (
+              <li key={objective.id}>
+                <span>{objective.title}</span>
+                <strong>{objective.status}</strong>
               </li>
             ))}
           </ul>

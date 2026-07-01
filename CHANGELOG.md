@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0121 - Added Commander objective representation and Command room display.
+
 HQ-TASK-0120 - Added Commander mission planning support and Command room display.
 
 HQ-TASK-0119 - Added Commander dashboard behavior and Command room display.

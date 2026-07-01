@@ -322,6 +322,10 @@ describe('Desktop shell', () => {
     expect(html).toContain('Mission Planning');
     expect(html).toContain('No trade signals');
     expect(html).toContain('No bypass of HQOS mission logic');
+    expect(html).toContain('aria-label="Commander objectives"');
+    expect(html).toContain('Objectives');
+    expect(html).toContain('No social mechanics');
+    expect(html).toContain('No gamified scoring');
     expect(html).toContain('aria-label="Next required action"');
     expect(html).toContain('aria-label="Headquarters supporting information"');
     expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
