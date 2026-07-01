@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0140 - Prepared Headquarters v1.0 Beta handoff package.
+
 HQ-TASK-0139 - Added release candidate readiness checklist with Founder approval gate.
 
 HQ-TASK-0138 - Added Sprint 12 final beta readiness review package.
