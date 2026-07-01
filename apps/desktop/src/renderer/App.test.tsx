@@ -302,6 +302,9 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('Headquarters Overview');
     expect(html).toContain('aria-label="Commander guidance"');
+    expect(html).toContain('aria-label="Commander daily briefing"');
+    expect(html).toContain('Daily Briefing');
+    expect(html).toContain('No active mission is loaded');
     expect(html).toContain('aria-label="Next required action"');
     expect(html).toContain('aria-label="Headquarters supporting information"');
     expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
