@@ -41,6 +41,9 @@ importers:
       '@headquarters/archive-intelligence':
         specifier: workspace:*
         version: link:../../packages/archive-intelligence
+      '@headquarters/commander':
+        specifier: workspace:*
+        version: link:../../packages/commander
       '@headquarters/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -146,6 +149,12 @@ importers:
         version: 5.9.3
 
   packages/assets:
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/commander:
     devDependencies:
       typescript:
         specifier: ^5.6.3

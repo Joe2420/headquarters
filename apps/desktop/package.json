@@ -16,6 +16,7 @@
   "dependencies": {
     "@headquarters/academy": "workspace:*",
     "@headquarters/archive-intelligence": "workspace:*",
+    "@headquarters/commander": "workspace:*",
     "@headquarters/database": "workspace:*",
     "@headquarters/doctrine": "workspace:*",
     "@headquarters/guardian": "workspace:*",

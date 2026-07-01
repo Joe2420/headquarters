@@ -109,8 +109,9 @@
 - HQ-TASK-0111 — Archive Intelligence Pattern Detection
 - HQ-TASK-0112 — Archive Intelligence Dashboard
 - HQ-TASK-0113 — Sprint 9 Archive Intelligence Review Package
+- HQ-TASK-0115 — Commander Daily Briefing
 
-Current milestone gate: Sprint 9 Archive Intelligence is complete through HIG-TASK-074 / HQ-TASK-0113.
+Current milestone gate: Sprint 10 Commander is in progress through HIG-TASK-075 / HQ-TASK-0115.
 
 ## Post-Sprint UX Alignment
 
@@ -135,6 +136,6 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 9 Archive Intelligence is complete through HIG-TASK-074 / HQ-TASK-0113.
+Sprint 10 Commander is in progress through HIG-TASK-075 / HQ-TASK-0115.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.

@@ -22,6 +22,7 @@ import {
   createAcademyGrowthEventFromJournal,
   type AcademyRecognition,
 } from '@headquarters/academy';
+import { buildCommanderDailyBriefing } from '@headquarters/commander';
 import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
 import {
   buildTradingPlanDoctrineReferences,
@@ -609,6 +610,9 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       missionHistory={context.missionHistory}
       growthEvents={context.growthEvents}
       doctrineRecords={context.doctrineRecords}
+      journalEntries={context.journalEntries}
+      archivedMissionSummaries={context.archivedMissionSummaries}
+      archivedJournalEntries={context.archivedJournalEntries}
     />
   );
 }
@@ -636,6 +640,9 @@ interface CommandOverviewProps {
   missionHistory: ActiveMission[];
   growthEvents?: GrowthEvent[] | undefined;
   doctrineRecords?: DoctrineRecord[] | undefined;
+  journalEntries?: JournalEntry[] | undefined;
+  archivedMissionSummaries?: LocalMissionArchiveSummary[] | undefined;
+  archivedJournalEntries?: ArchivedJournalEntry[] | undefined;
 }
 
 function CommandOverview({
@@ -644,9 +651,20 @@ function CommandOverview({
   missionHistory,
   growthEvents = [],
   doctrineRecords = [],
+  journalEntries = [],
+  archivedMissionSummaries = [],
+  archivedJournalEntries = [],
 }: CommandOverviewProps) {
   const nextAction = getMissionNextAction(activeMission);
   const commanderMessage = getCommanderMessage(activeMission);
+  const dailyBriefing = buildCommanderDailyBriefing({
+    activeMissionTitle: activeMission?.campaign,
+    activeMissionObjective: activeMission?.objective,
+    missionCount: missionHistory.length,
+    journalEntryCount: journalEntries.length,
+    archiveRecordCount: archivedMissionSummaries.length + archivedJournalEntries.length,
+    generatedAt: activeMission?.createdAt ?? 'standby',
+  });
 
   return (
     <div className="command-center-layout" data-layout="command-center">
@@ -660,6 +678,19 @@ function CommandOverview({
           <p className="section-label">Commander</p>
           <h3>{commanderMessage.title}</h3>
           <p className="muted">{commanderMessage.body}</p>
+        </section>
+        <section className="commander-briefing-panel" aria-label="Commander daily briefing">
+          <p className="section-label">Daily Briefing</p>
+          <h3>{dailyBriefing.summary}</h3>
+          <p className="muted">{dailyBriefing.focus}</p>
+          <ul className="mission-archive-list">
+            {dailyBriefing.evidence.map((item) => (
+              <li key={item}>
+                <span>{item}</span>
+                <strong>Evidence</strong>
+              </li>
+            ))}
+          </ul>
         </section>
         <section className="current-objective-panel" aria-label="Current mission summary">
           <p className="section-label">Current Mission</p>

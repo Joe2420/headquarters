@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       '@headquarters/academy': resolve(__dirname, '../../packages/academy/src/index.ts'),
       '@headquarters/archive-intelligence': resolve(__dirname, '../../packages/archive-intelligence/src/index.ts'),
+      '@headquarters/commander': resolve(__dirname, '../../packages/commander/src/index.ts'),
       '@headquarters/database': resolve(__dirname, '../../packages/database/src/index.ts'),
       '@headquarters/doctrine': resolve(__dirname, '../../packages/doctrine/src/index.ts'),
       '@headquarters/guardian': resolve(__dirname, '../../packages/guardian/src/index.ts'),
