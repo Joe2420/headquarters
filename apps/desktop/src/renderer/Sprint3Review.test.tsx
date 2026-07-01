@@ -31,6 +31,10 @@ describe('Sprint 3 desktop experience review', () => {
     expect(navigationItems.map((item) => item.id)).toEqual([
       'command',
       'missions',
+      'ready',
+      'observation',
+      'war',
+      'debrief',
       'journal',
       'academy',
       'doctrine',

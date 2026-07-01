@@ -3,11 +3,16 @@ import { describe, expect, it } from 'vitest';
 import {
   App,
   AcademyRoom,
+  ArchiveRoom,
   CommandCenter,
   CommandCenterPlaceholder,
+  DebriefTheater,
   DoctrineRoom,
   GuardianRoom,
   JournalRoom,
+  ObservationRoom,
+  ReadyRoom,
+  WarRoom,
   type ActiveMission,
   type StartupStatus,
   buildDefaultTradingPlanDoctrineReferences,
@@ -85,6 +90,10 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Primary"');
     expect(html).toContain('data-nav-id="command"');
     expect(html).toContain('data-nav-id="missions"');
+    expect(html).toContain('data-nav-id="ready"');
+    expect(html).toContain('data-nav-id="observation"');
+    expect(html).toContain('data-nav-id="war"');
+    expect(html).toContain('data-nav-id="debrief"');
     expect(html).toContain('data-nav-id="journal"');
     expect(html).toContain('data-nav-id="academy"');
     expect(html).toContain('data-nav-id="doctrine"');
@@ -100,10 +109,14 @@ describe('Desktop shell', () => {
     expect(items).toEqual([
       { id: 'command', label: 'Command', active: true },
       { id: 'missions', label: 'Missions', active: false },
+      { id: 'ready', label: 'Ready Room', active: false },
+      { id: 'observation', label: 'Observation', active: false },
+      { id: 'war', label: 'War Room', active: false },
+      { id: 'debrief', label: 'Debrief', active: false },
       { id: 'journal', label: 'Journal', active: false },
       { id: 'academy', label: 'Academy', active: false },
       { id: 'doctrine', label: 'Doctrine', active: false },
-      { id: 'guardian', label: 'Guardian', active: false },
+      { id: 'guardian', label: 'Guardian Wing', active: false },
       { id: 'archive', label: 'Archive', active: false },
       { id: 'settings', label: 'Settings', active: false },
     ]);
@@ -179,9 +192,109 @@ describe('Desktop shell', () => {
     expect(lockout.status).toBe('unlocked');
     expect(html).toContain('data-room-id="guardian-room"');
     expect(html).toContain('Guardian Alerts');
+    expect(html).toContain('CapitalVaultPanel');
+    expect(html).toContain('JudgmentReservePanel');
+    expect(html).toContain('SuccessProtocolPanel');
     expect(html).toContain('Rule Monitoring');
     expect(html).toContain('Risk Monitoring');
     expect(html).toContain('Lockout State');
+  });
+
+  it('renders the Archive room with HTB archive component alignment', () => {
+    const html = renderToStaticMarkup(<ArchiveRoom
+      archivedMissionSummaries={[{
+        missionId: 'mission-001',
+        codename: 'Foundation Patrol',
+        archivedAt: '2026-01-01T00:20:00.000Z',
+        eventCount: 2,
+      }]}
+      archivedJournalEntries={[]}
+      doctrineRecords={[]}
+    />);
+
+    expect(html).toContain('data-room-id="archive-room"');
+    expect(html).toContain('ArchiveSearch');
+    expect(html).toContain('ArchiveCard');
+    expect(html).toContain('CampaignBookView');
+    expect(html).toContain('DoctrineRecordView');
+    expect(html).toContain('Foundation Patrol');
+  });
+
+  it('renders the Ready Room with HTB room component state binding', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
+
+    expect(html).toContain('data-room-id="ready-room"');
+    expect(html).toContain('ReadinessReport');
+    expect(html).toContain('DailyOrdersCard');
+    expect(html).toContain('OathPanel');
+    expect(html).toContain('LockerPanel');
+    expect(html).toContain('Foundation Patrol');
+  });
+
+  it('renders the Observation Room with quiet observation components', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const html = renderToStaticMarkup(<ObservationRoom activeMission={{ ...mission, currentState: 'observation' }} />);
+
+    expect(html).toContain('data-room-id="observation-room"');
+    expect(html).toContain('ObservationTimer');
+    expect(html).toContain('CompassIndicator');
+    expect(html).toContain('ArtificialHorizon');
+    expect(html).toContain('SilenceStateDisplay');
+    expect(html).toContain('Headquarters observes and records');
+  });
+
+  it('renders the War Room authorization boundary without broker control', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const html = renderToStaticMarkup(<WarRoom activeMission={{ ...mission, currentState: 'authorization' }} missionHistory={[mission]} />);
+
+    expect(html).toContain('data-room-id="war-room"');
+    expect(html).toContain('Mission Authorization');
+    expect(html).toContain('WarTableProjection');
+    expect(html).toContain('GuardianStatusPanel');
+    expect(html).toContain('GhostComparisonPanel');
+    expect(html).toContain('Headquarters never places trades');
+  });
+
+  it('renders the Debrief Theater with timeline, black box, decision report, and debrief form boundary', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const html = renderToStaticMarkup(<DebriefTheater
+      activeMission={{ ...mission, currentState: 'return_to_base' }}
+      onMissionChanged={() => undefined}
+      onRequestAuthorization={() => undefined}
+      onSaveDebrief={() => undefined}
+      onArchiveMission={() => undefined}
+    />);
+
+    expect(html).toContain('data-room-id="debrief-theater"');
+    expect(html).toContain('Mission timeline viewer');
+    expect(html).toContain('BlackBoxViewer');
+    expect(html).toContain('DecisionReportPanel');
+    expect(html).toContain('Behavior Summary');
   });
 
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {

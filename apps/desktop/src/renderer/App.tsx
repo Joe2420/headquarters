@@ -129,7 +129,19 @@ export interface ReportForDutyTransition {
   changed: boolean;
 }
 
-export type NavigationAreaId = 'command' | 'missions' | 'journal' | 'academy' | 'doctrine' | 'guardian' | 'archive' | 'settings';
+export type NavigationAreaId =
+  | 'command'
+  | 'missions'
+  | 'ready'
+  | 'observation'
+  | 'war'
+  | 'debrief'
+  | 'journal'
+  | 'academy'
+  | 'doctrine'
+  | 'guardian'
+  | 'archive'
+  | 'settings';
 export type HeadquartersRoomId = NavigationAreaId;
 
 export interface PrimaryNavigationItem {
@@ -149,10 +161,14 @@ export interface JournalWorkflowStep {
 const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
   { id: 'command', label: 'Command' },
   { id: 'missions', label: 'Missions' },
+  { id: 'ready', label: 'Ready Room' },
+  { id: 'observation', label: 'Observation' },
+  { id: 'war', label: 'War Room' },
+  { id: 'debrief', label: 'Debrief' },
   { id: 'journal', label: 'Journal' },
   { id: 'academy', label: 'Academy' },
   { id: 'doctrine', label: 'Doctrine' },
-  { id: 'guardian', label: 'Guardian' },
+  { id: 'guardian', label: 'Guardian Wing' },
   { id: 'archive', label: 'Archive' },
   { id: 'settings', label: 'Settings' },
 ];
@@ -491,6 +507,52 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
     );
   }
 
+  if (room === 'ready') {
+    return (
+      <ReadyRoom
+        activeMission={context.activeMission}
+        missionHistory={context.missionHistory}
+        growthEvents={context.growthEvents}
+      />
+    );
+  }
+
+  if (room === 'observation') {
+    return (
+      <ObservationRoom
+        activeMission={context.activeMission}
+        authorizationStatus={context.authorizationStatus}
+        missionDebrief={context.missionDebrief}
+        archiveSummary={context.archiveSummary}
+      />
+    );
+  }
+
+  if (room === 'war') {
+    return (
+      <WarRoom
+        activeMission={context.activeMission}
+        authorizationStatus={context.authorizationStatus}
+        missionHistory={context.missionHistory}
+      />
+    );
+  }
+
+  if (room === 'debrief') {
+    return (
+      <DebriefTheater
+        activeMission={context.activeMission}
+        authorizationStatus={context.authorizationStatus}
+        missionDebrief={context.missionDebrief}
+        archiveSummary={context.archiveSummary}
+        onMissionChanged={context.onMissionChanged}
+        onRequestAuthorization={context.onRequestAuthorization}
+        onSaveDebrief={context.onSaveDebrief}
+        onArchiveMission={context.onArchiveMission}
+      />
+    );
+  }
+
   if (room === 'journal') {
     return (
       <JournalRoom
@@ -531,6 +593,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       <ArchiveRoom
         archivedMissionSummaries={context.archivedMissionSummaries}
         archivedJournalEntries={context.archivedJournalEntries}
+        doctrineRecords={context.doctrineRecords}
       />
     );
   }
@@ -646,6 +709,207 @@ function MissionRoom(props: MissionRoomProps) {
         <p className="muted">Guided mission workflow, active phase workspace, timeline, history, and archive summary.</p>
       </section>
       <MissionWorkflowView {...props} />
+    </div>
+  );
+}
+
+export function ReadyRoom({
+  activeMission,
+  missionHistory,
+  growthEvents,
+}: {
+  activeMission?: ActiveMission | undefined;
+  missionHistory: ActiveMission[];
+  growthEvents: GrowthEvent[];
+}) {
+  const nextAction = getMissionNextAction(activeMission);
+  const recentMission = missionHistory.at(-1);
+
+  return (
+    <div className="room-layout" data-room-id="ready-room">
+      <section className="command-center-header" aria-label="Ready room status">
+        <p className="section-label">Ready Room</p>
+        <h2>Mission Readiness</h2>
+        <p className="muted">Preparation, daily orders, oath, and operator locker state before observation begins.</p>
+      </section>
+      <section className="guided-workflow-layout" aria-label="Ready room workspace">
+        <section className="journal-panel" aria-label="Readiness report">
+          <p className="section-label">ReadinessReport</p>
+          <h3>{nextAction.label}</h3>
+          <p className="muted">{nextAction.description}</p>
+          <dl>
+            <dt>Mission State</dt>
+            <dd>{formatMissionDetailState(activeMission)}</dd>
+            <dt>Recent Growth</dt>
+            <dd>{formatRecentGrowthHighlight(growthEvents)}</dd>
+          </dl>
+        </section>
+        <section className="journal-panel" aria-label="Daily orders card">
+          <p className="section-label">DailyOrdersCard</p>
+          <h3>{activeMission?.campaign ?? 'No active orders'}</h3>
+          <p className="muted">{activeMission?.objective ?? 'Create a mission before moving into observation.'}</p>
+        </section>
+        <section className="journal-panel" aria-label="Oath panel">
+          <p className="section-label">OathPanel</p>
+          <h3>Command Oath</h3>
+          <p className="muted">{activeMission?.commandAuthority ?? 'Command authority is assigned when a mission exists.'}</p>
+        </section>
+        <section className="journal-panel" aria-label="Locker panel">
+          <p className="section-label">LockerPanel</p>
+          <h3>Operator Locker</h3>
+          <dl>
+            <dt>Missions Recorded</dt>
+            <dd>{missionHistory.length}</dd>
+            <dt>Last Mission</dt>
+            <dd>{recentMission?.campaign ?? 'No prior mission'}</dd>
+          </dl>
+        </section>
+      </section>
+    </div>
+  );
+}
+
+export function ObservationRoom({
+  activeMission,
+  authorizationStatus,
+  missionDebrief,
+  archiveSummary,
+}: MissionTimelineViewerPanelProps) {
+  const currentState = parseMissionState(activeMission?.currentState);
+  const entries = buildDesktopMissionTimelineEntries({
+    activeMission,
+    authorizationStatus,
+    missionDebrief,
+    archiveSummary,
+  });
+
+  return (
+    <div className="room-layout" data-room-id="observation-room">
+      <section className="command-center-header" aria-label="Observation room status">
+        <p className="section-label">Observation Room</p>
+        <h2>Observation</h2>
+        <p className="muted">Watch the mission state without market prediction, PnL, or broker control.</p>
+      </section>
+      <section className="guided-workflow-layout" aria-label="Observation room workspace">
+        <section className="journal-panel" aria-label="Observation timer">
+          <p className="section-label">ObservationTimer</p>
+          <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
+          <p className="muted">{formatTimelineViewerStatus(entries)}</p>
+        </section>
+        <section className="journal-panel" aria-label="Compass indicator">
+          <p className="section-label">CompassIndicator</p>
+          <h3>{getMissionNextAction(activeMission).label}</h3>
+          <p className="muted">{getMissionNextAction(activeMission).description}</p>
+        </section>
+        <section className="journal-panel" aria-label="Artificial horizon">
+          <p className="section-label">ArtificialHorizon</p>
+          <h3>{currentState === 'observation' ? 'Level' : 'Calm'}</h3>
+          <p className="muted">Operator stability is represented as a quiet status, not a trading signal.</p>
+        </section>
+        <section className="journal-panel" aria-label="Silence state display">
+          <p className="section-label">SilenceStateDisplay</p>
+          <h3>No Broker Control</h3>
+          <p className="muted">Headquarters observes and records. It does not place trades.</p>
+        </section>
+      </section>
+    </div>
+  );
+}
+
+export function WarRoom({
+  activeMission,
+  authorizationStatus,
+  missionHistory,
+}: {
+  activeMission?: ActiveMission | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  missionHistory: ActiveMission[];
+}) {
+  const alerts = buildDesktopGuardianAlerts();
+  const lockout = buildDesktopGuardianLockoutState();
+  const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
+
+  return (
+    <div className="room-layout" data-room-id="war-room">
+      <section className="command-center-header" aria-label="War room status">
+        <p className="section-label">War Room</p>
+        <h2>Authorization Terminal</h2>
+        <p className="muted">Authorization remains rule-based and manually declared. Headquarters never places trades.</p>
+      </section>
+      <section className="guided-workflow-layout" aria-label="War room workspace">
+        <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
+        <section className="journal-panel" aria-label="War table projection">
+          <p className="section-label">WarTableProjection</p>
+          <h3>{activeMission?.campaign ?? 'No active mission'}</h3>
+          <p className="muted">{activeMission?.objective ?? 'Create and prepare a mission before authorization.'}</p>
+        </section>
+        <section className="journal-panel" aria-label="Guardian status panel">
+          <p className="section-label">GuardianStatusPanel</p>
+          <h3>{lockout.status === 'locked' ? 'Intervention Required' : 'Guardian Standing By'}</h3>
+          <p className="muted">{formatJournalCount(alerts.length, 'Guardian alert', 'Guardian alerts')}</p>
+        </section>
+        <section className="journal-panel" aria-label="Ghost comparison panel">
+          <p className="section-label">GhostComparisonPanel</p>
+          <h3>{comparisonMission?.campaign ?? 'No comparison mission'}</h3>
+          <p className="muted">Comparison remains read-only until replay and ghost workflows are approved.</p>
+        </section>
+      </section>
+    </div>
+  );
+}
+
+export function DebriefTheater({
+  activeMission,
+  authorizationStatus,
+  missionDebrief,
+  archiveSummary,
+  onMissionChanged,
+  onRequestAuthorization,
+  onSaveDebrief,
+  onArchiveMission,
+}: MissionTimelineViewerPanelProps & Pick<CommandCenterProps,
+  'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
+>) {
+  return (
+    <div className="room-layout" data-room-id="debrief-theater">
+      <section className="command-center-header" aria-label="Debrief theater status">
+        <p className="section-label">Debrief Theater</p>
+        <h2>Mission Debrief</h2>
+        <p className="muted">Review the sequence, write the lesson, and prepare archive evidence.</p>
+      </section>
+      <section className="guided-workflow-layout" aria-label="Debrief theater workspace">
+        <MissionTimelineViewerPanel
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          missionDebrief={missionDebrief}
+          archiveSummary={archiveSummary}
+        />
+        <section className="journal-panel" aria-label="BlackBoxViewer">
+          <p className="section-label">BlackBoxViewer</p>
+          <h3>Behavior Sequence</h3>
+          <p className="muted">{formatTimelineViewerStatus(buildDesktopMissionTimelineEntries({
+            activeMission,
+            authorizationStatus,
+            missionDebrief,
+            archiveSummary,
+          }))}</p>
+        </section>
+        <section className="journal-panel" aria-label="DecisionReportPanel">
+          <p className="section-label">DecisionReportPanel</p>
+          <h3>{authorizationStatus?.decision === 'approved' ? 'Authorized' : 'Decision Pending'}</h3>
+          <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+        </section>
+        <MissionNextActionPanel
+          activeMission={activeMission}
+          authorizationStatus={authorizationStatus}
+          missionDebrief={missionDebrief}
+          onMissionChanged={onMissionChanged}
+          onRequestAuthorization={onRequestAuthorization}
+          onSaveDebrief={onSaveDebrief}
+          onArchiveMission={onArchiveMission}
+        />
+        <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} />
+      </section>
     </div>
   );
 }
@@ -1890,6 +2154,21 @@ export function GuardianRoom() {
       </section>
 
       <section className="command-center-panels" aria-label="Guardian alerts">
+        <section className="journal-panel" aria-label="Capital vault panel">
+          <p className="section-label">CapitalVaultPanel</p>
+          <h3>{lockout.status === 'locked' ? 'Vault Locked' : 'Vault Secure'}</h3>
+          <p className="muted">{lockout.explanation}</p>
+        </section>
+        <section className="journal-panel" aria-label="Judgment reserve panel">
+          <p className="section-label">JudgmentReservePanel</p>
+          <h3>Judgment Reserve</h3>
+          <p className="muted">Reserve state is represented by explicit Guardian alerts, not discretionary advice.</p>
+        </section>
+        <section className="journal-panel" aria-label="Success protocol panel">
+          <p className="section-label">SuccessProtocolPanel</p>
+          <h3>Success Protocol</h3>
+          <p className="muted">Success protocols remain calm and protective until future workflows are approved.</p>
+        </section>
         {alerts.map((alert) => (
           <section className="journal-panel" aria-label={alert.title} key={alert.id}>
             <p className="section-label">{alert.priority}</p>
@@ -1968,16 +2247,21 @@ function JournalArchivePanel({
   );
 }
 
-function ArchiveRoom({
+export function ArchiveRoom({
   archivedMissionSummaries,
   archivedJournalEntries,
+  doctrineRecords,
 }: {
   archivedMissionSummaries: LocalMissionArchiveSummary[];
   archivedJournalEntries: ArchivedJournalEntry[];
+  doctrineRecords: DoctrineRecord[];
 }) {
+  const [archiveSearchText, setArchiveSearchText] = useState('');
   const eventInspections = buildDesktopArchiveEventInspections(archivedMissionSummaries, archivedJournalEntries);
   const sessionInspections = buildDesktopArchiveSessionInspections();
   const dashboard = buildDesktopArchiveDashboard(archivedMissionSummaries, archivedJournalEntries);
+  const records = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries);
+  const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
 
   return (
     <div className="room-layout" data-room-id="archive-room">
@@ -1987,7 +2271,15 @@ function ArchiveRoom({
         <p className="muted">Mission archive, Journal archive, and historical views.</p>
       </section>
       <section className="command-center-panels" aria-label="Archive workspace">
+        <ArchiveSearchPanel
+          searchText={archiveSearchText}
+          onSearchTextChange={setArchiveSearchText}
+          resultCount={searchResults.length}
+        />
         <ArchiveDashboardPanel dashboard={dashboard} />
+        <ArchiveCardPanel records={records} />
+        <CampaignBookViewPanel summaries={archivedMissionSummaries} />
+        <DoctrineRecordViewPanel doctrineRecords={doctrineRecords} />
         <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
         <ArchiveEventExplorerPanel eventInspections={eventInspections} />
         <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
@@ -1998,6 +2290,67 @@ function ArchiveRoom({
         </section>
       </section>
     </div>
+  );
+}
+
+function ArchiveSearchPanel({
+  searchText,
+  onSearchTextChange,
+  resultCount,
+}: {
+  searchText: string;
+  onSearchTextChange: (value: string) => void;
+  resultCount: number;
+}) {
+  return (
+    <section className="journal-panel" aria-label="ArchiveSearch">
+      <p className="section-label">ArchiveSearch</p>
+      <h3>Archive Search</h3>
+      <label>
+        <span>Search Text</span>
+        <input value={searchText} onChange={(event) => onSearchTextChange(event.target.value)} />
+      </label>
+      <p className="muted">{formatJournalCount(resultCount, 'archive result', 'archive results')}</p>
+    </section>
+  );
+}
+
+function ArchiveCardPanel({ records }: { records: readonly ArchiveIntelligenceRecord[] }) {
+  return (
+    <section className="journal-panel" aria-label="ArchiveCard">
+      <p className="section-label">ArchiveCard</p>
+      <h3>Archive Records</h3>
+      <p className="muted">{formatJournalCount(records.length, 'archive record', 'archive records')}</p>
+      <ol className="mission-archive-list">
+        {records.slice(0, 3).map((record) => (
+          <li key={record.id}>
+            <span>{record.title}</span>
+            <strong>{record.type}</strong>
+            <time dateTime={record.occurredAt}>{record.occurredAt}</time>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function CampaignBookViewPanel({ summaries }: { summaries: readonly LocalMissionArchiveSummary[] }) {
+  return (
+    <section className="journal-panel" aria-label="CampaignBookView">
+      <p className="section-label">CampaignBookView</p>
+      <h3>Campaign Books</h3>
+      <p className="muted">{formatJournalCount(summaries.length, 'mission campaign', 'mission campaigns')}</p>
+    </section>
+  );
+}
+
+function DoctrineRecordViewPanel({ doctrineRecords }: { doctrineRecords: readonly DoctrineRecord[] }) {
+  return (
+    <section className="journal-panel" aria-label="DoctrineRecordView">
+      <p className="section-label">DoctrineRecordView</p>
+      <h3>Doctrine Records</h3>
+      <p className="muted">{formatJournalCount(doctrineRecords.length, 'doctrine record', 'doctrine records')}</p>
+    </section>
   );
 }
 
