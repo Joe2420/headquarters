@@ -377,6 +377,7 @@ export function App() {
 
   return (
     <div className="hq-shell">
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <header className="shell-header">
         <div>
           <p className="classification">HEADQUARTERS // DESKTOP SHELL</p>
@@ -401,6 +402,7 @@ export function App() {
               key={item.id}
               className={item.active ? 'nav-item active' : 'nav-item'}
               data-nav-id={item.id}
+              aria-label={`Open ${item.label}`}
               aria-current={item.active ? 'page' : undefined}
               type="button"
               onClick={() => setActiveRoom(item.id)}
@@ -410,7 +412,7 @@ export function App() {
           ))}
         </nav>
 
-        <main className="shell-main">
+        <main id="main-content" className="shell-main">
           <section className="workspace-panel" aria-label="Main content">
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
@@ -465,7 +467,7 @@ export function App() {
             )}
           </section>
 
-          <aside className="status-panel" aria-label="Status area">
+          <aside className="status-panel" aria-label="Status area" aria-live="polite">
             <p className="section-label">Status</p>
             <h2>HQOS Status</h2>
             <dl className="status-list">
