@@ -6,3 +6,4 @@ export * from './ObservationSessionRepository';
 export * from './MissionDebriefRepository';
 export * from './DoctrineHistoryRepository';
 export * from './DoctrineRepository';
+export * from './Backup';

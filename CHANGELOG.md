@@ -1,5 +1,7 @@
 # Changelog
 
+HQ-TASK-0135 - Added deterministic local database backup foundation.
+
 HQ-TASK-0134 - Added explicit desktop startup error recovery guidance.
 
 HQ-TASK-0133 - Improved desktop accessibility for beta readiness.
