@@ -37,6 +37,8 @@ import {
   analyzeRepeatedMistakes,
   analyzeRepeatedSuccesses,
   detectIntelligencePatterns,
+  suggestDoctrineCandidates,
+  type DoctrineSuggestion,
   type IntelligenceEvidenceRecord,
   type IntelligencePattern,
   type JournalClassification,
@@ -2382,6 +2384,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
   const patterns = buildDesktopIntelligencePatterns(evidenceRecords);
   const repeatedMistakes = buildDesktopRepeatedMistakes(evidenceRecords);
   const repeatedSuccesses = buildDesktopRepeatedSuccesses(evidenceRecords);
+  const doctrineSuggestions = buildDesktopDoctrineSuggestions(evidenceRecords);
 
   return (
     <div className="room-layout" data-room-id="intelligence-center">
@@ -2406,6 +2409,7 @@ export function IntelligenceCenterRoom({ journalEntries }: { journalEntries: Jou
         <IntelligencePatternPanel patterns={patterns} />
         <RepeatedMistakePanel mistakes={repeatedMistakes} />
         <RepeatedSuccessPanel successes={repeatedSuccesses} />
+        <DoctrineSuggestionPanel suggestions={doctrineSuggestions} />
       </section>
     </div>
   );
@@ -2499,6 +2503,28 @@ function RepeatedSuccessPanel({ successes }: { successes: readonly RepeatedSucce
   );
 }
 
+function DoctrineSuggestionPanel({ suggestions }: { suggestions: readonly DoctrineSuggestion[] }) {
+  return (
+    <section className="journal-panel" aria-label="Doctrine suggestions">
+      <p className="section-label">Suggestions</p>
+      <h3>Doctrine Suggestions</h3>
+      {suggestions.length === 0 ? (
+        <p className="muted">No doctrine suggestions are ready for manual review yet.</p>
+      ) : (
+        <ol className="mission-archive-list">
+          {suggestions.map((suggestion) => (
+            <li key={suggestion.id}>
+              <span>{suggestion.title}</span>
+              <strong>Manual promotion required</strong>
+              <span>{suggestion.rationale}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 export function buildDesktopJournalClassifications(
   journalEntries: readonly JournalEntry[],
 ): readonly JournalClassification[] {
@@ -2532,6 +2558,12 @@ export function buildDesktopRepeatedSuccesses(
   evidenceRecords: readonly IntelligenceEvidenceRecord[],
 ): readonly RepeatedSuccess[] {
   return analyzeRepeatedSuccesses(evidenceRecords);
+}
+
+export function buildDesktopDoctrineSuggestions(
+  evidenceRecords: readonly IntelligenceEvidenceRecord[],
+): readonly DoctrineSuggestion[] {
+  return suggestDoctrineCandidates(evidenceRecords);
 }
 
 export function formatJournalClassificationStatus(classifications: readonly JournalClassification[]): string {
