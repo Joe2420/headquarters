@@ -204,6 +204,7 @@ dd {
 }
 
 .operations-viewport {
+  position: relative;
   min-width: 0;
   display: grid;
   align-content: start;
@@ -348,7 +349,7 @@ dd {
   position: relative;
   display: grid;
   gap: 0.25rem;
-  width: fit-content;
+  width: min(760px, 100%);
   max-width: min(760px, 100%);
   min-width: 0;
   padding: 0.75rem;
@@ -361,9 +362,7 @@ dd {
 
 .commander-transmission-incoming::after {
   content: "receiving";
-  position: absolute;
-  right: 0.65rem;
-  bottom: 0.45rem;
+  justify-self: end;
   color: #70ff9c;
   font-size: 0.66rem;
   font-weight: 800;
@@ -829,15 +828,15 @@ dd {
 .room-transition-layer {
   border-left: 3px solid #8fb8ff;
   position: absolute;
-  inset: 1.5rem;
+  inset: 3.2rem 1.5rem 1.5rem;
   overflow: hidden;
-  min-height: 260px;
+  min-height: min(520px, calc(100vh - 9rem));
   place-content: center stretch;
   background:
     linear-gradient(90deg, rgba(143, 184, 255, 0.08), transparent 35%, rgba(217, 231, 255, 0.08)),
     #090c0f;
   box-shadow: inset 0 0 44px rgba(0, 0, 0, 0.58);
-  z-index: 8;
+  z-index: 18;
   pointer-events: none;
   animation: room-transition-overlay 6800ms ease forwards;
 }
@@ -857,7 +856,6 @@ dd {
     inset 0 0 42px rgba(0, 0, 0, 0.78),
     inset 0 0 0 6px rgba(217, 231, 255, 0.03);
   pointer-events: none;
-  transition: transform 6200ms cubic-bezier(0.12, 0.74, 0.18, 1);
   z-index: 2;
 }
 
@@ -871,12 +869,12 @@ dd {
 
 .room-transition-layer[data-transition-phase="arrival"]::before,
 .room-transition-layer[data-transition-phase="opening"]::before {
-  transform: translateX(-92%) skewY(-1deg);
+  animation: steel-door-open-left 6200ms cubic-bezier(0.12, 0.74, 0.18, 1) forwards;
 }
 
 .room-transition-layer[data-transition-phase="arrival"]::after,
 .room-transition-layer[data-transition-phase="opening"]::after {
-  transform: translateX(92%) skewY(1deg);
+  animation: steel-door-open-right 6200ms cubic-bezier(0.12, 0.74, 0.18, 1) forwards;
 }
 
 .room-transition-layer span {
@@ -1549,6 +1547,28 @@ dd {
 
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes steel-door-open-left {
+  0%,
+  12% {
+    transform: translateX(0) skewY(0);
+  }
+
+  100% {
+    transform: translateX(-94%) skewY(-1deg);
+  }
+}
+
+@keyframes steel-door-open-right {
+  0%,
+  12% {
+    transform: translateX(0) skewY(0);
+  }
+
+  100% {
+    transform: translateX(94%) skewY(1deg);
   }
 }
 

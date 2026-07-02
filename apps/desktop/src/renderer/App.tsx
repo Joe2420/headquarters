@@ -593,6 +593,13 @@ export function App() {
     setActiveOperationsView('room');
   }
 
+  function handleEnterCurrentRoom() {
+    if (activeOperationsView !== 'room') {
+      setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, currentCommanderRoom));
+    }
+    setActiveOperationsView('room');
+  }
+
   async function handleMissionCreated(mission: ActiveMission) {
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
@@ -836,6 +843,7 @@ export function App() {
 
         <main id="main-content" className="shell-main">
           <section className="operations-viewport" aria-label="Operations viewport" data-active-operations-view={activeOperationsView}>
+            {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
             <div className="operations-view-tabs" role="tablist" aria-label="Operations view">
               <button
                 type="button"
@@ -851,7 +859,7 @@ export function App() {
                 role="tab"
                 aria-selected={activeOperationsView === 'room'}
                 className={activeOperationsView === 'room' ? 'active' : ''}
-                onClick={() => setActiveOperationsView('room')}
+                onClick={handleEnterCurrentRoom}
               >
                 Current Room
               </button>
@@ -879,7 +887,7 @@ export function App() {
                     mission={activeMission}
                     primaryAction={commanderState.nextAction.label}
                     onCommandAction={() => {
-                      setRoomTransition(undefined);
+                      setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, 'command'));
                       setActiveRoom('command');
                       setActiveOperationsView('room');
                     }}
@@ -938,7 +946,6 @@ export function App() {
             {activeOperationsView === 'room' ? (
               <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
                 <MissionCeremonyMoment ceremony={missionCeremony} />
-                {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
                 ) : (
