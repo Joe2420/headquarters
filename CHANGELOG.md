@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0155 - Added deterministic Commander memory surface using existing local evidence only.
+
 HQ-TASK-0154 - Added deterministic Commander room transition messages aligned to the room state machine.
 
 HQ-TASK-0153 - Added Commander briefing and debrief guidance through deterministic mission-state messages.
@@ -297,6 +299,7 @@ HQ-TASK-0008 — Added archive repository MVP for persisting HQOS event envelope
 HQ-TASK-0007 — Added SQLite connection layer MVP with migration runner foundation.
 
 ARCH-TASK-0001 — Added production journal integration architecture based on real journal exports.
+
 
 
 
