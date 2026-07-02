@@ -2,6 +2,8 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0146 - Door Transition Layer
+
 - HQ-TASK-0145 - Mission Compass Specification
 
 - HQ-TASK-0144 - Room State Machine
@@ -146,7 +148,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 13 Experience Foundation is in progress through HQ-TASK-0145.
+Current milestone gate: Sprint 13 Experience Foundation is in progress through HQ-TASK-0146.
 
 ## Post-Sprint UX Alignment
 
@@ -171,9 +173,10 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 13 Experience Foundation is in progress through HQ-TASK-0145.
+Sprint 13 Experience Foundation is in progress through HQ-TASK-0146.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
 
 
 

@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0146 - Added Door Transition component specification and renderer foundation.
+
 HQ-TASK-0145 - Added Mission Compass component specification and renderer foundation.
 
 HQ-TASK-0144 - Added room state machine foundation for mission room recommendations.
@@ -279,6 +281,7 @@ HQ-TASK-0008 — Added archive repository MVP for persisting HQOS event envelope
 HQ-TASK-0007 — Added SQLite connection layer MVP with migration runner foundation.
 
 ARCH-TASK-0001 — Added production journal integration architecture based on real journal exports.
+
 
 
 
