@@ -44,7 +44,7 @@ describe('Sprint 3 desktop experience review', () => {
       'settings',
     ]);
     expect(navigationItems.filter((item) => item.active)).toEqual([
-      { id: 'command', label: 'Command', active: true },
+      { id: 'command', label: 'Commander', section: 'commander', active: true },
     ]);
   });
 });

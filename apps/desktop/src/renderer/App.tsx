@@ -191,6 +191,7 @@ export type HeadquartersRoomId = NavigationAreaId;
 export interface PrimaryNavigationItem {
   id: NavigationAreaId;
   label: string;
+  section: 'commander' | 'mission' | 'support';
   active: boolean;
 }
 
@@ -203,19 +204,19 @@ export interface JournalWorkflowStep {
 }
 
 const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
-  { id: 'command', label: 'Command' },
-  { id: 'missions', label: 'Missions' },
-  { id: 'ready', label: 'Ready Room' },
-  { id: 'observation', label: 'Observation' },
-  { id: 'war', label: 'War Room' },
-  { id: 'debrief', label: 'Debrief' },
-  { id: 'journal', label: 'Journal' },
-  { id: 'academy', label: 'Academy' },
-  { id: 'doctrine', label: 'Doctrine' },
-  { id: 'guardian', label: 'Guardian Wing' },
-  { id: 'intelligence', label: 'Intelligence' },
-  { id: 'archive', label: 'Archive' },
-  { id: 'settings', label: 'Settings' },
+  { id: 'command', label: 'Commander', section: 'commander' },
+  { id: 'missions', label: 'Missions', section: 'mission' },
+  { id: 'ready', label: 'Ready Room', section: 'mission' },
+  { id: 'observation', label: 'Observation', section: 'mission' },
+  { id: 'war', label: 'War Room', section: 'mission' },
+  { id: 'debrief', label: 'Debrief', section: 'mission' },
+  { id: 'journal', label: 'Journal', section: 'support' },
+  { id: 'academy', label: 'Academy', section: 'support' },
+  { id: 'doctrine', label: 'Doctrine', section: 'support' },
+  { id: 'guardian', label: 'Guardian Wing', section: 'support' },
+  { id: 'intelligence', label: 'Intelligence', section: 'support' },
+  { id: 'archive', label: 'Archive', section: 'support' },
+  { id: 'settings', label: 'Settings', section: 'support' },
 ];
 
 const journalWorkflowSteps: readonly JournalWorkflowStep[] = [
@@ -419,7 +420,9 @@ export function App() {
       return;
     }
 
-    if (activeMission && currentCommanderRoom === commanderState.recommendedRoom) {
+    const continueMode = getCommanderContinueMode(activeMission, currentCommanderRoom, commanderState.recommendedRoom);
+
+    if (continueMode === 'advance-mission' && activeMission) {
       const advancedMission = await advanceMissionFromCommanderContinue(activeMission);
 
       if (advancedMission) {
@@ -427,6 +430,12 @@ export function App() {
         setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
         return;
       }
+    }
+
+    if (continueMode === 'stay-in-room') {
+      setRoomTransition(undefined);
+      setRoomArrival(undefined);
+      return;
     }
 
     let transition = createRoomTransition(currentCommanderRoom, commanderState.recommendedRoom);
@@ -476,6 +485,7 @@ export function App() {
                 item.id === recommendedNavigationTarget ? 'recommended' : '',
               ].filter(Boolean).join(' ')}
               data-nav-id={item.id}
+              data-nav-section={item.section}
               data-recommended={item.id === recommendedNavigationTarget}
               aria-label={`Open ${item.label}`}
               aria-current={item.active ? 'page' : undefined}
@@ -593,6 +603,19 @@ export function App() {
   );
 }
 
+export type CommanderContinueMode = 'advance-mission' | 'navigate-room' | 'stay-in-room';
+
+export function getCommanderContinueMode(
+  mission: ActiveMission | undefined,
+  currentRoom: string,
+  recommendedRoom: string,
+): CommanderContinueMode {
+  if (currentRoom !== recommendedRoom) return 'navigate-room';
+  if (mission === undefined) return 'navigate-room';
+  if (canCommanderContinueAdvanceMission(mission)) return 'advance-mission';
+  return 'stay-in-room';
+}
+
 export async function advanceMissionFromCommanderContinue(mission: ActiveMission): Promise<ActiveMission | undefined> {
   const currentState = parseMissionState(mission.currentState);
 
@@ -603,6 +626,17 @@ export async function advanceMissionFromCommanderContinue(mission: ActiveMission
   if (currentState === 'deployed') return requestDesktopReturnToBase(mission);
 
   return undefined;
+}
+
+function canCommanderContinueAdvanceMission(mission: ActiveMission): boolean {
+  const currentState = parseMissionState(mission.currentState);
+  return (
+    currentState === 'idle'
+    || currentState === 'briefing'
+    || currentState === 'ready'
+    || currentState === 'observation'
+    || currentState === 'deployed'
+  );
 }
 
 interface SecurityCheckpointProps {

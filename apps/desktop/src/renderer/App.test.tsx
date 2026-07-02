@@ -38,6 +38,7 @@ import {
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
+  getCommanderContinueMode,
   createArchiveWritePlaceholder,
   createDesktopMission,
   createLocalDebrief,
@@ -94,6 +95,7 @@ describe('Desktop shell', () => {
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
     expect(styles).toContain('overflow-wrap: anywhere');
     expect(styles).toContain('.nav-item:hover');
+    expect(styles).toContain('.nav-item[data-nav-section="commander"]');
     expect(styles).toContain('.skip-link:focus-visible');
   });
 
@@ -116,7 +118,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('href="#main-content"');
     expect(html).toContain('id="main-content"');
     expect(html).toContain('aria-live="polite"');
-    expect(html).toContain('aria-label="Open Command"');
+    expect(html).toContain('aria-label="Open Commander"');
     expect(html).toContain('aria-label="Open Ready Room"');
   });
 
@@ -126,6 +128,9 @@ describe('Desktop shell', () => {
     expect(html).toContain('aria-label="Primary"');
     expect(html).toContain('data-recommended="true"');
     expect(html).toContain('data-nav-id="command"');
+    expect(html).toContain('data-nav-section="commander"');
+    expect(html).toContain('data-nav-section="mission"');
+    expect(html).toContain('data-nav-section="support"');
     expect(html).toContain('data-nav-id="missions"');
     expect(html).toContain('data-nav-id="ready"');
     expect(html).toContain('data-nav-id="observation"');
@@ -163,19 +168,19 @@ describe('Desktop shell', () => {
     const items = getPrimaryNavigationItems('command');
 
     expect(items).toEqual([
-      { id: 'command', label: 'Command', active: true },
-      { id: 'missions', label: 'Missions', active: false },
-      { id: 'ready', label: 'Ready Room', active: false },
-      { id: 'observation', label: 'Observation', active: false },
-      { id: 'war', label: 'War Room', active: false },
-      { id: 'debrief', label: 'Debrief', active: false },
-      { id: 'journal', label: 'Journal', active: false },
-      { id: 'academy', label: 'Academy', active: false },
-      { id: 'doctrine', label: 'Doctrine', active: false },
-      { id: 'guardian', label: 'Guardian Wing', active: false },
-      { id: 'intelligence', label: 'Intelligence', active: false },
-      { id: 'archive', label: 'Archive', active: false },
-      { id: 'settings', label: 'Settings', active: false },
+      { id: 'command', label: 'Commander', section: 'commander', active: true },
+      { id: 'missions', label: 'Missions', section: 'mission', active: false },
+      { id: 'ready', label: 'Ready Room', section: 'mission', active: false },
+      { id: 'observation', label: 'Observation', section: 'mission', active: false },
+      { id: 'war', label: 'War Room', section: 'mission', active: false },
+      { id: 'debrief', label: 'Debrief', section: 'mission', active: false },
+      { id: 'journal', label: 'Journal', section: 'support', active: false },
+      { id: 'academy', label: 'Academy', section: 'support', active: false },
+      { id: 'doctrine', label: 'Doctrine', section: 'support', active: false },
+      { id: 'guardian', label: 'Guardian Wing', section: 'support', active: false },
+      { id: 'intelligence', label: 'Intelligence', section: 'support', active: false },
+      { id: 'archive', label: 'Archive', section: 'support', active: false },
+      { id: 'settings', label: 'Settings', section: 'support', active: false },
     ]);
     expect(items.filter((item) => item.active)).toHaveLength(1);
   });
@@ -814,6 +819,21 @@ describe('Desktop shell', () => {
       currentState: 'ready',
       condition: 'Ready',
     });
+  });
+
+  it('keeps Commander Continue inside War Room authorization without skipping a room', async () => {
+    const mission: ActiveMission = {
+      id: 'mission-authorization',
+      campaign: 'Foundation',
+      objective: 'Authorize deliberately',
+      condition: 'Authorization',
+      commandAuthority: 'Operator',
+      currentState: 'authorization',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('stay-in-room');
+    await expect(advanceMissionFromCommanderContinue(mission)).resolves.toBeUndefined();
   });
 
   it('updates Commander guidance from mission lifecycle state', () => {

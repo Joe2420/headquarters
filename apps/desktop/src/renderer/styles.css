@@ -154,6 +154,27 @@ dd {
   opacity: 1;
 }
 
+.nav-item[data-nav-section="commander"] {
+  min-height: 48px;
+  margin-bottom: 0.65rem;
+  border: 1px solid #2a333b;
+  border-left: 3px solid #d9e7ff;
+  background: #121820;
+  color: #eef3f6;
+  font-weight: 800;
+  opacity: 1;
+}
+
+.nav-item[data-nav-section="mission"] {
+  margin-left: 0.35rem;
+}
+
+.nav-item[data-nav-section="support"][data-nav-id="journal"] {
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #242b31;
+}
+
 .nav-item.recommended {
   color: #e6f0ff;
   border-left-color: #d9e7ff;
