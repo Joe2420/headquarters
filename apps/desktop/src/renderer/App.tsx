@@ -73,6 +73,23 @@ import {
   type TradeReview,
 } from '@headquarters/journal';
 import { CommandChair } from './CommandChair';
+import {
+  CommanderExperiencePanel,
+  buildCommanderExperienceState,
+  mapNavigationRoomToCommanderRoom,
+} from './CommanderExperience';
+import {
+  RoomArrivalPanel,
+  RoomTransitionLayer,
+  advanceRoomTransition,
+  buildMissionCompassSteps,
+  createRoomTransition,
+  getRoomArrival,
+  mapCommanderRoomToNavigationTarget,
+  parseMissionNavigationState,
+  type RoomArrival,
+  type RoomTransitionState,
+} from './RoomNavigationExperience';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -174,6 +191,7 @@ export type HeadquartersRoomId = NavigationAreaId;
 export interface PrimaryNavigationItem {
   id: NavigationAreaId;
   label: string;
+  section: 'commander' | 'mission' | 'support';
   active: boolean;
 }
 
@@ -186,19 +204,19 @@ export interface JournalWorkflowStep {
 }
 
 const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
-  { id: 'command', label: 'Command' },
-  { id: 'missions', label: 'Missions' },
-  { id: 'ready', label: 'Ready Room' },
-  { id: 'observation', label: 'Observation' },
-  { id: 'war', label: 'War Room' },
-  { id: 'debrief', label: 'Debrief' },
-  { id: 'journal', label: 'Journal' },
-  { id: 'academy', label: 'Academy' },
-  { id: 'doctrine', label: 'Doctrine' },
-  { id: 'guardian', label: 'Guardian Wing' },
-  { id: 'intelligence', label: 'Intelligence' },
-  { id: 'archive', label: 'Archive' },
-  { id: 'settings', label: 'Settings' },
+  { id: 'command', label: 'Commander', section: 'commander' },
+  { id: 'missions', label: 'Missions', section: 'mission' },
+  { id: 'ready', label: 'Ready Room', section: 'mission' },
+  { id: 'observation', label: 'Observation', section: 'mission' },
+  { id: 'war', label: 'War Room', section: 'mission' },
+  { id: 'debrief', label: 'Debrief', section: 'mission' },
+  { id: 'journal', label: 'Journal', section: 'support' },
+  { id: 'academy', label: 'Academy', section: 'support' },
+  { id: 'doctrine', label: 'Doctrine', section: 'support' },
+  { id: 'guardian', label: 'Guardian Wing', section: 'support' },
+  { id: 'intelligence', label: 'Intelligence', section: 'support' },
+  { id: 'archive', label: 'Archive', section: 'support' },
+  { id: 'settings', label: 'Settings', section: 'support' },
 ];
 
 const journalWorkflowSteps: readonly JournalWorkflowStep[] = [
@@ -313,6 +331,15 @@ export function App() {
   const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
   const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
   const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
+  const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
+  const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
+  const [roomArrival, setRoomArrival] = useState<RoomArrival | undefined>();
+  const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
+  const [commanderInvalidation, setCommanderInvalidation] = useState('');
+  const [commanderBehaviorSummary, setCommanderBehaviorSummary] = useState('');
+  const [commanderDisciplineNotes, setCommanderDisciplineNotes] = useState('');
+  const [commanderLesson, setCommanderLesson] = useState('');
+  const [commanderWorkflowNotice, setCommanderWorkflowNotice] = useState('');
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -375,6 +402,126 @@ export function App() {
     };
   }, []);
 
+  const currentCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
+  const commanderState = buildCommanderExperienceState({
+    reportState: shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported',
+    activeRoom: currentCommanderRoom,
+    activeMission,
+    evidence: {
+      recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
+      recentMission: missionHistory.at(-1)?.campaign,
+      recentGrowthEvent: formatRecentGrowthHighlight(growthEvents),
+      guardianStatus: formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts'),
+    },
+    acknowledgedInterruptionIds: acknowledgedCommanderInterruptions,
+  });
+  const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
+  const missionCompassSteps = activeMission
+    ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
+    : undefined;
+
+  async function handleCommanderContinue() {
+    if (shellPhase === 'security-checkpoint') {
+      setShellPhase(reportForDuty(shellPhase).to);
+      return;
+    }
+
+    const continueMode = getCommanderContinueMode(activeMission, currentCommanderRoom, commanderState.recommendedRoom);
+
+    if (continueMode === 'advance-mission' && activeMission) {
+      await handleCommanderWorkflowContinue(activeMission);
+      return;
+    }
+
+    let transition = createRoomTransition(currentCommanderRoom, commanderState.recommendedRoom);
+    transition = advanceRoomTransition(transition);
+    transition = advanceRoomTransition(transition);
+    transition = advanceRoomTransition(transition);
+    transition = advanceRoomTransition(transition);
+    setRoomTransition(transition);
+    setRoomArrival(getRoomArrival(commanderState.recommendedRoom));
+    setActiveRoom(recommendedNavigationTarget);
+  }
+
+  async function handleCommanderWorkflowContinue(mission: ActiveMission) {
+    setRoomTransition(undefined);
+    setRoomArrival(undefined);
+
+    const currentState = parseMissionState(mission.currentState);
+
+    if (currentState === 'authorization') {
+      const authorization = await requestDesktopAuthorization(mission, {
+        operatorJustification: commanderOperatorJustification,
+        invalidation: commanderInvalidation,
+      });
+
+      if (authorization === undefined) {
+        setCommanderWorkflowNotice('Authorization requires justification and invalidation before Commander can continue.');
+        return;
+      }
+
+      setAuthorizationStatus(authorization);
+      setCommanderOperatorJustification('');
+      setCommanderInvalidation('');
+      setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
+
+      if (authorization.decision === 'approved') {
+        const deployedMission = await declareDesktopDeployment(mission);
+        setActiveMission(deployedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+      }
+      return;
+    }
+
+    if (currentState === 'return_to_base') {
+      const result = await saveDesktopDebrief(mission, {
+        behaviorSummary: commanderBehaviorSummary,
+        disciplineNotes: commanderDisciplineNotes,
+        lesson: commanderLesson,
+      });
+
+      if (result === undefined) {
+        setCommanderWorkflowNotice('Debrief requires behavior summary, discipline notes, and lesson before Commander can continue.');
+        return;
+      }
+
+      setMissionDebrief(result.debrief);
+      setActiveMission(result.mission);
+      setMissionHistory((history) => upsertMissionHistory(history, result.mission));
+      setCommanderBehaviorSummary('');
+      setCommanderDisciplineNotes('');
+      setCommanderLesson('');
+      setCommanderWorkflowNotice('Debrief saved. Archive is now the next Commander action.');
+      return;
+    }
+
+    if (currentState === 'debrief') {
+      const archiveSummary = createLocalMissionArchiveSummary(mission, missionDebrief, undefined);
+      const archivedMission = await archiveDesktopMission(mission);
+
+      setArchiveSummary(archiveSummary);
+      if (archiveSummary) setArchivedMissionSummaries((summaries) => [...summaries, archiveSummary]);
+      setActiveMission(getActiveMissionAfterMissionChange(archivedMission));
+      setMissionHistory((history) => upsertMissionHistory(history, archivedMission));
+      setCommanderWorkflowNotice('Mission archived.');
+      return;
+    }
+
+    const advancedMission = await advanceMissionFromCommanderContinue(mission);
+
+    if (advancedMission) {
+      setActiveMission(advancedMission);
+      setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
+      setCommanderWorkflowNotice('');
+    }
+  }
+
+  function handleSidebarNavigation(room: HeadquartersRoomId) {
+    setRoomTransition(undefined);
+    setRoomArrival(undefined);
+    setActiveRoom(room);
+  }
+
   return (
     <div className="hq-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
@@ -400,12 +547,18 @@ export function App() {
           {getPrimaryNavigationItems(activeRoom).map((item) => (
             <button
               key={item.id}
-              className={item.active ? 'nav-item active' : 'nav-item'}
+              className={[
+                'nav-item',
+                item.active ? 'active' : '',
+                item.id === recommendedNavigationTarget ? 'recommended' : '',
+              ].filter(Boolean).join(' ')}
               data-nav-id={item.id}
+              data-nav-section={item.section}
+              data-recommended={item.id === recommendedNavigationTarget}
               aria-label={`Open ${item.label}`}
               aria-current={item.active ? 'page' : undefined}
               type="button"
-              onClick={() => setActiveRoom(item.id)}
+              onClick={() => handleSidebarNavigation(item.id)}
             >
               {item.label}
             </button>
@@ -413,9 +566,47 @@ export function App() {
         </nav>
 
         <main id="main-content" className="shell-main">
+          <CommanderExperiencePanel
+            state={commanderState}
+            compassSteps={missionCompassSteps}
+            workflowSurface={<CommanderWorkflowSurface
+              currentRoom={currentCommanderRoom}
+              activeMission={activeMission}
+              authorizationStatus={authorizationStatus}
+              missionDebrief={missionDebrief}
+              notice={commanderWorkflowNotice}
+              operatorJustification={commanderOperatorJustification}
+              invalidation={commanderInvalidation}
+              behaviorSummary={commanderBehaviorSummary}
+              disciplineNotes={commanderDisciplineNotes}
+              lesson={commanderLesson}
+              onOperatorJustificationChange={setCommanderOperatorJustification}
+              onInvalidationChange={setCommanderInvalidation}
+              onBehaviorSummaryChange={setCommanderBehaviorSummary}
+              onDisciplineNotesChange={setCommanderDisciplineNotes}
+              onLessonChange={setCommanderLesson}
+            />}
+            onContinue={handleCommanderContinue}
+            onAcknowledgeInterruption={(id) => {
+              if (id.length === 0) return;
+              setAcknowledgedCommanderInterruptions((acknowledged) => (
+                acknowledged.includes(id) ? acknowledged : [...acknowledged, id]
+              ));
+            }}
+          />
+
           <section className="workspace-panel" aria-label="Main content">
+            {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
+            ) : roomArrival ? (
+              <RoomArrivalPanel
+                arrival={roomArrival}
+                onContinue={() => {
+                  setRoomArrival(undefined);
+                  setRoomTransition(undefined);
+                }}
+              />
             ) : (
               renderHeadquartersRoom(activeRoom, {
                 activeMission,
@@ -439,9 +630,10 @@ export function App() {
                   setAuthorizationStatus(undefined);
                   setMissionDebrief(undefined);
                   setArchiveSummary(undefined);
+                  setCommanderWorkflowNotice('');
                 },
                 onMissionChanged: (mission) => {
-                  setActiveMission(mission);
+                  setActiveMission(getActiveMissionAfterMissionChange(mission));
                   setMissionHistory((history) => upsertMissionHistory(history, mission));
                 },
                 onRequestAuthorization: (authorization) => {
@@ -494,6 +686,140 @@ export function App() {
         </main>
       </div>
     </div>
+  );
+}
+
+export type CommanderContinueMode = 'advance-mission' | 'navigate-room' | 'stay-in-room';
+
+export function getCommanderContinueMode(
+  mission: ActiveMission | undefined,
+  currentRoom: string,
+  recommendedRoom: string,
+): CommanderContinueMode {
+  if (currentRoom !== recommendedRoom) return 'navigate-room';
+  if (mission === undefined) return 'navigate-room';
+  if (canCommanderContinueAdvanceMission(mission)) return 'advance-mission';
+  return 'stay-in-room';
+}
+
+export async function advanceMissionFromCommanderContinue(mission: ActiveMission): Promise<ActiveMission | undefined> {
+  const currentState = parseMissionState(mission.currentState);
+
+  if (currentState === 'idle') return startDesktopBriefing(mission);
+  if (currentState === 'briefing') return completeDesktopBriefing(mission);
+  if (currentState === 'ready') return startDesktopObservation(mission);
+  if (currentState === 'observation') return completeDesktopObservation(mission);
+  if (currentState === 'deployed') return requestDesktopReturnToBase(mission);
+
+  return undefined;
+}
+
+export function getActiveMissionAfterMissionChange(mission: ActiveMission): ActiveMission | undefined {
+  if (parseMissionState(mission.currentState) === 'archived') return undefined;
+  return mission;
+}
+
+function canCommanderContinueAdvanceMission(mission: ActiveMission): boolean {
+  const currentState = parseMissionState(mission.currentState);
+  return (
+    currentState === 'idle'
+    || currentState === 'briefing'
+    || currentState === 'ready'
+    || currentState === 'observation'
+    || currentState === 'authorization'
+    || currentState === 'deployed'
+    || currentState === 'return_to_base'
+    || currentState === 'debrief'
+  );
+}
+
+function CommanderWorkflowSurface({
+  activeMission,
+  currentRoom,
+  authorizationStatus,
+  missionDebrief,
+  notice,
+  operatorJustification,
+  invalidation,
+  behaviorSummary,
+  disciplineNotes,
+  lesson,
+  onOperatorJustificationChange,
+  onInvalidationChange,
+  onBehaviorSummaryChange,
+  onDisciplineNotesChange,
+  onLessonChange,
+}: {
+  readonly currentRoom: string;
+  readonly activeMission?: ActiveMission | undefined;
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly missionDebrief?: MissionDebrief | undefined;
+  readonly notice: string;
+  readonly operatorJustification: string;
+  readonly invalidation: string;
+  readonly behaviorSummary: string;
+  readonly disciplineNotes: string;
+  readonly lesson: string;
+  readonly onOperatorJustificationChange: (value: string) => void;
+  readonly onInvalidationChange: (value: string) => void;
+  readonly onBehaviorSummaryChange: (value: string) => void;
+  readonly onDisciplineNotesChange: (value: string) => void;
+  readonly onLessonChange: (value: string) => void;
+}) {
+  const currentState = parseMissionState(activeMission?.currentState);
+
+  return (
+    <>
+      {currentState === 'authorization' && currentRoom === 'war-room' ? (
+        <section className="commander-workflow-card" aria-label="Commander authorization controls">
+          <div>
+            <p className="section-label">Authorization</p>
+            <h3>War Room Authorization</h3>
+            <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+          </div>
+          <label>
+            <span>Operator Justification</span>
+            <input value={operatorJustification} onChange={(event) => onOperatorJustificationChange(event.target.value)} />
+          </label>
+          <label>
+            <span>Invalidation</span>
+            <input value={invalidation} onChange={(event) => onInvalidationChange(event.target.value)} />
+          </label>
+        </section>
+      ) : null}
+
+      {currentState === 'return_to_base' && currentRoom === 'debrief' ? (
+        <section className="commander-workflow-card" aria-label="Commander debrief controls">
+          <div>
+            <p className="section-label">Debrief</p>
+            <h3>Behavior-first Debrief</h3>
+            <p className="muted">{formatDebriefStatus(missionDebrief)}</p>
+          </div>
+          <label>
+            <span>Behavior Summary</span>
+            <input value={behaviorSummary} onChange={(event) => onBehaviorSummaryChange(event.target.value)} />
+          </label>
+          <label>
+            <span>Discipline Notes</span>
+            <input value={disciplineNotes} onChange={(event) => onDisciplineNotesChange(event.target.value)} />
+          </label>
+          <label>
+            <span>Lesson</span>
+            <input value={lesson} onChange={(event) => onLessonChange(event.target.value)} />
+          </label>
+        </section>
+      ) : null}
+
+      {currentState === 'debrief' && currentRoom === 'archive' ? (
+        <section className="commander-workflow-card" aria-label="Commander archive controls">
+          <p className="section-label">Archive</p>
+          <h3>Archive Mission</h3>
+          <p className="muted">Commander will archive the mission record from the top action.</p>
+        </section>
+      ) : null}
+
+      {notice ? <p className="commander-workflow-notice" role="status">{notice}</p> : null}
+    </>
   );
 }
 
@@ -927,7 +1253,7 @@ export function ReadyRoom({
   const recentMission = missionHistory.at(-1);
 
   return (
-    <div className="room-layout" data-room-id="ready-room">
+    <div className="room-layout" data-room-id="ready-room" data-room-identity="preparation">
       <section className="command-center-header" aria-label="Ready room status">
         <p className="section-label">Ready Room</p>
         <h2>Mission Readiness</h2>
@@ -985,7 +1311,7 @@ export function ObservationRoom({
   });
 
   return (
-    <div className="room-layout" data-room-id="observation-room">
+    <div className="room-layout" data-room-id="observation-room" data-room-identity="silence">
       <section className="command-center-header" aria-label="Observation room status">
         <p className="section-label">Observation Room</p>
         <h2>Observation</h2>
@@ -1031,7 +1357,7 @@ export function WarRoom({
   const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
 
   return (
-    <div className="room-layout" data-room-id="war-room">
+    <div className="room-layout" data-room-id="war-room" data-room-identity="decision">
       <section className="command-center-header" aria-label="War room status">
         <p className="section-label">War Room</p>
         <h2>Authorization Terminal</h2>
@@ -1072,7 +1398,7 @@ export function DebriefTheater({
   'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
 >) {
   return (
-    <div className="room-layout" data-room-id="debrief-theater">
+    <div className="room-layout" data-room-id="debrief-theater" data-room-identity="reflection">
       <section className="command-center-header" aria-label="Debrief theater status">
         <p className="section-label">Debrief Theater</p>
         <h2>Mission Debrief</h2>
@@ -2746,7 +3072,7 @@ export function ArchiveRoom({
   const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
 
   return (
-    <div className="room-layout" data-room-id="archive-room">
+    <div className="room-layout" data-room-id="archive-room" data-room-identity="historical">
       <section className="command-center-header" aria-label="Archive room status">
         <p className="section-label">Archive Room</p>
         <h2>Archive</h2>

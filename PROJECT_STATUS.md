@@ -2,6 +2,54 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0164 - Sprint 15 Navigation Experience Review Package
+
+- HQ-TASK-0163 - Room Identity Pass
+
+- HQ-TASK-0162 - Sidebar De-emphasis
+
+- HQ-TASK-0161 - Progressive Room Unlocking
+
+- HQ-TASK-0160 - Room Arrival Experience
+
+- HQ-TASK-0159 - Door Transition Experience
+
+- HQ-TASK-0158 - Commander-led Navigation
+
+- HQ-TASK-0157 - Mission Compass Runtime
+
+- HQ-TASK-0156 - Sprint 14 Commander Experience Review Package
+
+- HQ-TASK-0155 - Commander Memory Surface
+
+- HQ-TASK-0154 - Commander Room Transition Messages
+
+- HQ-TASK-0153 - Commander Briefing and Debrief Flow
+
+- HQ-TASK-0152 - Commander Interruption Pattern
+
+- HQ-TASK-0151 - Commander Next Action Engine
+
+- HQ-TASK-0150 - Commander Message Thread MVP
+
+- HQ-TASK-0149 - Persistent Commander Shell MVP
+
+- HQ-TASK-0148 - Experience Foundation Review Package
+
+- HQ-TASK-0147 - Command Chair MVP
+
+- HQ-TASK-0146 - Door Transition Layer
+
+- HQ-TASK-0145 - Mission Compass Specification
+
+- HQ-TASK-0144 - Room State Machine
+
+- HQ-TASK-0143 - Commander Message Model
+
+- HQ-TASK-0142 - Commander Shell Architecture
+
+- HQ-TASK-0141 - Headquarters Experience Principles
+
 - HQ-TASK-0007 — SQLite Connection Layer MVP
 - HQ-TASK-0008 — Archive Repository MVP
 - HQ-TASK-0009 — Desktop Shell MVP
@@ -136,7 +184,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 12 Polish & Beta is complete through HIG-TASK-100 / HQ-TASK-0140.
+Current milestone gate: Sprint 14 Commander Experience is complete through HQ-TASK-0156.
 
 ## Post-Sprint UX Alignment
 
@@ -161,6 +209,22 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 12 Polish & Beta is complete through HIG-TASK-100 / HQ-TASK-0140.
+Sprint 14 Commander Experience is complete through HQ-TASK-0156.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
