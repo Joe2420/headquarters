@@ -2,6 +2,8 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0154 - Commander Room Transition Messages
+
 - HQ-TASK-0153 - Commander Briefing and Debrief Flow
 
 - HQ-TASK-0152 - Commander Interruption Pattern
@@ -162,7 +164,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 14 Commander Experience is in progress through HQ-TASK-0153.
+Current milestone gate: Sprint 14 Commander Experience is in progress through HQ-TASK-0154.
 
 ## Post-Sprint UX Alignment
 
@@ -187,9 +189,10 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 14 Commander Experience is in progress through HQ-TASK-0153.
+Sprint 14 Commander Experience is in progress through HQ-TASK-0154.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
 
 
 
