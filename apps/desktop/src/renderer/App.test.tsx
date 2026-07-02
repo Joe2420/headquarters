@@ -709,7 +709,7 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
 
     expect(html).toContain('data-room-id="ready-room"');
-    expect(html).toContain('Readiness Report');
+    expect(html).toContain('Readiness Checklist');
     expect(html).toContain('Daily Orders');
     expect(html).toContain('Command Oath');
     expect(html).toContain('Operator Locker');

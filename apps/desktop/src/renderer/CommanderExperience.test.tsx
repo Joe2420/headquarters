@@ -124,7 +124,7 @@ describe('CommanderExperience', () => {
     });
 
     expect(state.lifecycleStep).toBe('Lifecycle: Authorization');
-    expect(state.commanderQuestion).toBe('What is the justification, and what would invalidate the mission?');
+    expect(state.commanderQuestion).toBe('State the reason: market condition, session, volume, divergence, and invalidation.');
   });
 
   it('orders deterministic Commander messages and marks the newest message current', () => {
@@ -197,7 +197,7 @@ describe('CommanderExperience', () => {
 
   it('generates room transition messages from mission lifecycle state', () => {
     expect(getCommanderRoomTransitionText(undefined)).toBe('Create Mission.');
-    expect(getCommanderRoomTransitionText('briefing')).toBe('Briefing active. Confirm readiness before the Ready Room.');
+    expect(getCommanderRoomTransitionText('briefing')).toBe('Briefing active. Review objective, authority, and observation rules.');
     expect(getCommanderRoomTransitionText('observation')).toBe('Observation begins. Remain silent.');
     expect(getCommanderRoomTransitionText('authorization')).toBe('War Room unlocked. Authorization required.');
     expect(getCommanderRoomTransitionText('return_to_base')).toBe('Debrief Theater ready.');

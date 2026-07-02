@@ -612,6 +612,18 @@ export function App() {
     room: HeadquartersRoomId,
     options: { readonly openRoomAfter?: boolean; readonly fromRoom?: CommanderShellRoomId } = {},
   ) {
+    if (shouldBypassDoorTransition(room)) {
+      if (roomTransferTimeoutRef.current !== undefined) {
+        window.clearTimeout(roomTransferTimeoutRef.current);
+        roomTransferTimeoutRef.current = undefined;
+      }
+
+      setRoomTransition(undefined);
+      setActiveRoom(room);
+      if (options.openRoomAfter) setActiveOperationsView('room');
+      return;
+    }
+
     const fromRoom = options.fromRoom ?? currentCommanderRoom;
     const targetRoom = mapNavigationRoomToCommanderRoom(room);
 
@@ -631,6 +643,10 @@ export function App() {
       if (options.openRoomAfter) setActiveOperationsView('room');
       roomTransferTimeoutRef.current = undefined;
     }, 1200);
+  }
+
+  function shouldBypassDoorTransition(room: HeadquartersRoomId): boolean {
+    return room === 'archive' || room === 'journal';
   }
 
   function startDoorTransferForMissionRoomChange(previousMission: ActiveMission, nextMission: ActiveMission) {
@@ -999,6 +1015,7 @@ export function App() {
             {activeOperationsView === 'room' ? (
               <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
                 <MissionCeremonyMoment ceremony={missionCeremony} />
+                {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
                 ) : (
@@ -1693,6 +1710,7 @@ export function ReadyRoom({
 }) {
   const nextAction = getMissionNextAction(activeMission);
   const recentMission = missionHistory.at(-1);
+  const briefingItems = buildReadyRoomBriefingItems(activeMission, growthEvents);
 
   return (
     <GuidedRoom
@@ -1704,17 +1722,26 @@ export function ReadyRoom({
       objective={activeMission?.objective ?? 'Create a mission before entering preparation.'}
       primaryAction={<strong>{nextAction.buttonLabel === 'Start Observation' ? 'Begin Observation' : nextAction.label}</strong>}
       workspace={(
-        <section className="journal-panel" aria-label="Readiness report">
-          <p className="section-label">Readiness Report</p>
-          <h3>{nextAction.label}</h3>
-          <p className="muted">{nextAction.description}</p>
-          <dl>
-            <dt>Mission State</dt>
-            <dd>{formatMissionDetailState(activeMission)}</dd>
-            <dt>Recent Growth</dt>
-            <dd>{formatRecentGrowthHighlight(growthEvents)}</dd>
-          </dl>
-        </section>
+        <div className="ready-briefing-layout" aria-label="Ready Room briefing">
+          <section className="journal-panel">
+            <p className="section-label">Briefing</p>
+            <h3>{activeMission?.campaign ?? 'No mission file'}</h3>
+            <p className="muted">{activeMission?.objective ?? 'Create a mission before briefing.'}</p>
+            <dl>
+              <dt>Authority</dt>
+              <dd>{activeMission?.commandAuthority ?? 'Awaiting command authority'}</dd>
+              <dt>State</dt>
+              <dd>{formatMissionDetailState(activeMission)}</dd>
+            </dl>
+          </section>
+          <section className="journal-panel">
+            <p className="section-label">Readiness Checklist</p>
+            <h3>{nextAction.label}</h3>
+            <ol className="readiness-checklist">
+              {briefingItems.map((item) => <li key={item}>{item}</li>)}
+            </ol>
+          </section>
+        </div>
       )}
       timeline={(
         <section className="journal-panel" aria-label="Daily orders card">
@@ -1746,6 +1773,18 @@ export function ReadyRoom({
   );
 }
 
+function buildReadyRoomBriefingItems(
+  activeMission: ActiveMission | undefined,
+  growthEvents: readonly GrowthEvent[],
+): string[] {
+  return [
+    activeMission ? `Objective acknowledged: ${activeMission.objective}` : 'Mission objective pending.',
+    activeMission ? `Command authority: ${activeMission.commandAuthority}` : 'Command authority pending.',
+    `Growth reminder: ${formatRecentGrowthHighlight(growthEvents)}`,
+    'Observation rule: wait for evidence before authorization.',
+  ];
+}
+
 export function ObservationRoom({
   activeMission,
   authorizationStatus,
@@ -1771,11 +1810,18 @@ export function ObservationRoom({
       objective="Keep charts and notes central until observation is complete."
       primaryAction={<strong>{nextAction.label === 'Complete Observation' ? 'Complete Observation' : 'Observe'}</strong>}
       workspace={(
-        <section className="journal-panel" aria-label="Observation timer">
-          <p className="section-label">Observation Timer</p>
-          <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
-          <p className="muted">{formatTimelineViewerStatus(entries)}</p>
-        </section>
+        <div className="observation-workspace" aria-label="Observation workspace">
+          <section className="journal-panel" aria-label="Observation timer">
+            <p className="section-label">Observation Timer</p>
+            <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
+            <p className="muted">{formatTimelineViewerStatus(entries)}</p>
+          </section>
+          <section className="journal-panel observation-check-in" aria-label="Commander observation check-in">
+            <p className="section-label">Commander Check-In</p>
+            <h3>{currentState === 'observation' ? 'Discipline Is Holding' : 'Await Observation'}</h3>
+            <p className="muted">Waiting is part of the work. Evidence comes first; authorization comes later.</p>
+          </section>
+        </div>
       )}
       timeline={<MissionTimelineViewerPanel
         activeMission={activeMission}

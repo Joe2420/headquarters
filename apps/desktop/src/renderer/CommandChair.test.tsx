@@ -29,6 +29,8 @@ describe('CommandChair', () => {
 
     expect(html).toContain('data-command-chair-status="mission-active"');
     expect(html).toContain('Mission command active');
+    expect(html).toContain('Confirm Seat');
+    expect(html).toContain('Awaiting operator confirmation');
     expect(html).toContain('Operator seated');
     expect(html).toContain('Professional command');
     expect(html).toContain('War Room');

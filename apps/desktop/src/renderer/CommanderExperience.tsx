@@ -68,11 +68,17 @@ type CommanderTransmissionEntry = {
   readonly id: string;
   readonly speaker: 'Operator' | 'Commander';
   readonly text: string;
-  readonly kind: 'current' | 'question' | 'operator' | 'response';
+  readonly kind: 'current' | 'question' | 'operator' | 'response' | 'support';
   readonly promptKey?: string | undefined;
 };
 
 const baseTimestamp = '2026-07-02T00:00:00.000Z';
+const observationSupportMessages = [
+  'Holding silence is active work. Stay with the evidence.',
+  'Commander check-in. No action required; keep observing.',
+  'Good discipline. Waiting is part of the mission.',
+  'Maintain the line. Let the market prove itself before you move.',
+];
 
 export function buildCommanderExperienceState(input: CommanderExperienceInput): CommanderExperienceState {
   const missionState = parseCommanderMissionState(input.activeMission?.currentState);
@@ -128,6 +134,7 @@ export function CommanderExperiencePanel({
   const feedRef = useRef<HTMLOListElement | null>(null);
   const activePromptKeyRef = useRef(typeof window === 'undefined' ? currentPromptKey : '');
   const pendingQuestionRef = useRef<{ key: string; text: string } | undefined>();
+  const observationSupportIndexRef = useRef(0);
 
   useEffect(() => {
     const feed = feedRef.current;
@@ -156,6 +163,25 @@ export function CommanderExperiencePanel({
       },
     ]);
   }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || state.lifecycleStep !== 'Lifecycle: Observation') return undefined;
+
+    const interval = window.setInterval(() => {
+      const message = observationSupportMessages[observationSupportIndexRef.current % observationSupportMessages.length]
+        ?? 'Commander check-in. Hold the observation.';
+      observationSupportIndexRef.current += 1;
+
+      setTransmissions((current) => [...current, {
+        id: `commander:observation-support:${Date.now()}:${current.length}`,
+        speaker: 'Commander',
+        text: message,
+        kind: 'support',
+      }]);
+    }, 45000);
+
+    return () => window.clearInterval(interval);
+  }, [state.lifecycleStep]);
 
   async function handleTransmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -407,8 +433,6 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
 function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): string {
   return [
     state.currentMessage.id,
-    state.currentRoom,
-    state.recommendedRoom,
     state.lifecycleStep,
     state.currentMessage.text,
     state.commanderQuestion,
@@ -524,7 +548,7 @@ export function getCommanderNextAction(
 export function getCommanderRoomTransitionText(missionState?: MissionState | undefined): string {
   if (missionState === undefined) return 'Create Mission.';
   if (missionState === 'idle') return 'Briefing is ready to begin.';
-  if (missionState === 'briefing') return 'Briefing active. Confirm readiness before the Ready Room.';
+  if (missionState === 'briefing') return 'Briefing active. Review objective, authority, and observation rules.';
   if (missionState === 'ready' || missionState === 'observation') return 'Observation begins. Remain silent.';
   if (missionState === 'authorization' || missionState === 'deployed') return 'War Room unlocked. Authorization required.';
   if (missionState === 'return_to_base') return 'Debrief Theater ready.';
@@ -666,7 +690,7 @@ function getCommanderStateText(reportState: CommanderReportState, missionState?:
   if (reportState === 'not-reported') return 'Report for duty. Headquarters is waiting.';
   if (missionState === undefined) return 'No active mission. Create one mission.';
   if (missionState === 'idle') return 'Mission file exists. Briefing is the next phase.';
-  if (missionState === 'briefing') return 'Briefing is active. Confirm the objective before moving.';
+  if (missionState === 'briefing') return 'Briefing is active. Confirm objective, authority, and observation rules.';
   if (missionState === 'ready' || missionState === 'observation') return 'Observation is active work. Remain silent.';
   if (missionState === 'authorization' || missionState === 'deployed') return 'War Room authority is active. Stay inside the plan.';
   if (missionState === 'return_to_base') return 'Return complete. Begin behavior-first debrief.';
@@ -689,10 +713,10 @@ function getCommanderQuestion(
   if (reportState === 'not-reported') return 'Are you ready to report for duty?';
   if (missionState === undefined) return 'What mission are we opening, and what objective must it serve?';
   if (missionState === 'idle') return 'Is the mission file ready to enter briefing?';
-  if (missionState === 'briefing') return 'Has the objective been briefed clearly enough to prepare observation?';
-  if (missionState === 'ready') return 'Are you ready to begin observation and remain silent?';
-  if (missionState === 'observation') return 'Is the observation complete enough to request authorization?';
-  if (missionState === 'authorization') return 'What is the justification, and what would invalidate the mission?';
+  if (missionState === 'briefing') return 'Confirm the objective, authority, and observation rule. Then we can move.';
+  if (missionState === 'ready') return 'Are you seated, briefed, and ready to begin observation without touching execution?';
+  if (missionState === 'observation') return 'Observation check: what evidence has appeared, and what is still missing?';
+  if (missionState === 'authorization') return 'State the reason: market condition, session, volume, divergence, and invalidation.';
   if (missionState === 'deployed') return 'Has the authorized plan concluded so we can return to base?';
   if (missionState === 'return_to_base') return 'What behavior occurred, what discipline was kept, and what lesson remains?';
   if (missionState === 'debrief') return 'Is the debrief complete enough to archive as institutional memory?';

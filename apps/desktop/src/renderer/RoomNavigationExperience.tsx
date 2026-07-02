@@ -181,7 +181,7 @@ export function RoomTransitionLayer({ transition }: { readonly transition: RoomT
       data-transition-to={transition.toRoom}
       data-transition-phase={transition.phase}
     >
-      <span>{getRoomTransitionNarration(transition.phase)}</span>
+      <span className="vault-door-wheel" aria-hidden="true"><span /></span>
     </section>
   );
 }

@@ -495,7 +495,7 @@ dd {
 
 .commander-instrument-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 0.75rem;
   align-items: stretch;
 }
@@ -543,6 +543,14 @@ dd {
     -42px 58px 0 -34px rgba(143, 184, 255, 0.2),
     42px 58px 0 -34px rgba(143, 184, 255, 0.2);
   opacity: 0.72;
+}
+
+.command-chair-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .situation-board {
@@ -900,11 +908,11 @@ dd {
   animation: steel-door-open-right 6200ms cubic-bezier(0.12, 0.74, 0.18, 1) forwards;
 }
 
-.room-transition-layer span {
-  position: relative;
+.room-transition-layer .vault-door-wheel {
+  position: absolute;
   z-index: 3;
-  justify-self: center;
-  align-self: center;
+  left: 50%;
+  top: 50%;
   display: grid;
   gap: 0.45rem;
   place-items: center;
@@ -913,26 +921,29 @@ dd {
   padding: 1rem;
   border: 1px solid rgba(196, 170, 101, 0.48);
   border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: vault-wheel-carried-left 6200ms cubic-bezier(0.12, 0.74, 0.18, 1) forwards, vault-wheel-release 6800ms ease forwards;
+}
+
+.room-transition-layer .vault-door-wheel > span {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
   background:
     radial-gradient(circle, rgba(218, 187, 104, 0.32) 0 12%, rgba(32, 31, 26, 0.96) 13% 24%, transparent 25% 100%),
     repeating-conic-gradient(from 0deg, rgba(196, 170, 101, 0.34) 0deg 12deg, rgba(20, 24, 24, 0.96) 12deg 28deg),
     conic-gradient(from 20deg, rgba(180, 187, 184, 0.38), rgba(8, 10, 10, 0.96), rgba(196, 170, 101, 0.25), rgba(8, 10, 10, 0.96), rgba(180, 187, 184, 0.38)),
     #070909;
-  color: transparent;
-  font-size: 0;
-  font-weight: 800;
-  text-align: center;
-  text-transform: uppercase;
   box-shadow:
     inset 0 0 28px rgba(0, 0, 0, 0.72),
     0 0 0 8px rgba(5, 8, 10, 0.84),
     0 0 0 10px rgba(196, 170, 101, 0.2),
     0 22px 44px rgba(0, 0, 0, 0.42);
-  animation: vault-wheel-spin 2200ms cubic-bezier(0.16, 0.86, 0.2, 1) forwards, vault-wheel-release 6800ms ease forwards;
+  animation: vault-wheel-spin 2200ms cubic-bezier(0.16, 0.86, 0.2, 1) forwards;
 }
 
-.room-transition-layer span::before,
-.room-transition-layer span::after {
+.room-transition-layer .vault-door-wheel > span::before,
+.room-transition-layer .vault-door-wheel > span::after {
   content: "";
   position: absolute;
   inset: 50% auto auto 50%;
@@ -944,13 +955,44 @@ dd {
   box-shadow: 0 0 16px rgba(196, 170, 101, 0.22);
 }
 
-.room-transition-layer span::after {
+.room-transition-layer .vault-door-wheel > span::after {
   transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .room-layout[data-room-identity="preparation"] .command-center-header {
   border-left: 3px solid #d9e7ff;
   padding-left: 0.85rem;
+}
+
+.ready-briefing-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.readiness-checklist {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.15rem;
+  color: #d9e7ff;
+}
+
+.readiness-checklist li {
+  line-height: 1.45;
+}
+
+.observation-workspace {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.observation-check-in {
+  border-color: rgba(112, 255, 156, 0.28);
+  background:
+    linear-gradient(135deg, rgba(112, 255, 156, 0.07), transparent 42%),
+    #0f1215;
 }
 
 .room-layout[data-room-identity="silence"] {
@@ -1650,6 +1692,19 @@ dd {
 
   100% {
     transform: rotate(405deg) scale(0.98);
+  }
+}
+
+@keyframes vault-wheel-carried-left {
+  0%,
+  28% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1);
+  }
+
+  100% {
+    transform: translate(calc(-50% - 48vw), -50%) rotateY(-12deg) scale(0.96);
+    filter: brightness(0.76);
   }
 }
 

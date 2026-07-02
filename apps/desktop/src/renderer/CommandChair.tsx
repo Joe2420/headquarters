@@ -20,7 +20,9 @@ export function CommandChair({
   onCommandAction,
 }: CommandChairProps = {}) {
   const [localStatus, setLocalStatus] = useState<CommandChairStatus>(status ?? 'unassigned');
+  const [seatConfirmed, setSeatConfirmed] = useState(false);
   const currentStatus = status ?? localStatus;
+  const canConfirmSeat = currentStatus !== 'unassigned' && currentStatus !== 'awaiting-report' && currentStatus !== 'locked';
 
   function handleCommandAction() {
     if (onCommandAction) {
@@ -31,13 +33,17 @@ export function CommandChair({
     setLocalStatus(toggleCommandChairStatus(currentStatus));
   }
 
+  function handleConfirmSeat() {
+    setSeatConfirmed(true);
+  }
+
   return (
     <section className="command-chair" aria-label="Command Chair" data-command-chair-status={currentStatus}>
       <div>
         <p className="section-label">Command Chair</p>
         <h3>Operator Command Status</h3>
       </div>
-      <p className="command-chair-status">{formatCommandChairStatus(currentStatus)}</p>
+      <p className="command-chair-status">{seatConfirmed ? 'Operator seat confirmed' : formatCommandChairStatus(currentStatus)}</p>
       <dl className="status-list">
         <div>
           <dt>Operator</dt>
@@ -55,10 +61,21 @@ export function CommandChair({
           <dt>Primary Action</dt>
           <dd>{primaryAction}</dd>
         </div>
+        <div>
+          <dt>Seat</dt>
+          <dd>{seatConfirmed ? 'Confirmed by operator' : canConfirmSeat ? 'Awaiting operator confirmation' : 'Unavailable'}</dd>
+        </div>
       </dl>
-      <button className="secondary-action" type="button" onClick={handleCommandAction}>
-        {currentStatus === 'unassigned' ? primaryAction : 'Open Command Room'}
-      </button>
+      <div className="command-chair-actions">
+        {canConfirmSeat && !seatConfirmed ? (
+          <button className="primary-action" type="button" onClick={handleConfirmSeat}>
+            Confirm Seat
+          </button>
+        ) : null}
+        <button className="secondary-action" type="button" onClick={handleCommandAction}>
+          {currentStatus === 'unassigned' ? primaryAction : 'Open Command Room'}
+        </button>
+      </div>
     </section>
   );
 }
