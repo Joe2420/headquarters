@@ -413,10 +413,20 @@ export function App() {
     ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
     : undefined;
 
-  function handleCommanderContinue() {
+  async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
       setShellPhase(reportForDuty(shellPhase).to);
       return;
+    }
+
+    if (activeMission && currentCommanderRoom === commanderState.recommendedRoom) {
+      const advancedMission = await advanceMissionFromCommanderContinue(activeMission);
+
+      if (advancedMission) {
+        setActiveMission(advancedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
+        return;
+      }
     }
 
     let transition = createRoomTransition(currentCommanderRoom, commanderState.recommendedRoom);
@@ -581,6 +591,18 @@ export function App() {
       </div>
     </div>
   );
+}
+
+export async function advanceMissionFromCommanderContinue(mission: ActiveMission): Promise<ActiveMission | undefined> {
+  const currentState = parseMissionState(mission.currentState);
+
+  if (currentState === 'idle') return startDesktopBriefing(mission);
+  if (currentState === 'briefing') return completeDesktopBriefing(mission);
+  if (currentState === 'ready') return startDesktopObservation(mission);
+  if (currentState === 'observation') return completeDesktopObservation(mission);
+  if (currentState === 'deployed') return requestDesktopReturnToBase(mission);
+
+  return undefined;
 }
 
 interface SecurityCheckpointProps {

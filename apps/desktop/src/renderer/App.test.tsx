@@ -37,6 +37,7 @@ import {
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
+  advanceMissionFromCommanderContinue,
   createArchiveWritePlaceholder,
   createDesktopMission,
   createLocalDebrief,
@@ -794,6 +795,24 @@ describe('Desktop shell', () => {
     expect(getMissionNextAction(missionWithState('return_to_base'))).toMatchObject({
       buttonLabel: 'Save Debrief',
       disabled: false,
+    });
+  });
+
+  it('lets Commander Continue advance the Ready Room briefing step instead of re-entering Ready Room', async () => {
+    const mission: ActiveMission = {
+      id: 'mission-briefing',
+      campaign: 'Foundation',
+      objective: 'Prepare before observation',
+      condition: 'Briefing',
+      commandAuthority: 'Operator',
+      currentState: 'briefing',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    await expect(advanceMissionFromCommanderContinue(mission)).resolves.toMatchObject({
+      id: 'mission-briefing',
+      currentState: 'ready',
+      condition: 'Ready',
     });
   });
 
