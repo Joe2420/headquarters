@@ -2,6 +2,8 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0156 - Sprint 14 Commander Experience Review Package
+
 - HQ-TASK-0155 - Commander Memory Surface
 
 - HQ-TASK-0154 - Commander Room Transition Messages
@@ -166,7 +168,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 14 Commander Experience is in progress through HQ-TASK-0155.
+Current milestone gate: Sprint 14 Commander Experience is complete through HQ-TASK-0156.
 
 ## Post-Sprint UX Alignment
 
@@ -191,9 +193,10 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 14 Commander Experience is in progress through HQ-TASK-0155.
+Sprint 14 Commander Experience is complete through HQ-TASK-0156.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
 
 
 
