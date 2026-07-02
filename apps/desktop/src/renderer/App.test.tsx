@@ -98,6 +98,9 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.nav-item:hover');
     expect(styles).toContain('.nav-item[data-nav-section="commander"]');
     expect(styles).toContain('.commander-atmosphere-deck');
+    expect(styles).toContain('.commander-transmission-console');
+    expect(styles).toContain('@keyframes commander-transmission-arrival');
+    expect(styles).toContain('.commander-context-drawer');
     expect(styles).toContain('.ambient-status-strip');
     expect(styles).toContain('@keyframes commander-message-arrival');
     expect(styles).toContain('.room-transition-layer::before');

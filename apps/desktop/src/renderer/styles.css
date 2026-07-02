@@ -233,7 +233,7 @@ dd {
 
 .commander-shell-primary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
   gap: 1rem;
   align-items: start;
 }
@@ -254,6 +254,104 @@ dd {
   padding: 0.75rem;
   border: 1px solid #2a333b;
   background: #0f1215;
+}
+
+.commander-transmission-console {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid #2a333b;
+  background:
+    linear-gradient(180deg, rgba(143, 184, 255, 0.07), transparent 42%),
+    #0d1013;
+}
+
+.commander-transmission-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.commander-transmission-header span {
+  color: #8fb8ff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.commander-transmission-feed {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.commander-transmission {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 760px;
+  padding: 0.75rem;
+  border: 1px solid #242b31;
+  background: #10161b;
+  animation: commander-transmission-arrival 760ms steps(8, end);
+}
+
+.commander-transmission span {
+  color: #8fb8ff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.commander-transmission p {
+  margin: 0;
+}
+
+.commander-transmission-outgoing {
+  justify-self: end;
+  width: min(92%, 620px);
+  border-color: #3b4650;
+  background: #111820;
+}
+
+.commander-transmission-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.commander-transmission-input input {
+  min-height: 42px;
+  box-sizing: border-box;
+  border: 1px solid #3b4650;
+  background: #0b0d0f;
+  color: #eef3f6;
+  font: inherit;
+  padding: 0 0.75rem;
+}
+
+.commander-context-drawer {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #242b31;
+  background: #0d1013;
+}
+
+.commander-context-drawer summary {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  color: #d9e7ff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.commander-context-drawer[open] {
+  gap: 0.85rem;
 }
 
 .commander-next-action strong {
@@ -775,6 +873,27 @@ dd {
   background: #121820;
 }
 
+.commander-briefing-archive {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid #242b31;
+  background: #0d1013;
+}
+
+.commander-briefing-archive summary {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  color: #d9e7ff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.commander-briefing-archive[open] {
+  gap: 0.85rem;
+}
+
 .supporting-information-panel {
   grid-template-columns: repeat(2, minmax(180px, 1fr));
 }
@@ -1157,6 +1276,18 @@ dd {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes commander-transmission-arrival {
+  from {
+    opacity: 0.35;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
   }
 }
 

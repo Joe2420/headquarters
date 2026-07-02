@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type FormEvent, type ReactNode, useState } from 'react';
 import type { MissionState } from '@headquarters/shared';
 import type { CommanderMessage, CommanderMessageAction } from './CommanderMessage';
 import { createCommanderMessage, isCommanderMessageUrgent, listCommanderMessagesInDisplayOrder } from './CommanderMessage';
@@ -106,6 +106,18 @@ export function CommanderExperiencePanel({
   readonly situationBoard?: ReactNode;
   readonly workflowSurface?: ReactNode;
 }) {
+  const [draftTransmission, setDraftTransmission] = useState('');
+  const [transmissions, setTransmissions] = useState<string[]>([]);
+
+  function handleTransmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const message = draftTransmission.trim();
+    if (message.length === 0) return;
+
+    setTransmissions((current) => [...current, message]);
+    setDraftTransmission('');
+  }
+
   return (
     <section
       className={state.interruption && !state.interruption.acknowledged ? 'commander-shell commander-shell-interrupted' : 'commander-shell'}
@@ -114,10 +126,32 @@ export function CommanderExperiencePanel({
       data-recommended-room={state.recommendedRoom}
     >
       <div className="commander-shell-primary">
-        <div>
-          <p className="section-label">Commander</p>
-          <h2>{state.currentMessage.text}</h2>
-        </div>
+        <section className="commander-transmission-console" aria-label="Commander transmission channel">
+          <div className="commander-transmission-header">
+            <p className="section-label">Commander</p>
+            <span>Direct transmission</span>
+          </div>
+          <ol className="commander-transmission-feed" aria-label="Commander briefing feed">
+            <li className="commander-transmission commander-transmission-incoming">
+              <span>Commander</span>
+              <p>{state.currentMessage.text}</p>
+            </li>
+            {transmissions.map((transmission, index) => (
+              <li key={`${transmission}-${index}`} className="commander-transmission commander-transmission-outgoing">
+                <span>Operator</span>
+                <p>{transmission}</p>
+              </li>
+            ))}
+          </ol>
+          <form className="commander-transmission-input" aria-label="Transmit to Commander" onSubmit={handleTransmit}>
+            <input
+              value={draftTransmission}
+              onChange={(event) => setDraftTransmission(event.target.value)}
+              placeholder="Transmit a short operational note..."
+            />
+            <button className="secondary-action" type="submit">Transmit</button>
+          </form>
+        </section>
         <div className="commander-next-action" aria-label="Commander next action">
           <p className="section-label">Primary Action</p>
           <strong>{state.nextAction.label}</strong>
@@ -137,10 +171,13 @@ export function CommanderExperiencePanel({
       </div>
 
       {commandChair || situationBoard ? (
-        <div className="commander-atmosphere-deck" aria-label="Commander atmosphere deck">
-          {commandChair}
-          {situationBoard}
-        </div>
+        <details className="commander-context-drawer">
+          <summary>Commander overview</summary>
+          <div className="commander-atmosphere-deck" aria-label="Commander atmosphere deck">
+            {commandChair}
+            {situationBoard}
+          </div>
+        </details>
       ) : null}
 
       {workflowSurface ? (
@@ -160,29 +197,32 @@ export function CommanderExperiencePanel({
         </div>
       ) : null}
 
-      <ol className="commander-message-thread" aria-label="Commander message thread">
-        {state.messages.map((message, index) => (
-          <li
-            key={message.id}
-            className={index === state.messages.length - 1 ? 'commander-message current' : 'commander-message'}
-            data-message-type={message.type}
-            data-message-priority={message.priority}
-          >
-            <span>{formatCommanderMessageType(message.type)}</span>
-            <p>{message.text}</p>
-            {isCommanderMessageUrgent(message) ? <strong>Priority</strong> : null}
-          </li>
-        ))}
-      </ol>
+      <details className="commander-context-drawer">
+        <summary>Message history and memory</summary>
+        <ol className="commander-message-thread" aria-label="Commander message thread">
+          {state.messages.map((message, index) => (
+            <li
+              key={message.id}
+              className={index === state.messages.length - 1 ? 'commander-message current' : 'commander-message'}
+              data-message-type={message.type}
+              data-message-priority={message.priority}
+            >
+              <span>{formatCommanderMessageType(message.type)}</span>
+              <p>{message.text}</p>
+              {isCommanderMessageUrgent(message) ? <strong>Priority</strong> : null}
+            </li>
+          ))}
+        </ol>
 
-      <div className="commander-memory-surface" aria-label="Commander memory surface">
-        {state.memory.map((snippet) => (
-          <div key={snippet.id}>
-            <p className="section-label">{snippet.label}</p>
-            <strong>{snippet.value}</strong>
-          </div>
-        ))}
-      </div>
+        <div className="commander-memory-surface" aria-label="Commander memory surface">
+          {state.memory.map((snippet) => (
+            <div key={snippet.id}>
+              <p className="section-label">{snippet.label}</p>
+              <strong>{snippet.value}</strong>
+            </div>
+          ))}
+        </div>
+      </details>
     </section>
   );
 }

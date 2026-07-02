@@ -35,6 +35,15 @@ describe('CommandChair', () => {
     expect(html).toContain('Return To Base');
   });
 
+  it('supports an application-provided command action handler', () => {
+    const html = renderToStaticMarkup(
+      <CommandChair status="occupied" onCommandAction={() => undefined} />,
+    );
+
+    expect(html).toContain('Release Command');
+    expect(html).toContain('data-command-chair-status="occupied"');
+  });
+
   it('toggles local command status for development', () => {
     expect(toggleCommandChairStatus('unassigned')).toBe('occupied');
     expect(toggleCommandChairStatus('awaiting-report')).toBe('unassigned');

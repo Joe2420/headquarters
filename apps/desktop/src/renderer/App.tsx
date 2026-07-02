@@ -597,6 +597,11 @@ export function App() {
               currentRoom={currentCommanderRoom}
               mission={activeMission}
               primaryAction={commanderState.nextAction.label}
+              onCommandAction={() => {
+                setRoomTransition(undefined);
+                setRoomArrival(undefined);
+                setActiveRoom('command');
+              }}
             />}
             situationBoard={<SituationBoard input={{
               hqosStatus: formatHqosStatus(startupStatus),
@@ -1151,89 +1156,6 @@ function CommandOverview({
             ))}
           </ul>
         </section>
-        <section className="commander-briefing-panel" aria-label="Commander session debrief">
-          <p className="section-label">Session Debrief</p>
-          <h3>{sessionDebrief.summary}</h3>
-          <p className="muted">{sessionDebrief.distinction}</p>
-          <ul className="mission-archive-list">
-            {sessionDebrief.evidence.map((item) => (
-              <li key={item}>
-                <span>{item}</span>
-                <strong>Evidence</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="commander-briefing-panel" aria-label="Commander weekly review">
-          <p className="section-label">Weekly Review</p>
-          <h3>{weeklyReview.summary}</h3>
-          <p className="muted">{weeklyReview.constraints.join(' ')}</p>
-          <ul className="mission-archive-list">
-            {weeklyReview.evidence.map((item) => (
-              <li key={item}>
-                <span>{item}</span>
-                <strong>Evidence</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="commander-briefing-panel" aria-label="Commander monthly review">
-          <p className="section-label">Monthly Review</p>
-          <h3>{monthlyReview.summary}</h3>
-          <p className="muted">{monthlyReview.institutionalNote}</p>
-          <ul className="mission-archive-list">
-            {monthlyReview.evidenceLinks.map((link) => (
-              <li key={link.source}>
-                <span>{link.label}</span>
-                <strong>{link.count}</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="commander-briefing-panel" aria-label="Commander dashboard">
-          <p className="section-label">Commander Dashboard</p>
-          <h3>Briefing, reviews, planning, and objectives</h3>
-          <p className="muted">{commanderDashboard.constraints.join(' ')}</p>
-          <ul className="mission-archive-list">
-            {commanderDashboard.sections.map((section) => (
-              <li key={section.label}>
-                <span>{section.label}</span>
-                <strong>{section.status}</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="commander-briefing-panel" aria-label="Commander mission planning">
-          <p className="section-label">Mission Planning</p>
-          <h3>{missionPlanning.summary}</h3>
-          <p className="muted">{missionPlanning.constraints.join(' ')}</p>
-          <ul className="mission-archive-list">
-            {missionPlanning.standards.map((standard) => (
-              <li key={standard}>
-                <span>{standard}</span>
-                <strong>Standard</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="commander-briefing-panel" aria-label="Commander objectives">
-          <p className="section-label">Objectives</p>
-          <h3>{commanderObjectives.summary}</h3>
-          <p className="muted">{commanderObjectives.constraints.join(' ')}</p>
-          <ul className="mission-archive-list">
-            {commanderObjectives.objectives.length === 0 ? (
-              <li>
-                <span>No active Commander objective</span>
-                <strong>Pending</strong>
-              </li>
-            ) : commanderObjectives.objectives.map((objective) => (
-              <li key={objective.id}>
-                <span>{objective.title}</span>
-                <strong>{objective.status}</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
         <section className="current-objective-panel" aria-label="Current mission summary">
           <p className="section-label">Current Mission</p>
           <h3>{activeMission?.campaign ?? 'No Active Mission'}</h3>
@@ -1245,6 +1167,92 @@ function CommandOverview({
           <h3>{nextAction.label}</h3>
           <p className="muted">{nextAction.description}</p>
         </section>
+        <details className="commander-briefing-archive">
+          <summary>Briefing archive</summary>
+          <section className="commander-briefing-panel" aria-label="Commander session debrief">
+            <p className="section-label">Session Debrief</p>
+            <h3>{sessionDebrief.summary}</h3>
+            <p className="muted">{sessionDebrief.distinction}</p>
+            <ul className="mission-archive-list">
+              {sessionDebrief.evidence.map((item) => (
+                <li key={item}>
+                  <span>{item}</span>
+                  <strong>Evidence</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="commander-briefing-panel" aria-label="Commander weekly review">
+            <p className="section-label">Weekly Review</p>
+            <h3>{weeklyReview.summary}</h3>
+            <p className="muted">{weeklyReview.constraints.join(' ')}</p>
+            <ul className="mission-archive-list">
+              {weeklyReview.evidence.map((item) => (
+                <li key={item}>
+                  <span>{item}</span>
+                  <strong>Evidence</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="commander-briefing-panel" aria-label="Commander monthly review">
+            <p className="section-label">Monthly Review</p>
+            <h3>{monthlyReview.summary}</h3>
+            <p className="muted">{monthlyReview.institutionalNote}</p>
+            <ul className="mission-archive-list">
+              {monthlyReview.evidenceLinks.map((link) => (
+                <li key={link.source}>
+                  <span>{link.label}</span>
+                  <strong>{link.count}</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="commander-briefing-panel" aria-label="Commander dashboard">
+            <p className="section-label">Commander Dashboard</p>
+            <h3>Briefing, reviews, planning, and objectives</h3>
+            <p className="muted">{commanderDashboard.constraints.join(' ')}</p>
+            <ul className="mission-archive-list">
+              {commanderDashboard.sections.map((section) => (
+                <li key={section.label}>
+                  <span>{section.label}</span>
+                  <strong>{section.status}</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="commander-briefing-panel" aria-label="Commander mission planning">
+            <p className="section-label">Mission Planning</p>
+            <h3>{missionPlanning.summary}</h3>
+            <p className="muted">{missionPlanning.constraints.join(' ')}</p>
+            <ul className="mission-archive-list">
+              {missionPlanning.standards.map((standard) => (
+                <li key={standard}>
+                  <span>{standard}</span>
+                  <strong>Standard</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="commander-briefing-panel" aria-label="Commander objectives">
+            <p className="section-label">Objectives</p>
+            <h3>{commanderObjectives.summary}</h3>
+            <p className="muted">{commanderObjectives.constraints.join(' ')}</p>
+            <ul className="mission-archive-list">
+              {commanderObjectives.objectives.length === 0 ? (
+                <li>
+                  <span>No active Commander objective</span>
+                  <strong>Pending</strong>
+                </li>
+              ) : commanderObjectives.objectives.map((objective) => (
+                <li key={objective.id}>
+                  <span>{objective.title}</span>
+                  <strong>{objective.status}</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </details>
         <section className="supporting-information-panel" aria-label="Headquarters supporting information">
           <div>
             <p className="section-label">HQOS</p>

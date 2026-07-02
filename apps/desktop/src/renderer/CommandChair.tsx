@@ -8,6 +8,7 @@ export interface CommandChairProps {
   readonly currentAuthority?: string;
   readonly currentRoom?: string;
   readonly primaryAction?: string;
+  readonly onCommandAction?: (() => void) | undefined;
 }
 
 export function CommandChair({
@@ -16,9 +17,19 @@ export function CommandChair({
   currentAuthority = 'Unassigned',
   currentRoom = 'Command',
   primaryAction = 'Assume Command',
+  onCommandAction,
 }: CommandChairProps = {}) {
   const [localStatus, setLocalStatus] = useState<CommandChairStatus>(status ?? 'unassigned');
   const currentStatus = status ?? localStatus;
+
+  function handleCommandAction() {
+    if (onCommandAction) {
+      onCommandAction();
+      return;
+    }
+
+    setLocalStatus(toggleCommandChairStatus(currentStatus));
+  }
 
   return (
     <section className="command-chair" aria-label="Command Chair" data-command-chair-status={currentStatus}>
@@ -45,7 +56,7 @@ export function CommandChair({
           <dd>{primaryAction}</dd>
         </div>
       </dl>
-      <button className="secondary-action" type="button" onClick={() => setLocalStatus(toggleCommandChairStatus(currentStatus))}>
+      <button className="secondary-action" type="button" onClick={handleCommandAction}>
         {currentStatus === 'unassigned' ? primaryAction : 'Release Command'}
       </button>
     </section>

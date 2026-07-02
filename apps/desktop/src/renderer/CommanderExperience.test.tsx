@@ -21,6 +21,9 @@ describe('CommanderExperience', () => {
     expect(html).toContain('aria-label="Persistent Commander shell"');
     expect(html).toContain('data-current-room="journal"');
     expect(html).toContain('Create Mission');
+    expect(html).toContain('Commander transmission channel');
+    expect(html).toContain('Transmit to Commander');
+    expect(html).toContain('Direct transmission');
     expect(html).toContain('Commander message thread');
     expect(html).toContain('Commander memory surface');
   });
@@ -90,6 +93,7 @@ describe('CommanderExperience', () => {
     />);
 
     expect(html).toContain('aria-label="Commander atmosphere deck"');
+    expect(html).toContain('Commander overview');
     expect(html).toContain('Command Chair Presence');
     expect(html).toContain('Situation Board Presence');
   });
