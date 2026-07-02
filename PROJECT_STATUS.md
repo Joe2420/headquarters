@@ -2,6 +2,8 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0142 - Commander Shell Architecture
+
 - HQ-TASK-0141 - Headquarters Experience Principles
 
 - HQ-TASK-0007 — SQLite Connection Layer MVP
@@ -138,7 +140,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 13 Experience Foundation is in progress through HQ-TASK-0141.
+Current milestone gate: Sprint 13 Experience Foundation is in progress through HQ-TASK-0142.
 
 ## Post-Sprint UX Alignment
 
@@ -163,7 +165,8 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 13 Experience Foundation is in progress through HQ-TASK-0141.
+Sprint 13 Experience Foundation is in progress through HQ-TASK-0142.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
 

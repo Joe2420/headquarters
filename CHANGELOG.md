@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0142 - Added Commander shell architecture and renderer shell state foundation.
+
 HQ-TASK-0141 - Defined Headquarters experience principles for Commander-led room operation.
 
 HQ-TASK-0140 - Prepared Headquarters v1.0 Beta handoff package.
@@ -271,4 +273,5 @@ HQ-TASK-0008 — Added archive repository MVP for persisting HQOS event envelope
 HQ-TASK-0007 — Added SQLite connection layer MVP with migration runner foundation.
 
 ARCH-TASK-0001 — Added production journal integration architecture based on real journal exports.
+
 
