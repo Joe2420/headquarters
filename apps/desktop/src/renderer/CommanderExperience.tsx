@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
+import { type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import type { MissionState } from '@headquarters/shared';
 import type { CommanderMessage, CommanderMessageAction } from './CommanderMessage';
 import { createCommanderMessage, isCommanderMessageUrgent, listCommanderMessagesInDisplayOrder } from './CommanderMessage';
@@ -114,6 +114,14 @@ export function CommanderExperiencePanel({
 }) {
   const [draftTransmission, setDraftTransmission] = useState('');
   const [transmissions, setTransmissions] = useState<Array<{ speaker: 'Operator' | 'Commander'; text: string }>>([]);
+  const feedRef = useRef<HTMLOListElement | null>(null);
+
+  useEffect(() => {
+    const feed = feedRef.current;
+    if (!feed) return;
+
+    feed.scrollTop = feed.scrollHeight;
+  }, [state.currentMessage.text, state.commanderQuestion, transmissions]);
 
   async function handleTransmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -141,7 +149,7 @@ export function CommanderExperiencePanel({
             <p className="section-label">Commander</p>
             <span>{state.lifecycleStep}</span>
           </div>
-          <ol className="commander-transmission-feed" aria-label="Commander briefing feed">
+          <ol ref={feedRef} className="commander-transmission-feed" aria-label="Commander briefing feed" aria-live="polite">
             <li className="commander-transmission commander-transmission-incoming">
               <span>Commander</span>
               <p><TransmittedText text={state.currentMessage.text} /></p>
@@ -194,21 +202,15 @@ export function CommanderExperiencePanel({
         </section>
       </div>
 
-      {commandChair || situationBoard ? (
-        <details className="commander-context-drawer">
-          <summary>Commander overview</summary>
-          <div className="commander-atmosphere-deck" aria-label="Commander atmosphere deck">
-            {commandChair}
-            {situationBoard}
-          </div>
-        </details>
-      ) : null}
-
-      {compassSteps ? (
-        <details className="commander-context-drawer">
-          <summary>Mission compass</summary>
-          <MissionCompassPanel steps={compassSteps} />
-        </details>
+      {commandChair || situationBoard || compassSteps ? (
+        <div
+          className={compassSteps ? 'commander-instrument-strip' : 'commander-instrument-strip commander-instrument-strip-compact'}
+          aria-label="Commander instruments"
+        >
+          {commandChair}
+          {compassSteps ? <MissionCompassPanel steps={compassSteps} /> : null}
+          {situationBoard}
+        </div>
       ) : null}
 
       {state.interruption && !state.interruption.acknowledged ? (
@@ -256,13 +258,31 @@ function TransmittedText({ text }: { readonly text: string }) {
   useEffect(() => {
     setVisibleText('');
     let index = 0;
-    const interval = window.setInterval(() => {
+    let timeout: number | undefined;
+
+    const transmitNextCharacter = () => {
       index += 1;
       setVisibleText(text.slice(0, index));
-      if (index >= text.length) window.clearInterval(interval);
-    }, 18);
 
-    return () => window.clearInterval(interval);
+      if (index >= text.length) return;
+
+      const previousCharacter = text[index - 1] ?? '';
+      const delay = previousCharacter === '.' || previousCharacter === '?' || previousCharacter === '!'
+        ? 260
+        : previousCharacter === ',' || previousCharacter === ';'
+          ? 140
+          : index % 17 === 0
+            ? 180
+            : 36;
+
+      timeout = window.setTimeout(transmitNextCharacter, delay);
+    };
+
+    timeout = window.setTimeout(transmitNextCharacter, 180);
+
+    return () => {
+      if (timeout !== undefined) window.clearTimeout(timeout);
+    };
   }, [text]);
 
   return <>{visibleText}</>;

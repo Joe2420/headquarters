@@ -94,8 +94,8 @@ describe('CommanderExperience', () => {
       situationBoard={<section>Situation Board Presence</section>}
     />);
 
-    expect(html).toContain('aria-label="Commander atmosphere deck"');
-    expect(html).toContain('Commander overview');
+    expect(html).toContain('aria-label="Commander instruments"');
+    expect(html).not.toContain('Commander overview');
     expect(html).toContain('Command Chair Presence');
     expect(html).toContain('Situation Board Presence');
   });

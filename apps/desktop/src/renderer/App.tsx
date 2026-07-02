@@ -351,6 +351,7 @@ export function App() {
   const [commanderDisciplineNotes, setCommanderDisciplineNotes] = useState('');
   const [commanderLesson, setCommanderLesson] = useState('');
   const [commanderWorkflowNotice, setCommanderWorkflowNotice] = useState('');
+  const [activeOperationsView, setActiveOperationsView] = useState<'chat' | 'room'>('chat');
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -449,6 +450,7 @@ export function App() {
       setRoomTransition(undefined);
       setRoomArrival(undefined);
       setActiveRoom('missions');
+      setActiveOperationsView('room');
       return;
     }
 
@@ -465,6 +467,7 @@ export function App() {
     setRoomTransition(transition);
     setRoomArrival(getRoomArrival(commanderState.recommendedRoom));
     setActiveRoom(recommendedNavigationTarget);
+    setActiveOperationsView('room');
   }
 
   async function handleCommanderWorkflowContinue(mission: ActiveMission) {
@@ -544,6 +547,7 @@ export function App() {
     setRoomTransition(undefined);
     setRoomArrival(undefined);
     setActiveRoom(room);
+    setActiveOperationsView('room');
   }
 
   async function handleMissionCreated(mission: ActiveMission) {
@@ -704,123 +708,150 @@ export function App() {
         </nav>
 
         <main id="main-content" className="shell-main">
-          <CommanderExperiencePanel
-            state={commanderState}
-            compassSteps={missionCompassSteps}
-            commandChair={<OperationalCommandChair
-              reportState={reportState}
-              currentRoom={currentCommanderRoom}
-              mission={activeMission}
-              primaryAction={commanderState.nextAction.label}
-              onCommandAction={() => {
-                setRoomTransition(undefined);
-                setRoomArrival(undefined);
-                setActiveRoom('command');
-              }}
-            />}
-            situationBoard={<SituationBoard input={{
-              hqosStatus: formatHqosStatus(startupStatus),
-              currentMissionPhase: missionPhaseSummary,
-              recommendedRoom: commanderState.recommendedRoom,
-              guardianStatus,
-              recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
-              recentGrowth: formatRecentGrowthHighlight(growthEvents),
-              intelligenceIndicator: formatJournalCount(buildDesktopIntelligenceEvidenceRecords(buildDesktopJournalClassifications(journalEntries)).length, 'intelligence record', 'intelligence records'),
-            }} />}
-            workflowSurface={<CommanderWorkflowSurface
-              currentRoom={currentCommanderRoom}
-              activeMission={activeMission}
-              authorizationStatus={authorizationStatus}
-              missionDebrief={missionDebrief}
-              notice={commanderWorkflowNotice}
-              operatorJustification={commanderOperatorJustification}
-              invalidation={commanderInvalidation}
-              behaviorSummary={commanderBehaviorSummary}
-              disciplineNotes={commanderDisciplineNotes}
-              lesson={commanderLesson}
-              onOperatorJustificationChange={setCommanderOperatorJustification}
-              onInvalidationChange={setCommanderInvalidation}
-              onBehaviorSummaryChange={setCommanderBehaviorSummary}
-              onDisciplineNotesChange={setCommanderDisciplineNotes}
-              onLessonChange={setCommanderLesson}
-              onCreateMission={handleMissionCreated}
-              reportState={reportState}
-            />}
-            onContinue={handleCommanderContinue}
-            onTransmit={handleCommanderTransmission}
-            onAcknowledgeInterruption={(id) => {
-              if (id.length === 0) return;
-              setAcknowledgedCommanderInterruptions((acknowledged) => (
-                acknowledged.includes(id) ? acknowledged : [...acknowledged, id]
-              ));
-            }}
-          />
-          <AmbientStatusStrip input={{
-            hqos: formatHqosStatus(startupStatus),
-            archive: formatArchiveViewerStatus(archivedMissionSummaries),
-            mission: formatMissionDetailState(activeMission),
-            guardian: guardianStatus,
-            currentRoom: currentRoomLabel,
-          }} />
+          <section className="operations-viewport" aria-label="Operations viewport" data-active-operations-view={activeOperationsView}>
+            <div className="operations-view-tabs" role="tablist" aria-label="Operations view">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeOperationsView === 'chat'}
+                className={activeOperationsView === 'chat' ? 'active' : ''}
+                onClick={() => setActiveOperationsView('chat')}
+              >
+                Commander Chat
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeOperationsView === 'room'}
+                className={activeOperationsView === 'room' ? 'active' : ''}
+                onClick={() => setActiveOperationsView('room')}
+              >
+                Current Room
+              </button>
+            </div>
 
-          <section className="workspace-panel" aria-label="Main content" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
-            <MissionCeremonyMoment ceremony={missionCeremony} />
-            {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
-            {shellPhase === 'security-checkpoint' ? (
-              <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
-            ) : roomArrival ? (
-              <RoomArrivalPanel
-                arrival={roomArrival}
-                onContinue={() => {
-                  setRoomArrival(undefined);
-                  setRoomTransition(undefined);
-                }}
-              />
-            ) : (
-              <details className="room-context-drawer">
-                <summary>Additional room information</summary>
-                {renderHeadquartersRoom(activeRoom, {
-                  activeMission,
-                  archiveWrite,
-                  authorizationStatus,
-                  missionDebrief,
-                  archiveSummary,
-                  archivedMissionSummaries,
-                  missionHistory,
-                  journalEntries,
-                  dailyReflections,
-                  tradeReviews,
-                  growthEvents,
-                  archivedJournalEntries,
-                  doctrineRecords,
-                  doctrineHistory,
-                  onCreateMission: handleMissionCreated,
-                  onMissionChanged: (mission) => {
-                    setActiveMission(getActiveMissionAfterMissionChange(mission));
-                    setMissionHistory((history) => upsertMissionHistory(history, mission));
-                  },
-                  onRequestAuthorization: (authorization) => {
-                    setAuthorizationStatus(authorization);
-                  },
-                  onSaveDebrief: (debrief) => {
-                    setMissionDebrief(debrief);
-                  },
-                  onArchiveMission: (summary) => {
-                    setArchiveSummary(summary);
-                    if (summary) setArchivedMissionSummaries((summaries) => [...summaries, summary]);
-                  },
-                  onCreateJournalEntry: (entry) => setJournalEntries((entries) => [...entries, entry]),
-                  onCreateDailyReflection: (reflection) => setDailyReflections((entries) => [...entries, reflection]),
-                  onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
-                  onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
-                  onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
-                  onPromoteDoctrineCandidate: (record, historyEntry) => {
-                    setDoctrineRecords((records) => [...records, record]);
-                    setDoctrineHistory((entries) => [...entries, historyEntry]);
-                  },
-                })}
-              </details>
-            )}
+            {activeOperationsView === 'chat' ? (
+              <>
+                <CommanderExperiencePanel
+                  state={commanderState}
+                  compassSteps={missionCompassSteps}
+                  commandChair={<OperationalCommandChair
+                    reportState={reportState}
+                    currentRoom={currentCommanderRoom}
+                    mission={activeMission}
+                    primaryAction={commanderState.nextAction.label}
+                    onCommandAction={() => {
+                      setRoomTransition(undefined);
+                      setRoomArrival(undefined);
+                      setActiveRoom('command');
+                      setActiveOperationsView('room');
+                    }}
+                  />}
+                  situationBoard={<SituationBoard input={{
+                    hqosStatus: formatHqosStatus(startupStatus),
+                    currentMissionPhase: missionPhaseSummary,
+                    recommendedRoom: commanderState.recommendedRoom,
+                    guardianStatus,
+                    recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
+                    recentGrowth: formatRecentGrowthHighlight(growthEvents),
+                    intelligenceIndicator: formatJournalCount(buildDesktopIntelligenceEvidenceRecords(buildDesktopJournalClassifications(journalEntries)).length, 'intelligence record', 'intelligence records'),
+                  }} />}
+                  workflowSurface={<CommanderWorkflowSurface
+                    currentRoom={currentCommanderRoom}
+                    activeMission={activeMission}
+                    authorizationStatus={authorizationStatus}
+                    missionDebrief={missionDebrief}
+                    notice={commanderWorkflowNotice}
+                    operatorJustification={commanderOperatorJustification}
+                    invalidation={commanderInvalidation}
+                    behaviorSummary={commanderBehaviorSummary}
+                    disciplineNotes={commanderDisciplineNotes}
+                    lesson={commanderLesson}
+                    onOperatorJustificationChange={setCommanderOperatorJustification}
+                    onInvalidationChange={setCommanderInvalidation}
+                    onBehaviorSummaryChange={setCommanderBehaviorSummary}
+                    onDisciplineNotesChange={setCommanderDisciplineNotes}
+                    onLessonChange={setCommanderLesson}
+                    onCreateMission={handleMissionCreated}
+                    reportState={reportState}
+                  />}
+                  onContinue={handleCommanderContinue}
+                  onTransmit={handleCommanderTransmission}
+                  onAcknowledgeInterruption={(id) => {
+                    if (id.length === 0) return;
+                    setAcknowledgedCommanderInterruptions((acknowledged) => (
+                      acknowledged.includes(id) ? acknowledged : [...acknowledged, id]
+                    ));
+                  }}
+                />
+                <AmbientStatusStrip input={{
+                  hqos: formatHqosStatus(startupStatus),
+                  archive: formatArchiveViewerStatus(archivedMissionSummaries),
+                  mission: formatMissionDetailState(activeMission),
+                  guardian: guardianStatus,
+                  currentRoom: currentRoomLabel,
+                }} />
+              </>
+            ) : null}
+
+            {activeOperationsView === 'room' ? (
+              <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
+                <MissionCeremonyMoment ceremony={missionCeremony} />
+                {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
+                {shellPhase === 'security-checkpoint' ? (
+                  <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
+                ) : roomArrival ? (
+                  <RoomArrivalPanel
+                    arrival={roomArrival}
+                    onContinue={() => {
+                      setRoomArrival(undefined);
+                      setRoomTransition(undefined);
+                    }}
+                  />
+                ) : (
+                  renderHeadquartersRoom(activeRoom, {
+                    activeMission,
+                    archiveWrite,
+                    authorizationStatus,
+                    missionDebrief,
+                    archiveSummary,
+                    archivedMissionSummaries,
+                    missionHistory,
+                    journalEntries,
+                    dailyReflections,
+                    tradeReviews,
+                    growthEvents,
+                    archivedJournalEntries,
+                    doctrineRecords,
+                    doctrineHistory,
+                    onCreateMission: handleMissionCreated,
+                    onMissionChanged: (mission) => {
+                      setActiveMission(getActiveMissionAfterMissionChange(mission));
+                      setMissionHistory((history) => upsertMissionHistory(history, mission));
+                    },
+                    onRequestAuthorization: (authorization) => {
+                      setAuthorizationStatus(authorization);
+                    },
+                    onSaveDebrief: (debrief) => {
+                      setMissionDebrief(debrief);
+                    },
+                    onArchiveMission: (summary) => {
+                      setArchiveSummary(summary);
+                      if (summary) setArchivedMissionSummaries((summaries) => [...summaries, summary]);
+                    },
+                    onCreateJournalEntry: (entry) => setJournalEntries((entries) => [...entries, entry]),
+                    onCreateDailyReflection: (reflection) => setDailyReflections((entries) => [...entries, reflection]),
+                    onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
+                    onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
+                    onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
+                    onPromoteDoctrineCandidate: (record, historyEntry) => {
+                      setDoctrineRecords((records) => [...records, record]);
+                      setDoctrineHistory((entries) => [...entries, historyEntry]);
+                    },
+                  })
+                )}
+              </section>
+            ) : null}
           </section>
 
           <aside className="status-panel" aria-label="Status area" aria-live="polite">

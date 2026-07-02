@@ -114,7 +114,9 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('Headquarters');
     expect(html).toContain('Security Checkpoint');
-    expect(html).toContain('REPORT FOR DUTY');
+    expect(html).toContain('Commander Chat');
+    expect(html).toContain('Current Room');
+    expect(html).toContain('Report for Duty');
     expect(html).toContain('Status');
     expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
@@ -125,7 +127,7 @@ describe('Desktop shell', () => {
   it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {
     const html = renderToStaticMarkup(<App />);
 
-    expect(html).toContain('Commander atmosphere deck');
+    expect(html).toContain('Commander instruments');
     expect(html).toContain('Command Chair');
     expect(html).toContain('Situation Board');
     expect(html).toContain('Ambient Headquarters status');
