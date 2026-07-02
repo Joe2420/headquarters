@@ -334,6 +334,12 @@ export function App() {
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
   const [roomArrival, setRoomArrival] = useState<RoomArrival | undefined>();
+  const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
+  const [commanderInvalidation, setCommanderInvalidation] = useState('');
+  const [commanderBehaviorSummary, setCommanderBehaviorSummary] = useState('');
+  const [commanderDisciplineNotes, setCommanderDisciplineNotes] = useState('');
+  const [commanderLesson, setCommanderLesson] = useState('');
+  const [commanderWorkflowNotice, setCommanderWorkflowNotice] = useState('');
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -423,18 +429,7 @@ export function App() {
     const continueMode = getCommanderContinueMode(activeMission, currentCommanderRoom, commanderState.recommendedRoom);
 
     if (continueMode === 'advance-mission' && activeMission) {
-      const advancedMission = await advanceMissionFromCommanderContinue(activeMission);
-
-      if (advancedMission) {
-        setActiveMission(advancedMission);
-        setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
-        return;
-      }
-    }
-
-    if (continueMode === 'stay-in-room') {
-      setRoomTransition(undefined);
-      setRoomArrival(undefined);
+      await handleCommanderWorkflowContinue(activeMission);
       return;
     }
 
@@ -446,6 +441,79 @@ export function App() {
     setRoomTransition(transition);
     setRoomArrival(getRoomArrival(commanderState.recommendedRoom));
     setActiveRoom(recommendedNavigationTarget);
+  }
+
+  async function handleCommanderWorkflowContinue(mission: ActiveMission) {
+    setRoomTransition(undefined);
+    setRoomArrival(undefined);
+
+    const currentState = parseMissionState(mission.currentState);
+
+    if (currentState === 'authorization') {
+      const authorization = await requestDesktopAuthorization(mission, {
+        operatorJustification: commanderOperatorJustification,
+        invalidation: commanderInvalidation,
+      });
+
+      if (authorization === undefined) {
+        setCommanderWorkflowNotice('Authorization requires justification and invalidation before Commander can continue.');
+        return;
+      }
+
+      setAuthorizationStatus(authorization);
+      setCommanderOperatorJustification('');
+      setCommanderInvalidation('');
+      setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
+
+      if (authorization.decision === 'approved') {
+        const deployedMission = await declareDesktopDeployment(mission);
+        setActiveMission(deployedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+      }
+      return;
+    }
+
+    if (currentState === 'return_to_base') {
+      const result = await saveDesktopDebrief(mission, {
+        behaviorSummary: commanderBehaviorSummary,
+        disciplineNotes: commanderDisciplineNotes,
+        lesson: commanderLesson,
+      });
+
+      if (result === undefined) {
+        setCommanderWorkflowNotice('Debrief requires behavior summary, discipline notes, and lesson before Commander can continue.');
+        return;
+      }
+
+      setMissionDebrief(result.debrief);
+      setActiveMission(result.mission);
+      setMissionHistory((history) => upsertMissionHistory(history, result.mission));
+      setCommanderBehaviorSummary('');
+      setCommanderDisciplineNotes('');
+      setCommanderLesson('');
+      setCommanderWorkflowNotice('Debrief saved. Archive is now the next Commander action.');
+      return;
+    }
+
+    if (currentState === 'debrief') {
+      const archiveSummary = createLocalMissionArchiveSummary(mission, missionDebrief, undefined);
+      const archivedMission = await archiveDesktopMission(mission);
+
+      setArchiveSummary(archiveSummary);
+      if (archiveSummary) setArchivedMissionSummaries((summaries) => [...summaries, archiveSummary]);
+      setActiveMission(archivedMission);
+      setMissionHistory((history) => upsertMissionHistory(history, archivedMission));
+      setCommanderWorkflowNotice('Mission archived.');
+      return;
+    }
+
+    const advancedMission = await advanceMissionFromCommanderContinue(mission);
+
+    if (advancedMission) {
+      setActiveMission(advancedMission);
+      setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
+      setCommanderWorkflowNotice('');
+    }
   }
 
   function handleSidebarNavigation(room: HeadquartersRoomId) {
@@ -501,6 +569,23 @@ export function App() {
           <CommanderExperiencePanel
             state={commanderState}
             compassSteps={missionCompassSteps}
+            workflowSurface={<CommanderWorkflowSurface
+              currentRoom={currentCommanderRoom}
+              activeMission={activeMission}
+              authorizationStatus={authorizationStatus}
+              missionDebrief={missionDebrief}
+              notice={commanderWorkflowNotice}
+              operatorJustification={commanderOperatorJustification}
+              invalidation={commanderInvalidation}
+              behaviorSummary={commanderBehaviorSummary}
+              disciplineNotes={commanderDisciplineNotes}
+              lesson={commanderLesson}
+              onOperatorJustificationChange={setCommanderOperatorJustification}
+              onInvalidationChange={setCommanderInvalidation}
+              onBehaviorSummaryChange={setCommanderBehaviorSummary}
+              onDisciplineNotesChange={setCommanderDisciplineNotes}
+              onLessonChange={setCommanderLesson}
+            />}
             onContinue={handleCommanderContinue}
             onAcknowledgeInterruption={(id) => {
               if (id.length === 0) return;
@@ -635,7 +720,100 @@ function canCommanderContinueAdvanceMission(mission: ActiveMission): boolean {
     || currentState === 'briefing'
     || currentState === 'ready'
     || currentState === 'observation'
+    || currentState === 'authorization'
     || currentState === 'deployed'
+    || currentState === 'return_to_base'
+    || currentState === 'debrief'
+  );
+}
+
+function CommanderWorkflowSurface({
+  activeMission,
+  currentRoom,
+  authorizationStatus,
+  missionDebrief,
+  notice,
+  operatorJustification,
+  invalidation,
+  behaviorSummary,
+  disciplineNotes,
+  lesson,
+  onOperatorJustificationChange,
+  onInvalidationChange,
+  onBehaviorSummaryChange,
+  onDisciplineNotesChange,
+  onLessonChange,
+}: {
+  readonly currentRoom: string;
+  readonly activeMission?: ActiveMission | undefined;
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly missionDebrief?: MissionDebrief | undefined;
+  readonly notice: string;
+  readonly operatorJustification: string;
+  readonly invalidation: string;
+  readonly behaviorSummary: string;
+  readonly disciplineNotes: string;
+  readonly lesson: string;
+  readonly onOperatorJustificationChange: (value: string) => void;
+  readonly onInvalidationChange: (value: string) => void;
+  readonly onBehaviorSummaryChange: (value: string) => void;
+  readonly onDisciplineNotesChange: (value: string) => void;
+  readonly onLessonChange: (value: string) => void;
+}) {
+  const currentState = parseMissionState(activeMission?.currentState);
+
+  return (
+    <>
+      {currentState === 'authorization' && currentRoom === 'war-room' ? (
+        <section className="commander-workflow-card" aria-label="Commander authorization controls">
+          <div>
+            <p className="section-label">Authorization</p>
+            <h3>War Room Authorization</h3>
+            <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+          </div>
+          <label>
+            <span>Operator Justification</span>
+            <input value={operatorJustification} onChange={(event) => onOperatorJustificationChange(event.target.value)} />
+          </label>
+          <label>
+            <span>Invalidation</span>
+            <input value={invalidation} onChange={(event) => onInvalidationChange(event.target.value)} />
+          </label>
+        </section>
+      ) : null}
+
+      {currentState === 'return_to_base' && currentRoom === 'debrief' ? (
+        <section className="commander-workflow-card" aria-label="Commander debrief controls">
+          <div>
+            <p className="section-label">Debrief</p>
+            <h3>Behavior-first Debrief</h3>
+            <p className="muted">{formatDebriefStatus(missionDebrief)}</p>
+          </div>
+          <label>
+            <span>Behavior Summary</span>
+            <input value={behaviorSummary} onChange={(event) => onBehaviorSummaryChange(event.target.value)} />
+          </label>
+          <label>
+            <span>Discipline Notes</span>
+            <input value={disciplineNotes} onChange={(event) => onDisciplineNotesChange(event.target.value)} />
+          </label>
+          <label>
+            <span>Lesson</span>
+            <input value={lesson} onChange={(event) => onLessonChange(event.target.value)} />
+          </label>
+        </section>
+      ) : null}
+
+      {currentState === 'debrief' && currentRoom === 'archive' ? (
+        <section className="commander-workflow-card" aria-label="Commander archive controls">
+          <p className="section-label">Archive</p>
+          <h3>Archive Mission</h3>
+          <p className="muted">Commander will archive the mission record from the top action.</p>
+        </section>
+      ) : null}
+
+      {notice ? <p className="commander-workflow-notice" role="status">{notice}</p> : null}
+    </>
   );
 }
 

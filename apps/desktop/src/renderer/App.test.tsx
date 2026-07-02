@@ -821,7 +821,7 @@ describe('Desktop shell', () => {
     });
   });
 
-  it('keeps Commander Continue inside War Room authorization without skipping a room', async () => {
+  it('routes Commander Continue into War Room before authorization and avoids skipping authorization', async () => {
     const mission: ActiveMission = {
       id: 'mission-authorization',
       campaign: 'Foundation',
@@ -832,7 +832,8 @@ describe('Desktop shell', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
     };
 
-    expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('stay-in-room');
+    expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('navigate-room');
+    expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('advance-mission');
     await expect(advanceMissionFromCommanderContinue(mission)).resolves.toBeUndefined();
   });
 

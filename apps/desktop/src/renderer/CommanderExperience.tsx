@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { MissionState } from '@headquarters/shared';
 import type { CommanderMessage, CommanderMessageAction } from './CommanderMessage';
 import { createCommanderMessage, isCommanderMessageUrgent, listCommanderMessagesInDisplayOrder } from './CommanderMessage';
@@ -93,11 +94,13 @@ export function CommanderExperiencePanel({
   onAcknowledgeInterruption,
   onContinue,
   compassSteps,
+  workflowSurface,
 }: {
   readonly state: CommanderExperienceState;
   readonly onAcknowledgeInterruption?: ((id: string) => void) | undefined;
   readonly onContinue?: (() => void) | undefined;
   readonly compassSteps?: readonly MissionCompassStep[] | undefined;
+  readonly workflowSurface?: ReactNode;
 }) {
   return (
     <section
@@ -128,6 +131,12 @@ export function CommanderExperiencePanel({
           ) : null}
         </div>
       </div>
+
+      {workflowSurface ? (
+        <div className="commander-workflow-surface" aria-label="Commander workflow controls">
+          {workflowSurface}
+        </div>
+      ) : null}
 
       {compassSteps ? <MissionCompassPanel steps={compassSteps} /> : null}
 

@@ -277,6 +277,44 @@ dd {
   font-size: 0.88rem;
 }
 
+.commander-workflow-surface {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.commander-workflow-card {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) repeat(2, minmax(180px, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+  padding: 0.85rem;
+  border: 1px solid #2a333b;
+  background: #0f1215;
+}
+
+.commander-workflow-card label {
+  display: grid;
+  gap: 0.35rem;
+  color: #aab7c1;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.commander-workflow-card input {
+  min-height: 40px;
+  box-sizing: border-box;
+  border: 1px solid #3b4650;
+  background: #0b0d0f;
+  color: #eef3f6;
+  font: inherit;
+  padding: 0 0.75rem;
+}
+
+.commander-workflow-notice {
+  color: #d9e7ff;
+  font-weight: 700;
+}
+
 .mission-compass ol {
   display: grid;
   grid-template-columns: repeat(5, minmax(120px, 1fr));
@@ -912,6 +950,7 @@ dd {
   .commander-shell-primary,
   .commander-message-thread,
   .commander-memory-surface,
+  .commander-workflow-card,
   .mission-compass ol,
   .room-transition-layer ol,
   .room-layout[data-room-identity="historical"] .command-center-panels {

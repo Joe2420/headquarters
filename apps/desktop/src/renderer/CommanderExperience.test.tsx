@@ -54,6 +54,29 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Ready Room active. 3 future rooms locked.');
   });
 
+  it('renders top-level Commander workflow controls above room content', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel
+      state={state}
+      onContinue={() => undefined}
+      workflowSurface={<section aria-label="Commander authorization controls">War Room Authorization</section>}
+    />);
+
+    expect(html).toContain('aria-label="Commander workflow controls"');
+    expect(html).toContain('Commander authorization controls');
+    expect(html).toContain('War Room Authorization');
+  });
+
   it('derives exactly one primary next action for main lifecycle states', () => {
     expect(getCommanderNextAction('not-reported').label).toBe('Report for Duty');
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');
