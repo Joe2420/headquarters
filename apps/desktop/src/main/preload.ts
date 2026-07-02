@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld('headquarters', {
   declareDeployment: (input: unknown) => ipcRenderer.invoke('headquarters:declare-deployment', input),
   requestReturnToBase: (input: unknown) => ipcRenderer.invoke('headquarters:return-to-base', input),
   abortMission: (input: unknown) => ipcRenderer.invoke('headquarters:abort-mission', input),
+  rewindMission: (input: unknown) => ipcRenderer.invoke('headquarters:rewind-mission', input),
   saveDebrief: (input: unknown) => ipcRenderer.invoke('headquarters:save-debrief', input),
   archiveAfterDebrief: (input: unknown) => ipcRenderer.invoke('headquarters:archive-after-debrief', input),
 });

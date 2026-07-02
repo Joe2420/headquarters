@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import type { MissionState } from '@headquarters/shared';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { initializeAppStartup, type AppStartupRuntime } from './startup.js';
@@ -27,6 +28,7 @@ async function createWindow() {
   ipcMain.handle('headquarters:declare-deployment', (_event, input: unknown) => startupRuntime?.declareDeployment(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:return-to-base', (_event, input: unknown) => startupRuntime?.requestReturnToBase(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:abort-mission', (_event, input: unknown) => startupRuntime?.abortMission(parseMissionCommandInput(input)));
+  ipcMain.handle('headquarters:rewind-mission', (_event, input: unknown) => startupRuntime?.rewindMission(parseRewindMissionInput(input)));
   ipcMain.handle('headquarters:save-debrief', (_event, input: unknown) => startupRuntime?.saveDebrief(parseDebriefInput(input)));
   ipcMain.handle('headquarters:archive-after-debrief', (_event, input: unknown) => startupRuntime?.archiveAfterDebrief(parseMissionCommandInput(input)));
 
@@ -111,6 +113,32 @@ function parseMissionCommandInput(input: unknown): { missionId: string; reason?:
     missionId: candidate.missionId,
     ...(typeof candidate.reason === 'string' ? { reason: candidate.reason } : {}),
   };
+}
+
+function parseRewindMissionInput(input: unknown): { missionId: string; targetState: MissionState; reason?: string } {
+  const command = parseMissionCommandInput(input);
+  const candidate = input as { targetState?: unknown };
+
+  if (!isMissionState(candidate.targetState)) {
+    throw new Error('Mission rewind requires a valid targetState.');
+  }
+
+  return {
+    ...command,
+    targetState: candidate.targetState,
+  };
+}
+
+function isMissionState(value: unknown): value is MissionState {
+  return value === 'idle'
+    || value === 'briefing'
+    || value === 'ready'
+    || value === 'observation'
+    || value === 'authorization'
+    || value === 'deployed'
+    || value === 'return_to_base'
+    || value === 'debrief'
+    || value === 'archived';
 }
 
 function parseAuthorizationInput(input: unknown): {

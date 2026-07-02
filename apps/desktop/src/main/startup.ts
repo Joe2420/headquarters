@@ -144,6 +144,7 @@ export interface AppStartupRuntime {
   declareDeployment: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   requestReturnToBase: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   abortMission: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  rewindMission: (input: DesktopMissionCommandInput & { targetState: Mission['state'] }) => Promise<DesktopCreateMissionResult>;
   saveDebrief: (input: DesktopDebriefInput) => Promise<DesktopDebriefResult>;
   archiveAfterDebrief: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   close: () => void;
@@ -274,13 +275,28 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
 
         const abortedMission: Mission = {
           ...mission,
-          state: 'return_to_base',
+          state: 'archived',
           updatedAt: new Date().toISOString(),
         };
         missionRepository.save(abortedMission);
 
         return {
           mission: abortedMission,
+        };
+      },
+      rewindMission: async (input) => {
+        const mission = missionRepository.findById(input.missionId);
+        if (mission === undefined) throw new Error(`Mission ${input.missionId} was not found.`);
+
+        const rewoundMission: Mission = {
+          ...mission,
+          state: input.targetState,
+          updatedAt: new Date().toISOString(),
+        };
+        missionRepository.save(rewoundMission);
+
+        return {
+          mission: rewoundMission,
         };
       },
       saveDebrief: async (input) => {
@@ -364,6 +380,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
         throw new Error('Desktop startup is not ready for mission lifecycle.');
       },
       abortMission: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
+      rewindMission: async () => {
         throw new Error('Desktop startup is not ready for mission lifecycle.');
       },
       saveDebrief: async () => {

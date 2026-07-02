@@ -216,8 +216,9 @@ describe('Desktop shell', () => {
     expect(observationHtml).toContain('Observe quietly and collect evidence.');
     expect(observationHtml).not.toContain('Evaluate Authorization');
     expect(warHtml).toContain('Evaluate Authorization');
+    expect(warHtml).toContain('Mission next action');
     expect(debriefHtml).toContain('Behavior Sequence');
-    expect(debriefHtml).not.toContain('Mission next action');
+    expect(debriefHtml).toContain('Mission next action');
   });
 
   it('renders Archive as a chronological guided dossier instead of a dashboard surface', () => {

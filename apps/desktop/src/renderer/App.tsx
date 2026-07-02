@@ -80,6 +80,7 @@ import {
   isContinueTransmission,
   mapNavigationRoomToCommanderRoom,
 } from './CommanderExperience';
+import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
   advanceRoomTransition,
@@ -320,6 +321,7 @@ declare global {
       declareDeployment?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       requestReturnToBase?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       abortMission?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      rewindMission?: (input: { missionId: string; targetState: MissionState; reason?: string }) => Promise<{ mission: Mission }>;
       saveDebrief?: (input: MissionDebriefDraft & { missionId: string }) => Promise<{ mission: Mission; debrief: MissionDebrief }>;
       archiveAfterDebrief?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
     };
@@ -399,7 +401,7 @@ export function App() {
 
     const timeout = window.setTimeout(() => {
       setRoomTransition(undefined);
-    }, 1100);
+    }, 6800);
 
     return () => window.clearTimeout(timeout);
   }, [roomTransition]);
@@ -503,12 +505,7 @@ export function App() {
       return;
     }
 
-    let transition = createRoomTransition(currentCommanderRoom, commanderState.recommendedRoom);
-    transition = advanceRoomTransition(transition);
-    transition = advanceRoomTransition(transition);
-    transition = advanceRoomTransition(transition);
-    transition = advanceRoomTransition(transition);
-    setRoomTransition(transition);
+    setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, commanderState.recommendedRoom));
     setActiveRoom(recommendedNavigationTarget);
     setActiveOperationsView('room');
   }
@@ -586,7 +583,12 @@ export function App() {
   }
 
   function handleSidebarNavigation(room: HeadquartersRoomId) {
-    setRoomTransition(undefined);
+    const targetRoom = mapNavigationRoomToCommanderRoom(room);
+    if (room !== activeRoom) {
+      setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, targetRoom));
+    } else {
+      setRoomTransition(undefined);
+    }
     setActiveRoom(room);
     setActiveOperationsView('room');
   }
@@ -607,9 +609,29 @@ export function App() {
     if (activeMission === undefined) return;
 
     const abortedMission = await abortDesktopMission(activeMission);
-    setActiveMission(abortedMission);
+    const archiveSummary = createAbortArchiveSummary(abortedMission);
+    setArchiveSummary(archiveSummary);
+    setArchivedMissionSummaries((summaries) => upsertArchiveSummaries(summaries, archiveSummary));
+    setActiveMission(getActiveMissionAfterMissionChange(abortedMission));
     setMissionHistory((history) => upsertMissionHistory(history, abortedMission));
-    setCommanderWorkflowNotice('Mission aborted. Return to base and complete debrief.');
+    setMissionDebrief(undefined);
+    setAuthorizationStatus(undefined);
+    setCommanderWorkflowNotice('Mission aborted and closed. You can create a new mission when ready.');
+    setActiveOperationsView('chat');
+  }
+
+  async function handleRewindMission() {
+    if (activeMission === undefined) return;
+
+    const rewoundMission = await rewindDesktopMission(activeMission);
+    if (rewoundMission === undefined) {
+      setCommanderWorkflowNotice('No previous lifecycle step is available.');
+      return;
+    }
+
+    setActiveMission(rewoundMission);
+    setMissionHistory((history) => upsertMissionHistory(history, rewoundMission));
+    setCommanderWorkflowNotice(`Lifecycle moved back to ${formatMissionStateForDisplay(parseMissionState(rewoundMission.currentState) ?? 'idle')}.`);
     setActiveOperationsView('chat');
   }
 
@@ -630,16 +652,20 @@ export function App() {
       const draft = parseMissionCreationTransmission(message);
 
       if (draft && !shouldContinue) {
-        if (draft.codename) setCommanderMissionCodename(draft.codename);
-        if (draft.objective) setCommanderMissionObjective(draft.objective);
+        const nextDraft = fillMissionDraftFromTransmission({
+          currentCodename: commanderMissionCodename,
+          currentObjective: commanderMissionObjective,
+          draft,
+          message,
+        });
 
-        const codename = draft.codename || commanderMissionCodename;
-        const objective = draft.objective || commanderMissionObjective;
+        setCommanderMissionCodename(nextDraft.codename);
+        setCommanderMissionObjective(nextDraft.objective);
 
-        if (!codename) return 'Codename field is empty. Transmit the mission codename only.';
-        if (!objective) return `Codename set to ${codename}. Now transmit the mission objective.`;
+        if (!nextDraft.codename) return 'Codename field is empty. Transmit the mission codename only.';
+        if (!nextDraft.objective) return `Codename set to ${nextDraft.codename}. Now transmit the mission objective.`;
 
-        const mission = await createDesktopMission({ codename, objective });
+        const mission = await createDesktopMission(nextDraft);
         if (mission) {
           await handleMissionCreated(mission);
           return `Mission file opened: ${mission.campaign}. Briefing phase is active.`;
@@ -668,10 +694,15 @@ export function App() {
 
     if (currentState === 'authorization') {
       const authorizationDraft = parseAuthorizationTransmission(message);
-      const nextJustification = authorizationDraft.operatorJustification
-        || (!commanderOperatorJustification ? message.trim() : commanderOperatorJustification);
-      const nextInvalidation = authorizationDraft.invalidation
-        || (commanderOperatorJustification && !commanderInvalidation && !authorizationDraft.operatorJustification ? message.trim() : commanderInvalidation);
+      const nextDraft = fillAuthorizationDraftFromTransmission({
+        currentJustification: commanderOperatorJustification,
+        currentInvalidation: commanderInvalidation,
+        draft: authorizationDraft,
+        message,
+        shouldContinue,
+      });
+      const nextJustification = nextDraft.operatorJustification;
+      const nextInvalidation = nextDraft.invalidation;
 
       if (nextJustification) setCommanderOperatorJustification(nextJustification);
       if (nextInvalidation) setCommanderInvalidation(nextInvalidation);
@@ -708,12 +739,17 @@ export function App() {
 
     if (currentState === 'return_to_base') {
       const debriefDraft = parseDebriefTransmission(message);
-      const nextBehavior = debriefDraft.behaviorSummary
-        || (!commanderBehaviorSummary ? message.trim() : commanderBehaviorSummary);
-      const nextDiscipline = debriefDraft.disciplineNotes
-        || (commanderBehaviorSummary && !commanderDisciplineNotes && !debriefDraft.behaviorSummary ? message.trim() : commanderDisciplineNotes);
-      const nextLesson = debriefDraft.lesson
-        || (commanderBehaviorSummary && commanderDisciplineNotes && !commanderLesson && !debriefDraft.behaviorSummary && !debriefDraft.disciplineNotes ? message.trim() : commanderLesson);
+      const nextDraft = fillDebriefDraftFromTransmission({
+        currentBehavior: commanderBehaviorSummary,
+        currentDiscipline: commanderDisciplineNotes,
+        currentLesson: commanderLesson,
+        draft: debriefDraft,
+        message,
+        shouldContinue,
+      });
+      const nextBehavior = nextDraft.behaviorSummary;
+      const nextDiscipline = nextDraft.disciplineNotes;
+      const nextLesson = nextDraft.lesson;
 
       if (nextBehavior) setCommanderBehaviorSummary(nextBehavior);
       if (nextDiscipline) setCommanderDisciplineNotes(nextDiscipline);
@@ -820,6 +856,17 @@ export function App() {
                 Current Room
               </button>
             </div>
+            {activeMission && parseMissionState(activeMission.currentState) !== 'archived' ? (
+              <div className="mission-emergency-controls" aria-label="Mission emergency controls">
+                <button className="secondary-action mission-rewind-action" type="button" onClick={handleRewindMission}>
+                  Back One Step
+                </button>
+                <button className="secondary-action mission-abort-action" type="button" onClick={handleAbortMission}>
+                  <span className="mission-abort-skull" aria-hidden="true">☠</span>
+                  Abort Mission
+                </button>
+              </div>
+            ) : null}
 
             {activeOperationsView === 'chat' ? (
               <>
@@ -867,7 +914,6 @@ export function App() {
                     onDisciplineNotesChange={setCommanderDisciplineNotes}
                     onLessonChange={setCommanderLesson}
                     onCreateMission={handleMissionCreated}
-                    onAbortMission={handleAbortMission}
                     reportState={reportState}
                   />}
                   onContinue={handleCommanderContinue}
@@ -1053,7 +1099,6 @@ function CommanderWorkflowSurface({
   onDisciplineNotesChange,
   onLessonChange,
   onCreateMission,
-  onAbortMission,
   reportState,
 }: {
   readonly currentRoom: string;
@@ -1076,7 +1121,6 @@ function CommanderWorkflowSurface({
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
   readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
-  readonly onAbortMission: () => void | Promise<void>;
   readonly reportState: 'not-reported' | 'reported';
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
@@ -1149,11 +1193,6 @@ function CommanderWorkflowSurface({
       ) : null}
 
       {notice ? <p className="commander-workflow-notice" role="status">{notice}</p> : null}
-      {activeMission && currentState !== 'archived' ? (
-        <button className="secondary-action mission-abort-action" type="button" onClick={onAbortMission}>
-          Abort Mission
-        </button>
-      ) : null}
     </>
   );
 }
@@ -1236,6 +1275,11 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
         activeMission={context.activeMission}
         authorizationStatus={context.authorizationStatus}
         missionHistory={context.missionHistory}
+        missionDebrief={context.missionDebrief}
+        onMissionChanged={context.onMissionChanged}
+        onRequestAuthorization={context.onRequestAuthorization}
+        onSaveDebrief={context.onSaveDebrief}
+        onArchiveMission={context.onArchiveMission}
       />
     );
   }
@@ -1705,11 +1749,21 @@ export function ObservationRoom({
 export function WarRoom({
   activeMission,
   authorizationStatus,
+  missionDebrief,
   missionHistory,
+  onMissionChanged,
+  onRequestAuthorization,
+  onSaveDebrief,
+  onArchiveMission,
 }: {
   activeMission?: ActiveMission | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
+  missionDebrief?: MissionDebrief | undefined;
   missionHistory: ActiveMission[];
+  onMissionChanged?: ((mission: ActiveMission) => void) | undefined;
+  onRequestAuthorization?: ((authorization: MissionAuthorizationStatus) => void) | undefined;
+  onSaveDebrief?: ((debrief: MissionDebrief) => void) | undefined;
+  onArchiveMission?: ((summary: LocalMissionArchiveSummary | undefined) => void) | undefined;
 }) {
   const alerts = buildDesktopGuardianAlerts();
   const lockout = buildDesktopGuardianLockoutState();
@@ -1726,7 +1780,20 @@ export function WarRoom({
       objective="Evaluate authorization without exposing unrelated workflows. Headquarters never places trades."
       primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
       workspace={(
-        <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
+        <>
+          <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
+          {parseMissionState(activeMission?.currentState) === 'authorization' ? (
+            <MissionNextActionPanel
+              activeMission={activeMission}
+              authorizationStatus={authorizationStatus}
+              missionDebrief={missionDebrief}
+              onMissionChanged={onMissionChanged}
+              onRequestAuthorization={onRequestAuthorization}
+              onSaveDebrief={onSaveDebrief}
+              onArchiveMission={onArchiveMission}
+            />
+          ) : null}
+        </>
       )}
       timeline={(
         <section className="journal-panel" aria-label="War table projection">
@@ -1758,6 +1825,10 @@ export function DebriefTheater({
   authorizationStatus,
   missionDebrief,
   archiveSummary,
+  onMissionChanged,
+  onRequestAuthorization,
+  onSaveDebrief,
+  onArchiveMission,
 }: MissionTimelineViewerPanelProps & Pick<CommandCenterProps,
   'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
 >) {
@@ -1778,19 +1849,32 @@ export function DebriefTheater({
       objective="Capture behavior summary, discipline notes, and one lesson before closing the mission."
       primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
       workspace={(
-        <section className="journal-panel" aria-label="Black box viewer">
-          <p className="section-label">Black Box Viewer</p>
-          <h3>Behavior Sequence</h3>
-          <p className="muted">{formatTimelineViewerStatus(entries)}</p>
-          <dl>
-            <dt>Behavior Summary</dt>
-            <dd>{missionDebrief?.behaviorSummary ?? 'Awaiting Commander debrief input'}</dd>
-            <dt>Reflection</dt>
-            <dd>{missionDebrief?.disciplineNotes ?? 'Discipline notes come second'}</dd>
-            <dt>Lessons</dt>
-            <dd>{missionDebrief?.lesson ?? 'Lesson comes before archive'}</dd>
-          </dl>
-        </section>
+        <>
+          <section className="journal-panel" aria-label="Black box viewer">
+            <p className="section-label">Black Box Viewer</p>
+            <h3>Behavior Sequence</h3>
+            <p className="muted">{formatTimelineViewerStatus(entries)}</p>
+            <dl>
+              <dt>Behavior Summary</dt>
+              <dd>{missionDebrief?.behaviorSummary ?? 'Awaiting Commander debrief input'}</dd>
+              <dt>Reflection</dt>
+              <dd>{missionDebrief?.disciplineNotes ?? 'Discipline notes come second'}</dd>
+              <dt>Lessons</dt>
+              <dd>{missionDebrief?.lesson ?? 'Lesson comes before archive'}</dd>
+            </dl>
+          </section>
+          {parseMissionState(activeMission?.currentState) === 'return_to_base' || parseMissionState(activeMission?.currentState) === 'debrief' ? (
+            <MissionNextActionPanel
+              activeMission={activeMission}
+              authorizationStatus={authorizationStatus}
+              missionDebrief={missionDebrief}
+              onMissionChanged={onMissionChanged}
+              onRequestAuthorization={onRequestAuthorization}
+              onSaveDebrief={onSaveDebrief}
+              onArchiveMission={onArchiveMission}
+            />
+          ) : null}
+        </>
       )}
       timeline={<MissionTimelineViewerPanel
         activeMission={activeMission}
@@ -2546,9 +2630,29 @@ export async function requestDesktopReturnToBase(mission: ActiveMission): Promis
 
 export async function abortDesktopMission(mission: ActiveMission): Promise<ActiveMission> {
   const bridge = globalThis.window?.headquarters?.abortMission;
-  if (bridge === undefined) return transitionLocalMission(mission, 'return_to_base');
+  if (bridge === undefined) return transitionLocalMission(mission, 'archived');
 
   const result = await bridge({ missionId: mission.id, reason: 'Mission aborted by operator from Commander.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function rewindDesktopMission(mission: ActiveMission): Promise<ActiveMission | undefined> {
+  const currentState = parseMissionState(mission.currentState);
+  if (currentState === undefined) return undefined;
+
+  const currentIndex = missionLifecyclePath.indexOf(currentState);
+  if (currentIndex <= 0) return undefined;
+
+  const targetState = missionLifecyclePath[currentIndex - 1];
+  if (targetState === undefined) return undefined;
+  const bridge = globalThis.window?.headquarters?.rewindMission;
+  if (bridge === undefined) return transitionLocalMission(mission, targetState);
+
+  const result = await bridge({
+    missionId: mission.id,
+    targetState,
+    reason: 'Mission lifecycle stepped back by operator from Commander.',
+  });
   return mapMissionRecordToActiveMission(result.mission);
 }
 
@@ -4399,6 +4503,18 @@ export function createLocalMissionArchiveSummary(
   };
 }
 
+export function createAbortArchiveSummary(
+  mission: ActiveMission,
+  options: { archivedAt?: string } = {},
+): LocalMissionArchiveSummary {
+  return {
+    missionId: mission.id,
+    codename: mission.campaign,
+    archivedAt: options.archivedAt ?? new Date().toISOString(),
+    eventCount: 1,
+  };
+}
+
 export function createArchiveWritePlaceholder(
   mission: ActiveMission,
   options: { id?: string; createdAt?: string } = {},
@@ -4571,6 +4687,17 @@ export function upsertMissionHistory(history: ActiveMission[], mission: ActiveMi
   return history.map((candidate, index) => (index === existingIndex ? mission : candidate));
 }
 
+export function upsertArchiveSummaries(
+  summaries: LocalMissionArchiveSummary[],
+  summary: LocalMissionArchiveSummary,
+): LocalMissionArchiveSummary[] {
+  const existingIndex = summaries.findIndex((candidate) => candidate.missionId === summary.missionId);
+
+  if (existingIndex === -1) return [...summaries, summary];
+
+  return summaries.map((candidate, index) => (index === existingIndex ? summary : candidate));
+}
+
 export function upsertJournalEntries(entries: JournalEntry[], entry: JournalEntry): JournalEntry[] {
   const existingIndex = entries.findIndex((candidate) => candidate.id === entry.id);
 
@@ -4663,8 +4790,33 @@ function parseMissionCreationTransmission(message: string): MissionDraft | undef
     };
   }
 
+  return message.trim().length > 0 ? { codename: '', objective: '' } : undefined;
+}
+
+function fillMissionDraftFromTransmission({
+  currentCodename,
+  currentObjective,
+  draft,
+  message,
+}: {
+  readonly currentCodename: string;
+  readonly currentObjective: string;
+  readonly draft: MissionDraft;
+  readonly message: string;
+}): MissionDraft {
   const singleValue = message.trim();
-  return singleValue.length > 0 ? { codename: singleValue, objective: '' } : undefined;
+  let codename = draft.codename || currentCodename;
+  let objective = draft.objective || currentObjective;
+
+  if (!draft.codename && !draft.objective && singleValue) {
+    if (!codename) {
+      codename = singleValue;
+    } else if (!objective) {
+      objective = singleValue;
+    }
+  }
+
+  return { codename, objective };
 }
 
 function isReportForDutyTransmission(message: string): boolean {
@@ -4683,12 +4835,73 @@ function parseAuthorizationTransmission(message: string): MissionAuthorizationDr
   };
 }
 
+function fillAuthorizationDraftFromTransmission({
+  currentJustification,
+  currentInvalidation,
+  draft,
+  message,
+  shouldContinue,
+}: {
+  readonly currentJustification: string;
+  readonly currentInvalidation: string;
+  readonly draft: MissionAuthorizationDraft;
+  readonly message: string;
+  readonly shouldContinue: boolean;
+}): MissionAuthorizationDraft {
+  const singleValue = shouldContinue ? '' : message.trim();
+  let operatorJustification = draft.operatorJustification || currentJustification;
+  let invalidation = draft.invalidation || currentInvalidation;
+
+  if (!draft.operatorJustification && !draft.invalidation && singleValue) {
+    if (!operatorJustification) {
+      operatorJustification = singleValue;
+    } else if (!invalidation) {
+      invalidation = singleValue;
+    }
+  }
+
+  return { operatorJustification, invalidation };
+}
+
 function parseDebriefTransmission(message: string): MissionDebriefDraft {
   return {
     behaviorSummary: extractTransmissionField(message, ['behavior', 'behavior summary']) ?? '',
     disciplineNotes: extractTransmissionField(message, ['discipline', 'discipline notes']) ?? '',
     lesson: extractTransmissionField(message, ['lesson', 'lessons']) ?? '',
   };
+}
+
+function fillDebriefDraftFromTransmission({
+  currentBehavior,
+  currentDiscipline,
+  currentLesson,
+  draft,
+  message,
+  shouldContinue,
+}: {
+  readonly currentBehavior: string;
+  readonly currentDiscipline: string;
+  readonly currentLesson: string;
+  readonly draft: MissionDebriefDraft;
+  readonly message: string;
+  readonly shouldContinue: boolean;
+}): MissionDebriefDraft {
+  const singleValue = shouldContinue ? '' : message.trim();
+  let behaviorSummary = draft.behaviorSummary || currentBehavior;
+  let disciplineNotes = draft.disciplineNotes || currentDiscipline;
+  let lesson = draft.lesson || currentLesson;
+
+  if (!draft.behaviorSummary && !draft.disciplineNotes && !draft.lesson && singleValue) {
+    if (!behaviorSummary) {
+      behaviorSummary = singleValue;
+    } else if (!disciplineNotes) {
+      disciplineNotes = singleValue;
+    } else if (!lesson) {
+      lesson = singleValue;
+    }
+  }
+
+  return { behaviorSummary, disciplineNotes, lesson };
 }
 
 function extractTransmissionField(message: string, labels: readonly string[]): string | undefined {
@@ -4707,6 +4920,13 @@ function extractTransmissionField(message: string, labels: readonly string[]): s
   }
 
   return undefined;
+}
+
+function createDoorOpeningTransition(fromRoom: CommanderShellRoomId, toRoom: CommanderShellRoomId): RoomTransitionState {
+  let transition = createRoomTransition(fromRoom, toRoom);
+  transition = advanceRoomTransition(transition);
+  transition = advanceRoomTransition(transition);
+  return advanceRoomTransition(transition);
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {

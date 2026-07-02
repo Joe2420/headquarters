@@ -114,7 +114,12 @@ export function CommanderExperiencePanel({
 }) {
   const [draftTransmission, setDraftTransmission] = useState('');
   const [transmissions, setTransmissions] = useState<Array<{ speaker: 'Operator' | 'Commander'; text: string }>>([]);
+  const [introStep, setIntroStep] = useState(() => (typeof window === 'undefined' ? 2 : 0));
   const feedRef = useRef<HTMLOListElement | null>(null);
+
+  useEffect(() => {
+    setIntroStep(typeof window === 'undefined' ? 2 : 0);
+  }, [state.currentMessage.text, state.commanderQuestion]);
 
   useEffect(() => {
     const feed = feedRef.current;
@@ -152,12 +157,14 @@ export function CommanderExperiencePanel({
           <ol ref={feedRef} className="commander-transmission-feed" aria-label="Commander briefing feed" aria-live="polite">
             <li className="commander-transmission commander-transmission-incoming">
               <span>Commander</span>
-              <p><TransmittedText text={state.currentMessage.text} /></p>
+              <p><TransmittedText text={state.currentMessage.text} onComplete={() => setIntroStep((step) => Math.max(step, 1))} /></p>
             </li>
-            <li className="commander-transmission commander-transmission-incoming commander-transmission-question">
-              <span>Commander</span>
-              <p><TransmittedText text={state.commanderQuestion} startDelayMs={getTransmissionStartDelay(state.currentMessage.text)} /></p>
-            </li>
+            {introStep >= 1 ? (
+              <li className="commander-transmission commander-transmission-incoming commander-transmission-question">
+                <span>Commander</span>
+                <p><TransmittedText text={state.commanderQuestion} onComplete={() => setIntroStep((step) => Math.max(step, 2))} /></p>
+              </li>
+            ) : null}
             {transmissions.map((transmission, index) => (
               <li
                 key={`${transmission.speaker}-${transmission.text}-${index}`}
@@ -171,9 +178,11 @@ export function CommanderExperiencePanel({
             ))}
           </ol>
           <div className="commander-next-action" aria-label="Commander next action">
-            <p className="section-label">Primary Action</p>
-            <strong>{state.nextAction.label}</strong>
-            <span>{state.nextAction.description}</span>
+            <div className="commander-lifecycle-status">
+              <p className="section-label">Lifecycle</p>
+              <strong>{state.lifecycleStep}</strong>
+              <span>{state.nextAction.description}</span>
+            </div>
             {onContinue ? (
               <button
                 type="button"
@@ -186,11 +195,6 @@ export function CommanderExperiencePanel({
               </button>
             ) : null}
           </div>
-          {workflowSurface ? (
-            <div className="commander-workflow-surface" aria-label="Commander workflow controls">
-              {workflowSurface}
-            </div>
-          ) : null}
           <form className="commander-transmission-input" aria-label="Transmit to Commander" onSubmit={handleTransmit}>
             <input
               value={draftTransmission}
@@ -199,6 +203,11 @@ export function CommanderExperiencePanel({
             />
             <button className="secondary-action" type="submit">Transmit</button>
           </form>
+          {workflowSurface ? (
+            <div className="commander-workflow-surface" aria-label="Commander workflow controls">
+              {workflowSurface}
+            </div>
+          ) : null}
         </section>
       </div>
 
@@ -252,19 +261,48 @@ export function CommanderExperiencePanel({
   );
 }
 
-function TransmittedText({ text, startDelayMs = 180 }: { readonly text: string; readonly startDelayMs?: number }) {
+function TransmittedText({
+  text,
+  startDelayMs = 240,
+  onComplete,
+}: {
+  readonly text: string;
+  readonly startDelayMs?: number;
+  readonly onComplete?: (() => void) | undefined;
+}) {
   const [visibleText, setVisibleText] = useState(() => (typeof window === 'undefined' ? text : ''));
+  const completedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     setVisibleText('');
+    completedRef.current = false;
     let index = 0;
     let timeout: number | undefined;
+
+    const complete = () => {
+      if (completedRef.current) return;
+      completedRef.current = true;
+      onCompleteRef.current?.();
+    };
+
+    if (text.length === 0) {
+      complete();
+      return undefined;
+    }
 
     const transmitNextCharacter = () => {
       index += 1;
       setVisibleText(text.slice(0, index));
 
-      if (index >= text.length) return;
+      if (index >= text.length) {
+        complete();
+        return;
+      }
 
       const previousCharacter = text[index - 1] ?? '';
       const delay = previousCharacter === '.' || previousCharacter === '?' || previousCharacter === '!'
@@ -286,10 +324,6 @@ function TransmittedText({ text, startDelayMs = 180 }: { readonly text: string; 
   }, [startDelayMs, text]);
 
   return <>{visibleText}</>;
-}
-
-function getTransmissionStartDelay(text: string): number {
-  return Math.min(2600, Math.max(640, text.length * 42));
 }
 
 function getTransmissionAcknowledgement(message: string): string {
