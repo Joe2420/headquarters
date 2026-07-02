@@ -501,7 +501,7 @@ export function App() {
 
       setArchiveSummary(archiveSummary);
       if (archiveSummary) setArchivedMissionSummaries((summaries) => [...summaries, archiveSummary]);
-      setActiveMission(archivedMission);
+      setActiveMission(getActiveMissionAfterMissionChange(archivedMission));
       setMissionHistory((history) => upsertMissionHistory(history, archivedMission));
       setCommanderWorkflowNotice('Mission archived.');
       return;
@@ -630,9 +630,10 @@ export function App() {
                   setAuthorizationStatus(undefined);
                   setMissionDebrief(undefined);
                   setArchiveSummary(undefined);
+                  setCommanderWorkflowNotice('');
                 },
                 onMissionChanged: (mission) => {
-                  setActiveMission(mission);
+                  setActiveMission(getActiveMissionAfterMissionChange(mission));
                   setMissionHistory((history) => upsertMissionHistory(history, mission));
                 },
                 onRequestAuthorization: (authorization) => {
@@ -711,6 +712,11 @@ export async function advanceMissionFromCommanderContinue(mission: ActiveMission
   if (currentState === 'deployed') return requestDesktopReturnToBase(mission);
 
   return undefined;
+}
+
+export function getActiveMissionAfterMissionChange(mission: ActiveMission): ActiveMission | undefined {
+  if (parseMissionState(mission.currentState) === 'archived') return undefined;
+  return mission;
 }
 
 function canCommanderContinueAdvanceMission(mission: ActiveMission): boolean {

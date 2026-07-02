@@ -38,6 +38,7 @@ import {
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
+  getActiveMissionAfterMissionChange,
   getCommanderContinueMode,
   createArchiveWritePlaceholder,
   createDesktopMission,
@@ -835,6 +836,28 @@ describe('Desktop shell', () => {
     expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('navigate-room');
     expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('advance-mission');
     await expect(advanceMissionFromCommanderContinue(mission)).resolves.toBeUndefined();
+  });
+
+  it('clears the active mission after archive so a new mission can be created', () => {
+    const archivedMission: ActiveMission = {
+      id: 'mission-archived',
+      campaign: 'Foundation',
+      objective: 'Finish cleanly',
+      condition: 'Archived',
+      commandAuthority: 'Operator',
+      currentState: 'archived',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    expect(getActiveMissionAfterMissionChange(archivedMission)).toBeUndefined();
+    expect(getActiveMissionAfterMissionChange({
+      ...archivedMission,
+      condition: 'Debrief',
+      currentState: 'debrief',
+    })).toMatchObject({
+      id: 'mission-archived',
+      currentState: 'debrief',
+    });
   });
 
   it('updates Commander guidance from mission lifecycle state', () => {
