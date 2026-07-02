@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0144 - Added room state machine foundation for mission room recommendations.
+
 HQ-TASK-0143 - Added deterministic Commander message model foundation.
 
 HQ-TASK-0142 - Added Commander shell architecture and renderer shell state foundation.
@@ -275,6 +277,7 @@ HQ-TASK-0008 — Added archive repository MVP for persisting HQOS event envelope
 HQ-TASK-0007 — Added SQLite connection layer MVP with migration runner foundation.
 
 ARCH-TASK-0001 — Added production journal integration architecture based on real journal exports.
+
 
 
 
