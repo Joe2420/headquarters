@@ -40,7 +40,7 @@ describe('CommandChair', () => {
       <CommandChair status="occupied" onCommandAction={() => undefined} />,
     );
 
-    expect(html).toContain('Release Command');
+    expect(html).toContain('Open Command Room');
     expect(html).toContain('data-command-chair-status="occupied"');
   });
 

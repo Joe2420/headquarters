@@ -181,15 +181,7 @@ export function RoomTransitionLayer({ transition }: { readonly transition: RoomT
       data-transition-to={transition.toRoom}
       data-transition-phase={transition.phase}
     >
-      <p className="section-label">Door Transition</p>
-      <h2>{getRoomTransitionNarration(transition.phase)}</h2>
-      <ol>
-        {(['commander', 'closing', 'transitioning', 'opening', 'arrival'] as const).map((phase) => (
-          <li key={phase} data-transition-step={phase} data-transition-active={phase === transition.phase}>
-            {getRoomTransitionNarration(phase)}
-          </li>
-        ))}
-      </ol>
+      <span>{getRoomTransitionNarration(transition.phase)}</span>
     </section>
   );
 }

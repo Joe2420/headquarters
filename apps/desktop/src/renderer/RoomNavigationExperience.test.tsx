@@ -71,7 +71,7 @@ describe('RoomNavigationExperience', () => {
 
     expect(transitionHtml).toContain('aria-label="Room transition"');
     expect(transitionHtml).toContain('data-transition-to="observation"');
-    expect(transitionHtml).toContain('Door opens.');
+    expect(transitionHtml).toContain('Arrival confirmed.');
     expect(arrivalHtml).toContain('aria-label="Observation arrival"');
     expect(arrivalHtml).toContain('Observe only. Silence is the work.');
     expect(arrivalHtml).toContain('Continue');

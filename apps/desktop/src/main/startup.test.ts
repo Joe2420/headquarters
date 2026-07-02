@@ -47,11 +47,12 @@ describe('App startup wiring', () => {
         '005_mission_debriefs',
         '006_doctrine_records',
         '007_doctrine_history',
+        '008_journal_entries',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
       expect(firstStartup.status.performance).toEqual({
         durationMs: 125,
-        migrationCount: 7,
+        migrationCount: 8,
         budgetMs: 3000,
         status: 'within-budget',
       });
@@ -72,6 +73,7 @@ describe('App startup wiring', () => {
         '005_mission_debriefs',
         '006_doctrine_records',
         '007_doctrine_history',
+        '008_journal_entries',
       ]);
     } finally {
       secondStartup.close();
@@ -128,6 +130,28 @@ describe('App startup wiring', () => {
       expect(events.map((event) => event.type)).toContain('mission.created');
     } finally {
       database.close();
+    }
+  });
+
+  it('loads persisted missions and saves journal entries through startup-owned repositories', async () => {
+    const startup = initializeAppStartup({ dbPath: createTempDatabasePath(), migrationsDirectory });
+
+    try {
+      const mission = await startup.createMission({
+        codename: 'Archive Check',
+        objective: 'Confirm persisted mission list',
+      });
+      const journal = await startup.createJournalEntry({
+        content: 'Followed plan and protected capital.',
+        entryDate: '2026-07-02',
+        mood: 'Calm',
+        marketConditions: 'Range day',
+      });
+
+      await expect(startup.listMissions()).resolves.toEqual({ missions: [mission.mission] });
+      await expect(startup.listJournalEntries()).resolves.toEqual({ entries: [journal.entry] });
+    } finally {
+      startup.close();
     }
   });
 

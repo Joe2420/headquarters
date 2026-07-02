@@ -103,7 +103,7 @@ describe('CommanderExperience', () => {
   it('derives exactly one primary next action for main lifecycle states', () => {
     expect(getCommanderNextAction('not-reported').label).toBe('Report for Duty');
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');
-    expect(getCommanderNextAction('reported', 'briefing').label).toBe('Enter Ready Room');
+    expect(getCommanderNextAction('reported', 'briefing').label).toBe('Complete Briefing');
     expect(getCommanderNextAction('reported', 'observation').label).toBe('Begin Observation');
     expect(getCommanderNextAction('reported', 'authorization').label).toBe('Proceed to War Room');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
@@ -197,7 +197,7 @@ describe('CommanderExperience', () => {
 
   it('generates room transition messages from mission lifecycle state', () => {
     expect(getCommanderRoomTransitionText(undefined)).toBe('Create Mission.');
-    expect(getCommanderRoomTransitionText('briefing')).toBe('Proceed to Ready Room.');
+    expect(getCommanderRoomTransitionText('briefing')).toBe('Briefing active. Confirm readiness before the Ready Room.');
     expect(getCommanderRoomTransitionText('observation')).toBe('Observation begins. Remain silent.');
     expect(getCommanderRoomTransitionText('authorization')).toBe('War Room unlocked. Authorization required.');
     expect(getCommanderRoomTransitionText('return_to_base')).toBe('Debrief Theater ready.');

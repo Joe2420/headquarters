@@ -69,6 +69,7 @@ import {
   type DailyReflection,
   type GrowthEvent,
   type JournalEntry,
+  type JournalEntryDraft,
   type JournalTimeline,
   type TradeReview,
 } from '@headquarters/journal';
@@ -80,15 +81,12 @@ import {
   mapNavigationRoomToCommanderRoom,
 } from './CommanderExperience';
 import {
-  RoomArrivalPanel,
   RoomTransitionLayer,
   advanceRoomTransition,
   buildMissionCompassSteps,
   createRoomTransition,
-  getRoomArrival,
   mapCommanderRoomToNavigationTarget,
   parseMissionNavigationState,
-  type RoomArrival,
   type RoomTransitionState,
 } from './RoomNavigationExperience';
 import {
@@ -311,6 +309,9 @@ declare global {
         historyEntry: DoctrineHistoryEntry;
       }>;
       createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
+      listMissions?: () => Promise<{ missions: Mission[] }>;
+      listJournalEntries?: () => Promise<{ entries: JournalEntry[] }>;
+      createJournalEntry?: (input: JournalEntryDraft) => Promise<{ entry: JournalEntry }>;
       startBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       completeBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       startObservation?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
@@ -318,6 +319,7 @@ declare global {
       requestAuthorization?: (input: MissionAuthorizationDraft & { missionId: string }) => Promise<MissionAuthorizationStatus & { mission: Mission }>;
       declareDeployment?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       requestReturnToBase?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
+      abortMission?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
       saveDebrief?: (input: MissionDebriefDraft & { missionId: string }) => Promise<{ mission: Mission; debrief: MissionDebrief }>;
       archiveAfterDebrief?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
     };
@@ -344,12 +346,13 @@ export function App() {
   const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
-  const [roomArrival, setRoomArrival] = useState<RoomArrival | undefined>();
   const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
   const [commanderInvalidation, setCommanderInvalidation] = useState('');
   const [commanderBehaviorSummary, setCommanderBehaviorSummary] = useState('');
   const [commanderDisciplineNotes, setCommanderDisciplineNotes] = useState('');
   const [commanderLesson, setCommanderLesson] = useState('');
+  const [commanderMissionCodename, setCommanderMissionCodename] = useState('');
+  const [commanderMissionObjective, setCommanderMissionObjective] = useState('');
   const [commanderWorkflowNotice, setCommanderWorkflowNotice] = useState('');
   const [activeOperationsView, setActiveOperationsView] = useState<'chat' | 'room'>('chat');
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
@@ -384,6 +387,48 @@ export function App() {
           },
           error: error instanceof Error ? error.message : 'Unable to read startup status',
         });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!roomTransition) return undefined;
+
+    const timeout = window.setTimeout(() => {
+      setRoomTransition(undefined);
+    }, 1100);
+
+    return () => window.clearTimeout(timeout);
+  }, [roomTransition]);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.all([
+      globalThis.window?.headquarters?.listMissions?.(),
+      globalThis.window?.headquarters?.listJournalEntries?.(),
+    ])
+      .then(([missionResult, journalResult]) => {
+        if (!active) return;
+
+        if (missionResult) {
+          const loadedMissions = missionResult.missions.map(mapMissionRecordToActiveMission);
+          setMissionHistory(loadedMissions);
+          setActiveMission(getLatestActiveMission(loadedMissions));
+          setArchivedMissionSummaries(buildArchivedMissionSummariesFromMissions(loadedMissions));
+        }
+
+        if (journalResult) {
+          setJournalEntries(journalResult.entries);
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        setMissionHistory([]);
+        setJournalEntries([]);
       });
 
     return () => {
@@ -448,7 +493,6 @@ export function App() {
 
     if (activeMission === undefined && currentCommanderRoom === 'command') {
       setRoomTransition(undefined);
-      setRoomArrival(undefined);
       setActiveRoom('missions');
       setActiveOperationsView('room');
       return;
@@ -465,14 +509,12 @@ export function App() {
     transition = advanceRoomTransition(transition);
     transition = advanceRoomTransition(transition);
     setRoomTransition(transition);
-    setRoomArrival(getRoomArrival(commanderState.recommendedRoom));
     setActiveRoom(recommendedNavigationTarget);
     setActiveOperationsView('room');
   }
 
   async function handleCommanderWorkflowContinue(mission: ActiveMission) {
     setRoomTransition(undefined);
-    setRoomArrival(undefined);
 
     const currentState = parseMissionState(mission.currentState);
 
@@ -545,7 +587,6 @@ export function App() {
 
   function handleSidebarNavigation(room: HeadquartersRoomId) {
     setRoomTransition(undefined);
-    setRoomArrival(undefined);
     setActiveRoom(room);
     setActiveOperationsView('room');
   }
@@ -557,7 +598,19 @@ export function App() {
     setAuthorizationStatus(undefined);
     setMissionDebrief(undefined);
     setArchiveSummary(undefined);
+    setCommanderMissionCodename('');
+    setCommanderMissionObjective('');
     setCommanderWorkflowNotice('');
+  }
+
+  async function handleAbortMission() {
+    if (activeMission === undefined) return;
+
+    const abortedMission = await abortDesktopMission(activeMission);
+    setActiveMission(abortedMission);
+    setMissionHistory((history) => upsertMissionHistory(history, abortedMission));
+    setCommanderWorkflowNotice('Mission aborted. Return to base and complete debrief.');
+    setActiveOperationsView('chat');
   }
 
   async function handleCommanderTransmission(message: string): Promise<string> {
@@ -577,30 +630,56 @@ export function App() {
       const draft = parseMissionCreationTransmission(message);
 
       if (draft && !shouldContinue) {
-        const mission = await createDesktopMission(draft);
+        if (draft.codename) setCommanderMissionCodename(draft.codename);
+        if (draft.objective) setCommanderMissionObjective(draft.objective);
+
+        const codename = draft.codename || commanderMissionCodename;
+        const objective = draft.objective || commanderMissionObjective;
+
+        if (!codename) return 'Codename field is empty. Transmit the mission codename only.';
+        if (!objective) return `Codename set to ${codename}. Now transmit the mission objective.`;
+
+        const mission = await createDesktopMission({ codename, objective });
         if (mission) {
           await handleMissionCreated(mission);
-          return `Mission file opened: ${mission.campaign}. Commander will move you into briefing.`;
+          return `Mission file opened: ${mission.campaign}. Briefing phase is active.`;
         }
       }
 
       if (shouldContinue) {
-        await handleCommanderContinue();
-        return 'Proceeding to mission creation controls.';
+        if (!commanderMissionCodename) return 'Codename field is empty. Transmit the mission codename first.';
+        if (!commanderMissionObjective) return 'Objective field is empty. Transmit the mission objective next.';
+
+        const mission = await createDesktopMission({
+          codename: commanderMissionCodename,
+          objective: commanderMissionObjective,
+        });
+
+        if (mission) {
+          await handleMissionCreated(mission);
+          return `Mission file opened: ${mission.campaign}. Briefing phase is active.`;
+        }
       }
 
-      return 'Mission creation card is active. Transmit codename and objective, or use the fields below.';
+      return commanderMissionCodename
+        ? 'Codename is set. Transmit the mission objective next.'
+        : 'Mission creation card is active. Transmit the mission codename first.';
     }
 
     if (currentState === 'authorization') {
       const authorizationDraft = parseAuthorizationTransmission(message);
-      if (authorizationDraft.operatorJustification) setCommanderOperatorJustification(authorizationDraft.operatorJustification);
-      if (authorizationDraft.invalidation) setCommanderInvalidation(authorizationDraft.invalidation);
+      const nextJustification = authorizationDraft.operatorJustification
+        || (!commanderOperatorJustification ? message.trim() : commanderOperatorJustification);
+      const nextInvalidation = authorizationDraft.invalidation
+        || (commanderOperatorJustification && !commanderInvalidation && !authorizationDraft.operatorJustification ? message.trim() : commanderInvalidation);
+
+      if (nextJustification) setCommanderOperatorJustification(nextJustification);
+      if (nextInvalidation) setCommanderInvalidation(nextInvalidation);
 
       if (shouldContinue) {
         const authorization = await requestDesktopAuthorization(activeMission, {
-          operatorJustification: authorizationDraft.operatorJustification || commanderOperatorJustification,
-          invalidation: authorizationDraft.invalidation || commanderInvalidation,
+          operatorJustification: nextJustification,
+          invalidation: nextInvalidation,
         });
 
         if (authorization === undefined) {
@@ -622,20 +701,29 @@ export function App() {
         return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
       }
 
-      return 'Authorization card updated. Commander needs justification and invalidation before proceeding.';
+      if (!nextJustification) return 'Authorization needs operator justification first.';
+      if (!nextInvalidation) return 'Justification set. Now transmit the invalidation condition.';
+      return 'Authorization card updated. Use Continue when ready to evaluate.';
     }
 
     if (currentState === 'return_to_base') {
       const debriefDraft = parseDebriefTransmission(message);
-      if (debriefDraft.behaviorSummary) setCommanderBehaviorSummary(debriefDraft.behaviorSummary);
-      if (debriefDraft.disciplineNotes) setCommanderDisciplineNotes(debriefDraft.disciplineNotes);
-      if (debriefDraft.lesson) setCommanderLesson(debriefDraft.lesson);
+      const nextBehavior = debriefDraft.behaviorSummary
+        || (!commanderBehaviorSummary ? message.trim() : commanderBehaviorSummary);
+      const nextDiscipline = debriefDraft.disciplineNotes
+        || (commanderBehaviorSummary && !commanderDisciplineNotes && !debriefDraft.behaviorSummary ? message.trim() : commanderDisciplineNotes);
+      const nextLesson = debriefDraft.lesson
+        || (commanderBehaviorSummary && commanderDisciplineNotes && !commanderLesson && !debriefDraft.behaviorSummary && !debriefDraft.disciplineNotes ? message.trim() : commanderLesson);
+
+      if (nextBehavior) setCommanderBehaviorSummary(nextBehavior);
+      if (nextDiscipline) setCommanderDisciplineNotes(nextDiscipline);
+      if (nextLesson) setCommanderLesson(nextLesson);
 
       if (shouldContinue) {
         const result = await saveDesktopDebrief(activeMission, {
-          behaviorSummary: debriefDraft.behaviorSummary || commanderBehaviorSummary,
-          disciplineNotes: debriefDraft.disciplineNotes || commanderDisciplineNotes,
-          lesson: debriefDraft.lesson || commanderLesson,
+          behaviorSummary: nextBehavior,
+          disciplineNotes: nextDiscipline,
+          lesson: nextLesson,
         });
 
         if (result === undefined) {
@@ -653,7 +741,10 @@ export function App() {
         return 'Debrief saved. Archive is now the next Commander action.';
       }
 
-      return 'Debrief card updated. Commander needs behavior, discipline, and lesson before archive.';
+      if (!nextBehavior) return 'Debrief needs the behavior summary first.';
+      if (!nextDiscipline) return 'Behavior summary set. Now transmit discipline notes.';
+      if (!nextLesson) return 'Discipline notes set. Now transmit the lesson.';
+      return 'Debrief card updated. Use Continue when ready to save.';
     }
 
     if (shouldContinue) {
@@ -742,7 +833,6 @@ export function App() {
                     primaryAction={commanderState.nextAction.label}
                     onCommandAction={() => {
                       setRoomTransition(undefined);
-                      setRoomArrival(undefined);
                       setActiveRoom('command');
                       setActiveOperationsView('room');
                     }}
@@ -762,17 +852,22 @@ export function App() {
                     authorizationStatus={authorizationStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
+                    missionCodename={commanderMissionCodename}
+                    missionObjective={commanderMissionObjective}
                     operatorJustification={commanderOperatorJustification}
                     invalidation={commanderInvalidation}
                     behaviorSummary={commanderBehaviorSummary}
                     disciplineNotes={commanderDisciplineNotes}
                     lesson={commanderLesson}
+                    onMissionCodenameChange={setCommanderMissionCodename}
+                    onMissionObjectiveChange={setCommanderMissionObjective}
                     onOperatorJustificationChange={setCommanderOperatorJustification}
                     onInvalidationChange={setCommanderInvalidation}
                     onBehaviorSummaryChange={setCommanderBehaviorSummary}
                     onDisciplineNotesChange={setCommanderDisciplineNotes}
                     onLessonChange={setCommanderLesson}
                     onCreateMission={handleMissionCreated}
+                    onAbortMission={handleAbortMission}
                     reportState={reportState}
                   />}
                   onContinue={handleCommanderContinue}
@@ -800,14 +895,6 @@ export function App() {
                 {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
-                ) : roomArrival ? (
-                  <RoomArrivalPanel
-                    arrival={roomArrival}
-                    onContinue={() => {
-                      setRoomArrival(undefined);
-                      setRoomTransition(undefined);
-                    }}
-                  />
                 ) : (
                   renderHeadquartersRoom(activeRoom, {
                     activeMission,
@@ -839,7 +926,7 @@ export function App() {
                       setArchiveSummary(summary);
                       if (summary) setArchivedMissionSummaries((summaries) => [...summaries, summary]);
                     },
-                    onCreateJournalEntry: (entry) => setJournalEntries((entries) => [...entries, entry]),
+                  onCreateJournalEntry: (entry) => setJournalEntries((entries) => upsertJournalEntries(entries, entry)),
                     onCreateDailyReflection: (reflection) => setDailyReflections((entries) => [...entries, reflection]),
                     onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
                     onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
@@ -891,9 +978,9 @@ export function getCommanderContinueMode(
   currentRoom: string,
   recommendedRoom: string,
 ): CommanderContinueMode {
-  if (currentRoom !== recommendedRoom) return 'navigate-room';
   if (mission === undefined) return 'navigate-room';
   if (canCommanderContinueAdvanceMission(mission)) return 'advance-mission';
+  if (currentRoom !== recommendedRoom) return 'navigate-room';
   return 'stay-in-room';
 }
 
@@ -912,6 +999,23 @@ export async function advanceMissionFromCommanderContinue(mission: ActiveMission
 export function getActiveMissionAfterMissionChange(mission: ActiveMission): ActiveMission | undefined {
   if (parseMissionState(mission.currentState) === 'archived') return undefined;
   return mission;
+}
+
+export function getLatestActiveMission(missions: readonly ActiveMission[]): ActiveMission | undefined {
+  return [...missions]
+    .reverse()
+    .find((mission) => parseMissionState(mission.currentState) !== 'archived');
+}
+
+export function buildArchivedMissionSummariesFromMissions(missions: readonly ActiveMission[]): LocalMissionArchiveSummary[] {
+  return missions
+    .filter((mission) => parseMissionState(mission.currentState) === 'archived')
+    .map((mission) => ({
+      missionId: mission.id,
+      codename: mission.campaign,
+      archivedAt: mission.createdAt,
+      eventCount: 1,
+    }));
 }
 
 function canCommanderContinueAdvanceMission(mission: ActiveMission): boolean {
@@ -934,17 +1038,22 @@ function CommanderWorkflowSurface({
   authorizationStatus,
   missionDebrief,
   notice,
+  missionCodename,
+  missionObjective,
   operatorJustification,
   invalidation,
   behaviorSummary,
   disciplineNotes,
   lesson,
+  onMissionCodenameChange,
+  onMissionObjectiveChange,
   onOperatorJustificationChange,
   onInvalidationChange,
   onBehaviorSummaryChange,
   onDisciplineNotesChange,
   onLessonChange,
   onCreateMission,
+  onAbortMission,
   reportState,
 }: {
   readonly currentRoom: string;
@@ -952,17 +1061,22 @@ function CommanderWorkflowSurface({
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
+  readonly missionCodename: string;
+  readonly missionObjective: string;
   readonly operatorJustification: string;
   readonly invalidation: string;
   readonly behaviorSummary: string;
   readonly disciplineNotes: string;
   readonly lesson: string;
+  readonly onMissionCodenameChange: (value: string) => void;
+  readonly onMissionObjectiveChange: (value: string) => void;
   readonly onOperatorJustificationChange: (value: string) => void;
   readonly onInvalidationChange: (value: string) => void;
   readonly onBehaviorSummaryChange: (value: string) => void;
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
   readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
+  readonly onAbortMission: () => void | Promise<void>;
   readonly reportState: 'not-reported' | 'reported';
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
@@ -976,7 +1090,13 @@ function CommanderWorkflowSurface({
             <h3>Open Mission File</h3>
             <p className="muted">Commander needs a codename and objective before lifecycle rooms unlock.</p>
           </div>
-          <CreateMissionPanel onCreateMission={onCreateMission} />
+          <CreateMissionPanel
+            codename={missionCodename}
+            objective={missionObjective}
+            onCodenameChange={onMissionCodenameChange}
+            onObjectiveChange={onMissionObjectiveChange}
+            onCreateMission={onCreateMission}
+          />
         </section>
       ) : null}
 
@@ -1029,6 +1149,11 @@ function CommanderWorkflowSurface({
       ) : null}
 
       {notice ? <p className="commander-workflow-notice" role="status">{notice}</p> : null}
+      {activeMission && currentState !== 'archived' ? (
+        <button className="secondary-action mission-abort-action" type="button" onClick={onAbortMission}>
+          Abort Mission
+        </button>
+      ) : null}
     </>
   );
 }
@@ -1471,12 +1596,12 @@ export function ReadyRoom({
       identity="preparation"
       atmosphere="ready"
       title="Ready Room"
-      commander="Prepare the mission before observation begins."
+      useCase="Brief and prepare before observation."
       objective={activeMission?.objective ?? 'Create a mission before entering preparation.'}
       primaryAction={<strong>{nextAction.buttonLabel === 'Start Observation' ? 'Begin Observation' : nextAction.label}</strong>}
       workspace={(
         <section className="journal-panel" aria-label="Readiness report">
-          <p className="section-label">ReadinessReport</p>
+          <p className="section-label">Readiness Report</p>
           <h3>{nextAction.label}</h3>
           <p className="muted">{nextAction.description}</p>
           <dl>
@@ -1489,7 +1614,7 @@ export function ReadyRoom({
       )}
       timeline={(
         <section className="journal-panel" aria-label="Daily orders card">
-          <p className="section-label">DailyOrdersCard</p>
+          <p className="section-label">Daily Orders</p>
           <h3>{activeMission?.campaign ?? 'No active orders'}</h3>
           <p className="muted">{activeMission?.objective ?? 'Create a mission before moving into observation.'}</p>
         </section>
@@ -1497,12 +1622,12 @@ export function ReadyRoom({
       secondaryTools={(
         <>
           <section className="journal-panel" aria-label="Oath panel">
-          <p className="section-label">OathPanel</p>
+          <p className="section-label">Command Oath</p>
           <h3>Command Oath</h3>
           <p className="muted">{activeMission?.commandAuthority ?? 'Command authority is assigned when a mission exists.'}</p>
           </section>
           <section className="journal-panel" aria-label="Locker panel">
-            <p className="section-label">LockerPanel</p>
+            <p className="section-label">Operator Locker</p>
             <h3>Operator Locker</h3>
             <dl>
               <dt>Missions Recorded</dt>
@@ -1538,12 +1663,12 @@ export function ObservationRoom({
       identity="silence"
       atmosphere="observation"
       title="Observation Room"
-      commander="Observe without participating. Future decisions stay outside this room."
+      useCase="Observe quietly and collect evidence."
       objective="Keep charts and notes central until observation is complete."
       primaryAction={<strong>{nextAction.label === 'Complete Observation' ? 'Complete Observation' : 'Observe'}</strong>}
       workspace={(
         <section className="journal-panel" aria-label="Observation timer">
-          <p className="section-label">ObservationTimer</p>
+          <p className="section-label">Observation Timer</p>
           <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
           <p className="muted">{formatTimelineViewerStatus(entries)}</p>
         </section>
@@ -1557,17 +1682,17 @@ export function ObservationRoom({
       secondaryTools={(
         <>
           <section className="journal-panel" aria-label="Compass indicator">
-          <p className="section-label">CompassIndicator</p>
+          <p className="section-label">Compass Indicator</p>
           <h3>{nextAction.label}</h3>
           <p className="muted">{nextAction.description}</p>
           </section>
           <section className="journal-panel" aria-label="Artificial horizon">
-            <p className="section-label">ArtificialHorizon</p>
+            <p className="section-label">Artificial Horizon</p>
             <h3>{currentState === 'observation' ? 'Level' : 'Calm'}</h3>
             <p className="muted">Operator stability is represented as a quiet status, not a trading signal.</p>
           </section>
           <section className="journal-panel" aria-label="Silence state display">
-            <p className="section-label">SilenceStateDisplay</p>
+            <p className="section-label">Silence State</p>
             <h3>No Broker Control</h3>
             <p className="muted">Headquarters observes and records. It does not place trades.</p>
           </section>
@@ -1597,7 +1722,7 @@ export function WarRoom({
       identity="decision"
       atmosphere="war"
       title="War Room"
-      commander={authorizationDenied ? 'Authorization denied. Complete the missing evidence before proceeding.' : 'Make one decision from the authorized evidence.'}
+      useCase={authorizationDenied ? 'Repair missing authorization evidence.' : 'Decide from authorized evidence only.'}
       objective="Evaluate authorization without exposing unrelated workflows. Headquarters never places trades."
       primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
       workspace={(
@@ -1605,7 +1730,7 @@ export function WarRoom({
       )}
       timeline={(
         <section className="journal-panel" aria-label="War table projection">
-            <p className="section-label">WarTableProjection</p>
+            <p className="section-label">War Table Projection</p>
             <h3>{activeMission?.campaign ?? 'No active mission'}</h3>
             <p className="muted">{activeMission?.objective ?? 'Create and prepare a mission before authorization.'}</p>
           </section>
@@ -1613,12 +1738,12 @@ export function WarRoom({
       secondaryTools={(
         <>
           <section className="journal-panel" aria-label="Guardian status panel">
-            <p className="section-label">GuardianStatusPanel</p>
+            <p className="section-label">Guardian Status</p>
             <h3>{lockout.status === 'locked' ? 'Intervention Required' : 'Guardian Standing By'}</h3>
             <p className="muted">{formatJournalCount(alerts.length, 'Guardian alert', 'Guardian alerts')}</p>
           </section>
           <section className="journal-panel" aria-label="Ghost comparison panel">
-            <p className="section-label">GhostComparisonPanel</p>
+            <p className="section-label">Ghost Comparison</p>
             <h3>{comparisonMission?.campaign ?? 'No comparison mission'}</h3>
             <p className="muted">Comparison remains read-only until replay and ghost workflows are approved.</p>
           </section>
@@ -1649,12 +1774,12 @@ export function DebriefTheater({
       identity="reflection"
       atmosphere="debrief"
       title="Debrief Theater"
-      commander="Begin with behavior. Reflection comes before archive."
+      useCase="Debrief behavior before archive."
       objective="Capture behavior summary, discipline notes, and one lesson before closing the mission."
       primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
       workspace={(
-        <section className="journal-panel" aria-label="BlackBoxViewer">
-          <p className="section-label">BlackBoxViewer</p>
+        <section className="journal-panel" aria-label="Black box viewer">
+          <p className="section-label">Black Box Viewer</p>
           <h3>Behavior Sequence</h3>
           <p className="muted">{formatTimelineViewerStatus(entries)}</p>
           <dl>
@@ -1675,8 +1800,8 @@ export function DebriefTheater({
       />}
       secondaryTools={(
         <>
-          <section className="journal-panel" aria-label="DecisionReportPanel">
-            <p className="section-label">DecisionReportPanel</p>
+          <section className="journal-panel" aria-label="Decision report">
+            <p className="section-label">Decision Report</p>
             <h3>{authorizationStatus?.decision === 'approved' ? 'Authorized' : 'Decision Pending'}</h3>
             <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
           </section>
@@ -2255,12 +2380,24 @@ function MissionAuthorizationPanel({
 }
 
 interface CreateMissionPanelProps {
+  codename?: string | undefined;
+  objective?: string | undefined;
+  onCodenameChange?: ((value: string) => void) | undefined;
+  onObjectiveChange?: ((value: string) => void) | undefined;
   onCreateMission?: ((mission: ActiveMission) => void | Promise<void>) | undefined;
 }
 
-function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
-  const [codename, setCodename] = useState('');
-  const [objective, setObjective] = useState('');
+function CreateMissionPanel({
+  codename: controlledCodename,
+  objective: controlledObjective,
+  onCodenameChange,
+  onObjectiveChange,
+  onCreateMission,
+}: CreateMissionPanelProps) {
+  const [localCodename, setLocalCodename] = useState('');
+  const [localObjective, setLocalObjective] = useState('');
+  const codename = controlledCodename ?? localCodename;
+  const objective = controlledObjective ?? localObjective;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -2269,8 +2406,10 @@ function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
     if (!mission) return;
 
     await onCreateMission?.(mission);
-    setCodename('');
-    setObjective('');
+    if (onCodenameChange) onCodenameChange('');
+    else setLocalCodename('');
+    if (onObjectiveChange) onObjectiveChange('');
+    else setLocalObjective('');
   }
 
   return (
@@ -2281,11 +2420,23 @@ function CreateMissionPanel({ onCreateMission }: CreateMissionPanelProps) {
       </div>
       <label>
         <span>Mission Codename</span>
-        <input value={codename} onChange={(event) => setCodename(event.target.value)} />
+        <input
+          value={codename}
+          onChange={(event) => {
+            if (onCodenameChange) onCodenameChange(event.target.value);
+            else setLocalCodename(event.target.value);
+          }}
+        />
       </label>
       <label>
         <span>Mission Objective</span>
-        <input value={objective} onChange={(event) => setObjective(event.target.value)} />
+        <input
+          value={objective}
+          onChange={(event) => {
+            if (onObjectiveChange) onObjectiveChange(event.target.value);
+            else setLocalObjective(event.target.value);
+          }}
+        />
       </label>
       <button className="secondary-action" type="submit">
         Create Mission
@@ -2310,6 +2461,19 @@ export async function createDesktopMission(draft: MissionDraft): Promise<ActiveM
 
   const result = await createMission({ codename, objective });
   return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function createDesktopJournalEntry(draft: JournalEntryDraft): Promise<JournalEntry | undefined> {
+  const content = draft.content.trim();
+  const entryDate = draft.entryDate.trim();
+
+  if (!content || !entryDate) return undefined;
+
+  const createEntry = globalThis.window?.headquarters?.createJournalEntry;
+  if (createEntry === undefined) return createJournalEntry(draft);
+
+  const result = await createEntry(draft);
+  return result.entry;
 }
 
 export async function startDesktopBriefing(mission: ActiveMission): Promise<ActiveMission> {
@@ -2377,6 +2541,14 @@ export async function requestDesktopReturnToBase(mission: ActiveMission): Promis
   if (bridge === undefined) return transitionLocalMission(mission, 'return_to_base');
 
   const result = await bridge({ missionId: mission.id, reason: 'Return to base requested from desktop.' });
+  return mapMissionRecordToActiveMission(result.mission);
+}
+
+export async function abortDesktopMission(mission: ActiveMission): Promise<ActiveMission> {
+  const bridge = globalThis.window?.headquarters?.abortMission;
+  if (bridge === undefined) return transitionLocalMission(mission, 'return_to_base');
+
+  const result = await bridge({ missionId: mission.id, reason: 'Mission aborted by operator from Commander.' });
   return mapMissionRecordToActiveMission(result.mission);
 }
 
@@ -2572,9 +2744,9 @@ export function JournalRoom({
   const searchResult = searchJournalEntries(journalEntries, { text: searchText });
   const activeStep = getJournalWorkflowSteps().find((step) => step.id === activeJournalStep);
 
-  function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const entry = createJournalEntry({
+    const entry = await createDesktopJournalEntry({
       content: entryContent,
       entryDate: getTodayDate(),
       mood: entryMood,
@@ -3324,7 +3496,7 @@ export function ArchiveRoom({
       identity="historical"
       atmosphere="archive"
       title="Archive Room"
-      commander="Read the record chronologically. Do not edit the past."
+      useCase="Read records chronologically without editing the past."
       objective={latestMissionSummary ? `${latestMissionSummary.codename} preserved as institutional memory.` : 'Historical records will appear after mission archive.'}
       primaryAction={<strong>{formatArchiveViewerStatus(archivedMissionSummaries)}</strong>}
       workspace={(
@@ -4399,6 +4571,14 @@ export function upsertMissionHistory(history: ActiveMission[], mission: ActiveMi
   return history.map((candidate, index) => (index === existingIndex ? mission : candidate));
 }
 
+export function upsertJournalEntries(entries: JournalEntry[], entry: JournalEntry): JournalEntry[] {
+  const existingIndex = entries.findIndex((candidate) => candidate.id === entry.id);
+
+  if (existingIndex === -1) return [...entries, entry];
+
+  return entries.map((candidate, index) => (index === existingIndex ? entry : candidate));
+}
+
 export function formatMissionHistoryStatus(history: ActiveMission[]): string {
   if (history.length === 0) return 'No mission history';
   if (history.length === 1) return '1 mission recorded';
@@ -4483,7 +4663,8 @@ function parseMissionCreationTransmission(message: string): MissionDraft | undef
     };
   }
 
-  return undefined;
+  const singleValue = message.trim();
+  return singleValue.length > 0 ? { codename: singleValue, objective: '' } : undefined;
 }
 
 function isReportForDutyTransmission(message: string): boolean {
@@ -4497,14 +4678,14 @@ function isReportForDutyTransmission(message: string): boolean {
 
 function parseAuthorizationTransmission(message: string): MissionAuthorizationDraft {
   return {
-    operatorJustification: extractTransmissionField(message, ['justification', 'because', 'reason']) ?? message.trim(),
+    operatorJustification: extractTransmissionField(message, ['justification', 'because', 'reason']) ?? '',
     invalidation: extractTransmissionField(message, ['invalidation', 'invalid if', 'invalidate if']) ?? '',
   };
 }
 
 function parseDebriefTransmission(message: string): MissionDebriefDraft {
   return {
-    behaviorSummary: extractTransmissionField(message, ['behavior', 'behavior summary']) ?? message.trim(),
+    behaviorSummary: extractTransmissionField(message, ['behavior', 'behavior summary']) ?? '',
     disciplineNotes: extractTransmissionField(message, ['discipline', 'discipline notes']) ?? '',
     lesson: extractTransmissionField(message, ['lesson', 'lessons']) ?? '',
   };

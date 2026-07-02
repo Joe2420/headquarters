@@ -5,6 +5,8 @@ import {
   DoctrineHistoryRepository,
   DoctrineRepository,
   type HeadquartersDatabase,
+  JournalEntryRepository,
+  type PersistedJournalEntry,
   loadMigrationsFromDirectory,
   MissionDebriefRepository,
   MissionRepository,
@@ -48,12 +50,31 @@ export interface DesktopCreateMissionResult {
   mission: Mission;
 }
 
+export interface DesktopMissionListResult {
+  missions: Mission[];
+}
+
 export interface DesktopDoctrineListResult {
   records: DoctrineRecord[];
 }
 
 export interface DesktopDoctrineHistoryListResult {
   entries: DoctrineHistoryEntry[];
+}
+
+export interface DesktopJournalListResult {
+  entries: PersistedJournalEntry[];
+}
+
+export interface DesktopCreateJournalEntryInput {
+  content: string;
+  entryDate: string;
+  mood?: string;
+  marketConditions?: string;
+}
+
+export interface DesktopCreateJournalEntryResult {
+  entry: PersistedJournalEntry;
 }
 
 export interface DesktopDoctrinePromotionInput {
@@ -110,8 +131,11 @@ export interface AppStartupRuntime {
   status: AppStartupStatus;
   listDoctrineRecords: () => Promise<DesktopDoctrineListResult>;
   listDoctrineHistory: () => Promise<DesktopDoctrineHistoryListResult>;
+  listMissions: () => Promise<DesktopMissionListResult>;
+  listJournalEntries: () => Promise<DesktopJournalListResult>;
   promoteDoctrineCandidate: (input: DesktopDoctrinePromotionInput) => Promise<DesktopDoctrinePromotionResult>;
   createMission: (input: DesktopCreateMissionInput) => Promise<DesktopCreateMissionResult>;
+  createJournalEntry: (input: DesktopCreateJournalEntryInput) => Promise<DesktopCreateJournalEntryResult>;
   startBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   completeBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   startObservation: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
@@ -119,6 +143,7 @@ export interface AppStartupRuntime {
   requestAuthorization: (input: DesktopAuthorizationInput) => Promise<DesktopAuthorizationResult>;
   declareDeployment: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   requestReturnToBase: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
+  abortMission: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   saveDebrief: (input: DesktopDebriefInput) => Promise<DesktopDebriefResult>;
   archiveAfterDebrief: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   close: () => void;
@@ -148,8 +173,10 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       budgetMs: options.startupBudgetMs ?? 3000,
     });
     const missionService = createMissionService(database);
+    const missionRepository = new MissionRepository(database);
     const doctrineRepository = new DoctrineRepository(database);
     const doctrineHistoryRepository = new DoctrineHistoryRepository(database);
+    const journalEntryRepository = new JournalEntryRepository(database);
 
     return {
       status: {
@@ -167,6 +194,12 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       listDoctrineHistory: async () => ({
         entries: doctrineHistoryRepository.list(),
       }),
+      listMissions: async () => ({
+        missions: missionRepository.list(),
+      }),
+      listJournalEntries: async () => ({
+        entries: journalEntryRepository.list(),
+      }),
       promoteDoctrineCandidate: async (input) => {
         const candidate = mapPromotionInputToCandidate(input);
         const record = promoteDoctrineCandidate(candidate);
@@ -181,6 +214,14 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
         const result = await missionService.createMission(input);
         return {
           mission: result.mission,
+        };
+      },
+      createJournalEntry: async (input) => {
+        const entry = createPersistedJournalEntry(input);
+        if (entry === undefined) throw new Error('Journal entry requires content and entryDate.');
+
+        return {
+          entry: journalEntryRepository.save(entry),
         };
       },
       startBriefing: async (input) => {
@@ -227,6 +268,21 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
           mission: result.mission,
         };
       },
+      abortMission: async (input) => {
+        const mission = missionRepository.findById(input.missionId);
+        if (mission === undefined) throw new Error(`Mission ${input.missionId} was not found.`);
+
+        const abortedMission: Mission = {
+          ...mission,
+          state: 'return_to_base',
+          updatedAt: new Date().toISOString(),
+        };
+        missionRepository.save(abortedMission);
+
+        return {
+          mission: abortedMission,
+        };
+      },
       saveDebrief: async (input) => {
         const result = await missionService.saveDebrief(input);
         return {
@@ -271,11 +327,20 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       listDoctrineHistory: async () => ({
         entries: [],
       }),
+      listMissions: async () => ({
+        missions: [],
+      }),
+      listJournalEntries: async () => ({
+        entries: [],
+      }),
       promoteDoctrineCandidate: async () => {
         throw new Error('Desktop startup is not ready for doctrine promotion.');
       },
       createMission: async () => {
         throw new Error('Desktop startup is not ready for mission creation.');
+      },
+      createJournalEntry: async () => {
+        throw new Error('Desktop startup is not ready for journal persistence.');
       },
       startBriefing: async () => {
         throw new Error('Desktop startup is not ready for mission lifecycle.');
@@ -298,6 +363,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       requestReturnToBase: async () => {
         throw new Error('Desktop startup is not ready for mission lifecycle.');
       },
+      abortMission: async () => {
+        throw new Error('Desktop startup is not ready for mission lifecycle.');
+      },
       saveDebrief: async () => {
         throw new Error('Desktop startup is not ready for mission lifecycle.');
       },
@@ -311,6 +379,35 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
 
 function readNowMs(options: AppStartupOptions): number {
   return options.nowMs?.() ?? Date.now();
+}
+
+function createPersistedJournalEntry(input: DesktopCreateJournalEntryInput): PersistedJournalEntry | undefined {
+  const rawContent = input.content.trim();
+  const entryDate = input.entryDate.trim();
+
+  if (!rawContent || !entryDate) return undefined;
+
+  const timestamp = new Date().toISOString();
+  const rawMood = normalizeOptionalText(input.mood);
+  const rawMarketConditions = normalizeOptionalText(input.marketConditions);
+
+  return {
+    id: crypto.randomUUID(),
+    entryDate,
+    rawContent,
+    ...(rawMood !== undefined ? { rawMood } : {}),
+    ...(rawMarketConditions !== undefined ? { rawMarketConditions } : {}),
+    source: 'manual',
+    attachmentReferences: [],
+    classificationStatus: 'unclassified',
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+}
+
+function normalizeOptionalText(value: string | undefined): string | undefined {
+  const normalized = value?.trim();
+  return normalized ? normalized : undefined;
 }
 
 function createMissionService(database: HeadquartersDatabase): MissionService {

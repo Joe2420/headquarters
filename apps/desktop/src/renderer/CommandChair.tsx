@@ -57,7 +57,7 @@ export function CommandChair({
         </div>
       </dl>
       <button className="secondary-action" type="button" onClick={handleCommandAction}>
-        {currentStatus === 'unassigned' ? primaryAction : 'Release Command'}
+        {currentStatus === 'unassigned' ? primaryAction : 'Open Command Room'}
       </button>
     </section>
   );

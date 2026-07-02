@@ -67,6 +67,11 @@ export class MissionDebriefRepository {
 
     return row === undefined ? undefined : mapRowToDebrief(row);
   }
+
+  list(): MissionDebriefRecord[] {
+    const rows = this.db.prepare('SELECT * FROM mission_debriefs ORDER BY created_at ASC, id ASC').all() as MissionDebriefRow[];
+    return rows.map(mapRowToDebrief);
+  }
 }
 
 function mapRowToDebrief(row: MissionDebriefRow): MissionDebriefRecord {

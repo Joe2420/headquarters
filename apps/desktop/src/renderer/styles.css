@@ -250,6 +250,7 @@ dd {
 }
 
 .workspace-panel {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 0.75rem;
@@ -761,7 +762,8 @@ dd {
 
 .room-transition-layer {
   border-left: 3px solid #8fb8ff;
-  position: relative;
+  position: absolute;
+  inset: 1.5rem;
   overflow: hidden;
   min-height: 260px;
   place-content: center stretch;
@@ -769,6 +771,9 @@ dd {
     linear-gradient(90deg, rgba(143, 184, 255, 0.08), transparent 35%, rgba(217, 231, 255, 0.08)),
     #090c0f;
   box-shadow: inset 0 0 44px rgba(0, 0, 0, 0.58);
+  z-index: 8;
+  pointer-events: none;
+  animation: room-transition-overlay 1100ms ease forwards;
 }
 
 .room-transition-layer::before,
@@ -806,31 +811,16 @@ dd {
   transform: translateX(92%) skewY(1deg);
 }
 
-.room-transition-layer ol {
+.room-transition-layer span {
   position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(100px, 1fr));
-  gap: 0.4rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.room-transition-layer li {
-  min-height: 44px;
-  padding: 0.55rem;
-  border: 1px solid #242b31;
-  color: #8f9ca6;
-  background: #0b0d0f;
-  box-sizing: border-box;
-}
-
-.room-transition-layer li[data-transition-active="true"],
-.room-arrival-panel {
-  border-color: #536678;
-  background: #141b22;
-  color: #f4f7fb;
+  z-index: 3;
+  justify-self: center;
+  align-self: center;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(143, 184, 255, 0.2);
+  background: rgba(6, 9, 11, 0.76);
+  color: #d9e7ff;
+  font-weight: 800;
 }
 
 .room-layout[data-room-identity="preparation"] .command-center-header {
@@ -1483,6 +1473,17 @@ dd {
   }
 }
 
+@keyframes room-transition-overlay {
+  0%,
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes ceremony-arrival {
   from {
     opacity: 0.78;
@@ -1534,7 +1535,6 @@ dd {
   .commander-memory-surface,
   .commander-workflow-card,
   .mission-compass ol,
-  .room-transition-layer ol,
   .room-layout[data-room-identity="historical"] .command-center-panels {
     grid-template-columns: 1fr;
   }

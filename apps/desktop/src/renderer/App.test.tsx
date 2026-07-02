@@ -213,7 +213,7 @@ describe('Desktop shell', () => {
 
     expect(readyHtml).toContain('class="guided-room room-layout"');
     expect(readyHtml).toContain('Begin Observation');
-    expect(observationHtml).toContain('Observe without participating');
+    expect(observationHtml).toContain('Observe quietly and collect evidence.');
     expect(observationHtml).not.toContain('Evaluate Authorization');
     expect(warHtml).toContain('Evaluate Authorization');
     expect(debriefHtml).toContain('Behavior Sequence');
@@ -232,7 +232,7 @@ describe('Desktop shell', () => {
       doctrineRecords={[]}
     />);
 
-    expect(html).toContain('Read the record chronologically');
+    expect(html).toContain('Read records chronologically without editing the past.');
     expect(html).toContain('Foundation Patrol preserved as institutional memory.');
     expect(html).toContain('Timeline / History');
     expect(html).toContain('Mission Archive Viewer');
@@ -708,10 +708,10 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
 
     expect(html).toContain('data-room-id="ready-room"');
-    expect(html).toContain('ReadinessReport');
-    expect(html).toContain('DailyOrdersCard');
-    expect(html).toContain('OathPanel');
-    expect(html).toContain('LockerPanel');
+    expect(html).toContain('Readiness Report');
+    expect(html).toContain('Daily Orders');
+    expect(html).toContain('Command Oath');
+    expect(html).toContain('Operator Locker');
     expect(html).toContain('Foundation Patrol');
   });
 
@@ -726,10 +726,10 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ObservationRoom activeMission={{ ...mission, currentState: 'observation' }} />);
 
     expect(html).toContain('data-room-id="observation-room"');
-    expect(html).toContain('ObservationTimer');
-    expect(html).toContain('CompassIndicator');
-    expect(html).toContain('ArtificialHorizon');
-    expect(html).toContain('SilenceStateDisplay');
+    expect(html).toContain('Observation Timer');
+    expect(html).toContain('Compass Indicator');
+    expect(html).toContain('Artificial Horizon');
+    expect(html).toContain('Silence State');
     expect(html).toContain('Headquarters observes and records');
   });
 
@@ -745,9 +745,9 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('data-room-id="war-room"');
     expect(html).toContain('Mission Authorization');
-    expect(html).toContain('WarTableProjection');
-    expect(html).toContain('GuardianStatusPanel');
-    expect(html).toContain('GhostComparisonPanel');
+    expect(html).toContain('War Table Projection');
+    expect(html).toContain('Guardian Status');
+    expect(html).toContain('Ghost Comparison');
     expect(html).toContain('Headquarters never places trades');
   });
 
@@ -769,8 +769,8 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('data-room-id="debrief-theater"');
     expect(html).toContain('Mission timeline viewer');
-    expect(html).toContain('BlackBoxViewer');
-    expect(html).toContain('DecisionReportPanel');
+    expect(html).toContain('Black Box Viewer');
+    expect(html).toContain('Decision Report');
     expect(html).toContain('Behavior Summary');
   });
 
@@ -945,7 +945,7 @@ describe('Desktop shell', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
     };
 
-    expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('navigate-room');
+    expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('advance-mission');
     expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('advance-mission');
     await expect(advanceMissionFromCommanderContinue(mission)).resolves.toBeUndefined();
   });

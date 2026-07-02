@@ -60,6 +60,11 @@ export class MissionRepository {
     const row = this.db.prepare('SELECT * FROM missions WHERE id = ?').get(id) as MissionRow | undefined;
     return row === undefined ? undefined : mapRowToMission(row);
   }
+
+  list(): Mission[] {
+    const rows = this.db.prepare('SELECT * FROM missions ORDER BY created_at ASC, id ASC').all() as MissionRow[];
+    return rows.map(mapRowToMission);
+  }
 }
 
 function mapRowToMission(row: MissionRow): Mission {

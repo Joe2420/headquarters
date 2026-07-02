@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { GuidedRoom } from './GuidedRoom';
 
 describe('GuidedRoom', () => {
-  it('renders the standard Commander-led room sequence', () => {
+  it('renders the standard focused room sequence without Commander duplication', () => {
     const html = renderToStaticMarkup(
       <GuidedRoom
         id="test-room"
         identity="test-identity"
         atmosphere="test-atmosphere"
         title="Test Room"
-        commander="Commander leads first."
+        useCase="Understand the room."
         objective="Hold one objective."
         primaryAction={<strong>Continue</strong>}
         workspace={<section>Workspace</section>}
@@ -23,8 +23,8 @@ describe('GuidedRoom', () => {
     expect(html).toContain('data-room-id="test-room"');
     expect(html).toContain('data-room-identity="test-identity"');
     expect(html).toContain('data-room-atmosphere="test-atmosphere"');
-    expect(html).toContain('Commander leads first.');
-    expect(html).toContain('Current Objective');
+    expect(html).toContain('Understand the room.');
+    expect(html).not.toContain('Commander leads first.');
     expect(html).toContain('Primary Action');
     expect(html).toContain('Timeline / History');
     expect(html).toContain('Secondary Tools');

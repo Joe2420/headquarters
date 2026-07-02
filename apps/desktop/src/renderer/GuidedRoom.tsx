@@ -4,8 +4,8 @@ export interface GuidedRoomProps {
   readonly id: string;
   readonly identity: string;
   readonly atmosphere: string;
-  readonly commander: string;
   readonly title: string;
+  readonly useCase: string;
   readonly objective: string;
   readonly primaryAction: ReactNode;
   readonly workspace: ReactNode;
@@ -17,8 +17,8 @@ export function GuidedRoom({
   id,
   identity,
   atmosphere,
-  commander,
   title,
+  useCase,
   objective,
   primaryAction,
   workspace,
@@ -32,14 +32,9 @@ export function GuidedRoom({
       data-room-identity={identity}
       data-room-atmosphere={atmosphere}
     >
-      <section className="guided-room-commander" aria-label={`${title} Commander guidance`}>
-        <p className="section-label">Commander</p>
-        <h2>{commander}</h2>
-      </section>
-
       <section className="guided-room-header" aria-label={`${title} objective`}>
         <p className="section-label">{title}</p>
-        <h3>Current Objective</h3>
+        <h2>{useCase}</h2>
         <p className="muted">{objective}</p>
       </section>
 

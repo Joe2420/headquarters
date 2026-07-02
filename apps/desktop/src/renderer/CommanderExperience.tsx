@@ -156,7 +156,7 @@ export function CommanderExperiencePanel({
             </li>
             <li className="commander-transmission commander-transmission-incoming commander-transmission-question">
               <span>Commander</span>
-              <p><TransmittedText text={state.commanderQuestion} /></p>
+              <p><TransmittedText text={state.commanderQuestion} startDelayMs={getTransmissionStartDelay(state.currentMessage.text)} /></p>
             </li>
             {transmissions.map((transmission, index) => (
               <li
@@ -252,7 +252,7 @@ export function CommanderExperiencePanel({
   );
 }
 
-function TransmittedText({ text }: { readonly text: string }) {
+function TransmittedText({ text, startDelayMs = 180 }: { readonly text: string; readonly startDelayMs?: number }) {
   const [visibleText, setVisibleText] = useState(() => (typeof window === 'undefined' ? text : ''));
 
   useEffect(() => {
@@ -278,14 +278,18 @@ function TransmittedText({ text }: { readonly text: string }) {
       timeout = window.setTimeout(transmitNextCharacter, delay);
     };
 
-    timeout = window.setTimeout(transmitNextCharacter, 180);
+    timeout = window.setTimeout(transmitNextCharacter, startDelayMs);
 
     return () => {
       if (timeout !== undefined) window.clearTimeout(timeout);
     };
-  }, [text]);
+  }, [startDelayMs, text]);
 
   return <>{visibleText}</>;
+}
+
+function getTransmissionStartDelay(text: string): number {
+  return Math.min(2600, Math.max(640, text.length * 42));
 }
 
 function getTransmissionAcknowledgement(message: string): string {
@@ -341,11 +345,20 @@ export function getCommanderNextAction(
     };
   }
 
-  if (missionState === 'idle' || missionState === 'briefing') {
+  if (missionState === 'idle') {
     return {
-      id: 'commander-action:enter-ready-room',
-      label: 'Enter Ready Room',
-      description: 'Prepare the mission before observation begins.',
+      id: 'commander-action:start-briefing',
+      label: 'Start Briefing',
+      description: 'Open the briefing phase and confirm the mission intent.',
+      disabled: false,
+    };
+  }
+
+  if (missionState === 'briefing') {
+    return {
+      id: 'commander-action:complete-briefing',
+      label: 'Complete Briefing',
+      description: 'Answer readiness questions before moving into preparation.',
       disabled: false,
     };
   }
@@ -387,7 +400,8 @@ export function getCommanderNextAction(
 
 export function getCommanderRoomTransitionText(missionState?: MissionState | undefined): string {
   if (missionState === undefined) return 'Create Mission.';
-  if (missionState === 'idle' || missionState === 'briefing') return 'Proceed to Ready Room.';
+  if (missionState === 'idle') return 'Briefing is ready to begin.';
+  if (missionState === 'briefing') return 'Briefing active. Confirm readiness before the Ready Room.';
   if (missionState === 'ready' || missionState === 'observation') return 'Observation begins. Remain silent.';
   if (missionState === 'authorization' || missionState === 'deployed') return 'War Room unlocked. Authorization required.';
   if (missionState === 'return_to_base') return 'Debrief Theater ready.';
@@ -528,7 +542,8 @@ function getCommanderSecondaryActions(
 function getCommanderStateText(reportState: CommanderReportState, missionState?: MissionState | undefined): string {
   if (reportState === 'not-reported') return 'Report for duty. Headquarters is waiting.';
   if (missionState === undefined) return 'No active mission. Create one mission.';
-  if (missionState === 'idle' || missionState === 'briefing') return 'Briefing begins with preparation, not motion.';
+  if (missionState === 'idle') return 'Mission file exists. Briefing is the next phase.';
+  if (missionState === 'briefing') return 'Briefing is active. Confirm the objective before moving.';
   if (missionState === 'ready' || missionState === 'observation') return 'Observation is active work. Remain silent.';
   if (missionState === 'authorization' || missionState === 'deployed') return 'War Room authority is active. Stay inside the plan.';
   if (missionState === 'return_to_base') return 'Return complete. Begin behavior-first debrief.';
