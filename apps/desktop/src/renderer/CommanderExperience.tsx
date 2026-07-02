@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useState } from 'react';
+import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
 import type { MissionState } from '@headquarters/shared';
 import type { CommanderMessage, CommanderMessageAction } from './CommanderMessage';
 import { createCommanderMessage, isCommanderMessageUrgent, listCommanderMessagesInDisplayOrder } from './CommanderMessage';
@@ -101,6 +101,7 @@ export function CommanderExperiencePanel({
   commandChair,
   situationBoard,
   workflowSurface,
+  onTransmit,
 }: {
   readonly state: CommanderExperienceState;
   readonly onAcknowledgeInterruption?: ((id: string) => void) | undefined;
@@ -109,17 +110,22 @@ export function CommanderExperiencePanel({
   readonly commandChair?: ReactNode;
   readonly situationBoard?: ReactNode;
   readonly workflowSurface?: ReactNode;
+  readonly onTransmit?: ((message: string) => string | void | Promise<string | void>) | undefined;
 }) {
   const [draftTransmission, setDraftTransmission] = useState('');
-  const [transmissions, setTransmissions] = useState<string[]>([]);
+  const [transmissions, setTransmissions] = useState<Array<{ speaker: 'Operator' | 'Commander'; text: string }>>([]);
 
-  function handleTransmit(event: FormEvent<HTMLFormElement>) {
+  async function handleTransmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const message = draftTransmission.trim();
     if (message.length === 0) return;
 
-    setTransmissions((current) => [...current, message]);
+    setTransmissions((current) => [...current, { speaker: 'Operator', text: message }]);
     setDraftTransmission('');
+
+    const response = await onTransmit?.(message);
+    const commanderResponse = response ?? getTransmissionAcknowledgement(message);
+    setTransmissions((current) => [...current, { speaker: 'Commander', text: commanderResponse }]);
   }
 
   return (
@@ -138,16 +144,21 @@ export function CommanderExperiencePanel({
           <ol className="commander-transmission-feed" aria-label="Commander briefing feed">
             <li className="commander-transmission commander-transmission-incoming">
               <span>Commander</span>
-              <p>{state.currentMessage.text}</p>
+              <p><TransmittedText text={state.currentMessage.text} /></p>
             </li>
             <li className="commander-transmission commander-transmission-incoming commander-transmission-question">
               <span>Commander</span>
-              <p>{state.commanderQuestion}</p>
+              <p><TransmittedText text={state.commanderQuestion} /></p>
             </li>
             {transmissions.map((transmission, index) => (
-              <li key={`${transmission}-${index}`} className="commander-transmission commander-transmission-outgoing">
-                <span>Operator</span>
-                <p>{transmission}</p>
+              <li
+                key={`${transmission.speaker}-${transmission.text}-${index}`}
+                className={transmission.speaker === 'Operator'
+                  ? 'commander-transmission commander-transmission-outgoing'
+                  : 'commander-transmission commander-transmission-incoming'}
+              >
+                <span>{transmission.speaker}</span>
+                <p>{transmission.speaker === 'Commander' ? <TransmittedText text={transmission.text} /> : transmission.text}</p>
               </li>
             ))}
           </ol>
@@ -237,6 +248,39 @@ export function CommanderExperiencePanel({
       </details>
     </section>
   );
+}
+
+function TransmittedText({ text }: { readonly text: string }) {
+  const [visibleText, setVisibleText] = useState(() => (typeof window === 'undefined' ? text : ''));
+
+  useEffect(() => {
+    setVisibleText('');
+    let index = 0;
+    const interval = window.setInterval(() => {
+      index += 1;
+      setVisibleText(text.slice(0, index));
+      if (index >= text.length) window.clearInterval(interval);
+    }, 18);
+
+    return () => window.clearInterval(interval);
+  }, [text]);
+
+  return <>{visibleText}</>;
+}
+
+function getTransmissionAcknowledgement(message: string): string {
+  if (isContinueTransmission(message)) return 'Continue order received.';
+  return 'Transmission received. Current operation cards updated where applicable.';
+}
+
+export function isContinueTransmission(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized === 'continue'
+    || normalized === 'proceed'
+    || normalized === 'advance'
+    || normalized === 'confirm'
+    || normalized.includes('continue mission')
+    || normalized.includes('proceed');
 }
 
 export function mapNavigationRoomToCommanderRoom(room: string): CommanderShellRoomId {

@@ -136,8 +136,9 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<App />);
 
     expect(html).toContain('Commander transmission channel');
-    expect(html).toContain('Commander mission creation controls');
-    expect(html).toContain('Open Mission File');
+    expect(html).toContain('Lifecycle: Security Checkpoint');
+    expect(html).toContain('Report for Duty');
+    expect(html).not.toContain('Commander mission creation controls');
   });
 
   it('renders beta accessibility landmarks and live status semantics', () => {

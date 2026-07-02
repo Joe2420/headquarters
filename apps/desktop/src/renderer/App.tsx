@@ -76,6 +76,7 @@ import { CommandChair } from './CommandChair';
 import {
   CommanderExperiencePanel,
   buildCommanderExperienceState,
+  isContinueTransmission,
   mapNavigationRoomToCommanderRoom,
 } from './CommanderExperience';
 import {
@@ -555,6 +556,110 @@ export function App() {
     setCommanderWorkflowNotice('');
   }
 
+  async function handleCommanderTransmission(message: string): Promise<string> {
+    const currentState = parseMissionState(activeMission?.currentState);
+    const shouldContinue = isContinueTransmission(message);
+
+    if (shellPhase === 'security-checkpoint') {
+      if (isReportForDutyTransmission(message) || shouldContinue) {
+        await handleCommanderContinue();
+        return 'Report accepted. Headquarters is open. Transmit mission codename and objective next.';
+      }
+
+      return 'First step is report for duty. Transmit ready, report, or continue.';
+    }
+
+    if (activeMission === undefined) {
+      const draft = parseMissionCreationTransmission(message);
+
+      if (draft && !shouldContinue) {
+        const mission = await createDesktopMission(draft);
+        if (mission) {
+          await handleMissionCreated(mission);
+          return `Mission file opened: ${mission.campaign}. Commander will move you into briefing.`;
+        }
+      }
+
+      if (shouldContinue) {
+        await handleCommanderContinue();
+        return 'Proceeding to mission creation controls.';
+      }
+
+      return 'Mission creation card is active. Transmit codename and objective, or use the fields below.';
+    }
+
+    if (currentState === 'authorization') {
+      const authorizationDraft = parseAuthorizationTransmission(message);
+      if (authorizationDraft.operatorJustification) setCommanderOperatorJustification(authorizationDraft.operatorJustification);
+      if (authorizationDraft.invalidation) setCommanderInvalidation(authorizationDraft.invalidation);
+
+      if (shouldContinue) {
+        const authorization = await requestDesktopAuthorization(activeMission, {
+          operatorJustification: authorizationDraft.operatorJustification || commanderOperatorJustification,
+          invalidation: authorizationDraft.invalidation || commanderInvalidation,
+        });
+
+        if (authorization === undefined) {
+          setCommanderWorkflowNotice('Authorization requires justification and invalidation before Commander can continue.');
+          return 'Authorization incomplete. Transmit justification and invalidation.';
+        }
+
+        setAuthorizationStatus(authorization);
+        setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
+
+        if (authorization.decision === 'approved') {
+          const deployedMission = await declareDesktopDeployment(activeMission);
+          setActiveMission(deployedMission);
+          setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+          setCommanderOperatorJustification('');
+          setCommanderInvalidation('');
+        }
+
+        return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
+      }
+
+      return 'Authorization card updated. Commander needs justification and invalidation before proceeding.';
+    }
+
+    if (currentState === 'return_to_base') {
+      const debriefDraft = parseDebriefTransmission(message);
+      if (debriefDraft.behaviorSummary) setCommanderBehaviorSummary(debriefDraft.behaviorSummary);
+      if (debriefDraft.disciplineNotes) setCommanderDisciplineNotes(debriefDraft.disciplineNotes);
+      if (debriefDraft.lesson) setCommanderLesson(debriefDraft.lesson);
+
+      if (shouldContinue) {
+        const result = await saveDesktopDebrief(activeMission, {
+          behaviorSummary: debriefDraft.behaviorSummary || commanderBehaviorSummary,
+          disciplineNotes: debriefDraft.disciplineNotes || commanderDisciplineNotes,
+          lesson: debriefDraft.lesson || commanderLesson,
+        });
+
+        if (result === undefined) {
+          setCommanderWorkflowNotice('Debrief requires behavior summary, discipline notes, and lesson before Commander can continue.');
+          return 'Debrief incomplete. Transmit behavior, discipline, and lesson.';
+        }
+
+        setMissionDebrief(result.debrief);
+        setActiveMission(result.mission);
+        setMissionHistory((history) => upsertMissionHistory(history, result.mission));
+        setCommanderBehaviorSummary('');
+        setCommanderDisciplineNotes('');
+        setCommanderLesson('');
+        setCommanderWorkflowNotice('Debrief saved. Archive is now the next Commander action.');
+        return 'Debrief saved. Archive is now the next Commander action.';
+      }
+
+      return 'Debrief card updated. Commander needs behavior, discipline, and lesson before archive.';
+    }
+
+    if (shouldContinue) {
+      await handleCommanderContinue();
+      return 'Continue order received. Advancing through the current lifecycle step.';
+    }
+
+    return 'Transmission attached to Commander log. Use Continue when the current step is ready.';
+  }
+
   return (
     <div className="hq-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
@@ -639,8 +744,10 @@ export function App() {
               onDisciplineNotesChange={setCommanderDisciplineNotes}
               onLessonChange={setCommanderLesson}
               onCreateMission={handleMissionCreated}
+              reportState={reportState}
             />}
             onContinue={handleCommanderContinue}
+            onTransmit={handleCommanderTransmission}
             onAcknowledgeInterruption={(id) => {
               if (id.length === 0) return;
               setAcknowledgedCommanderInterruptions((acknowledged) => (
@@ -807,6 +914,7 @@ function CommanderWorkflowSurface({
   onDisciplineNotesChange,
   onLessonChange,
   onCreateMission,
+  reportState,
 }: {
   readonly currentRoom: string;
   readonly activeMission?: ActiveMission | undefined;
@@ -824,12 +932,13 @@ function CommanderWorkflowSurface({
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
   readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
+  readonly reportState: 'not-reported' | 'reported';
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
 
   return (
     <>
-      {activeMission === undefined ? (
+      {reportState === 'reported' && activeMission === undefined ? (
         <section className="commander-workflow-card commander-workflow-card-single" aria-label="Commander mission creation controls">
           <div>
             <p className="section-label">Mission Creation</p>
@@ -4319,6 +4428,80 @@ export function formatStartupRecoveryGuidance(status: StartupStatus): string {
 
 function hasContent(value: string): boolean {
   return value.trim().length > 0;
+}
+
+function parseMissionCreationTransmission(message: string): MissionDraft | undefined {
+  const codename = extractTransmissionField(message, ['codename', 'mission', 'campaign']);
+  const objective = extractTransmissionField(message, ['objective', 'goal']);
+
+  if (codename && objective) return { codename, objective };
+
+  const commaParts = message.split(',').map((part) => part.trim()).filter(Boolean);
+  if (commaParts.length >= 2) {
+    return {
+      codename: commaParts[0] ?? '',
+      objective: commaParts.slice(1).join(', '),
+    };
+  }
+
+  const objectiveIndex = message.toLowerCase().indexOf(' objective ');
+  if (objectiveIndex > 0) {
+    return {
+      codename: message.slice(0, objectiveIndex).replace(/^mission\s*/i, '').trim(),
+      objective: message.slice(objectiveIndex + ' objective '.length).trim(),
+    };
+  }
+
+  return undefined;
+}
+
+function isReportForDutyTransmission(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized === 'ready'
+    || normalized === 'report'
+    || normalized === 'report for duty'
+    || normalized === 'i am ready'
+    || normalized === 'ready for duty';
+}
+
+function parseAuthorizationTransmission(message: string): MissionAuthorizationDraft {
+  return {
+    operatorJustification: extractTransmissionField(message, ['justification', 'because', 'reason']) ?? message.trim(),
+    invalidation: extractTransmissionField(message, ['invalidation', 'invalid if', 'invalidate if']) ?? '',
+  };
+}
+
+function parseDebriefTransmission(message: string): MissionDebriefDraft {
+  return {
+    behaviorSummary: extractTransmissionField(message, ['behavior', 'behavior summary']) ?? message.trim(),
+    disciplineNotes: extractTransmissionField(message, ['discipline', 'discipline notes']) ?? '',
+    lesson: extractTransmissionField(message, ['lesson', 'lessons']) ?? '',
+  };
+}
+
+function extractTransmissionField(message: string, labels: readonly string[]): string | undefined {
+  const normalized = message.replace(/\s+/g, ' ').trim();
+  const lower = normalized.toLowerCase();
+
+  for (const label of labels) {
+    const marker = `${label.toLowerCase()}:`;
+    const start = lower.indexOf(marker);
+    if (start === -1) continue;
+
+    const valueStart = start + marker.length;
+    const nextField = findNextTransmissionFieldIndex(lower, valueStart);
+    const value = normalized.slice(valueStart, nextField).trim();
+    if (value.length > 0) return value;
+  }
+
+  return undefined;
+}
+
+function findNextTransmissionFieldIndex(message: string, start: number): number {
+  const matches = [...message.slice(start).matchAll(/\s[a-z ]{3,24}:/g)];
+  const match = matches[0];
+  if (!match || match.index === undefined) return message.length;
+  return start + match.index;
 }
 
 function getTodayDate(): string {
