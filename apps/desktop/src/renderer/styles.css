@@ -267,6 +267,17 @@ dd {
   transition: background 180ms ease, border-color 180ms ease;
 }
 
+.commander-chat-stage {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.commander-chat-stage .room-transition-layer {
+  inset: 1rem 1.5rem;
+  min-height: min(560px, calc(100vh - 8rem));
+}
+
 .commander-shell-interrupted {
   border-left: 3px solid #d8b25c;
   background: #151812;

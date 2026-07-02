@@ -64,6 +64,14 @@ export interface CommanderExperienceState {
   readonly memory: readonly CommanderMemorySnippet[];
 }
 
+type CommanderTransmissionEntry = {
+  readonly id: string;
+  readonly speaker: 'Operator' | 'Commander';
+  readonly text: string;
+  readonly kind: 'current' | 'question' | 'operator' | 'response';
+  readonly promptKey?: string | undefined;
+};
+
 const baseTimestamp = '2026-07-02T00:00:00.000Z';
 
 export function buildCommanderExperienceState(input: CommanderExperienceInput): CommanderExperienceState {
@@ -113,32 +121,87 @@ export function CommanderExperiencePanel({
   readonly onTransmit?: ((message: string) => string | void | Promise<string | void>) | undefined;
 }) {
   const [draftTransmission, setDraftTransmission] = useState('');
-  const [transmissions, setTransmissions] = useState<Array<{ speaker: 'Operator' | 'Commander'; text: string }>>([]);
-  const [introStep, setIntroStep] = useState(() => (typeof window === 'undefined' ? 2 : 0));
+  const currentPromptKey = buildCommanderTransmissionPromptKey(state);
+  const [transmissions, setTransmissions] = useState<CommanderTransmissionEntry[]>(() => (
+    typeof window === 'undefined' ? buildInitialCommanderTransmissions(state) : []
+  ));
   const feedRef = useRef<HTMLOListElement | null>(null);
-
-  useEffect(() => {
-    setIntroStep(typeof window === 'undefined' ? 2 : 0);
-  }, [state.currentMessage.text, state.commanderQuestion]);
+  const activePromptKeyRef = useRef(typeof window === 'undefined' ? currentPromptKey : '');
+  const pendingQuestionRef = useRef<{ key: string; text: string } | undefined>();
 
   useEffect(() => {
     const feed = feedRef.current;
     if (!feed) return;
 
     feed.scrollTop = feed.scrollHeight;
-  }, [state.currentMessage.text, state.commanderQuestion, transmissions]);
+  }, [transmissions]);
+
+  useEffect(() => {
+    if (activePromptKeyRef.current === currentPromptKey) return;
+
+    activePromptKeyRef.current = currentPromptKey;
+    pendingQuestionRef.current = {
+      key: currentPromptKey,
+      text: state.commanderQuestion,
+    };
+
+    setTransmissions((current) => [
+      ...current,
+      {
+        id: `${currentPromptKey}:current`,
+        speaker: 'Commander',
+        text: state.currentMessage.text,
+        kind: 'current',
+        promptKey: currentPromptKey,
+      },
+    ]);
+  }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text]);
 
   async function handleTransmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const message = draftTransmission.trim();
     if (message.length === 0) return;
 
-    setTransmissions((current) => [...current, { speaker: 'Operator', text: message }]);
+    setTransmissions((current) => [...current, {
+      id: `operator:${Date.now()}:${current.length}`,
+      speaker: 'Operator',
+      text: message,
+      kind: 'operator',
+    }]);
     setDraftTransmission('');
 
     const response = await onTransmit?.(message);
     const commanderResponse = response ?? getTransmissionAcknowledgement(message);
-    setTransmissions((current) => [...current, { speaker: 'Commander', text: commanderResponse }]);
+    setTransmissions((current) => [...current, {
+      id: `commander:response:${Date.now()}:${current.length}`,
+      speaker: 'Commander',
+      text: commanderResponse,
+      kind: 'response',
+    }]);
+  }
+
+  function handleCommanderTransmissionComplete(transmission: CommanderTransmissionEntry) {
+    if (transmission.kind !== 'current' || !transmission.promptKey) return;
+
+    const pendingQuestion = pendingQuestionRef.current;
+    if (!pendingQuestion || pendingQuestion.key !== transmission.promptKey) return;
+
+    pendingQuestionRef.current = undefined;
+    setTransmissions((current) => {
+      const questionId = `${pendingQuestion.key}:question`;
+      if (current.some((entry) => entry.id === questionId)) return current;
+
+      return [
+        ...current,
+        {
+          id: questionId,
+          speaker: 'Commander',
+          text: pendingQuestion.text,
+          kind: 'question',
+          promptKey: pendingQuestion.key,
+        },
+      ];
+    });
   }
 
   return (
@@ -155,25 +218,19 @@ export function CommanderExperiencePanel({
             <span>{state.lifecycleStep}</span>
           </div>
           <ol ref={feedRef} className="commander-transmission-feed" aria-label="Commander briefing feed" aria-live="polite">
-            <li className="commander-transmission commander-transmission-incoming">
-              <span>Commander</span>
-              <p><TransmittedText text={state.currentMessage.text} onComplete={() => setIntroStep((step) => Math.max(step, 1))} /></p>
-            </li>
-            {introStep >= 1 ? (
-              <li className="commander-transmission commander-transmission-incoming commander-transmission-question">
-                <span>Commander</span>
-                <p><TransmittedText text={state.commanderQuestion} onComplete={() => setIntroStep((step) => Math.max(step, 2))} /></p>
-              </li>
-            ) : null}
-            {transmissions.map((transmission, index) => (
+            {transmissions.map((transmission) => (
               <li
-                key={`${transmission.speaker}-${transmission.text}-${index}`}
+                key={transmission.id}
                 className={transmission.speaker === 'Operator'
                   ? 'commander-transmission commander-transmission-outgoing'
-                  : 'commander-transmission commander-transmission-incoming'}
+                  : transmission.kind === 'question'
+                    ? 'commander-transmission commander-transmission-incoming commander-transmission-question'
+                    : 'commander-transmission commander-transmission-incoming'}
               >
                 <span>{transmission.speaker}</span>
-                <p>{transmission.speaker === 'Commander' ? <TransmittedText text={transmission.text} /> : transmission.text}</p>
+                <p>{transmission.speaker === 'Commander'
+                  ? <TransmittedText text={transmission.text} onComplete={() => handleCommanderTransmissionComplete(transmission)} />
+                  : transmission.text}</p>
               </li>
             ))}
           </ol>
@@ -324,6 +381,38 @@ function TransmittedText({
   }, [startDelayMs, text]);
 
   return <>{visibleText}</>;
+}
+
+function buildInitialCommanderTransmissions(state: CommanderExperienceState): CommanderTransmissionEntry[] {
+  const promptKey = buildCommanderTransmissionPromptKey(state);
+
+  return [
+    {
+      id: `${promptKey}:current`,
+      speaker: 'Commander',
+      text: state.currentMessage.text,
+      kind: 'current',
+      promptKey,
+    },
+    {
+      id: `${promptKey}:question`,
+      speaker: 'Commander',
+      text: state.commanderQuestion,
+      kind: 'question',
+      promptKey,
+    },
+  ];
+}
+
+function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): string {
+  return [
+    state.currentMessage.id,
+    state.currentRoom,
+    state.recommendedRoom,
+    state.lifecycleStep,
+    state.currentMessage.text,
+    state.commanderQuestion,
+  ].join('|');
 }
 
 function getTransmissionAcknowledgement(message: string): string {

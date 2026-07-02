@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { EventEnvelope, Mission, MissionState } from '@headquarters/shared';
 import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
@@ -100,6 +100,7 @@ import {
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
 import { GuidedRoom } from './GuidedRoom';
+import { recommendRoomForMissionState } from './RoomStateMachine';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -357,6 +358,7 @@ export function App() {
   const [commanderMissionObjective, setCommanderMissionObjective] = useState('');
   const [commanderWorkflowNotice, setCommanderWorkflowNotice] = useState('');
   const [activeOperationsView, setActiveOperationsView] = useState<'chat' | 'room'>('chat');
+  const roomTransferTimeoutRef = useRef<number | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -405,6 +407,12 @@ export function App() {
 
     return () => window.clearTimeout(timeout);
   }, [roomTransition]);
+
+  useEffect(() => () => {
+    if (roomTransferTimeoutRef.current !== undefined) {
+      window.clearTimeout(roomTransferTimeoutRef.current);
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -494,9 +502,8 @@ export function App() {
     const continueMode = getCommanderContinueMode(activeMission, currentCommanderRoom, commanderState.recommendedRoom);
 
     if (activeMission === undefined && currentCommanderRoom === 'command') {
-      setRoomTransition(undefined);
       setActiveRoom('missions');
-      setActiveOperationsView('room');
+      setCommanderWorkflowNotice('Mission creation needs a codename and objective before doors open.');
       return;
     }
 
@@ -505,9 +512,7 @@ export function App() {
       return;
     }
 
-    setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, commanderState.recommendedRoom));
-    setActiveRoom(recommendedNavigationTarget);
-    setActiveOperationsView('room');
+    startDoorTransfer(recommendedNavigationTarget);
   }
 
   async function handleCommanderWorkflowContinue(mission: ActiveMission) {
@@ -535,6 +540,7 @@ export function App() {
         const deployedMission = await declareDesktopDeployment(mission);
         setActiveMission(deployedMission);
         setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        startDoorTransferForMissionRoomChange(mission, deployedMission);
       }
       return;
     }
@@ -558,6 +564,7 @@ export function App() {
       setCommanderDisciplineNotes('');
       setCommanderLesson('');
       setCommanderWorkflowNotice('Debrief saved. Archive is now the next Commander action.');
+      startDoorTransferForMissionRoomChange(mission, result.mission);
       return;
     }
 
@@ -579,25 +586,62 @@ export function App() {
       setActiveMission(advancedMission);
       setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
       setCommanderWorkflowNotice('');
+      startDoorTransferForMissionRoomChange(mission, advancedMission);
     }
   }
 
   function handleSidebarNavigation(room: HeadquartersRoomId) {
-    const targetRoom = mapNavigationRoomToCommanderRoom(room);
-    if (room !== activeRoom) {
-      setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, targetRoom));
-    } else {
-      setRoomTransition(undefined);
-    }
-    setActiveRoom(room);
-    setActiveOperationsView('room');
+    startDoorTransfer(room, { openRoomAfter: true });
   }
 
   function handleEnterCurrentRoom() {
-    if (activeOperationsView !== 'room') {
-      setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, currentCommanderRoom));
-    }
     setActiveOperationsView('room');
+  }
+
+  function handleEnterCommanderChat() {
+    if (roomTransferTimeoutRef.current !== undefined) {
+      window.clearTimeout(roomTransferTimeoutRef.current);
+      roomTransferTimeoutRef.current = undefined;
+    }
+
+    setRoomTransition(undefined);
+    setActiveOperationsView('chat');
+  }
+
+  function startDoorTransfer(
+    room: HeadquartersRoomId,
+    options: { readonly openRoomAfter?: boolean; readonly fromRoom?: CommanderShellRoomId } = {},
+  ) {
+    const fromRoom = options.fromRoom ?? currentCommanderRoom;
+    const targetRoom = mapNavigationRoomToCommanderRoom(room);
+
+    if (fromRoom === targetRoom && room === activeRoom) {
+      if (options.openRoomAfter) setActiveOperationsView('room');
+      return;
+    }
+
+    if (roomTransferTimeoutRef.current !== undefined) {
+      window.clearTimeout(roomTransferTimeoutRef.current);
+    }
+
+    setRoomTransition(createDoorOpeningTransition(fromRoom, targetRoom));
+
+    roomTransferTimeoutRef.current = window.setTimeout(() => {
+      setActiveRoom(room);
+      if (options.openRoomAfter) setActiveOperationsView('room');
+      roomTransferTimeoutRef.current = undefined;
+    }, 1200);
+  }
+
+  function startDoorTransferForMissionRoomChange(previousMission: ActiveMission, nextMission: ActiveMission) {
+    const previousRoom = recommendRoomForMissionState(parseMissionState(previousMission.currentState));
+    const nextRoom = recommendRoomForMissionState(parseMissionState(nextMission.currentState));
+
+    if (previousRoom === nextRoom) return;
+
+    startDoorTransfer(mapCommanderRoomToNavigationTarget(nextRoom) as HeadquartersRoomId, {
+      fromRoom: previousRoom,
+    });
   }
 
   async function handleMissionCreated(mission: ActiveMission) {
@@ -843,14 +887,13 @@ export function App() {
 
         <main id="main-content" className="shell-main">
           <section className="operations-viewport" aria-label="Operations viewport" data-active-operations-view={activeOperationsView}>
-            {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
             <div className="operations-view-tabs" role="tablist" aria-label="Operations view">
               <button
                 type="button"
                 role="tab"
                 aria-selected={activeOperationsView === 'chat'}
                 className={activeOperationsView === 'chat' ? 'active' : ''}
-                onClick={() => setActiveOperationsView('chat')}
+                onClick={handleEnterCommanderChat}
               >
                 Commander Chat
               </button>
@@ -877,7 +920,8 @@ export function App() {
             ) : null}
 
             {activeOperationsView === 'chat' ? (
-              <>
+              <section className="commander-chat-stage" aria-label="Commander chat stage">
+                {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
                 <CommanderExperiencePanel
                   state={commanderState}
                   compassSteps={missionCompassSteps}
@@ -887,9 +931,7 @@ export function App() {
                     mission={activeMission}
                     primaryAction={commanderState.nextAction.label}
                     onCommandAction={() => {
-                      setRoomTransition(createDoorOpeningTransition(currentCommanderRoom, 'command'));
-                      setActiveRoom('command');
-                      setActiveOperationsView('room');
+                      startDoorTransfer('command', { openRoomAfter: true });
                     }}
                   />}
                   situationBoard={<SituationBoard input={{
@@ -940,7 +982,7 @@ export function App() {
                   guardian: guardianStatus,
                   currentRoom: currentRoomLabel,
                 }} />
-              </>
+              </section>
             ) : null}
 
             {activeOperationsView === 'room' ? (
