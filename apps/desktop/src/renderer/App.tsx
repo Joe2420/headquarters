@@ -73,6 +73,11 @@ import {
   type TradeReview,
 } from '@headquarters/journal';
 import { CommandChair } from './CommandChair';
+import {
+  CommanderExperiencePanel,
+  buildCommanderExperienceState,
+  mapNavigationRoomToCommanderRoom,
+} from './CommanderExperience';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -313,6 +318,7 @@ export function App() {
   const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
   const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
   const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
+  const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -375,6 +381,19 @@ export function App() {
     };
   }, []);
 
+  const commanderState = buildCommanderExperienceState({
+    reportState: shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported',
+    activeRoom: mapNavigationRoomToCommanderRoom(activeRoom),
+    activeMission,
+    evidence: {
+      recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
+      recentMission: missionHistory.at(-1)?.campaign,
+      recentGrowthEvent: formatRecentGrowthHighlight(growthEvents),
+      guardianStatus: formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts'),
+    },
+    acknowledgedInterruptionIds: acknowledgedCommanderInterruptions,
+  });
+
   return (
     <div className="hq-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
@@ -413,6 +432,16 @@ export function App() {
         </nav>
 
         <main id="main-content" className="shell-main">
+          <CommanderExperiencePanel
+            state={commanderState}
+            onAcknowledgeInterruption={(id) => {
+              if (id.length === 0) return;
+              setAcknowledgedCommanderInterruptions((acknowledged) => (
+                acknowledged.includes(id) ? acknowledged : [...acknowledged, id]
+              ));
+            }}
+          />
+
           <section className="workspace-panel" aria-label="Main content">
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />

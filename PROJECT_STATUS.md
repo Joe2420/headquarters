@@ -2,6 +2,8 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0149 - Persistent Commander Shell MVP
+
 - HQ-TASK-0148 - Experience Foundation Review Package
 
 - HQ-TASK-0147 - Command Chair MVP
@@ -152,7 +154,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 13 Experience Foundation is complete through HQ-TASK-0148.
+Current milestone gate: Sprint 14 Commander Experience is in progress through HQ-TASK-0149.
 
 ## Post-Sprint UX Alignment
 
@@ -177,9 +179,10 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 13 Experience Foundation is complete through HQ-TASK-0148.
+Sprint 14 Commander Experience is in progress through HQ-TASK-0149.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
 
 
 

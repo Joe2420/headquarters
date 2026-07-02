@@ -1,5 +1,7 @@
 ﻿# Changelog
 
+HQ-TASK-0149 - Added persistent Commander shell composition above active rooms.
+
 HQ-TASK-0148 - Added Sprint 13 Experience Foundation review package.
 
 HQ-TASK-0147 - Added Command Chair component specification and upgraded renderer foundation.
@@ -285,6 +287,7 @@ HQ-TASK-0008 — Added archive repository MVP for persisting HQOS event envelope
 HQ-TASK-0007 — Added SQLite connection layer MVP with migration runner foundation.
 
 ARCH-TASK-0001 — Added production journal integration architecture based on real journal exports.
+
 
 
 
