@@ -25,6 +25,35 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Commander memory surface');
   });
 
+  it('renders Commander-led Continue and mission compass context when provided', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'ready-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'briefing',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel
+      state={state}
+      onContinue={() => undefined}
+      compassSteps={[
+        { id: 'ready-room', label: 'Ready Room', state: 'active' },
+        { id: 'observation', label: 'Observation', state: 'available' },
+        { id: 'war-room', label: 'War Room', state: 'locked' },
+        { id: 'debrief', label: 'Debrief Theater', state: 'locked' },
+        { id: 'archive', label: 'Archive', state: 'locked' },
+      ]}
+    />);
+
+    expect(html).toContain('aria-label="Continue to Ready Room"');
+    expect(html).toContain('Commander mission compass');
+    expect(html).toContain('Ready Room active. 3 future rooms locked.');
+  });
+
   it('derives exactly one primary next action for main lifecycle states', () => {
     expect(getCommanderNextAction('not-reported').label).toBe('Report for Duty');
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');

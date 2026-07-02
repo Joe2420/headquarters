@@ -78,6 +78,18 @@ import {
   buildCommanderExperienceState,
   mapNavigationRoomToCommanderRoom,
 } from './CommanderExperience';
+import {
+  RoomArrivalPanel,
+  RoomTransitionLayer,
+  advanceRoomTransition,
+  buildMissionCompassSteps,
+  createRoomTransition,
+  getRoomArrival,
+  mapCommanderRoomToNavigationTarget,
+  parseMissionNavigationState,
+  type RoomArrival,
+  type RoomTransitionState,
+} from './RoomNavigationExperience';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -319,6 +331,8 @@ export function App() {
   const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
   const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
+  const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
+  const [roomArrival, setRoomArrival] = useState<RoomArrival | undefined>();
   const [startupStatus, setStartupStatus] = useState<StartupStatus>({
     state: 'loading',
     database: {
@@ -381,9 +395,10 @@ export function App() {
     };
   }, []);
 
+  const currentCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
   const commanderState = buildCommanderExperienceState({
     reportState: shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported',
-    activeRoom: mapNavigationRoomToCommanderRoom(activeRoom),
+    activeRoom: currentCommanderRoom,
     activeMission,
     evidence: {
       recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
@@ -393,6 +408,32 @@ export function App() {
     },
     acknowledgedInterruptionIds: acknowledgedCommanderInterruptions,
   });
+  const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
+  const missionCompassSteps = activeMission
+    ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
+    : undefined;
+
+  function handleCommanderContinue() {
+    if (shellPhase === 'security-checkpoint') {
+      setShellPhase(reportForDuty(shellPhase).to);
+      return;
+    }
+
+    let transition = createRoomTransition(currentCommanderRoom, commanderState.recommendedRoom);
+    transition = advanceRoomTransition(transition);
+    transition = advanceRoomTransition(transition);
+    transition = advanceRoomTransition(transition);
+    transition = advanceRoomTransition(transition);
+    setRoomTransition(transition);
+    setRoomArrival(getRoomArrival(commanderState.recommendedRoom));
+    setActiveRoom(recommendedNavigationTarget);
+  }
+
+  function handleSidebarNavigation(room: HeadquartersRoomId) {
+    setRoomTransition(undefined);
+    setRoomArrival(undefined);
+    setActiveRoom(room);
+  }
 
   return (
     <div className="hq-shell">
@@ -419,12 +460,17 @@ export function App() {
           {getPrimaryNavigationItems(activeRoom).map((item) => (
             <button
               key={item.id}
-              className={item.active ? 'nav-item active' : 'nav-item'}
+              className={[
+                'nav-item',
+                item.active ? 'active' : '',
+                item.id === recommendedNavigationTarget ? 'recommended' : '',
+              ].filter(Boolean).join(' ')}
               data-nav-id={item.id}
+              data-recommended={item.id === recommendedNavigationTarget}
               aria-label={`Open ${item.label}`}
               aria-current={item.active ? 'page' : undefined}
               type="button"
-              onClick={() => setActiveRoom(item.id)}
+              onClick={() => handleSidebarNavigation(item.id)}
             >
               {item.label}
             </button>
@@ -434,6 +480,8 @@ export function App() {
         <main id="main-content" className="shell-main">
           <CommanderExperiencePanel
             state={commanderState}
+            compassSteps={missionCompassSteps}
+            onContinue={handleCommanderContinue}
             onAcknowledgeInterruption={(id) => {
               if (id.length === 0) return;
               setAcknowledgedCommanderInterruptions((acknowledged) => (
@@ -443,8 +491,17 @@ export function App() {
           />
 
           <section className="workspace-panel" aria-label="Main content">
+            {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
+            ) : roomArrival ? (
+              <RoomArrivalPanel
+                arrival={roomArrival}
+                onContinue={() => {
+                  setRoomArrival(undefined);
+                  setRoomTransition(undefined);
+                }}
+              />
             ) : (
               renderHeadquartersRoom(activeRoom, {
                 activeMission,
@@ -956,7 +1013,7 @@ export function ReadyRoom({
   const recentMission = missionHistory.at(-1);
 
   return (
-    <div className="room-layout" data-room-id="ready-room">
+    <div className="room-layout" data-room-id="ready-room" data-room-identity="preparation">
       <section className="command-center-header" aria-label="Ready room status">
         <p className="section-label">Ready Room</p>
         <h2>Mission Readiness</h2>
@@ -1014,7 +1071,7 @@ export function ObservationRoom({
   });
 
   return (
-    <div className="room-layout" data-room-id="observation-room">
+    <div className="room-layout" data-room-id="observation-room" data-room-identity="silence">
       <section className="command-center-header" aria-label="Observation room status">
         <p className="section-label">Observation Room</p>
         <h2>Observation</h2>
@@ -1060,7 +1117,7 @@ export function WarRoom({
   const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
 
   return (
-    <div className="room-layout" data-room-id="war-room">
+    <div className="room-layout" data-room-id="war-room" data-room-identity="decision">
       <section className="command-center-header" aria-label="War room status">
         <p className="section-label">War Room</p>
         <h2>Authorization Terminal</h2>
@@ -1101,7 +1158,7 @@ export function DebriefTheater({
   'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
 >) {
   return (
-    <div className="room-layout" data-room-id="debrief-theater">
+    <div className="room-layout" data-room-id="debrief-theater" data-room-identity="reflection">
       <section className="command-center-header" aria-label="Debrief theater status">
         <p className="section-label">Debrief Theater</p>
         <h2>Mission Debrief</h2>
@@ -2775,7 +2832,7 @@ export function ArchiveRoom({
   const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
 
   return (
-    <div className="room-layout" data-room-id="archive-room">
+    <div className="room-layout" data-room-id="archive-room" data-room-identity="historical">
       <section className="command-center-header" aria-label="Archive room status">
         <p className="section-label">Archive Room</p>
         <h2>Archive</h2>

@@ -123,6 +123,7 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<App />);
 
     expect(html).toContain('aria-label="Primary"');
+    expect(html).toContain('data-recommended="true"');
     expect(html).toContain('data-nav-id="command"');
     expect(html).toContain('data-nav-id="missions"');
     expect(html).toContain('data-nav-id="ready"');
@@ -137,6 +138,24 @@ describe('Desktop shell', () => {
     expect(html).toContain('data-nav-id="archive"');
     expect(html).toContain('data-nav-id="settings"');
     expect(html).toContain('aria-current="page"');
+  });
+
+  it('renders mission room identity markers for the navigation experience', () => {
+    const mission: ActiveMission = {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      condition: 'Briefing',
+      commandAuthority: 'Professional command',
+      currentState: 'briefing',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    };
+
+    expect(renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />)).toContain('data-room-identity="preparation"');
+    expect(renderToStaticMarkup(<ObservationRoom activeMission={mission} />)).toContain('data-room-identity="silence"');
+    expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-identity="decision"');
+    expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-identity="reflection"');
+    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
   });
 
   it('derives exactly one active primary navigation item', () => {

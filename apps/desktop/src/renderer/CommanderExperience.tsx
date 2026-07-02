@@ -2,6 +2,8 @@ import type { MissionState } from '@headquarters/shared';
 import type { CommanderMessage, CommanderMessageAction } from './CommanderMessage';
 import { createCommanderMessage, isCommanderMessageUrgent, listCommanderMessagesInDisplayOrder } from './CommanderMessage';
 import type { CommanderShellRoomId } from './CommanderShell';
+import type { MissionCompassStep } from './MissionCompass';
+import { MissionCompassPanel } from './RoomNavigationExperience';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 
 export type CommanderReportState = 'not-reported' | 'reported';
@@ -89,9 +91,13 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
 export function CommanderExperiencePanel({
   state,
   onAcknowledgeInterruption,
+  onContinue,
+  compassSteps,
 }: {
   readonly state: CommanderExperienceState;
   readonly onAcknowledgeInterruption?: ((id: string) => void) | undefined;
+  readonly onContinue?: (() => void) | undefined;
+  readonly compassSteps?: readonly MissionCompassStep[] | undefined;
 }) {
   return (
     <section
@@ -109,8 +115,21 @@ export function CommanderExperiencePanel({
           <p className="section-label">Primary Action</p>
           <strong>{state.nextAction.label}</strong>
           <span>{state.nextAction.description}</span>
+          {onContinue ? (
+            <button
+              type="button"
+              className="primary-action commander-continue"
+              aria-label={`Continue to ${formatCommanderRoomLabel(state.recommendedRoom)}`}
+              disabled={state.nextAction.disabled}
+              onClick={onContinue}
+            >
+              Continue
+            </button>
+          ) : null}
         </div>
       </div>
+
+      {compassSteps ? <MissionCompassPanel steps={compassSteps} /> : null}
 
       {state.interruption && !state.interruption.acknowledged ? (
         <div className="commander-interruption" role="status" aria-label="Commander interruption">
@@ -408,6 +427,16 @@ function parseCommanderMissionState(state?: string): MissionState | undefined {
 
 function formatCommanderMessageType(type: CommanderMessage['type']): string {
   return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
+function formatCommanderRoomLabel(room: CommanderShellRoomId): string {
+  if (room === 'ready-room') return 'Ready Room';
+  if (room === 'war-room') return 'War Room';
+  if (room === 'debrief') return 'Debrief Theater';
+  return room
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 function formatMemoryValue(value: string | undefined, fallback: string): string {
