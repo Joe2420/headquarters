@@ -639,8 +639,18 @@ export function App() {
 
     if (previousRoom === nextRoom) return;
 
+    startDoorTransferToMissionRoom(nextMission, { fromRoom: previousRoom });
+  }
+
+  function startDoorTransferToMissionRoom(
+    mission: ActiveMission,
+    options: { readonly fromRoom?: CommanderShellRoomId } = {},
+  ) {
+    const nextRoom = recommendRoomForMissionState(parseMissionState(mission.currentState));
+    const transferOptions = options.fromRoom ? { fromRoom: options.fromRoom } : {};
+
     startDoorTransfer(mapCommanderRoomToNavigationTarget(nextRoom) as HeadquartersRoomId, {
-      fromRoom: previousRoom,
+      ...transferOptions,
     });
   }
 
@@ -654,6 +664,7 @@ export function App() {
     setCommanderMissionCodename('');
     setCommanderMissionObjective('');
     setCommanderWorkflowNotice('');
+    startDoorTransferToMissionRoom(mission, { fromRoom: 'command' });
   }
 
   async function handleAbortMission() {
