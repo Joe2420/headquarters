@@ -2,6 +2,8 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0152 - Commander Interruption Pattern
+
 - HQ-TASK-0151 - Commander Next Action Engine
 
 - HQ-TASK-0150 - Commander Message Thread MVP
@@ -158,7 +160,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 14 Commander Experience is in progress through HQ-TASK-0151.
+Current milestone gate: Sprint 14 Commander Experience is in progress through HQ-TASK-0152.
 
 ## Post-Sprint UX Alignment
 
@@ -183,9 +185,10 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 
 ## Current Gate
 
-Sprint 14 Commander Experience is in progress through HQ-TASK-0151.
+Sprint 14 Commander Experience is in progress through HQ-TASK-0152.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
 
 
 
