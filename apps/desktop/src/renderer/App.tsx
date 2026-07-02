@@ -545,6 +545,16 @@ export function App() {
     setActiveRoom(room);
   }
 
+  async function handleMissionCreated(mission: ActiveMission) {
+    setActiveMission(mission);
+    setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setArchiveWrite(createArchiveWritePlaceholder(mission));
+    setAuthorizationStatus(undefined);
+    setMissionDebrief(undefined);
+    setArchiveSummary(undefined);
+    setCommanderWorkflowNotice('');
+  }
+
   return (
     <div className="hq-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
@@ -628,6 +638,7 @@ export function App() {
               onBehaviorSummaryChange={setCommanderBehaviorSummary}
               onDisciplineNotesChange={setCommanderDisciplineNotes}
               onLessonChange={setCommanderLesson}
+              onCreateMission={handleMissionCreated}
             />}
             onContinue={handleCommanderContinue}
             onAcknowledgeInterruption={(id) => {
@@ -659,54 +670,49 @@ export function App() {
                 }}
               />
             ) : (
-              renderHeadquartersRoom(activeRoom, {
-                activeMission,
-                archiveWrite,
-                authorizationStatus,
-                missionDebrief,
-                archiveSummary,
-                archivedMissionSummaries,
-                missionHistory,
-                journalEntries,
-                dailyReflections,
-                tradeReviews,
-                growthEvents,
-                archivedJournalEntries,
-                doctrineRecords,
-                doctrineHistory,
-                onCreateMission: async (mission) => {
-                  setActiveMission(mission);
-                  setMissionHistory((history) => upsertMissionHistory(history, mission));
-                  setArchiveWrite(createArchiveWritePlaceholder(mission));
-                  setAuthorizationStatus(undefined);
-                  setMissionDebrief(undefined);
-                  setArchiveSummary(undefined);
-                  setCommanderWorkflowNotice('');
-                },
-                onMissionChanged: (mission) => {
-                  setActiveMission(getActiveMissionAfterMissionChange(mission));
-                  setMissionHistory((history) => upsertMissionHistory(history, mission));
-                },
-                onRequestAuthorization: (authorization) => {
-                  setAuthorizationStatus(authorization);
-                },
-                onSaveDebrief: (debrief) => {
-                  setMissionDebrief(debrief);
-                },
-                onArchiveMission: (summary) => {
-                  setArchiveSummary(summary);
-                  if (summary) setArchivedMissionSummaries((summaries) => [...summaries, summary]);
-                },
-                onCreateJournalEntry: (entry) => setJournalEntries((entries) => [...entries, entry]),
-                onCreateDailyReflection: (reflection) => setDailyReflections((entries) => [...entries, reflection]),
-                onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
-                onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
-                onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
-                onPromoteDoctrineCandidate: (record, historyEntry) => {
-                  setDoctrineRecords((records) => [...records, record]);
-                  setDoctrineHistory((entries) => [...entries, historyEntry]);
-                },
-              })
+              <details className="room-context-drawer">
+                <summary>Additional room information</summary>
+                {renderHeadquartersRoom(activeRoom, {
+                  activeMission,
+                  archiveWrite,
+                  authorizationStatus,
+                  missionDebrief,
+                  archiveSummary,
+                  archivedMissionSummaries,
+                  missionHistory,
+                  journalEntries,
+                  dailyReflections,
+                  tradeReviews,
+                  growthEvents,
+                  archivedJournalEntries,
+                  doctrineRecords,
+                  doctrineHistory,
+                  onCreateMission: handleMissionCreated,
+                  onMissionChanged: (mission) => {
+                    setActiveMission(getActiveMissionAfterMissionChange(mission));
+                    setMissionHistory((history) => upsertMissionHistory(history, mission));
+                  },
+                  onRequestAuthorization: (authorization) => {
+                    setAuthorizationStatus(authorization);
+                  },
+                  onSaveDebrief: (debrief) => {
+                    setMissionDebrief(debrief);
+                  },
+                  onArchiveMission: (summary) => {
+                    setArchiveSummary(summary);
+                    if (summary) setArchivedMissionSummaries((summaries) => [...summaries, summary]);
+                  },
+                  onCreateJournalEntry: (entry) => setJournalEntries((entries) => [...entries, entry]),
+                  onCreateDailyReflection: (reflection) => setDailyReflections((entries) => [...entries, reflection]),
+                  onCreateTradeReview: (review) => setTradeReviews((entries) => [...entries, review]),
+                  onCreateGrowthEvent: (event) => setGrowthEvents((entries) => [...entries, event]),
+                  onArchiveJournalEntry: (record) => setArchivedJournalEntries((entries) => [...entries, record]),
+                  onPromoteDoctrineCandidate: (record, historyEntry) => {
+                    setDoctrineRecords((records) => [...records, record]);
+                    setDoctrineHistory((entries) => [...entries, historyEntry]);
+                  },
+                })}
+              </details>
             )}
           </section>
 
@@ -800,6 +806,7 @@ function CommanderWorkflowSurface({
   onBehaviorSummaryChange,
   onDisciplineNotesChange,
   onLessonChange,
+  onCreateMission,
 }: {
   readonly currentRoom: string;
   readonly activeMission?: ActiveMission | undefined;
@@ -816,11 +823,23 @@ function CommanderWorkflowSurface({
   readonly onBehaviorSummaryChange: (value: string) => void;
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
+  readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
 
   return (
     <>
+      {activeMission === undefined ? (
+        <section className="commander-workflow-card commander-workflow-card-single" aria-label="Commander mission creation controls">
+          <div>
+            <p className="section-label">Mission Creation</p>
+            <h3>Open Mission File</h3>
+            <p className="muted">Commander needs a codename and objective before lifecycle rooms unlock.</p>
+          </div>
+          <CreateMissionPanel onCreateMission={onCreateMission} />
+        </section>
+      ) : null}
+
       {currentState === 'authorization' && currentRoom === 'war-room' ? (
         <section className="commander-workflow-card" aria-label="Commander authorization controls">
           <div>

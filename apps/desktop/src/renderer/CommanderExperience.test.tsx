@@ -23,7 +23,8 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Create Mission');
     expect(html).toContain('Commander transmission channel');
     expect(html).toContain('Transmit to Commander');
-    expect(html).toContain('Direct transmission');
+    expect(html).toContain('Lifecycle: Mission Creation');
+    expect(html).toContain('What mission are we opening, and what objective must it serve?');
     expect(html).toContain('Commander message thread');
     expect(html).toContain('Commander memory surface');
   });
@@ -54,6 +55,7 @@ describe('CommanderExperience', () => {
 
     expect(html).toContain('aria-label="Continue to Ready Room"');
     expect(html).toContain('Commander mission compass');
+    expect(html).toContain('Mission compass');
     expect(html).toContain('Ready Room active. 3 future rooms locked.');
   });
 
@@ -106,6 +108,23 @@ describe('CommanderExperience', () => {
     expect(getCommanderNextAction('reported', 'authorization').label).toBe('Proceed to War Room');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
     expect(getCommanderNextAction('reported', 'debrief').label).toBe('Archive Mission');
+  });
+
+  it('exposes lifecycle step and relevant Commander question for active mission state', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+
+    expect(state.lifecycleStep).toBe('Lifecycle: Authorization');
+    expect(state.commanderQuestion).toBe('What is the justification, and what would invalidate the mission?');
   });
 
   it('orders deterministic Commander messages and marks the newest message current', () => {

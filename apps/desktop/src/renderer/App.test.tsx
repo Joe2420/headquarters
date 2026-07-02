@@ -100,7 +100,9 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.commander-atmosphere-deck');
     expect(styles).toContain('.commander-transmission-console');
     expect(styles).toContain('@keyframes commander-transmission-arrival');
+    expect(styles).toContain('@keyframes commander-transmission-status');
     expect(styles).toContain('.commander-context-drawer');
+    expect(styles).toContain('.room-context-drawer');
     expect(styles).toContain('.ambient-status-strip');
     expect(styles).toContain('@keyframes commander-message-arrival');
     expect(styles).toContain('.room-transition-layer::before');
@@ -128,6 +130,14 @@ describe('Desktop shell', () => {
     expect(html).toContain('Situation Board');
     expect(html).toContain('Ambient Headquarters status');
     expect(html).toContain('HQOS:');
+  });
+
+  it('keeps Commander chat as the main operating place with room output optional', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('Commander transmission channel');
+    expect(html).toContain('Commander mission creation controls');
+    expect(html).toContain('Open Mission File');
   });
 
   it('renders beta accessibility landmarks and live status semantics', () => {

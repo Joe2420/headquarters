@@ -54,6 +54,8 @@ export interface CommanderInterruption {
 export interface CommanderExperienceState {
   readonly currentRoom: CommanderShellRoomId;
   readonly recommendedRoom: CommanderShellRoomId;
+  readonly lifecycleStep: string;
+  readonly commanderQuestion: string;
   readonly currentMessage: CommanderMessage;
   readonly messages: readonly CommanderMessage[];
   readonly nextAction: CommanderNextAction;
@@ -80,6 +82,8 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
   return {
     currentRoom: input.activeRoom,
     recommendedRoom,
+    lifecycleStep: formatCommanderLifecycleStep(input.reportState, missionState),
+    commanderQuestion: getCommanderQuestion(input.reportState, missionState),
     currentMessage,
     messages: orderedMessages,
     nextAction,
@@ -129,12 +133,16 @@ export function CommanderExperiencePanel({
         <section className="commander-transmission-console" aria-label="Commander transmission channel">
           <div className="commander-transmission-header">
             <p className="section-label">Commander</p>
-            <span>Direct transmission</span>
+            <span>{state.lifecycleStep}</span>
           </div>
           <ol className="commander-transmission-feed" aria-label="Commander briefing feed">
             <li className="commander-transmission commander-transmission-incoming">
               <span>Commander</span>
               <p>{state.currentMessage.text}</p>
+            </li>
+            <li className="commander-transmission commander-transmission-incoming commander-transmission-question">
+              <span>Commander</span>
+              <p>{state.commanderQuestion}</p>
             </li>
             {transmissions.map((transmission, index) => (
               <li key={`${transmission}-${index}`} className="commander-transmission commander-transmission-outgoing">
@@ -143,6 +151,27 @@ export function CommanderExperiencePanel({
               </li>
             ))}
           </ol>
+          <div className="commander-next-action" aria-label="Commander next action">
+            <p className="section-label">Primary Action</p>
+            <strong>{state.nextAction.label}</strong>
+            <span>{state.nextAction.description}</span>
+            {onContinue ? (
+              <button
+                type="button"
+                className="primary-action commander-continue"
+                aria-label={`Continue to ${formatCommanderRoomLabel(state.recommendedRoom)}`}
+                disabled={state.nextAction.disabled}
+                onClick={onContinue}
+              >
+                Continue
+              </button>
+            ) : null}
+          </div>
+          {workflowSurface ? (
+            <div className="commander-workflow-surface" aria-label="Commander workflow controls">
+              {workflowSurface}
+            </div>
+          ) : null}
           <form className="commander-transmission-input" aria-label="Transmit to Commander" onSubmit={handleTransmit}>
             <input
               value={draftTransmission}
@@ -152,22 +181,6 @@ export function CommanderExperiencePanel({
             <button className="secondary-action" type="submit">Transmit</button>
           </form>
         </section>
-        <div className="commander-next-action" aria-label="Commander next action">
-          <p className="section-label">Primary Action</p>
-          <strong>{state.nextAction.label}</strong>
-          <span>{state.nextAction.description}</span>
-          {onContinue ? (
-            <button
-              type="button"
-              className="primary-action commander-continue"
-              aria-label={`Continue to ${formatCommanderRoomLabel(state.recommendedRoom)}`}
-              disabled={state.nextAction.disabled}
-              onClick={onContinue}
-            >
-              Continue
-            </button>
-          ) : null}
-        </div>
       </div>
 
       {commandChair || situationBoard ? (
@@ -180,13 +193,12 @@ export function CommanderExperiencePanel({
         </details>
       ) : null}
 
-      {workflowSurface ? (
-        <div className="commander-workflow-surface" aria-label="Commander workflow controls">
-          {workflowSurface}
-        </div>
+      {compassSteps ? (
+        <details className="commander-context-drawer">
+          <summary>Mission compass</summary>
+          <MissionCompassPanel steps={compassSteps} />
+        </details>
       ) : null}
-
-      {compassSteps ? <MissionCompassPanel steps={compassSteps} /> : null}
 
       {state.interruption && !state.interruption.acknowledged ? (
         <div className="commander-interruption" role="status" aria-label="Commander interruption">
@@ -459,6 +471,32 @@ function getCommanderStateText(reportState: CommanderReportState, missionState?:
   return 'Mission complete. Archive the record.';
 }
 
+function formatCommanderLifecycleStep(
+  reportState: CommanderReportState,
+  missionState?: MissionState | undefined,
+): string {
+  if (reportState === 'not-reported') return 'Lifecycle: Security Checkpoint';
+  if (missionState === undefined) return 'Lifecycle: Mission Creation';
+  return `Lifecycle: ${formatCommanderMissionState(missionState)}`;
+}
+
+function getCommanderQuestion(
+  reportState: CommanderReportState,
+  missionState?: MissionState | undefined,
+): string {
+  if (reportState === 'not-reported') return 'Are you ready to report for duty?';
+  if (missionState === undefined) return 'What mission are we opening, and what objective must it serve?';
+  if (missionState === 'idle') return 'Is the mission file ready to enter briefing?';
+  if (missionState === 'briefing') return 'Has the objective been briefed clearly enough to prepare observation?';
+  if (missionState === 'ready') return 'Are you ready to begin observation and remain silent?';
+  if (missionState === 'observation') return 'Is the observation complete enough to request authorization?';
+  if (missionState === 'authorization') return 'What is the justification, and what would invalidate the mission?';
+  if (missionState === 'deployed') return 'Has the authorized plan concluded so we can return to base?';
+  if (missionState === 'return_to_base') return 'What behavior occurred, what discipline was kept, and what lesson remains?';
+  if (missionState === 'debrief') return 'Is the debrief complete enough to archive as institutional memory?';
+  return 'Mission is archived. Do you want to review records or open a new mission?';
+}
+
 function toCommanderMessageAction(action: CommanderNextAction): CommanderMessageAction {
   return {
     id: action.id,
@@ -483,6 +521,13 @@ function parseCommanderMissionState(state?: string): MissionState | undefined {
   }
 
   return undefined;
+}
+
+function formatCommanderMissionState(state: MissionState): string {
+  return state
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 function formatCommanderMessageType(type: CommanderMessage['type']): string {

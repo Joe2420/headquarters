@@ -233,7 +233,7 @@ dd {
 
 .commander-shell-primary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   align-items: start;
 }
@@ -290,6 +290,7 @@ dd {
 }
 
 .commander-transmission {
+  position: relative;
   display: grid;
   gap: 0.25rem;
   max-width: 760px;
@@ -297,6 +298,22 @@ dd {
   border: 1px solid #242b31;
   background: #10161b;
   animation: commander-transmission-arrival 760ms steps(8, end);
+}
+
+.commander-transmission-incoming::after {
+  content: "receiving";
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.45rem;
+  color: #536678;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  animation: commander-transmission-status 1.4s steps(2, end);
+}
+
+.commander-transmission-question {
+  border-left: 3px solid #d9e7ff;
 }
 
 .commander-transmission span {
@@ -435,6 +452,16 @@ dd {
   padding: 0.85rem;
   border: 1px solid #2a333b;
   background: #0f1215;
+}
+
+.commander-workflow-card-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.commander-workflow-card-single .create-mission-panel {
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .commander-workflow-card label {
@@ -588,6 +615,27 @@ dd {
   display: grid;
   align-content: start;
   gap: 1rem;
+}
+
+.room-context-drawer {
+  display: grid;
+  gap: 0.85rem;
+  padding: 0.85rem;
+  border: 1px solid #242b31;
+  background: #0d1013;
+}
+
+.room-context-drawer summary {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  color: #d9e7ff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.room-context-drawer[open] {
+  gap: 0.85rem;
 }
 
 .room-transition-layer,
@@ -1288,6 +1336,17 @@ dd {
   to {
     opacity: 1;
     clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes commander-transmission-status {
+  0%,
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }
 
