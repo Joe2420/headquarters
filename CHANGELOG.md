@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0164 - Added Sprint 15 Navigation Experience review package.
+
+HQ-TASK-0163 - Added distinct mission room identity markers and visual contracts.
+
+HQ-TASK-0162 - De-emphasized sidebar navigation while highlighting the Commander recommended room.
+
+HQ-TASK-0161 - Added progressive mission room unlocking through mission compass state derivation.
+
+HQ-TASK-0160 - Added room arrival panels that gate room content behind Commander arrival copy.
+
+HQ-TASK-0159 - Added deterministic room transition state, rendering, and recovery behavior.
+
+HQ-TASK-0158 - Added Commander-led Continue routing with sidebar fallback.
+
+HQ-TASK-0157 - Added runtime mission compass integration for active missions.
+
 HQ-TASK-0156 - Added Sprint 14 Commander Experience review package.
 
 HQ-TASK-0155 - Added deterministic Commander memory surface using existing local evidence only.

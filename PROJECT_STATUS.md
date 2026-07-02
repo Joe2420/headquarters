@@ -2,6 +2,22 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0164 - Sprint 15 Navigation Experience Review Package
+
+- HQ-TASK-0163 - Room Identity Pass
+
+- HQ-TASK-0162 - Sidebar De-emphasis
+
+- HQ-TASK-0161 - Progressive Room Unlocking
+
+- HQ-TASK-0160 - Room Arrival Experience
+
+- HQ-TASK-0159 - Door Transition Experience
+
+- HQ-TASK-0158 - Commander-led Navigation
+
+- HQ-TASK-0157 - Mission Compass Runtime
+
 - HQ-TASK-0156 - Sprint 14 Commander Experience Review Package
 
 - HQ-TASK-0155 - Commander Memory Surface
