@@ -77,6 +77,23 @@ describe('CommanderExperience', () => {
     expect(html).toContain('War Room Authorization');
   });
 
+  it('renders Commander atmosphere surfaces when provided', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'command',
+      activeMission: undefined,
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel
+      state={state}
+      commandChair={<section>Command Chair Presence</section>}
+      situationBoard={<section>Situation Board Presence</section>}
+    />);
+
+    expect(html).toContain('aria-label="Commander atmosphere deck"');
+    expect(html).toContain('Command Chair Presence');
+    expect(html).toContain('Situation Board Presence');
+  });
+
   it('derives exactly one primary next action for main lifecycle states', () => {
     expect(getCommanderNextAction('not-reported').label).toBe('Report for Duty');
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');

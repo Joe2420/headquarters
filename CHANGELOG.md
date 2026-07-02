@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0172 - Added Sprint 16 Headquarters Atmosphere review package.
+
+HQ-TASK-0171 - Polished Headquarters transitions with subtle CSS motion and reduced-motion support.
+
+HQ-TASK-0170 - Added lightweight mission phase ceremony moments.
+
+HQ-TASK-0169 - Added ambient Headquarters status strip.
+
+HQ-TASK-0168 - Added deterministic Situation Board environmental surface.
+
+HQ-TASK-0167 - Added restrained room atmosphere tokens.
+
+HQ-TASK-0166 - Added Headquarters door opening visual pass.
+
+HQ-TASK-0165 - Added operational Command Chair presence in the Commander shell.
+
 HQ-TASK-0164 - Added Sprint 15 Navigation Experience review package.
 
 HQ-TASK-0163 - Added distinct mission room identity markers and visual contracts.

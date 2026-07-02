@@ -2,6 +2,22 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0172 - Sprint 16 Headquarters Atmosphere Review Package
+
+- HQ-TASK-0171 - Subtle Motion and Transition Polish
+
+- HQ-TASK-0170 - Mission Phase Ceremony Moments
+
+- HQ-TASK-0169 - Ambient Headquarters Status Strip
+
+- HQ-TASK-0168 - Situation Board MVP
+
+- HQ-TASK-0167 - Room Lighting and Atmosphere Tokens
+
+- HQ-TASK-0166 - Headquarters Door Opening Visual Pass
+
+- HQ-TASK-0165 - Command Chair Operational Presence
+
 - HQ-TASK-0164 - Sprint 15 Navigation Experience Review Package
 
 - HQ-TASK-0163 - Room Identity Pass

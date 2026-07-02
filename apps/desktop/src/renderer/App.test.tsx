@@ -97,6 +97,10 @@ describe('Desktop shell', () => {
     expect(styles).toContain('overflow-wrap: anywhere');
     expect(styles).toContain('.nav-item:hover');
     expect(styles).toContain('.nav-item[data-nav-section="commander"]');
+    expect(styles).toContain('.commander-atmosphere-deck');
+    expect(styles).toContain('.ambient-status-strip');
+    expect(styles).toContain('@keyframes commander-message-arrival');
+    expect(styles).toContain('.room-transition-layer::before');
     expect(styles).toContain('.skip-link:focus-visible');
   });
 
@@ -111,6 +115,16 @@ describe('Desktop shell', () => {
     expect(html).toContain('Database');
     expect(html).toContain('Startup');
     expect(html).toContain('Recovery standby while Headquarters checks local infrastructure.');
+  });
+
+  it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('Commander atmosphere deck');
+    expect(html).toContain('Command Chair');
+    expect(html).toContain('Situation Board');
+    expect(html).toContain('Ambient Headquarters status');
+    expect(html).toContain('HQOS:');
   });
 
   it('renders beta accessibility landmarks and live status semantics', () => {
@@ -163,6 +177,45 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-identity="decision"');
     expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-identity="reflection"');
     expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
+  });
+
+  it('renders restrained atmosphere tokens for major rooms', () => {
+    const mission: ActiveMission = {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      condition: 'Briefing',
+      commandAuthority: 'Professional command',
+      currentState: 'briefing',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    };
+
+    expect(renderToStaticMarkup(<CommandCenter activeMission={mission} />)).toContain('data-room-atmosphere="command"');
+    expect(renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />)).toContain('data-room-atmosphere="ready"');
+    expect(renderToStaticMarkup(<ObservationRoom activeMission={mission} />)).toContain('data-room-atmosphere="observation"');
+    expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-atmosphere="war"');
+    expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-atmosphere="debrief"');
+    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-atmosphere="archive"');
+    expect(renderToStaticMarkup(<JournalRoom
+      journalEntries={[]}
+      dailyReflections={[]}
+      tradeReviews={[]}
+      growthEvents={[]}
+      archivedJournalEntries={[]}
+      onCreateJournalEntry={() => undefined}
+      onCreateDailyReflection={() => undefined}
+      onCreateTradeReview={() => undefined}
+      onCreateGrowthEvent={() => undefined}
+      onArchiveJournalEntry={() => undefined}
+    />)).toContain('data-room-atmosphere="journal"');
+    expect(renderToStaticMarkup(<DoctrineRoom
+      doctrineRecords={[]}
+      doctrineHistory={[]}
+      onPromoteDoctrineCandidate={() => undefined}
+    />)).toContain('data-room-atmosphere="doctrine"');
+    expect(renderToStaticMarkup(<AcademyRoom growthEvents={[]} />)).toContain('data-room-atmosphere="academy"');
+    expect(renderToStaticMarkup(<GuardianRoom />)).toContain('data-room-atmosphere="guardian"');
+    expect(renderToStaticMarkup(<IntelligenceCenterRoom journalEntries={[]} growthEvents={[]} />)).toContain('data-room-atmosphere="intelligence"');
   });
 
   it('derives exactly one active primary navigation item', () => {
