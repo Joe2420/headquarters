@@ -94,12 +94,16 @@ export function CommanderExperiencePanel({
   onAcknowledgeInterruption,
   onContinue,
   compassSteps,
+  commandChair,
+  situationBoard,
   workflowSurface,
 }: {
   readonly state: CommanderExperienceState;
   readonly onAcknowledgeInterruption?: ((id: string) => void) | undefined;
   readonly onContinue?: (() => void) | undefined;
   readonly compassSteps?: readonly MissionCompassStep[] | undefined;
+  readonly commandChair?: ReactNode;
+  readonly situationBoard?: ReactNode;
   readonly workflowSurface?: ReactNode;
 }) {
   return (
@@ -131,6 +135,13 @@ export function CommanderExperiencePanel({
           ) : null}
         </div>
       </div>
+
+      {commandChair || situationBoard ? (
+        <div className="commander-atmosphere-deck" aria-label="Commander atmosphere deck">
+          {commandChair}
+          {situationBoard}
+        </div>
+      ) : null}
 
       {workflowSurface ? (
         <div className="commander-workflow-surface" aria-label="Commander workflow controls">

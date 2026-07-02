@@ -90,6 +90,15 @@ import {
   type RoomArrival,
   type RoomTransitionState,
 } from './RoomNavigationExperience';
+import {
+  AmbientStatusStrip,
+  MissionCeremonyMoment,
+  OperationalCommandChair,
+  SituationBoard,
+  buildMissionCeremony,
+  formatRoomLabel,
+  getRoomAtmosphereToken,
+} from './HeadquartersAtmosphere';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -419,6 +428,12 @@ export function App() {
   const missionCompassSteps = activeMission
     ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
     : undefined;
+  const reportState = shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported';
+  const guardianStatus = formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts');
+  const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
+  const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
+  const activeMissionState = parseMissionState(activeMission?.currentState);
+  const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
 
   async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
@@ -569,6 +584,21 @@ export function App() {
           <CommanderExperiencePanel
             state={commanderState}
             compassSteps={missionCompassSteps}
+            commandChair={<OperationalCommandChair
+              reportState={reportState}
+              currentRoom={currentCommanderRoom}
+              mission={activeMission}
+              primaryAction={commanderState.nextAction.label}
+            />}
+            situationBoard={<SituationBoard input={{
+              hqosStatus: formatHqosStatus(startupStatus),
+              currentMissionPhase: missionPhaseSummary,
+              recommendedRoom: commanderState.recommendedRoom,
+              guardianStatus,
+              recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
+              recentGrowth: formatRecentGrowthHighlight(growthEvents),
+              intelligenceIndicator: formatJournalCount(buildDesktopIntelligenceEvidenceRecords(buildDesktopJournalClassifications(journalEntries)).length, 'intelligence record', 'intelligence records'),
+            }} />}
             workflowSurface={<CommanderWorkflowSurface
               currentRoom={currentCommanderRoom}
               activeMission={activeMission}
@@ -594,8 +624,16 @@ export function App() {
               ));
             }}
           />
+          <AmbientStatusStrip input={{
+            hqos: formatHqosStatus(startupStatus),
+            archive: formatArchiveViewerStatus(archivedMissionSummaries),
+            mission: formatMissionDetailState(activeMission),
+            guardian: guardianStatus,
+            currentRoom: currentRoomLabel,
+          }} />
 
-          <section className="workspace-panel" aria-label="Main content">
+          <section className="workspace-panel" aria-label="Main content" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
+            <MissionCeremonyMoment ceremony={missionCeremony} />
             {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
             {shellPhase === 'security-checkpoint' ? (
               <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
@@ -1080,7 +1118,7 @@ function CommandOverview({
   });
 
   return (
-    <div className="command-center-layout" data-layout="command-center">
+    <div className="command-center-layout" data-layout="command-center" data-room-atmosphere="command">
       <section className="command-center-header" aria-label="Command center overview">
         <p className="section-label">Command Center</p>
         <h2>Headquarters Overview</h2>
@@ -1229,7 +1267,7 @@ interface MissionRoomProps extends CommandCenterProps {
 
 function MissionRoom(props: MissionRoomProps) {
   return (
-    <div className="room-layout" data-room-id="mission-room">
+    <div className="room-layout" data-room-id="mission-room" data-room-atmosphere="command">
       <section className="command-center-header" aria-label="Mission room status">
         <p className="section-label">Mission Room</p>
         <h2>Mission Operations</h2>
@@ -1253,7 +1291,7 @@ export function ReadyRoom({
   const recentMission = missionHistory.at(-1);
 
   return (
-    <div className="room-layout" data-room-id="ready-room" data-room-identity="preparation">
+    <div className="room-layout" data-room-id="ready-room" data-room-identity="preparation" data-room-atmosphere="ready">
       <section className="command-center-header" aria-label="Ready room status">
         <p className="section-label">Ready Room</p>
         <h2>Mission Readiness</h2>
@@ -1311,7 +1349,7 @@ export function ObservationRoom({
   });
 
   return (
-    <div className="room-layout" data-room-id="observation-room" data-room-identity="silence">
+    <div className="room-layout" data-room-id="observation-room" data-room-identity="silence" data-room-atmosphere="observation">
       <section className="command-center-header" aria-label="Observation room status">
         <p className="section-label">Observation Room</p>
         <h2>Observation</h2>
@@ -1357,7 +1395,7 @@ export function WarRoom({
   const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
 
   return (
-    <div className="room-layout" data-room-id="war-room" data-room-identity="decision">
+    <div className="room-layout" data-room-id="war-room" data-room-identity="decision" data-room-atmosphere="war">
       <section className="command-center-header" aria-label="War room status">
         <p className="section-label">War Room</p>
         <h2>Authorization Terminal</h2>
@@ -1398,7 +1436,7 @@ export function DebriefTheater({
   'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
 >) {
   return (
-    <div className="room-layout" data-room-id="debrief-theater" data-room-identity="reflection">
+    <div className="room-layout" data-room-id="debrief-theater" data-room-identity="reflection" data-room-atmosphere="debrief">
       <section className="command-center-header" aria-label="Debrief theater status">
         <p className="section-label">Debrief Theater</p>
         <h2>Mission Debrief</h2>
@@ -1634,7 +1672,7 @@ export function CommandCenter({
   onArchiveMission,
 }: CommandCenterProps) {
   return (
-    <div className="command-center-layout" data-layout="command-center">
+    <div className="command-center-layout" data-layout="command-center" data-room-atmosphere="command">
       <section className="command-center-header" aria-label="Command center status">
         <p className="section-label">Main Content</p>
         <h2>Command Center</h2>
@@ -2405,7 +2443,7 @@ export function JournalRoom({
   }
 
   return (
-    <div className="room-layout" data-room-id="journal-room">
+    <div className="room-layout" data-room-id="journal-room" data-room-atmosphere="journal">
       <section className="command-center-header" aria-label="Journal room status">
         <p className="section-label">Journal Room</p>
         <h2>Guided Journal</h2>
@@ -2584,7 +2622,7 @@ export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
   const dashboard = buildDesktopAcademyDashboard(growthEvents);
 
   return (
-    <div className="room-layout" data-room-id="academy-room">
+    <div className="room-layout" data-room-id="academy-room" data-room-atmosphere="academy">
       <section className="command-center-header" aria-label="Academy room status">
         <p className="section-label">Academy Room</p>
         <h2>Academy Dashboard</h2>
@@ -2673,7 +2711,7 @@ export function GuardianRoom() {
   const lockout = buildDesktopGuardianLockoutState();
 
   return (
-    <div className="room-layout" data-room-id="guardian-room">
+    <div className="room-layout" data-room-id="guardian-room" data-room-atmosphere="guardian">
       <section className="command-center-header" aria-label="Guardian room status">
         <p className="section-label">Guardian Wing</p>
         <h2>Guardian Alerts</h2>
@@ -2745,7 +2783,7 @@ export function IntelligenceCenterRoom({
   );
 
   return (
-    <div className="room-layout" data-room-id="intelligence-center">
+    <div className="room-layout" data-room-id="intelligence-center" data-room-atmosphere="intelligence">
       <section className="command-center-header" aria-label="Intelligence center status">
         <p className="section-label">Intelligence Center</p>
         <h2>Journal Classification</h2>
@@ -3072,7 +3110,7 @@ export function ArchiveRoom({
   const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
 
   return (
-    <div className="room-layout" data-room-id="archive-room" data-room-identity="historical">
+    <div className="room-layout" data-room-id="archive-room" data-room-identity="historical" data-room-atmosphere="archive">
       <section className="command-center-header" aria-label="Archive room status">
         <p className="section-label">Archive Room</p>
         <h2>Archive</h2>
@@ -3329,7 +3367,7 @@ export function DoctrineRoom({
   onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
 }) {
   return (
-    <div className="room-layout" data-room-id="doctrine-room">
+    <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
       <section className="command-center-header" aria-label="Doctrine room status">
         <p className="section-label">Doctrine Chamber</p>
         <h2>Doctrine Review</h2>
