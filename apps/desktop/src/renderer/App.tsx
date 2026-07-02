@@ -99,6 +99,7 @@ import {
   formatRoomLabel,
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
+import { GuidedRoom } from './GuidedRoom';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -442,6 +443,13 @@ export function App() {
     }
 
     const continueMode = getCommanderContinueMode(activeMission, currentCommanderRoom, commanderState.recommendedRoom);
+
+    if (activeMission === undefined && currentCommanderRoom === 'command') {
+      setRoomTransition(undefined);
+      setRoomArrival(undefined);
+      setActiveRoom('missions');
+      return;
+    }
 
     if (continueMode === 'advance-mission' && activeMission) {
       await handleCommanderWorkflowContinue(activeMission);
@@ -1291,13 +1299,15 @@ export function ReadyRoom({
   const recentMission = missionHistory.at(-1);
 
   return (
-    <div className="room-layout" data-room-id="ready-room" data-room-identity="preparation" data-room-atmosphere="ready">
-      <section className="command-center-header" aria-label="Ready room status">
-        <p className="section-label">Ready Room</p>
-        <h2>Mission Readiness</h2>
-        <p className="muted">Preparation, daily orders, oath, and operator locker state before observation begins.</p>
-      </section>
-      <section className="guided-workflow-layout" aria-label="Ready room workspace">
+    <GuidedRoom
+      id="ready-room"
+      identity="preparation"
+      atmosphere="ready"
+      title="Ready Room"
+      commander="Prepare the mission before observation begins."
+      objective={activeMission?.objective ?? 'Create a mission before entering preparation.'}
+      primaryAction={<strong>{nextAction.buttonLabel === 'Start Observation' ? 'Begin Observation' : nextAction.label}</strong>}
+      workspace={(
         <section className="journal-panel" aria-label="Readiness report">
           <p className="section-label">ReadinessReport</p>
           <h3>{nextAction.label}</h3>
@@ -1309,28 +1319,34 @@ export function ReadyRoom({
             <dd>{formatRecentGrowthHighlight(growthEvents)}</dd>
           </dl>
         </section>
+      )}
+      timeline={(
         <section className="journal-panel" aria-label="Daily orders card">
           <p className="section-label">DailyOrdersCard</p>
           <h3>{activeMission?.campaign ?? 'No active orders'}</h3>
           <p className="muted">{activeMission?.objective ?? 'Create a mission before moving into observation.'}</p>
         </section>
-        <section className="journal-panel" aria-label="Oath panel">
+      )}
+      secondaryTools={(
+        <>
+          <section className="journal-panel" aria-label="Oath panel">
           <p className="section-label">OathPanel</p>
           <h3>Command Oath</h3>
           <p className="muted">{activeMission?.commandAuthority ?? 'Command authority is assigned when a mission exists.'}</p>
-        </section>
-        <section className="journal-panel" aria-label="Locker panel">
-          <p className="section-label">LockerPanel</p>
-          <h3>Operator Locker</h3>
-          <dl>
-            <dt>Missions Recorded</dt>
-            <dd>{missionHistory.length}</dd>
-            <dt>Last Mission</dt>
-            <dd>{recentMission?.campaign ?? 'No prior mission'}</dd>
-          </dl>
-        </section>
-      </section>
-    </div>
+          </section>
+          <section className="journal-panel" aria-label="Locker panel">
+            <p className="section-label">LockerPanel</p>
+            <h3>Operator Locker</h3>
+            <dl>
+              <dt>Missions Recorded</dt>
+              <dd>{missionHistory.length}</dd>
+              <dt>Last Mission</dt>
+              <dd>{recentMission?.campaign ?? 'No prior mission'}</dd>
+            </dl>
+          </section>
+        </>
+      )}
+    />
   );
 }
 
@@ -1347,37 +1363,50 @@ export function ObservationRoom({
     missionDebrief,
     archiveSummary,
   });
+  const nextAction = getMissionNextAction(activeMission);
 
   return (
-    <div className="room-layout" data-room-id="observation-room" data-room-identity="silence" data-room-atmosphere="observation">
-      <section className="command-center-header" aria-label="Observation room status">
-        <p className="section-label">Observation Room</p>
-        <h2>Observation</h2>
-        <p className="muted">Watch the mission state without market prediction, PnL, or broker control.</p>
-      </section>
-      <section className="guided-workflow-layout" aria-label="Observation room workspace">
+    <GuidedRoom
+      id="observation-room"
+      identity="silence"
+      atmosphere="observation"
+      title="Observation Room"
+      commander="Observe without participating. Future decisions stay outside this room."
+      objective="Keep charts and notes central until observation is complete."
+      primaryAction={<strong>{nextAction.label === 'Complete Observation' ? 'Complete Observation' : 'Observe'}</strong>}
+      workspace={(
         <section className="journal-panel" aria-label="Observation timer">
           <p className="section-label">ObservationTimer</p>
           <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
           <p className="muted">{formatTimelineViewerStatus(entries)}</p>
         </section>
-        <section className="journal-panel" aria-label="Compass indicator">
+      )}
+      timeline={<MissionTimelineViewerPanel
+        activeMission={activeMission}
+        authorizationStatus={authorizationStatus}
+        missionDebrief={missionDebrief}
+        archiveSummary={archiveSummary}
+      />}
+      secondaryTools={(
+        <>
+          <section className="journal-panel" aria-label="Compass indicator">
           <p className="section-label">CompassIndicator</p>
-          <h3>{getMissionNextAction(activeMission).label}</h3>
-          <p className="muted">{getMissionNextAction(activeMission).description}</p>
-        </section>
-        <section className="journal-panel" aria-label="Artificial horizon">
-          <p className="section-label">ArtificialHorizon</p>
-          <h3>{currentState === 'observation' ? 'Level' : 'Calm'}</h3>
-          <p className="muted">Operator stability is represented as a quiet status, not a trading signal.</p>
-        </section>
-        <section className="journal-panel" aria-label="Silence state display">
-          <p className="section-label">SilenceStateDisplay</p>
-          <h3>No Broker Control</h3>
-          <p className="muted">Headquarters observes and records. It does not place trades.</p>
-        </section>
-      </section>
-    </div>
+          <h3>{nextAction.label}</h3>
+          <p className="muted">{nextAction.description}</p>
+          </section>
+          <section className="journal-panel" aria-label="Artificial horizon">
+            <p className="section-label">ArtificialHorizon</p>
+            <h3>{currentState === 'observation' ? 'Level' : 'Calm'}</h3>
+            <p className="muted">Operator stability is represented as a quiet status, not a trading signal.</p>
+          </section>
+          <section className="journal-panel" aria-label="Silence state display">
+            <p className="section-label">SilenceStateDisplay</p>
+            <h3>No Broker Control</h3>
+            <p className="muted">Headquarters observes and records. It does not place trades.</p>
+          </section>
+        </>
+      )}
+    />
   );
 }
 
@@ -1393,33 +1422,42 @@ export function WarRoom({
   const alerts = buildDesktopGuardianAlerts();
   const lockout = buildDesktopGuardianLockoutState();
   const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
+  const authorizationDenied = authorizationStatus?.decision === 'denied';
 
   return (
-    <div className="room-layout" data-room-id="war-room" data-room-identity="decision" data-room-atmosphere="war">
-      <section className="command-center-header" aria-label="War room status">
-        <p className="section-label">War Room</p>
-        <h2>Authorization Terminal</h2>
-        <p className="muted">Authorization remains rule-based and manually declared. Headquarters never places trades.</p>
-      </section>
-      <section className="guided-workflow-layout" aria-label="War room workspace">
+    <GuidedRoom
+      id="war-room"
+      identity="decision"
+      atmosphere="war"
+      title="War Room"
+      commander={authorizationDenied ? 'Authorization denied. Complete the missing evidence before proceeding.' : 'Make one decision from the authorized evidence.'}
+      objective="Evaluate authorization without exposing unrelated workflows. Headquarters never places trades."
+      primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
+      workspace={(
         <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
+      )}
+      timeline={(
         <section className="journal-panel" aria-label="War table projection">
-          <p className="section-label">WarTableProjection</p>
-          <h3>{activeMission?.campaign ?? 'No active mission'}</h3>
-          <p className="muted">{activeMission?.objective ?? 'Create and prepare a mission before authorization.'}</p>
-        </section>
-        <section className="journal-panel" aria-label="Guardian status panel">
-          <p className="section-label">GuardianStatusPanel</p>
-          <h3>{lockout.status === 'locked' ? 'Intervention Required' : 'Guardian Standing By'}</h3>
-          <p className="muted">{formatJournalCount(alerts.length, 'Guardian alert', 'Guardian alerts')}</p>
-        </section>
-        <section className="journal-panel" aria-label="Ghost comparison panel">
-          <p className="section-label">GhostComparisonPanel</p>
-          <h3>{comparisonMission?.campaign ?? 'No comparison mission'}</h3>
-          <p className="muted">Comparison remains read-only until replay and ghost workflows are approved.</p>
-        </section>
-      </section>
-    </div>
+            <p className="section-label">WarTableProjection</p>
+            <h3>{activeMission?.campaign ?? 'No active mission'}</h3>
+            <p className="muted">{activeMission?.objective ?? 'Create and prepare a mission before authorization.'}</p>
+          </section>
+      )}
+      secondaryTools={(
+        <>
+          <section className="journal-panel" aria-label="Guardian status panel">
+            <p className="section-label">GuardianStatusPanel</p>
+            <h3>{lockout.status === 'locked' ? 'Intervention Required' : 'Guardian Standing By'}</h3>
+            <p className="muted">{formatJournalCount(alerts.length, 'Guardian alert', 'Guardian alerts')}</p>
+          </section>
+          <section className="journal-panel" aria-label="Ghost comparison panel">
+            <p className="section-label">GhostComparisonPanel</p>
+            <h3>{comparisonMission?.campaign ?? 'No comparison mission'}</h3>
+            <p className="muted">Comparison remains read-only until replay and ghost workflows are approved.</p>
+          </section>
+        </>
+      )}
+    />
   );
 }
 
@@ -1428,54 +1466,57 @@ export function DebriefTheater({
   authorizationStatus,
   missionDebrief,
   archiveSummary,
-  onMissionChanged,
-  onRequestAuthorization,
-  onSaveDebrief,
-  onArchiveMission,
 }: MissionTimelineViewerPanelProps & Pick<CommandCenterProps,
   'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
 >) {
+  const entries = buildDesktopMissionTimelineEntries({
+    activeMission,
+    authorizationStatus,
+    missionDebrief,
+    archiveSummary,
+  });
+
   return (
-    <div className="room-layout" data-room-id="debrief-theater" data-room-identity="reflection" data-room-atmosphere="debrief">
-      <section className="command-center-header" aria-label="Debrief theater status">
-        <p className="section-label">Debrief Theater</p>
-        <h2>Mission Debrief</h2>
-        <p className="muted">Review the sequence, write the lesson, and prepare archive evidence.</p>
-      </section>
-      <section className="guided-workflow-layout" aria-label="Debrief theater workspace">
-        <MissionTimelineViewerPanel
-          activeMission={activeMission}
-          authorizationStatus={authorizationStatus}
-          missionDebrief={missionDebrief}
-          archiveSummary={archiveSummary}
-        />
+    <GuidedRoom
+      id="debrief-theater"
+      identity="reflection"
+      atmosphere="debrief"
+      title="Debrief Theater"
+      commander="Begin with behavior. Reflection comes before archive."
+      objective="Capture behavior summary, discipline notes, and one lesson before closing the mission."
+      primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
+      workspace={(
         <section className="journal-panel" aria-label="BlackBoxViewer">
           <p className="section-label">BlackBoxViewer</p>
           <h3>Behavior Sequence</h3>
-          <p className="muted">{formatTimelineViewerStatus(buildDesktopMissionTimelineEntries({
-            activeMission,
-            authorizationStatus,
-            missionDebrief,
-            archiveSummary,
-          }))}</p>
+          <p className="muted">{formatTimelineViewerStatus(entries)}</p>
+          <dl>
+            <dt>Behavior Summary</dt>
+            <dd>{missionDebrief?.behaviorSummary ?? 'Awaiting Commander debrief input'}</dd>
+            <dt>Reflection</dt>
+            <dd>{missionDebrief?.disciplineNotes ?? 'Discipline notes come second'}</dd>
+            <dt>Lessons</dt>
+            <dd>{missionDebrief?.lesson ?? 'Lesson comes before archive'}</dd>
+          </dl>
         </section>
-        <section className="journal-panel" aria-label="DecisionReportPanel">
-          <p className="section-label">DecisionReportPanel</p>
-          <h3>{authorizationStatus?.decision === 'approved' ? 'Authorized' : 'Decision Pending'}</h3>
-          <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
-        </section>
-        <MissionNextActionPanel
-          activeMission={activeMission}
-          authorizationStatus={authorizationStatus}
-          missionDebrief={missionDebrief}
-          onMissionChanged={onMissionChanged}
-          onRequestAuthorization={onRequestAuthorization}
-          onSaveDebrief={onSaveDebrief}
-          onArchiveMission={onArchiveMission}
-        />
-        <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} />
-      </section>
-    </div>
+      )}
+      timeline={<MissionTimelineViewerPanel
+        activeMission={activeMission}
+        authorizationStatus={authorizationStatus}
+        missionDebrief={missionDebrief}
+        archiveSummary={archiveSummary}
+      />}
+      secondaryTools={(
+        <>
+          <section className="journal-panel" aria-label="DecisionReportPanel">
+            <p className="section-label">DecisionReportPanel</p>
+            <h3>{authorizationStatus?.decision === 'approved' ? 'Authorized' : 'Decision Pending'}</h3>
+            <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+          </section>
+          <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} />
+        </>
+      )}
+    />
   );
 }
 
@@ -3108,34 +3149,45 @@ export function ArchiveRoom({
   const dashboard = buildDesktopArchiveDashboard(archivedMissionSummaries, archivedJournalEntries);
   const records = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries);
   const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
+  const latestMissionSummary = archivedMissionSummaries[archivedMissionSummaries.length - 1];
 
   return (
-    <div className="room-layout" data-room-id="archive-room" data-room-identity="historical" data-room-atmosphere="archive">
-      <section className="command-center-header" aria-label="Archive room status">
-        <p className="section-label">Archive Room</p>
-        <h2>Archive</h2>
-        <p className="muted">Mission archive, Journal archive, and historical views.</p>
-      </section>
-      <section className="command-center-panels" aria-label="Archive workspace">
-        <ArchiveSearchPanel
-          searchText={archiveSearchText}
-          onSearchTextChange={setArchiveSearchText}
-          resultCount={searchResults.length}
-        />
-        <ArchiveDashboardPanel dashboard={dashboard} />
+    <GuidedRoom
+      id="archive-room"
+      identity="historical"
+      atmosphere="archive"
+      title="Archive Room"
+      commander="Read the record chronologically. Do not edit the past."
+      objective={latestMissionSummary ? `${latestMissionSummary.codename} preserved as institutional memory.` : 'Historical records will appear after mission archive.'}
+      primaryAction={<strong>{formatArchiveViewerStatus(archivedMissionSummaries)}</strong>}
+      workspace={(
         <ArchiveCardPanel records={records} />
+      )}
+      timeline={(
+        <>
+          <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+          <ArchiveEventExplorerPanel eventInspections={eventInspections} />
+          <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
+        </>
+      )}
+      secondaryTools={(
+        <>
+          <ArchiveSearchPanel
+            searchText={archiveSearchText}
+            onSearchTextChange={setArchiveSearchText}
+            resultCount={searchResults.length}
+          />
+          <ArchiveDashboardPanel dashboard={dashboard} />
         <CampaignBookViewPanel summaries={archivedMissionSummaries} />
         <DoctrineRecordViewPanel doctrineRecords={doctrineRecords} />
-        <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
-        <ArchiveEventExplorerPanel eventInspections={eventInspections} />
-        <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
-        <section className="journal-panel" aria-label="Journal archive overview">
-          <p className="section-label">Journal Archive</p>
-          <h3>Journal Archive</h3>
-          <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
-        </section>
-      </section>
-    </div>
+          <section className="journal-panel" aria-label="Journal archive overview">
+            <p className="section-label">Journal Archive</p>
+            <h3>Journal Archive</h3>
+            <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
+          </section>
+        </>
+      )}
+    />
   );
 }
 

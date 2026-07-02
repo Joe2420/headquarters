@@ -179,6 +179,49 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
   });
 
+  it('renders Sprint 17 guided room structure for mission path rooms', () => {
+    const mission: ActiveMission = {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      condition: 'Ready',
+      commandAuthority: 'Professional command',
+      currentState: 'ready',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    };
+
+    const readyHtml = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
+    const observationHtml = renderToStaticMarkup(<ObservationRoom activeMission={{ ...mission, currentState: 'observation' }} />);
+    const warHtml = renderToStaticMarkup(<WarRoom activeMission={{ ...mission, currentState: 'authorization' }} missionHistory={[mission]} />);
+    const debriefHtml = renderToStaticMarkup(<DebriefTheater activeMission={{ ...mission, currentState: 'return_to_base' }} />);
+
+    expect(readyHtml).toContain('class="guided-room room-layout"');
+    expect(readyHtml).toContain('Begin Observation');
+    expect(observationHtml).toContain('Observe without participating');
+    expect(observationHtml).not.toContain('Evaluate Authorization');
+    expect(warHtml).toContain('Evaluate Authorization');
+    expect(debriefHtml).toContain('Behavior Sequence');
+    expect(debriefHtml).not.toContain('Mission next action');
+  });
+
+  it('renders Archive as a chronological guided dossier instead of a dashboard surface', () => {
+    const html = renderToStaticMarkup(<ArchiveRoom
+      archivedMissionSummaries={[{
+        missionId: 'mission-001',
+        codename: 'Foundation Patrol',
+        archivedAt: '2026-07-02T00:10:00.000Z',
+        eventCount: 2,
+      }]}
+      archivedJournalEntries={[]}
+      doctrineRecords={[]}
+    />);
+
+    expect(html).toContain('Read the record chronologically');
+    expect(html).toContain('Foundation Patrol preserved as institutional memory.');
+    expect(html).toContain('Timeline / History');
+    expect(html).toContain('Mission Archive Viewer');
+  });
+
   it('renders restrained atmosphere tokens for major rooms', () => {
     const mission: ActiveMission = {
       id: 'mission-001',

@@ -692,6 +692,71 @@ dd {
   max-width: 920px;
 }
 
+.guided-room {
+  max-width: 980px;
+}
+
+.guided-room-commander,
+.guided-room-header,
+.guided-room-primary-action,
+.guided-room-workspace,
+.guided-room-timeline,
+.guided-room-secondary-tools {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #242b31;
+  background: #0f1215;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+
+.guided-room-commander {
+  border-left: 3px solid #d9e7ff;
+  background: #121820;
+}
+
+.guided-room-commander h2 {
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.guided-room-primary-action {
+  border-color: #3b4650;
+  background: #101820;
+}
+
+.guided-room-primary-action strong {
+  font-size: 1.05rem;
+}
+
+.guided-room-workspace {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.guided-room-timeline,
+.guided-room-secondary-tools {
+  background: #0d1013;
+}
+
+.guided-room-timeline summary,
+.guided-room-secondary-tools summary {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  color: #d9e7ff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.guided-room-timeline[open],
+.guided-room-secondary-tools[open] {
+  gap: 0.85rem;
+}
+
 .commander-briefing-panel,
 .current-objective-panel,
 .current-action-panel,
