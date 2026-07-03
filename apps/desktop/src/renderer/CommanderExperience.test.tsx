@@ -203,11 +203,56 @@ describe('CommanderExperience', () => {
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');
     expect(getCommanderNextAction('reported', 'briefing').label).toBe('Complete Briefing');
     expect(getCommanderNextAction('reported', 'briefing').disabled).toBe(true);
-    expect(getCommanderNextAction('reported', 'observation').label).toBe('Begin Observation');
+    expect(getCommanderNextAction('reported', 'ready').label).toBe('Begin Observation');
+    expect(getCommanderNextAction('reported', 'ready').disabled).toBe(false);
+    expect(getCommanderNextAction('reported', 'observation').label).toBe('Complete Observation');
     expect(getCommanderNextAction('reported', 'observation').disabled).toBe(true);
     expect(getCommanderNextAction('reported', 'authorization').label).toBe('Proceed to War Room');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
     expect(getCommanderNextAction('reported', 'debrief').label).toBe('Archive Mission');
+  });
+
+  it('unlocks lifecycle Continue after required briefing and observation context is saved', () => {
+    const briefingAction = getCommanderNextAction('reported', 'briefing', {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      currentState: 'briefing',
+      createdAt: '2026-07-02T00:00:00.000Z',
+      briefingContext: {
+        missionObjective: 'Trade the morning breakout.',
+        marketEnvironment: 'Trending.',
+        highImpactNews: 'None.',
+        personalReadiness: 'Focused.',
+        riskParameters: '1%.',
+        successCriteria: 'Follow the plan.',
+      },
+    });
+    const observationAction = getCommanderNextAction('reported', 'observation', {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      currentState: 'observation',
+      createdAt: '2026-07-02T00:00:00.000Z',
+      observationContext: {
+        marketDirection: 'Up.',
+        marketStructure: 'Higher highs.',
+        volume: 'Rising.',
+        liquidity: 'Above prior high.',
+        keyLevels: 'London high and VWAP.',
+        bias: 'Long continuation.',
+        invalidationEvidence: 'Break below VWAP.',
+        emotionalCheck: 'Focused.',
+        readiness: 'yes',
+        operationalPicture: 'Trend up, liquidity above, invalidation below VWAP.',
+      },
+    });
+
+    expect(briefingAction.disabled).toBe(false);
+    expect(briefingAction.description).toContain('Proceed to Observation');
+    expect(observationAction.disabled).toBe(false);
+    expect(observationAction.label).toBe('Complete Observation');
+    expect(observationAction.description).toContain('Proceed to War Room');
   });
 
   it('exposes lifecycle step and relevant Commander question for active mission state', () => {

@@ -6,6 +6,8 @@ import type { CommanderShellRoomId } from './CommanderShell';
 import {
   getNextObservationInterviewQuestion,
   getNextReadyRoomBriefingQuestion,
+  isObservationInterviewComplete,
+  isReadyRoomBriefingComplete,
   type MissionBriefingContext,
   type MissionObservationContext,
 } from './CommanderMissionBriefing';
@@ -102,7 +104,7 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
   const missionState = parseCommanderMissionState(input.activeMission?.currentState);
   const roomBehavior = getCommanderRoomBehavior(input.activeRoom, input.reportState, missionState, input.activeMission);
   const recommendedRoom = input.reportState === 'not-reported' ? 'command' : recommendRoomForMissionState(missionState);
-  const nextAction = getCommanderNextAction(input.reportState, missionState);
+  const nextAction = getCommanderNextAction(input.reportState, missionState, input.activeMission);
   const interruption = getCommanderInterruption(input, missionState);
   const messages = buildCommanderMessageThread(input, recommendedRoom, nextAction, roomBehavior, interruption);
   const orderedMessages = listCommanderMessagesInDisplayOrder(messages);
@@ -502,6 +504,7 @@ export function mapNavigationRoomToCommanderRoom(room: string): CommanderShellRo
 export function getCommanderNextAction(
   reportState: CommanderReportState,
   missionState?: MissionState | undefined,
+  mission?: CommanderExperienceMission | undefined,
 ): CommanderNextAction {
   if (reportState === 'not-reported') {
     return {
@@ -531,20 +534,37 @@ export function getCommanderNextAction(
   }
 
   if (missionState === 'briefing') {
+    const briefingComplete = isReadyRoomBriefingComplete(mission?.briefingContext);
+
     return {
       id: 'commander-action:complete-briefing',
       label: 'Complete Briefing',
-      description: 'Answer the Commander briefing questions in chat before Observation unlocks.',
-      disabled: true,
+      description: briefingComplete
+        ? 'Operational briefing accepted. Proceed to Observation.'
+        : 'Answer the Commander briefing questions in chat before Observation unlocks.',
+      disabled: !briefingComplete,
     };
   }
 
-  if (missionState === 'ready' || missionState === 'observation') {
+  if (missionState === 'ready') {
     return {
       id: 'commander-action:begin-observation',
       label: 'Begin Observation',
-      description: 'Complete the Commander observation interview before War Room unlocks.',
-      disabled: true,
+      description: 'Begin the Commander observation interview.',
+      disabled: false,
+    };
+  }
+
+  if (missionState === 'observation') {
+    const observationComplete = isObservationInterviewComplete(mission?.observationContext);
+
+    return {
+      id: 'commander-action:complete-observation',
+      label: 'Complete Observation',
+      description: observationComplete
+        ? 'Evidence package accepted. Proceed to War Room authorization.'
+        : 'Complete the Commander observation interview before War Room unlocks.',
+      disabled: !observationComplete,
     };
   }
 

@@ -85,6 +85,8 @@ import {
   answerReadyRoomBriefing,
   getNextObservationInterviewQuestion,
   getNextReadyRoomBriefingQuestion,
+  isObservationInterviewComplete,
+  isReadyRoomBriefingComplete,
   type MissionBriefingContext,
   type MissionObservationContext,
 } from './CommanderMissionBriefing';
@@ -519,7 +521,12 @@ export function App() {
       return;
     }
 
-    if (activeMission && currentCommanderRoom === 'ready-room' && parseMissionState(activeMission.currentState) === 'briefing') {
+    if (
+      activeMission
+      && currentCommanderRoom === 'ready-room'
+      && parseMissionState(activeMission.currentState) === 'briefing'
+      && !isReadyRoomBriefingComplete(activeMission.briefingContext)
+    ) {
       setCommanderWorkflowNotice('Operational briefing incomplete. Answer the Commander in chat.');
       return;
     }
@@ -527,7 +534,8 @@ export function App() {
     if (
       activeMission
       && currentCommanderRoom === 'observation'
-      && (parseMissionState(activeMission.currentState) === 'ready' || parseMissionState(activeMission.currentState) === 'observation')
+      && parseMissionState(activeMission.currentState) === 'observation'
+      && !isObservationInterviewComplete(activeMission.observationContext)
     ) {
       setCommanderWorkflowNotice('Observation interview incomplete. Answer the Commander in chat.');
       return;
@@ -727,15 +735,9 @@ export function App() {
   }
 
   async function completeReadyRoomBriefing(mission: ActiveMission, response: string): Promise<string> {
-    const advancedMission = await advanceMissionFromCommanderContinue(mission);
-
-    if (advancedMission) {
-      setActiveMission(advancedMission);
-      setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
-      setCommanderWorkflowNotice('Operational briefing complete. Observation Room unlocked.');
-      startDoorTransferForMissionRoomChange(mission, advancedMission);
-    }
-
+    setActiveMission(mission);
+    setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setCommanderWorkflowNotice('Operational briefing complete. Continue is unlocked for Observation.');
     return response;
   }
 
@@ -752,15 +754,9 @@ export function App() {
   }
 
   async function completeObservationInterview(mission: ActiveMission, response: string): Promise<string> {
-    const advancedMission = await advanceMissionFromCommanderContinue(mission);
-
-    if (advancedMission) {
-      setActiveMission(advancedMission);
-      setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
-      setCommanderWorkflowNotice('Observation complete. War Room authorization unlocked.');
-      startDoorTransferForMissionRoomChange(mission, advancedMission);
-    }
-
+    setActiveMission(mission);
+    setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setCommanderWorkflowNotice('Observation complete. Continue is unlocked for War Room authorization.');
     return response;
   }
 
@@ -785,13 +781,18 @@ export function App() {
     if (requestedRoom !== undefined && activeMission !== undefined) {
       const requestedCommanderRoom = mapNavigationRoomToCommanderRoom(requestedRoom);
 
-      if (requestedCommanderRoom === 'observation' && parseMissionState(activeMission.currentState) === 'briefing') {
+      if (
+        requestedCommanderRoom === 'observation'
+        && parseMissionState(activeMission.currentState) === 'briefing'
+        && !isReadyRoomBriefingComplete(activeMission.briefingContext)
+      ) {
         return getNextReadyRoomBriefingQuestion(activeMission.briefingContext);
       }
 
       if (
         requestedCommanderRoom === 'war-room'
         && (parseMissionState(activeMission.currentState) === 'ready' || parseMissionState(activeMission.currentState) === 'observation')
+        && !isObservationInterviewComplete(activeMission.observationContext)
       ) {
         return getNextObservationInterviewQuestion(activeMission.observationContext);
       }
