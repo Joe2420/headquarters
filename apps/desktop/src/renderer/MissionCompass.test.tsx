@@ -51,6 +51,8 @@ describe('MissionCompass', () => {
     expect(styles).toContain('.commander-instrument-strip .mission-compass ol');
     expect(styles).toContain('grid-template-columns: 1fr');
     expect(styles).toContain('.commander-instrument-strip .mission-compass ol::before');
-    expect(styles).toContain('grid-template-columns: 2.1rem minmax(0, 1fr) auto');
+    expect(styles).toContain('grid-template-columns: 2.2rem minmax(0, 1fr)');
+    expect(styles).toContain('grid-column: 2');
+    expect(styles).toContain('box-shadow: inset 3px 0 0 rgba(240, 210, 138, 0.78)');
   });
 });

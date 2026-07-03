@@ -64,7 +64,7 @@ describe('RoomNavigationExperience', () => {
       phase: 'commander',
       canInterrupt: false,
       escapeDisabled: true,
-      durationMs: 5200,
+      durationMs: 4400,
       reducedMotionDurationMs: 1000,
     });
     expect(advanceRoomTransition(transition).phase).toBe('closing');
@@ -135,13 +135,13 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionVariant('war-room').videoSrc).toBeUndefined();
     expect(getTransitionVariant('archive').videoSrc).toBe('/transitions/archive-vault.mp4');
     expect(getTransitionVariant('archive').videoStartSeconds).toBe(1);
-    expect(getTransitionVariant('observation').durationMs).toBe(5200);
-    expect(getTransitionVariant('archive').durationMs).toBe(4600);
+    expect(getTransitionVariant('observation').durationMs).toBe(4400);
+    expect(getTransitionVariant('archive').durationMs).toBe(3600);
     expect(getTransitionDurationMs(false)).toBe(7000);
     expect(getTransitionDurationMs(true)).toBe(1000);
-    expect(getTransitionDurationMs(false, createRoomTransition('ready-room', 'observation').controller)).toBe(5200);
-    expect(getTransitionDurationMs(false, createRoomTransition('debrief', 'archive').controller)).toBe(4600);
-    expect(getTransitionDurationMs(false, createAuthorizationTransition('war-room').controller)).toBe(5400);
+    expect(getTransitionDurationMs(false, createRoomTransition('ready-room', 'observation').controller)).toBe(4400);
+    expect(getTransitionDurationMs(false, createRoomTransition('debrief', 'archive').controller)).toBe(3600);
+    expect(getTransitionDurationMs(false, createAuthorizationTransition('war-room').controller)).toBe(4600);
   });
 
   it('renders the War Room cockpit as generated animation for normal room entry', () => {
@@ -217,17 +217,24 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('object-position: center center');
     expect(styles).toContain('align-items: start');
     expect(styles).toContain('align-self: start');
-    expect(styles).toContain('width: min(1440px, 100%)');
-    expect(styles).toContain('transform: translateY(-13%) scale(1.14)');
-    expect(styles).toContain('transform: translateY(-12%) scale(1.14)');
+    expect(styles).toContain('width: min(1500px, 100%)');
+    expect(styles).toContain('object-position: center top');
+    expect(styles).toContain('transform: translateY(-14%) scale(1.2)');
+    expect(styles).toContain('transform: translateY(-14%) scale(1.18)');
+    expect(styles).toContain('ease 1400ms forwards');
+    expect(styles).toContain('ease 2800ms forwards');
     expect(styles).toContain('.transition-video-ended');
     expect(styles).toContain('transition-video-soft-finish');
     expect(styles).toContain('filter: brightness(0.18) saturate(0.65) !important');
     expect(styles).toContain('data-transition-has-video="true"');
+    expect(styles).toContain('justify-self: center');
+    expect(styles).toContain('transform: none');
     expect(styles).toContain('var(--transition-duration, 7000ms)');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-destination-title');
     expect(styles).toContain('cockpit-countdown-number');
+    expect(styles).not.toContain('skewY');
+    expect(styles).not.toContain('perspective(900px)');
     expect(styles).not.toContain('transition-vault-wheel');
     expect(styles).not.toContain('vault-door-wheel');
     expect(styles).toContain('prefers-reduced-motion: reduce');

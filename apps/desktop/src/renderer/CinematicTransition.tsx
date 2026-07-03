@@ -83,7 +83,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderArrival: 'Observe. Do not interfere.',
     soundEvents,
     videoSrc: '/transitions/observation-room.mp4',
-    durationMs: 5200,
+    durationMs: 4400,
   },
   'war-room': {
     room: 'war-room',
@@ -116,7 +116,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     soundEvents,
     videoSrc: '/transitions/archive-vault.mp4',
     videoStartSeconds: 1,
-    durationMs: 4600,
+    durationMs: 3600,
   },
   journal: {
     room: 'journal',
@@ -209,7 +209,7 @@ export function createAuthorizationTransitionController(
   return createTransitionController(room, room, phase, {
     ...getTransitionVariant('war-room'),
     videoSrc: '/transitions/war-room.mp4',
-    durationMs: 5400,
+    durationMs: 4600,
   });
 }
 
