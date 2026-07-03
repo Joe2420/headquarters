@@ -14,6 +14,8 @@ export interface TransitionVariant {
   readonly commanderDeparture: string;
   readonly commanderArrival: string;
   readonly soundEvents: readonly TransitionSoundEvent[];
+  readonly videoSrc?: string;
+  readonly videoStartSeconds?: number;
 }
 
 export interface RoomArrival {
@@ -78,6 +80,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Observation Room.',
     commanderArrival: 'Observe. Do not interfere.',
     soundEvents,
+    videoSrc: '/transitions/observation-room.mp4',
   },
   'war-room': {
     room: 'war-room',
@@ -88,6 +91,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Authorization granted.',
     commanderArrival: 'Decision authority transferred.',
     soundEvents,
+    videoSrc: '/transitions/war-room.mp4',
   },
   debrief: {
     room: 'debrief',
@@ -108,6 +112,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Archive.',
     commanderArrival: 'History preserved.',
     soundEvents,
+    videoSrc: '/transitions/archive-vault.mp4',
+    videoStartSeconds: 1,
   },
   journal: {
     room: 'journal',
@@ -248,6 +254,7 @@ export function TransitionOverlay({ controller }: { readonly controller: Transit
       data-transition-phase={controller.phase}
       data-transition-scene={controller.variant.scene}
       data-transition-theme={controller.variant.theme}
+      data-transition-has-video={controller.variant.videoSrc !== undefined}
       data-escape-disabled={controller.escapeDisabled}
       data-can-interrupt={controller.canInterrupt}
     >
@@ -265,12 +272,11 @@ export function TransitionSceneView({ controller }: { readonly controller: Trans
         {variant.commanderDeparture}
       </div>
       <div className="transition-environment" aria-hidden="true">
+        {variant.videoSrc ? <TransitionVideo variant={variant} /> : null}
         <span className="transition-particles" />
         <span className="transition-light-beam" />
-        <span className="transition-door transition-door-left" />
-        <span className="transition-door transition-door-right" />
-        {variant.scene === 'cockpit' ? <CockpitSequence /> : null}
-        {variant.scene === 'vault' ? <span className="transition-vault-wheel" /> : null}
+        {variant.scene === 'cockpit' ? <CockpitSequence hasVideo={variant.videoSrc !== undefined} /> : null}
+        {variant.scene === 'vault' && variant.videoSrc === undefined ? <span className="transition-vault-wheel" /> : null}
         {variant.scene === 'desk' ? <span className="transition-journal-desk" /> : null}
         {variant.scene === 'theater' ? <span className="transition-projector" /> : null}
         {variant.scene === 'security' ? <span className="transition-scanner-grid" /> : null}
@@ -290,12 +296,35 @@ export function TransitionSceneView({ controller }: { readonly controller: Trans
   );
 }
 
-function CockpitSequence() {
+function TransitionVideo({ variant }: { readonly variant: TransitionVariant }) {
+  const videoSrc = variant.videoStartSeconds !== undefined
+    ? `${variant.videoSrc}#t=${variant.videoStartSeconds}`
+    : variant.videoSrc;
+
   return (
-    <div className="transition-cockpit" aria-hidden="true">
+    <video
+      className="transition-video"
+      src={videoSrc}
+      autoPlay
+      muted
+      playsInline
+      preload="auto"
+    />
+  );
+}
+
+function CockpitSequence({ hasVideo }: { readonly hasVideo: boolean }) {
+  return (
+    <div className="transition-cockpit" data-has-video={hasVideo} aria-hidden="true">
       <span className="cockpit-canopy" />
       <span className="cockpit-hud" />
-      <span className="cockpit-countdown">5 4 3 2 1</span>
+      <span className="cockpit-countdown">
+        <span>5</span>
+        <span>4</span>
+        <span>3</span>
+        <span>2</span>
+        <span>1</span>
+      </span>
       <span className="cockpit-thrusters" />
     </div>
   );

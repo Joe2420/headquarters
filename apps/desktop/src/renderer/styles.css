@@ -1845,6 +1845,11 @@ dd {
   animation: cinematic-door-right 7000ms cubic-bezier(0.15, 0.86, 0.15, 1) forwards;
 }
 
+.cinematic-transition-overlay[data-transition-has-video="true"]::before,
+.cinematic-transition-overlay[data-transition-has-video="true"]::after {
+  display: none;
+}
+
 .transition-scene {
   position: relative;
   z-index: 8;
@@ -1905,6 +1910,32 @@ dd {
   position: absolute;
   inset: 0;
   overflow: hidden;
+}
+
+.transition-video {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: saturate(0.92) contrast(1.08) brightness(0.76);
+  transform: scale(1.02);
+  animation: transition-video-reveal 7000ms ease forwards;
+}
+
+.cinematic-transition-overlay[data-transition-has-video="true"] .transition-scene {
+  background: #020508;
+}
+
+.cinematic-transition-overlay[data-transition-has-video="true"] .transition-particles {
+  z-index: 2;
+  opacity: 0.14;
+}
+
+.cinematic-transition-overlay[data-transition-has-video="true"] .transition-light-beam {
+  z-index: 3;
 }
 
 .transition-particles,
@@ -2012,6 +2043,10 @@ dd {
     radial-gradient(circle at 50% 62%, rgba(255, 34, 34, 0.24), transparent 17%);
 }
 
+.transition-cockpit[data-has-video="true"] {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.36));
+}
+
 .cockpit-canopy {
   inset: 12% 16% 18%;
   border: 1px solid rgba(154, 190, 220, 0.32);
@@ -2042,8 +2077,39 @@ dd {
   font-size: clamp(2rem, 8vw, 5rem);
   font-weight: 900;
   transform: translate(-50%, -50%);
+  width: 1.2em;
+  height: 1.2em;
+  text-align: center;
+}
+
+.cockpit-countdown > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
   opacity: 0;
-  animation: cockpit-countdown 7000ms steps(5, end) forwards;
+  transform: scale(0.86);
+  text-shadow: 0 0 26px rgba(255, 36, 36, 0.6);
+}
+
+.cockpit-countdown > span:nth-child(1) {
+  animation: cockpit-countdown-number 7000ms ease forwards;
+}
+
+.cockpit-countdown > span:nth-child(2) {
+  animation: cockpit-countdown-number 7000ms ease 520ms forwards;
+}
+
+.cockpit-countdown > span:nth-child(3) {
+  animation: cockpit-countdown-number 7000ms ease 1040ms forwards;
+}
+
+.cockpit-countdown > span:nth-child(4) {
+  animation: cockpit-countdown-number 7000ms ease 1560ms forwards;
+}
+
+.cockpit-countdown > span:nth-child(5) {
+  animation: cockpit-countdown-number 7000ms ease 2080ms forwards;
 }
 
 .cockpit-thrusters {
@@ -2289,6 +2355,27 @@ dd {
   }
 }
 
+@keyframes transition-video-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: saturate(0.86) contrast(1.05) brightness(0.45) blur(2px);
+  }
+
+  14%,
+  82% {
+    opacity: 1;
+    transform: scale(1.01);
+    filter: saturate(0.94) contrast(1.08) brightness(0.78) blur(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1);
+    filter: saturate(0.9) contrast(1.02) brightness(0.96) blur(1px);
+  }
+}
+
 @keyframes cockpit-canopy-close {
   0% {
     transform: translateY(-42%) scale(1.08);
@@ -2326,20 +2413,23 @@ dd {
   }
 }
 
-@keyframes cockpit-countdown {
+@keyframes cockpit-countdown-number {
   0%,
-  34% {
+  42% {
     opacity: 0;
+    transform: scale(0.82);
   }
 
-  44%,
-  66% {
+  46%,
+  54% {
     opacity: 1;
+    transform: scale(1);
   }
 
-  76%,
+  60%,
   100% {
     opacity: 0;
+    transform: scale(1.16);
   }
 }
 
