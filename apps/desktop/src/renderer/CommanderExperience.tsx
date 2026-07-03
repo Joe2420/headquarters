@@ -169,23 +169,28 @@ export function CommanderExperiencePanel({
     if (activePromptKeyRef.current === currentPromptKey) return;
 
     activePromptKeyRef.current = currentPromptKey;
-    pendingQuestionRef.current = state.roomPromptMode === 'ask'
-      ? {
-        key: currentPromptKey,
-        text: state.commanderQuestion,
-      }
-      : undefined;
+    setTransmissions((current) => {
+      const questionAlreadyVisible = state.roomPromptMode === 'ask'
+        && commanderFeedAlreadyContains(current, state.commanderQuestion);
 
-    setTransmissions((current) => [
-      ...current,
-      {
-        id: `${currentPromptKey}:current`,
-        speaker: 'Commander',
-        text: state.currentMessage.text,
-        kind: 'current',
-        promptKey: currentPromptKey,
-      },
-    ]);
+      pendingQuestionRef.current = state.roomPromptMode === 'ask' && !questionAlreadyVisible
+        ? {
+          key: currentPromptKey,
+          text: state.commanderQuestion,
+        }
+        : undefined;
+
+      return [
+        ...current,
+        {
+          id: `${currentPromptKey}:current`,
+          speaker: 'Commander',
+          text: state.currentMessage.text,
+          kind: 'current',
+          promptKey: currentPromptKey,
+        },
+      ];
+    });
   }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text, state.roomPromptMode]);
 
   useEffect(() => {
@@ -447,7 +452,7 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
     },
   ];
 
-  if (state.roomPromptMode === 'ask') {
+  if (state.roomPromptMode === 'ask' && !commanderFeedAlreadyContains(entries, state.commanderQuestion)) {
     entries.push({
       id: `${promptKey}:question`,
       speaker: 'Commander',
@@ -458,6 +463,26 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
   }
 
   return entries;
+}
+
+function commanderFeedAlreadyContains(
+  transmissions: readonly CommanderTransmissionEntry[],
+  text: string,
+): boolean {
+  const normalizedText = normalizeCommanderText(text);
+  if (!normalizedText) return false;
+
+  return transmissions.some((transmission) => (
+    transmission.speaker === 'Commander'
+    && normalizeCommanderText(transmission.text).includes(normalizedText)
+  ));
+}
+
+function normalizeCommanderText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): string {

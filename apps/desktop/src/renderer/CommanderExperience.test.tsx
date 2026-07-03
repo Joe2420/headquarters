@@ -107,6 +107,34 @@ describe('CommanderExperience', () => {
     expect(state.commanderQuestion).toBe('What evidence would invalidate your current idea?');
   });
 
+  it('does not render a Commander question twice when the current response already contains it', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'observation',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        observationContext: {
+          marketDirection: 'Up.',
+        },
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel
+      state={{
+        ...state,
+        currentMessage: {
+          ...state.currentMessage,
+          text: `Logged. ${state.commanderQuestion}`,
+        },
+      }}
+    />);
+
+    expect(html.match(/What market structure is currently present/g)).toHaveLength(1);
+  });
+
   it('keeps each support room Commander chat tone distinct', () => {
     const rooms = [
       ['doctrine', 'Is this lesson ready to become law, or only a candidate?'],
