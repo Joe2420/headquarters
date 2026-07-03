@@ -776,6 +776,11 @@ export function App() {
         : 'Mission creation card is active. Transmit the mission codename first.';
     }
 
+    if (isAbortMissionTransmission(message)) {
+      await handleAbortMission();
+      return 'Mission aborted and closed. Archive marker created. Create a new mission when ready.';
+    }
+
     if (currentCommanderRoom === 'ready-room' && (currentState === 'idle' || currentState === 'briefing')) {
       if (shouldContinue) {
         await handleCommanderContinue();
@@ -4994,6 +4999,18 @@ export function parseCommanderRoomNavigationTransmission(message: string): Headq
   if (normalized.includes('settings')) return 'settings';
 
   return undefined;
+}
+
+export function isAbortMissionTransmission(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  if (normalized.length === 0) return false;
+
+  return normalized === 'abort'
+    || normalized === 'abort mission'
+    || normalized === 'mission abort'
+    || normalized === 'cancel mission'
+    || normalized === 'scrub mission'
+    || normalized === 'terminate mission';
 }
 
 function parseAuthorizationTransmission(message: string): MissionAuthorizationDraft {

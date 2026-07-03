@@ -38,6 +38,7 @@ import {
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
+  abortDesktopMission,
   getActiveMissionAfterMissionChange,
   getCommanderContinueMode,
   createArchiveWritePlaceholder,
@@ -77,6 +78,7 @@ import {
   getMissionPhaseWorkspaceDescription,
   getMissionPhaseWorkspaceTitle,
   getPrimaryNavigationItems,
+  isAbortMissionTransmission,
   listArchivedMissionSummaries,
   listMissionHistory,
   mapMissionRecordToActiveMission,
@@ -961,6 +963,33 @@ describe('Desktop shell', () => {
     expect(parseCommanderRoomNavigationTransmission('route to command center')).toBe('command');
     expect(parseCommanderRoomNavigationTransmission('journal')).toBeUndefined();
     expect(parseCommanderRoomNavigationTransmission('observation note: wait for evidence')).toBeUndefined();
+  });
+
+  it('recognizes explicit Commander abort transmissions without matching ordinary mission text', () => {
+    expect(isAbortMissionTransmission('abort mission')).toBe(true);
+    expect(isAbortMissionTransmission('mission abort')).toBe(true);
+    expect(isAbortMissionTransmission('scrub mission')).toBe(true);
+    expect(isAbortMissionTransmission('terminate mission')).toBe(true);
+    expect(isAbortMissionTransmission('mission objective is still valid')).toBe(false);
+    expect(isAbortMissionTransmission('abortive price action is not enough')).toBe(false);
+  });
+
+  it('archives an active mission through the desktop abort fallback', async () => {
+    const mission: ActiveMission = {
+      id: 'mission-abort',
+      campaign: 'Foundation',
+      objective: 'Stop when invalidated',
+      condition: 'Observation',
+      commandAuthority: 'Operator',
+      currentState: 'observation',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    await expect(abortDesktopMission(mission)).resolves.toMatchObject({
+      id: 'mission-abort',
+      currentState: 'archived',
+      condition: 'Archived',
+    });
   });
 
   it('clears the active mission after archive so a new mission can be created', () => {
