@@ -90,6 +90,13 @@ import {
   type MissionBriefingContext,
   type MissionObservationContext,
 } from './CommanderMissionBriefing';
+import {
+  createEmptyMissionContext,
+  updateMissionContextBriefing,
+  updateMissionContextReadiness,
+  type MissionContext,
+  type MissionContextBriefingAnswers,
+} from './MissionContextMemory';
 import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
@@ -126,6 +133,7 @@ export interface ActiveMission {
   createdAt: string;
   briefingContext?: MissionBriefingContext;
   observationContext?: MissionObservationContext;
+  missionContext?: MissionContext;
 }
 
 export interface MissionDraft {
@@ -863,7 +871,7 @@ export function App() {
       }
 
       const result = answerReadyRoomBriefing(activeMission.briefingContext, message);
-      const missionWithContext = { ...activeMission, briefingContext: result.context };
+      const missionWithContext = withBriefingMissionContext(activeMission, result.context);
 
       setActiveMission(missionWithContext);
       setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
@@ -4373,14 +4381,18 @@ export function createLocalMission(
     return undefined;
   }
 
+  const id = options.id ?? crypto.randomUUID();
+  const createdAt = options.createdAt ?? new Date().toISOString();
+
   return {
-    id: options.id ?? crypto.randomUUID(),
+    id,
     campaign: codename,
     objective,
     condition: 'Briefing',
     commandAuthority: 'Professional command',
     currentState: 'briefing',
-    createdAt: options.createdAt ?? new Date().toISOString(),
+    createdAt,
+    missionContext: createEmptyMissionContext(id, { createdAt }),
   };
 }
 
@@ -4393,7 +4405,48 @@ export function mapMissionRecordToActiveMission(mission: Mission): ActiveMission
     commandAuthority: 'Professional command',
     currentState: mission.state,
     createdAt: mission.createdAt,
+    missionContext: createEmptyMissionContext(mission.id, { createdAt: mission.createdAt }),
   };
+}
+
+export function withBriefingMissionContext(
+  mission: ActiveMission,
+  briefingContext: MissionBriefingContext,
+  options: { readonly updatedAt?: string } = {},
+): ActiveMission {
+  const baseContext = mission.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt });
+  const contextWithBriefing = updateMissionContextBriefing(
+    baseContext,
+    buildMissionContextBriefingAnswers(briefingContext),
+    options,
+  );
+  const missionContext = updateMissionContextReadiness(
+    contextWithBriefing,
+    { briefingComplete: isReadyRoomBriefingComplete(briefingContext) },
+    options,
+  );
+
+  return {
+    ...mission,
+    briefingContext,
+    missionContext,
+  };
+}
+
+function buildMissionContextBriefingAnswers(context: MissionBriefingContext): MissionContextBriefingAnswers {
+  return {
+    ...(hasMissionContextText(context.missionObjective) ? { missionObjective: context.missionObjective } : {}),
+    ...(hasMissionContextText(context.market) ? { market: context.market } : {}),
+    ...(hasMissionContextText(context.marketEnvironment) ? { marketEnvironment: context.marketEnvironment } : {}),
+    ...(hasMissionContextText(context.highImpactNews) ? { highImpactNews: context.highImpactNews } : {}),
+    ...(hasMissionContextText(context.personalReadiness) ? { personalReadiness: context.personalReadiness } : {}),
+    ...(hasMissionContextText(context.riskParameters) ? { riskParameters: context.riskParameters } : {}),
+    ...(hasMissionContextText(context.successCriteria) ? { successCriteria: context.successCriteria } : {}),
+  };
+}
+
+function hasMissionContextText(value: string | undefined): value is string {
+  return value !== undefined && value.trim().length > 0;
 }
 
 export function formatMissionStateForDisplay(state: Mission['state']): string {

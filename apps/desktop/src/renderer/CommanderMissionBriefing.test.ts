@@ -12,8 +12,9 @@ describe('CommanderMissionBriefing', () => {
   it('collects Ready Room operational briefing one answer at a time', () => {
     let context = answerReadyRoomBriefing(undefined, 'ES morning continuation').context;
 
-    expect(getNextReadyRoomBriefingQuestion(context)).toBe("Describe today's market environment.");
+    expect(getNextReadyRoomBriefingQuestion(context)).toBe('What market are you trading?');
 
+    context = answerReadyRoomBriefing(context, 'ES futures').context;
     context = answerReadyRoomBriefing(context, 'Trending').context;
     context = answerReadyRoomBriefing(context, 'CPI at 8:30').context;
     context = answerReadyRoomBriefing(context, 'focused').context;

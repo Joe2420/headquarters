@@ -1,5 +1,6 @@
 export interface MissionBriefingContext {
   readonly missionObjective?: string;
+  readonly market?: string;
   readonly marketEnvironment?: string;
   readonly highImpactNews?: string;
   readonly personalReadiness?: string;
@@ -9,6 +10,7 @@ export interface MissionBriefingContext {
 
 export type ReadyRoomBriefingField =
   | 'missionObjective'
+  | 'market'
   | 'marketEnvironment'
   | 'highImpactNews'
   | 'personalReadiness'
@@ -60,6 +62,7 @@ export interface ObservationInterviewAnswerResult {
 
 const readyRoomBriefingQuestions: Record<ReadyRoomBriefingField, string> = {
   missionObjective: "Operator. Before Headquarters commits resources, I need today's operational briefing. What is today's primary mission?",
+  market: 'What market are you trading?',
   marketEnvironment: "Describe today's market environment.",
   highImpactNews: "Are there any scheduled economic events capable of changing today's conditions?",
   personalReadiness: 'Evaluate your current operational condition.',
@@ -86,6 +89,7 @@ export const observationInterviewCompleteMessage = 'Observation complete.\n\nEvi
 
 export function getNextReadyRoomBriefingField(context: MissionBriefingContext = {}): ReadyRoomBriefingField | undefined {
   if (!hasText(context.missionObjective)) return 'missionObjective';
+  if (!hasText(context.market)) return 'market';
   if (!hasText(context.marketEnvironment)) return 'marketEnvironment';
   if (!hasText(context.highImpactNews)) return 'highImpactNews';
   if (!hasText(context.personalReadiness)) return 'personalReadiness';
@@ -239,6 +243,7 @@ function withReadyRoomAnswer(
   answer: string,
 ): MissionBriefingContext {
   if (field === 'missionObjective') return { ...context, missionObjective: answer };
+  if (field === 'market') return { ...context, market: answer };
   if (field === 'marketEnvironment') return { ...context, marketEnvironment: answer };
   if (field === 'highImpactNews') return { ...context, highImpactNews: answer };
   if (field === 'personalReadiness') return { ...context, personalReadiness: answer };

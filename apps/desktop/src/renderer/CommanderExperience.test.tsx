@@ -73,6 +73,7 @@ describe('CommanderExperience', () => {
         createdAt: '2026-07-02T00:00:00.000Z',
         briefingContext: {
           missionObjective: 'Trade the morning breakout.',
+          market: 'ES futures.',
           marketEnvironment: 'Trending.',
         },
       },
@@ -249,6 +250,7 @@ describe('CommanderExperience', () => {
       createdAt: '2026-07-02T00:00:00.000Z',
       briefingContext: {
         missionObjective: 'Trade the morning breakout.',
+        market: 'ES futures.',
         marketEnvironment: 'Trending.',
         highImpactNews: 'None.',
         personalReadiness: 'Focused.',

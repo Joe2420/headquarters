@@ -90,6 +90,7 @@ import {
   reportForDuty,
   requestLocalReturnToBase,
   upsertMissionHistory,
+  withBriefingMissionContext,
 } from './App';
 
 describe('Desktop shell', () => {
@@ -1315,6 +1316,21 @@ describe('Desktop shell', () => {
       commandAuthority: 'Professional command',
       currentState: 'briefing',
       createdAt: '2026-01-01T00:00:00.000Z',
+      missionContext: {
+        missionId: 'mission-001',
+        briefing: {},
+        observation: {},
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: false,
+          debriefReady: false,
+          observationComplete: false,
+          warRoomReady: false,
+        },
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      },
     });
   });
 
@@ -1334,7 +1350,59 @@ describe('Desktop shell', () => {
       commandAuthority: 'Professional command',
       currentState: 'idle',
       createdAt: '2026-01-01T00:00:00.000Z',
+      missionContext: {
+        missionId: 'mission-001',
+        briefing: {},
+        observation: {},
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: false,
+          debriefReady: false,
+          observationComplete: false,
+          warRoomReady: false,
+        },
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      },
     });
+  });
+
+  it('stores Ready Room briefing answers in mission context memory', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (mission === undefined) throw new Error('Expected local mission fixture to be created.');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Trending.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow the plan.',
+    }, { updatedAt: '2026-01-01T00:03:00.000Z' });
+
+    expect(missionWithBriefing.missionContext?.briefing).toEqual({
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Trending.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow the plan.',
+    });
+    expect(missionWithBriefing.missionContext?.readiness.briefingComplete).toBe(true);
+    expect(missionWithBriefing.missionContext?.updatedAt).toBe('2026-01-01T00:03:00.000Z');
   });
 
   it('creates a desktop mission through the Headquarters bridge when available', async () => {
@@ -1371,6 +1439,21 @@ describe('Desktop shell', () => {
         commandAuthority: 'Professional command',
         currentState: 'idle',
         createdAt: '2026-01-01T00:00:00.000Z',
+        missionContext: {
+          missionId: 'mission-001',
+          briefing: {},
+          observation: {},
+          commanderNotes: [],
+          contradictionFlags: [],
+          readiness: {
+            briefingComplete: false,
+            debriefReady: false,
+            observationComplete: false,
+            warRoomReady: false,
+          },
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
       });
     } finally {
       Object.defineProperty(globalThis, 'window', {
