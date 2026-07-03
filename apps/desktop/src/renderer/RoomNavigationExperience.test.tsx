@@ -201,7 +201,8 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('.room-transition-layer');
     expect(styles).toContain('.cinematic-transition-overlay');
     expect(styles).toContain('.transition-video');
-    expect(styles).toContain('object-fit: contain');
+    expect(styles).toContain('object-fit: cover');
+    expect(styles).toContain('object-position: center 66%');
     expect(styles).toContain('data-transition-has-video="true"');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-countdown-number');
