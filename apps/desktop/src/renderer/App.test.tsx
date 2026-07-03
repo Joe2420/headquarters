@@ -110,7 +110,17 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.ambient-status-strip');
     expect(styles).toContain('@keyframes commander-message-arrival');
     expect(styles).toContain('.room-transition-layer::before');
+    expect(styles).toContain('contain: layout paint');
+    expect(styles).toContain('.commander-chat-stage .commander-shell');
+    expect(styles).toContain('min-height: min(760px, calc(100vh - 6rem))');
     expect(styles).toContain('.skip-link:focus-visible');
+  });
+
+  it('keeps destination room changes until after the transition host releases control', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('getTransitionDurationMs(reducedMotion, controller) + 75');
+    expect(source).not.toContain('* 0.46');
   });
 
   it('renders the security checkpoint startup surface', () => {

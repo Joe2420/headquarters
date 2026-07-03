@@ -5129,8 +5129,7 @@ function isReducedMotionPreferred(): boolean {
 }
 
 function getTransitionRoomLoadDelayMs(reducedMotion: boolean, controller?: TransitionController): number {
-  if (reducedMotion) return 350;
-  return Math.max(1800, Math.round(getTransitionDurationMs(false, controller) * 0.46));
+  return getTransitionDurationMs(reducedMotion, controller) + 75;
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {
