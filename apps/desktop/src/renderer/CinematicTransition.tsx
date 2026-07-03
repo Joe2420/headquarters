@@ -295,14 +295,12 @@ export function TransitionSceneView({ controller }: { readonly controller: Trans
         <span className="transition-door transition-door-left" />
         <span className="transition-door transition-door-right" />
         {variant.scene === 'cockpit' ? <CockpitSequence /> : null}
-        {variant.scene === 'vault' ? <span className="transition-vault-wheel" /> : null}
         {variant.scene === 'desk' ? <span className="transition-journal-desk" /> : null}
         {variant.scene === 'theater' ? <span className="transition-projector" /> : null}
         {variant.scene === 'security' ? <span className="transition-scanner-grid" /> : null}
         {variant.scene === 'intelligence' ? <span className="transition-situation-map" /> : null}
         {variant.scene === 'doctrine' ? <span className="transition-doctrine-hologram" /> : null}
         {variant.scene === 'simulator' ? <span className="transition-simulator-holograms" /> : null}
-        {variant.scene === 'standard' ? <span className="vault-door-wheel" aria-hidden="true"><span /></span> : null}
       </div>
       <div className="transition-destination">
         <span>{variant.title}</span>

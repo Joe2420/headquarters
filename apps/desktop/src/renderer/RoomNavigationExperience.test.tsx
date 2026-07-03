@@ -207,6 +207,8 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('data-transition-has-video="true"');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-countdown-number');
+    expect(styles).not.toContain('transition-vault-wheel');
+    expect(styles).not.toContain('vault-door-wheel');
     expect(styles).toContain('prefers-reduced-motion: reduce');
     expect(styles).toContain('.room-arrival-panel');
     expect(styles).toContain('.room-layout[data-room-identity="preparation"]');

@@ -2415,17 +2415,25 @@ interface MissionLifecyclePanelProps {
 
 function MissionLifecyclePanel({ activeMission }: MissionLifecyclePanelProps) {
   const steps = buildMissionLifecycleSteps(activeMission);
+  const currentStep = steps.find((step) => step.status === 'current');
 
   return (
     <section className="mission-lifecycle-panel" aria-label="Mission lifecycle">
-      <div>
-        <p className="section-label">Lifecycle</p>
-        <h3>Mission Lifecycle</h3>
+      <div className="mission-sequence-header">
+        <div>
+          <p className="section-label">Mission Route</p>
+          <h3>Operational Sequence</h3>
+        </div>
+        <span>{currentStep ? getMissionLifecycleStation(currentStep.state) : 'Awaiting mission file'}</span>
       </div>
       <ol className="mission-lifecycle-list">
-        {steps.map((step) => (
+        {steps.map((step, index) => (
           <li key={step.state} data-step-status={step.status}>
-            <span>{step.label}</span>
+            <span className="mission-sequence-index">{String(index + 1).padStart(2, '0')}</span>
+            <span className="mission-sequence-copy">
+              <span>{step.label}</span>
+              <small>{getMissionLifecycleStation(step.state)}</small>
+            </span>
             <strong>{formatMissionLifecycleStepStatus(step.status)}</strong>
           </li>
         ))}
@@ -4309,14 +4317,26 @@ export function buildMissionLifecycleSteps(mission?: ActiveMission): MissionLife
 export function formatMissionLifecycleSummary(mission?: ActiveMission): string {
   const currentState = parseMissionState(mission?.currentState);
 
-  if (currentState === undefined) return 'No mission lifecycle loaded';
-  return `Current lifecycle state: ${formatMissionStateForDisplay(currentState)}`;
+  if (currentState === undefined) return 'Mission route standing by';
+  return `Current station: ${getMissionLifecycleStation(currentState)}`;
 }
 
 export function formatMissionLifecycleStepStatus(status: MissionLifecycleStepStatus): string {
   if (status === 'completed') return 'Complete';
   if (status === 'current') return 'Current';
   return 'Pending';
+}
+
+export function getMissionLifecycleStation(state: MissionState): string {
+  if (state === 'idle') return 'Ready Room Intake';
+  if (state === 'briefing') return 'Ready Room Briefing';
+  if (state === 'ready') return 'Ready Room Final Check';
+  if (state === 'observation') return 'Observation Room';
+  if (state === 'authorization') return 'War Room Authorization';
+  if (state === 'deployed') return 'War Room Deployment';
+  if (state === 'return_to_base') return 'Debrief Theater Return';
+  if (state === 'debrief') return 'Debrief Theater';
+  return 'Archive Vault';
 }
 
 export function formatMissionDetailValue(value?: string): string {

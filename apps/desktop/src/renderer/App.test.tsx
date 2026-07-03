@@ -73,6 +73,7 @@ import {
   getCommanderMessage,
   getJournalCommanderPrompt,
   getJournalWorkflowSteps,
+  getMissionLifecycleStation,
   getMissionNextAction,
   getMissionNotificationSummary,
   getMissionPhaseWorkspaceDescription,
@@ -1504,13 +1505,14 @@ describe('Desktop shell', () => {
       currentState: 'return_to_base',
     });
     expect(formatMissionClosingState(closingMission)).toBe('Returning to base');
-    expect(formatMissionLifecycleSummary(closingMission)).toBe('Current lifecycle state: Return To Base');
+    expect(formatMissionLifecycleSummary(closingMission)).toBe('Current station: Debrief Theater Return');
+    expect(getMissionLifecycleStation('authorization')).toBe('War Room Authorization');
   });
 
   it('keeps return-to-base helper safe when no mission is loaded', () => {
     expect(requestLocalReturnToBase(undefined)).toBeUndefined();
     expect(formatMissionClosingState(undefined)).toBe('No mission loaded');
-    expect(formatMissionLifecycleSummary(undefined)).toBe('No mission lifecycle loaded');
+    expect(formatMissionLifecycleSummary(undefined)).toBe('Mission route standing by');
   });
 
   it('builds a read-only mission lifecycle path without transition rules', () => {
@@ -1572,9 +1574,11 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<CommandCenter activeMission={markLocalMissionArchived(mission)} />);
 
     expect(html).toContain('aria-label="Mission lifecycle"');
+    expect(html).toContain('Operational Sequence');
+    expect(html).toContain('Archive Vault');
     expect(html).toContain('data-step-status="completed"');
     expect(html).toContain('data-step-status="current"');
-    expect(html).toContain('Current lifecycle state: Archived');
+    expect(html).toContain('Current station: Archive Vault');
   });
 
   it('creates a local behavior-first mission debrief', () => {

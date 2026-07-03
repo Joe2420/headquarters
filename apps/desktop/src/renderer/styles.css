@@ -908,57 +908,6 @@ dd {
   animation: steel-door-open-right 6200ms cubic-bezier(0.12, 0.74, 0.18, 1) forwards;
 }
 
-.room-transition-layer .vault-door-wheel {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: 50%;
-  display: grid;
-  gap: 0.45rem;
-  place-items: center;
-  min-width: 156px;
-  min-height: 156px;
-  padding: 1rem;
-  border: 1px solid rgba(196, 170, 101, 0.48);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: vault-wheel-carried-left 6200ms cubic-bezier(0.12, 0.74, 0.18, 1) forwards, vault-wheel-release 6800ms ease forwards;
-}
-
-.room-transition-layer .vault-door-wheel > span {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(218, 187, 104, 0.32) 0 12%, rgba(32, 31, 26, 0.96) 13% 24%, transparent 25% 100%),
-    repeating-conic-gradient(from 0deg, rgba(196, 170, 101, 0.34) 0deg 12deg, rgba(20, 24, 24, 0.96) 12deg 28deg),
-    conic-gradient(from 20deg, rgba(180, 187, 184, 0.38), rgba(8, 10, 10, 0.96), rgba(196, 170, 101, 0.25), rgba(8, 10, 10, 0.96), rgba(180, 187, 184, 0.38)),
-    #070909;
-  box-shadow:
-    inset 0 0 28px rgba(0, 0, 0, 0.72),
-    0 0 0 8px rgba(5, 8, 10, 0.84),
-    0 0 0 10px rgba(196, 170, 101, 0.2),
-    0 22px 44px rgba(0, 0, 0, 0.42);
-  animation: vault-wheel-settle 2200ms cubic-bezier(0.16, 0.86, 0.2, 1) forwards;
-}
-
-.room-transition-layer .vault-door-wheel > span::before,
-.room-transition-layer .vault-door-wheel > span::after {
-  content: "";
-  position: absolute;
-  inset: 50% auto auto 50%;
-  width: 112px;
-  height: 8px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgba(218, 187, 104, 0.9), rgba(226, 232, 227, 0.82), rgba(218, 187, 104, 0.9), transparent);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 16px rgba(196, 170, 101, 0.22);
-}
-
-.room-transition-layer .vault-door-wheel > span::after {
-  transform: translate(-50%, -50%) rotate(90deg);
-}
-
 .room-layout[data-room-identity="preparation"] .command-center-header {
   border-left: 3px solid #d9e7ff;
   padding-left: 0.85rem;
@@ -1473,21 +1422,42 @@ dd {
 
 .mission-lifecycle-list {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.35rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.mission-lifecycle-list li {
+.mission-sequence-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.mission-sequence-header > span {
+  max-width: 220px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid rgba(143, 184, 255, 0.24);
+  background: rgba(143, 184, 255, 0.06);
+  color: #d9e7ff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.mission-lifecycle-list li {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
   gap: 0.75rem;
   align-items: center;
-  min-height: 32px;
-  padding: 0 0.65rem;
-  border-left: 2px solid #3b4650;
-  background: #101418;
+  min-height: 52px;
+  padding: 0.55rem 0.7rem;
+  border-left: 3px solid #2d353d;
+  background:
+    linear-gradient(90deg, rgba(143, 184, 255, 0.035), transparent 42%),
+    #0d1114;
   color: #aab7c1;
 }
 
@@ -1498,8 +1468,35 @@ dd {
 
 .mission-lifecycle-list li[data-step-status="current"] {
   color: #eef3f6;
-  border-left-color: #d9e7ff;
-  background: #171d23;
+  border-left-color: #f0d28a;
+  background:
+    linear-gradient(90deg, rgba(240, 210, 138, 0.14), transparent 56%),
+    #171d23;
+  box-shadow: inset 0 0 0 1px rgba(240, 210, 138, 0.14);
+}
+
+.mission-sequence-index {
+  color: #7d8b95;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.mission-sequence-copy {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.mission-sequence-copy > span {
+  color: #eef3f6;
+  font-weight: 800;
+}
+
+.mission-sequence-copy > small {
+  color: #93a4b1;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .mission-lifecycle-list strong {
@@ -1674,52 +1671,6 @@ dd {
   100% {
     transform: perspective(900px) translateX(98%) rotateY(12deg) skewY(1deg);
     filter: brightness(0.78);
-  }
-}
-
-@keyframes vault-wheel-settle {
-  0% {
-    filter: brightness(0.9);
-  }
-
-  36% {
-    filter: brightness(1.08);
-  }
-
-  74% {
-    filter: brightness(1);
-  }
-
-  100% {
-    filter: brightness(0.94);
-  }
-}
-
-@keyframes vault-wheel-carried-left {
-  0%,
-  28% {
-    transform: translate(-50%, -50%) scale(1);
-    filter: brightness(1);
-  }
-
-  100% {
-    transform: translate(calc(-50% - 48vw), -50%) rotateY(-12deg) scale(0.96);
-    filter: brightness(0.76);
-  }
-}
-
-@keyframes vault-wheel-release {
-  0%,
-  40% {
-    opacity: 1;
-  }
-
-  72% {
-    opacity: 0.92;
-  }
-
-  100% {
-    opacity: 0;
   }
 }
 
@@ -1962,7 +1913,6 @@ dd {
 .transition-particles,
 .transition-light-beam,
 .transition-door,
-.transition-vault-wheel,
 .transition-journal-desk,
 .transition-projector,
 .transition-scanner-grid,
@@ -2141,19 +2091,6 @@ dd {
   background: radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.86), rgba(255, 157, 54, 0.48) 24%, transparent 66%);
   opacity: 0;
   animation: cockpit-thrusters 7000ms ease forwards;
-}
-
-.transition-vault-wheel {
-  left: 50%;
-  top: 50%;
-  z-index: 6;
-  width: 210px;
-  height: 210px;
-  border-radius: 50%;
-  border: 8px solid rgba(196, 170, 101, 0.36);
-  background: repeating-conic-gradient(rgba(196, 170, 101, 0.42) 0 10deg, rgba(12, 16, 18, 0.92) 10deg 28deg);
-  transform: translate(-50%, -50%);
-  animation: vault-wheel-settle 2400ms cubic-bezier(0.18, 0.78, 0.2, 1) forwards;
 }
 
 .transition-journal-desk {
@@ -2522,15 +2459,13 @@ dd {
   }
 
   .transition-door,
-  .transition-vault-wheel,
   .transition-cockpit,
   .transition-journal-desk,
   .transition-projector,
   .transition-scanner-grid,
   .transition-situation-map,
   .transition-doctrine-hologram,
-  .transition-simulator-holograms,
-  .vault-door-wheel {
+  .transition-simulator-holograms {
     display: none !important;
   }
 }
