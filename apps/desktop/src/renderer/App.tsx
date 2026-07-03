@@ -2146,6 +2146,9 @@ export function DebriefTheater({
     missionDebrief,
     archiveSummary,
   });
+  const contradictions = activeMission?.missionContext
+    ? detectCommanderContradictions(activeMission.missionContext)
+    : [];
 
   return (
     <GuidedRoom
@@ -2158,6 +2161,7 @@ export function DebriefTheater({
       primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
       workspace={(
         <>
+          <DebriefContextRecall activeMission={activeMission} contradictions={contradictions} />
           <section className="journal-panel" aria-label="Black box viewer">
             <p className="section-label">Black Box Viewer</p>
             <h3>Behavior Sequence</h3>
@@ -2201,6 +2205,54 @@ export function DebriefTheater({
         </>
       )}
     />
+  );
+}
+
+function DebriefContextRecall({
+  activeMission,
+  contradictions,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly contradictions: readonly MissionContextContradictionFlag[];
+}) {
+  const missionContext = activeMission?.missionContext;
+
+  return (
+    <section className="journal-panel" aria-label="Debrief mission context recall">
+      <p className="section-label">Context Recall</p>
+      <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
+      <dl>
+        <dt>Original Objective</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
+        <dt>Success Criteria</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.successCriteria)}</dd>
+        <dt>Risk Parameter</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.riskParameters)}</dd>
+        <dt>Observation Hypothesis</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.directionalHypothesis)}</dd>
+        <dt>Invalidation Criteria</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.invalidationEvidence)}</dd>
+      </dl>
+      {contradictions.length > 0 ? (
+        <div aria-label="Debrief contradiction recall">
+          <p className="section-label">Contradictions</p>
+          <ul>
+            {contradictions.map((contradiction) => (
+              <li key={contradiction.id}>{contradiction.message}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="muted">No contradictions require debrief attention.</p>
+      )}
+      <ol aria-label="Commander debrief prompts">
+        <li>What did you execute well?</li>
+        <li>What behavior must not repeat?</li>
+        <li>Did the mission follow the original objective?</li>
+        <li>Did you respect the risk parameter?</li>
+        <li>What should future Joe see first?</li>
+      </ol>
+    </section>
   );
 }
 

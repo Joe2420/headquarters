@@ -836,10 +836,61 @@ describe('Desktop shell', () => {
     />);
 
     expect(html).toContain('data-room-id="debrief-theater"');
+    expect(html).toContain('Context Recall');
+    expect(html).toContain('Context incomplete');
+    expect(html).toContain('What did you execute well?');
+    expect(html).toContain('Did you respect the risk parameter?');
     expect(html).toContain('Mission timeline viewer');
     expect(html).toContain('Black Box Viewer');
     expect(html).toContain('Decision Report');
     expect(html).toContain('Behavior Summary');
+  });
+
+  it('renders Debrief context recall from mission context memory', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Low volatility range.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow plan and stop after two attempts.',
+    });
+    const missionWithObservation = withObservationMissionContext(missionWithBriefing, {
+      marketDirection: 'Up.',
+      marketStructure: 'High volatility expansion.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      readiness: 'yes',
+      operationalPicture: 'High volatility expansion above VWAP.',
+    });
+
+    const html = renderToStaticMarkup(<DebriefTheater
+      activeMission={{ ...missionWithObservation, currentState: 'return_to_base' }}
+      onMissionChanged={() => undefined}
+      onRequestAuthorization={() => undefined}
+      onSaveDebrief={() => undefined}
+      onArchiveMission={() => undefined}
+    />);
+
+    expect(html).toContain('Trade the morning breakout.');
+    expect(html).toContain('Follow plan and stop after two attempts.');
+    expect(html).toContain('1%.');
+    expect(html).toContain('Long continuation.');
+    expect(html).toContain('Break below VWAP.');
+    expect(html).toContain('This conflicts with your earlier briefing.');
+    expect(html).toContain('What should future Joe see first?');
   });
 
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {
