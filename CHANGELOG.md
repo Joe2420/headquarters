@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0196 - Added Sprint 19 Adaptive Commander review package.
+
+HQ-TASK-0195 - Added Debrief context recall from mission briefing and observation memory.
+
+HQ-TASK-0194 - Added War Room context summary for briefing, observation, and contradiction recall.
+
+HQ-TASK-0193 - Added deterministic Commander contradiction detection.
+
+HQ-TASK-0192 - Added deterministic Commander follow-up engine.
+
+HQ-TASK-0191 - Added Observation evidence capture into mission context.
+
+HQ-TASK-0190 - Added Ready Room briefing capture into mission context.
+
+HQ-TASK-0189 - Added mission context memory model for Adaptive Commander conversations.
+
 HQ-TASK-0180 - Added Sprint 17 Guided Room Experience review package.
 
 HQ-TASK-0179 - Unified implemented mission rooms around the GuidedRoom interaction model.
