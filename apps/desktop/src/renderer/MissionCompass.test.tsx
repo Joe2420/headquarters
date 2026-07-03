@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { MissionCompass, defaultMissionCompassSteps, formatMissionCompassStepState } from './MissionCompass';
 
@@ -42,5 +43,14 @@ describe('MissionCompass', () => {
     expect(formatMissionCompassStepState('active')).toBe('Active');
     expect(formatMissionCompassStepState('available')).toBe('Available');
     expect(formatMissionCompassStepState('locked')).toBe('Locked');
+  });
+
+  it('keeps the Commander instrument strip as a vertical mission route rail', () => {
+    const styles = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
+
+    expect(styles).toContain('.commander-instrument-strip .mission-compass ol');
+    expect(styles).toContain('grid-template-columns: 1fr');
+    expect(styles).toContain('.commander-instrument-strip .mission-compass ol::before');
+    expect(styles).toContain('grid-template-columns: 2.1rem minmax(0, 1fr) auto');
   });
 });
