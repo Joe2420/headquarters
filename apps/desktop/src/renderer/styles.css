@@ -1805,6 +1805,7 @@ dd {
 
 .cinematic-transition-overlay[data-transition-has-video="true"] {
   padding: clamp(0.75rem, 2vw, 1.25rem);
+  align-items: start;
   background: #000;
   animation: none;
 }
@@ -1887,12 +1888,11 @@ dd {
 
 .transition-scene-video-only {
   width: min(1180px, 100%);
-  height: min(720px, calc(100vh - 7rem));
-  min-height: min(560px, calc(100vh - 7rem));
+  height: min(760px, calc(100vh - 5.5rem));
+  min-height: min(600px, calc(100vh - 5.5rem));
   border: 0;
   background: #000;
   box-shadow: none;
-  clip-path: inset(7% 0 0 0);
 }
 
 .transition-scene-video-only::before {
@@ -1902,7 +1902,7 @@ dd {
 .transition-scene-video-only .transition-video {
   opacity: 1;
   filter: none;
-  transform: scale(1.08);
+  transform: translateY(-8%) scale(1.08);
   animation: none;
 }
 

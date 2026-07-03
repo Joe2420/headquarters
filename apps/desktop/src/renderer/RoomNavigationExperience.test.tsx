@@ -203,7 +203,8 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('.transition-video');
     expect(styles).toContain('object-fit: contain');
     expect(styles).toContain('object-position: center center');
-    expect(styles).toContain('clip-path: inset(7% 0 0 0)');
+    expect(styles).toContain('align-items: start');
+    expect(styles).toContain('transform: translateY(-8%) scale(1.08)');
     expect(styles).toContain('data-transition-has-video="true"');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-countdown-number');
