@@ -97,6 +97,7 @@ import {
   updateMissionContextReadiness,
   type MissionContext,
   type MissionContextBriefingAnswers,
+  type MissionContextContradictionFlag,
   type MissionContextObservationAnswers,
 } from './MissionContextMemory';
 import type { CommanderShellRoomId } from './CommanderShell';
@@ -122,6 +123,7 @@ import {
 } from './HeadquartersAtmosphere';
 import { GuidedRoom } from './GuidedRoom';
 import { recommendRoomForMissionState } from './RoomStateMachine';
+import { detectCommanderContradictions } from './CommanderContradictionDetection';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -2018,6 +2020,9 @@ export function WarRoom({
   const lockout = buildDesktopGuardianLockoutState();
   const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
   const authorizationDenied = authorizationStatus?.decision === 'denied';
+  const contradictions = activeMission?.missionContext
+    ? detectCommanderContradictions(activeMission.missionContext)
+    : [];
 
   return (
     <GuidedRoom
@@ -2030,6 +2035,7 @@ export function WarRoom({
       primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
       workspace={(
         <>
+          <WarRoomContextSummary activeMission={activeMission} contradictions={contradictions} />
           <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
           {parseMissionState(activeMission?.currentState) === 'authorization' ? (
             <MissionNextActionPanel
@@ -2067,6 +2073,59 @@ export function WarRoom({
       )}
     />
   );
+}
+
+function WarRoomContextSummary({
+  activeMission,
+  contradictions,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly contradictions: readonly MissionContextContradictionFlag[];
+}) {
+  const missionContext = activeMission?.missionContext;
+
+  return (
+    <section className="journal-panel" aria-label="War Room mission context summary">
+      <p className="section-label">Mission Context</p>
+      <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
+      <dl>
+        <dt>Mission Objective</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
+        <dt>Market Environment</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.marketEnvironment)}</dd>
+        <dt>High-Impact News</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.highImpactNews)}</dd>
+        <dt>Risk Limit</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.riskParameters)}</dd>
+        <dt>Observation Summary</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.operationalSummary)}</dd>
+        <dt>Directional Hypothesis</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.directionalHypothesis)}</dd>
+        <dt>Invalidation Criteria</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.invalidationEvidence)}</dd>
+      </dl>
+      {contradictions.length > 0 ? (
+        <div aria-label="Commander contradiction challenges">
+          <p className="section-label">Commander Challenge</p>
+          <ul>
+            {contradictions.map((contradiction) => (
+              <li key={contradiction.id}>{contradiction.message}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="muted">No context contradictions detected.</p>
+      )}
+      <div aria-label="Commander authorization questions">
+        <p>Is this authorization based on your plan or on pressure?</p>
+        <p>Which rule protects this decision?</p>
+      </div>
+    </section>
+  );
+}
+
+function formatMissionContextDisplay(value: string | undefined): string {
+  return value && value.trim().length > 0 ? value : 'Context incomplete';
 }
 
 export function DebriefTheater({

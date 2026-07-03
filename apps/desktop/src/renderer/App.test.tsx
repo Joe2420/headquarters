@@ -769,6 +769,54 @@ describe('Desktop shell', () => {
     expect(html).toContain('Guardian Status');
     expect(html).toContain('Ghost Comparison');
     expect(html).toContain('Headquarters never places trades');
+    expect(html).toContain('Mission Context');
+    expect(html).toContain('Context incomplete');
+    expect(html).toContain('Is this authorization based on your plan or on pressure?');
+  });
+
+  it('renders War Room mission context summary with contradictions when available', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Low volatility range.',
+      highImpactNews: 'CPI.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow the plan.',
+    });
+    const missionWithObservation = withObservationMissionContext(missionWithBriefing, {
+      marketDirection: 'Up.',
+      marketStructure: 'High volatility expansion.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      readiness: 'yes',
+      operationalPicture: 'High volatility expansion above VWAP.',
+    });
+
+    const html = renderToStaticMarkup(<WarRoom
+      activeMission={{ ...missionWithObservation, currentState: 'authorization' }}
+      missionHistory={[missionWithObservation]}
+    />);
+
+    expect(html).toContain('Trade the morning breakout.');
+    expect(html).toContain('Low volatility range.');
+    expect(html).toContain('High volatility expansion above VWAP.');
+    expect(html).toContain('Long continuation.');
+    expect(html).toContain('Break below VWAP.');
+    expect(html).toContain('Commander Challenge');
+    expect(html).toContain('This conflicts with your earlier briefing.');
+    expect(html).toContain('Which rule protects this decision?');
   });
 
   it('renders the Debrief Theater with timeline, black box, decision report, and debrief form boundary', () => {
