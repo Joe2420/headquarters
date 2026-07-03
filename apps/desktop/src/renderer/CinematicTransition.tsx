@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 import type { CommanderShellRoomId } from './CommanderShell';
 
 export type TransitionPhase = 'commander' | 'closing' | 'transitioning' | 'opening' | 'arrival' | 'interrupted';
@@ -16,6 +16,8 @@ export interface TransitionVariant {
   readonly soundEvents: readonly TransitionSoundEvent[];
   readonly videoSrc?: string;
   readonly videoStartSeconds?: number;
+  readonly durationMs?: number;
+  readonly reducedMotionDurationMs?: number;
 }
 
 export interface RoomArrival {
@@ -81,6 +83,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderArrival: 'Observe. Do not interfere.',
     soundEvents,
     videoSrc: '/transitions/observation-room.mp4',
+    durationMs: 5200,
   },
   'war-room': {
     room: 'war-room',
@@ -113,6 +116,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     soundEvents,
     videoSrc: '/transitions/archive-vault.mp4',
     videoStartSeconds: 1,
+    durationMs: 4600,
   },
   journal: {
     room: 'journal',
@@ -191,8 +195,8 @@ export function createTransitionController(
     toRoom,
     phase,
     variant,
-    durationMs: 7000,
-    reducedMotionDurationMs: 1000,
+    durationMs: variant.durationMs ?? 7000,
+    reducedMotionDurationMs: variant.reducedMotionDurationMs ?? 1000,
     canInterrupt: false,
     escapeDisabled: true,
   };
@@ -205,6 +209,7 @@ export function createAuthorizationTransitionController(
   return createTransitionController(room, room, phase, {
     ...getTransitionVariant('war-room'),
     videoSrc: '/transitions/war-room.mp4',
+    durationMs: 5400,
   });
 }
 
@@ -216,8 +221,9 @@ export function createTransitionQueue(active?: TransitionController): Transition
   };
 }
 
-export function getTransitionDurationMs(reducedMotion: boolean): number {
-  return reducedMotion ? 1000 : 7000;
+export function getTransitionDurationMs(reducedMotion: boolean, controller?: TransitionController): number {
+  if (reducedMotion) return controller?.reducedMotionDurationMs ?? 1000;
+  return controller?.durationMs ?? 7000;
 }
 
 export function getRoomArrival(room: CommanderShellRoomId): RoomArrival {
@@ -267,6 +273,9 @@ export function TransitionOverlay({ controller }: { readonly controller: Transit
       data-transition-has-video={controller.variant.videoSrc !== undefined}
       data-escape-disabled={controller.escapeDisabled}
       data-can-interrupt={controller.canInterrupt}
+      style={{
+        '--transition-duration': `${controller.durationMs}ms`,
+      } as CSSProperties}
     >
       <TransitionSceneView controller={controller} />
     </section>
@@ -342,8 +351,6 @@ function CockpitSequence() {
       <span className="cockpit-canopy" />
       <span className="cockpit-hud" />
       <span className="cockpit-countdown">
-        <span>5</span>
-        <span>4</span>
         <span>3</span>
         <span>2</span>
         <span>1</span>

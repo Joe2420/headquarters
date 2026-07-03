@@ -64,7 +64,7 @@ describe('RoomNavigationExperience', () => {
       phase: 'commander',
       canInterrupt: false,
       escapeDisabled: true,
-      durationMs: 7000,
+      durationMs: 5200,
       reducedMotionDurationMs: 1000,
     });
     expect(advanceRoomTransition(transition).phase).toBe('closing');
@@ -135,8 +135,13 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionVariant('war-room').videoSrc).toBeUndefined();
     expect(getTransitionVariant('archive').videoSrc).toBe('/transitions/archive-vault.mp4');
     expect(getTransitionVariant('archive').videoStartSeconds).toBe(1);
+    expect(getTransitionVariant('observation').durationMs).toBe(5200);
+    expect(getTransitionVariant('archive').durationMs).toBe(4600);
     expect(getTransitionDurationMs(false)).toBe(7000);
     expect(getTransitionDurationMs(true)).toBe(1000);
+    expect(getTransitionDurationMs(false, createRoomTransition('ready-room', 'observation').controller)).toBe(5200);
+    expect(getTransitionDurationMs(false, createRoomTransition('debrief', 'archive').controller)).toBe(4600);
+    expect(getTransitionDurationMs(false, createAuthorizationTransition('war-room').controller)).toBe(5400);
   });
 
   it('renders the War Room cockpit as generated animation for normal room entry', () => {
@@ -148,6 +153,11 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).not.toContain('src="/transitions/war-room.mp4"');
     expect(transitionHtml).not.toContain('transition-scene-video-only');
     expect(transitionHtml).toContain('class="cockpit-countdown"');
+    expect(transitionHtml).toContain('<span>3</span>');
+    expect(transitionHtml).toContain('<span>2</span>');
+    expect(transitionHtml).toContain('<span>1</span>');
+    expect(transitionHtml).not.toContain('<span>5</span>');
+    expect(transitionHtml).not.toContain('<span>4</span>');
     expect(transitionHtml).not.toContain('5 4 3 2 1');
   });
 
@@ -206,13 +216,15 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('object-fit: contain');
     expect(styles).toContain('object-position: center center');
     expect(styles).toContain('align-items: start');
+    expect(styles).toContain('align-self: start');
     expect(styles).toContain('width: min(1440px, 100%)');
-    expect(styles).toContain('transform: translateY(-8%) scale(1.14)');
     expect(styles).toContain('transform: translateY(-13%) scale(1.14)');
-    expect(styles).toContain('transform: translateY(-10%) scale(1.14)');
+    expect(styles).toContain('transform: translateY(-12%) scale(1.14)');
     expect(styles).toContain('.transition-video-ended');
+    expect(styles).toContain('transition-video-soft-finish');
     expect(styles).toContain('filter: brightness(0.18) saturate(0.65) !important');
     expect(styles).toContain('data-transition-has-video="true"');
+    expect(styles).toContain('var(--transition-duration, 7000ms)');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-destination-title');
     expect(styles).toContain('cockpit-countdown-number');

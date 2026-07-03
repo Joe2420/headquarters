@@ -89,6 +89,7 @@ import {
   getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
   parseMissionNavigationState,
+  type TransitionController,
   type RoomTransitionState,
 } from './RoomNavigationExperience';
 import {
@@ -404,7 +405,7 @@ export function App() {
 
     const timeout = window.setTimeout(() => {
       setRoomTransition(undefined);
-    }, getTransitionDurationMs(isReducedMotionPreferred()));
+    }, getTransitionDurationMs(isReducedMotionPreferred(), roomTransition.controller));
 
     return () => window.clearTimeout(timeout);
   }, [roomTransition]);
@@ -627,13 +628,14 @@ export function App() {
       window.clearTimeout(roomTransferTimeoutRef.current);
     }
 
-    setRoomTransition(createDoorOpeningTransition(fromRoom, targetRoom));
+    const transition = createDoorOpeningTransition(fromRoom, targetRoom);
+    setRoomTransition(transition);
 
     roomTransferTimeoutRef.current = window.setTimeout(() => {
       setActiveRoom(room);
       if (options.openRoomAfter) setActiveOperationsView('room');
       roomTransferTimeoutRef.current = undefined;
-    }, getTransitionRoomLoadDelayMs(isReducedMotionPreferred()));
+    }, getTransitionRoomLoadDelayMs(isReducedMotionPreferred(), transition.controller));
   }
 
   function startDoorTransferForMissionRoomChange(previousMission: ActiveMission, nextMission: ActiveMission) {
@@ -5126,8 +5128,9 @@ function isReducedMotionPreferred(): boolean {
   return globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 }
 
-function getTransitionRoomLoadDelayMs(reducedMotion: boolean): number {
-  return reducedMotion ? 350 : 3600;
+function getTransitionRoomLoadDelayMs(reducedMotion: boolean, controller?: TransitionController): number {
+  if (reducedMotion) return 350;
+  return Math.max(1800, Math.round(getTransitionDurationMs(false, controller) * 0.46));
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {
