@@ -20,13 +20,65 @@ describe('CommanderExperience', () => {
 
     expect(html).toContain('aria-label="Persistent Commander shell"');
     expect(html).toContain('data-current-room="journal"');
-    expect(html).toContain('Create Mission');
     expect(html).toContain('Commander transmission channel');
     expect(html).toContain('Transmit to Commander');
     expect(html).toContain('Lifecycle: Mission Creation');
-    expect(html).toContain('What mission are we opening, and what objective must it serve?');
+    expect(html).toContain('Journal is the command log. Record first; interpret second.');
+    expect(html).toContain('What happened, before judgment?');
     expect(html).toContain('Commander message thread');
     expect(html).toContain('Commander memory surface');
+  });
+
+  it('adapts Commander chat behavior by room without replacing the chat surface', () => {
+    const journalState = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'journal',
+      activeMission: undefined,
+    });
+    const observationState = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'observation',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const journalHtml = renderToStaticMarkup(<CommanderExperiencePanel state={journalState} />);
+    const observationHtml = renderToStaticMarkup(<CommanderExperiencePanel state={observationState} />);
+
+    expect(journalState.roomPromptMode).toBe('ask');
+    expect(journalState.commanderQuestion).toBe('What happened, before judgment?');
+    expect(journalHtml).toContain('Commander transmission channel');
+    expect(journalHtml).toContain('commander-transmission-question');
+
+    expect(observationState.roomPromptMode).toBe('say');
+    expect(observationState.commanderQuestion).toBe('Observation should begin. Hold silence and collect evidence.');
+    expect(observationHtml).toContain('Commander transmission channel');
+    expect(observationHtml).toContain('data-room-prompt-mode="say"');
+    expect(observationHtml).not.toContain('commander-transmission-question');
+  });
+
+  it('keeps each support room Commander chat tone distinct', () => {
+    const rooms = [
+      ['doctrine', 'Is this lesson ready to become law, or only a candidate?'],
+      ['academy', 'Academy recognizes behavior, not numbers.'],
+      ['guardian', 'Guardian is watching limits. No action is required unless a boundary moves.'],
+      ['intelligence', 'Intelligence classifies patterns. Suggestions are evidence, not orders.'],
+      ['settings', 'Settings are quiet. No operational action is required.'],
+    ] as const;
+
+    for (const [room, expectedQuestionOrStatement] of rooms) {
+      const state = buildCommanderExperienceState({
+        reportState: 'reported',
+        activeRoom: room,
+        activeMission: undefined,
+      });
+
+      expect(state.commanderQuestion).toBe(expectedQuestionOrStatement);
+    }
   });
 
   it('renders Commander-led Continue and mission compass context when provided', () => {
@@ -202,6 +254,7 @@ describe('CommanderExperience', () => {
     expect(getCommanderRoomTransitionText('authorization')).toBe('War Room unlocked. Authorization required.');
     expect(getCommanderRoomTransitionText('return_to_base')).toBe('Debrief Theater ready.');
     expect(getCommanderRoomTransitionText('debrief')).toBe('Archive the mission record.');
+    expect(getCommanderRoomTransitionText(undefined, 'guardian')).toBe('Guardian is watching limits. No action is required unless a boundary moves.');
   });
 
   it('renders deterministic memory snippets from local evidence only', () => {

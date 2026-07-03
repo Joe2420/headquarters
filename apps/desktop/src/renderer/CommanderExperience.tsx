@@ -51,11 +51,21 @@ export interface CommanderInterruption {
   readonly acknowledged: boolean;
 }
 
+export type CommanderRoomPromptMode = 'ask' | 'say';
+
+interface CommanderRoomBehavior {
+  readonly mode: CommanderRoomPromptMode;
+  readonly statement: string;
+  readonly prompt: string;
+  readonly acknowledgement: string;
+}
+
 export interface CommanderExperienceState {
   readonly currentRoom: CommanderShellRoomId;
   readonly recommendedRoom: CommanderShellRoomId;
   readonly lifecycleStep: string;
   readonly commanderQuestion: string;
+  readonly roomPromptMode: CommanderRoomPromptMode;
   readonly currentMessage: CommanderMessage;
   readonly messages: readonly CommanderMessage[];
   readonly nextAction: CommanderNextAction;
@@ -82,10 +92,11 @@ const observationSupportMessages = [
 
 export function buildCommanderExperienceState(input: CommanderExperienceInput): CommanderExperienceState {
   const missionState = parseCommanderMissionState(input.activeMission?.currentState);
+  const roomBehavior = getCommanderRoomBehavior(input.activeRoom, input.reportState, missionState);
   const recommendedRoom = input.reportState === 'not-reported' ? 'command' : recommendRoomForMissionState(missionState);
   const nextAction = getCommanderNextAction(input.reportState, missionState);
   const interruption = getCommanderInterruption(input, missionState);
-  const messages = buildCommanderMessageThread(input, recommendedRoom, nextAction, interruption);
+  const messages = buildCommanderMessageThread(input, recommendedRoom, nextAction, roomBehavior, interruption);
   const orderedMessages = listCommanderMessagesInDisplayOrder(messages);
   const currentMessage = orderedMessages[orderedMessages.length - 1] ?? messages[0];
 
@@ -97,7 +108,8 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
     currentRoom: input.activeRoom,
     recommendedRoom,
     lifecycleStep: formatCommanderLifecycleStep(input.reportState, missionState),
-    commanderQuestion: getCommanderQuestion(input.reportState, missionState),
+    commanderQuestion: roomBehavior.mode === 'ask' ? roomBehavior.prompt : roomBehavior.statement,
+    roomPromptMode: roomBehavior.mode,
     currentMessage,
     messages: orderedMessages,
     nextAction,
@@ -147,10 +159,12 @@ export function CommanderExperiencePanel({
     if (activePromptKeyRef.current === currentPromptKey) return;
 
     activePromptKeyRef.current = currentPromptKey;
-    pendingQuestionRef.current = {
-      key: currentPromptKey,
-      text: state.commanderQuestion,
-    };
+    pendingQuestionRef.current = state.roomPromptMode === 'ask'
+      ? {
+        key: currentPromptKey,
+        text: state.commanderQuestion,
+      }
+      : undefined;
 
     setTransmissions((current) => [
       ...current,
@@ -162,7 +176,7 @@ export function CommanderExperiencePanel({
         promptKey: currentPromptKey,
       },
     ]);
-  }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text]);
+  }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text, state.roomPromptMode]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || state.lifecycleStep !== 'Lifecycle: Observation') return undefined;
@@ -197,7 +211,7 @@ export function CommanderExperiencePanel({
     setDraftTransmission('');
 
     const response = await onTransmit?.(message);
-    const commanderResponse = response ?? getTransmissionAcknowledgement(message);
+    const commanderResponse = response ?? getTransmissionAcknowledgement(message, state.currentRoom);
     setTransmissions((current) => [...current, {
       id: `commander:response:${Date.now()}:${current.length}`,
       speaker: 'Commander',
@@ -236,6 +250,7 @@ export function CommanderExperiencePanel({
       aria-label="Persistent Commander shell"
       data-current-room={state.currentRoom}
       data-recommended-room={state.recommendedRoom}
+      data-room-prompt-mode={state.roomPromptMode}
     >
       <div className="commander-shell-primary">
         <section className="commander-transmission-console" aria-label="Commander transmission channel">
@@ -412,7 +427,7 @@ function TransmittedText({
 function buildInitialCommanderTransmissions(state: CommanderExperienceState): CommanderTransmissionEntry[] {
   const promptKey = buildCommanderTransmissionPromptKey(state);
 
-  return [
+  const entries: CommanderTransmissionEntry[] = [
     {
       id: `${promptKey}:current`,
       speaker: 'Commander',
@@ -420,14 +435,19 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
       kind: 'current',
       promptKey,
     },
-    {
+  ];
+
+  if (state.roomPromptMode === 'ask') {
+    entries.push({
       id: `${promptKey}:question`,
       speaker: 'Commander',
       text: state.commanderQuestion,
       kind: 'question',
       promptKey,
-    },
-  ];
+    });
+  }
+
+  return entries;
 }
 
 function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): string {
@@ -436,12 +456,13 @@ function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): s
     state.lifecycleStep,
     state.currentMessage.text,
     state.commanderQuestion,
+    state.roomPromptMode,
   ].join('|');
 }
 
-function getTransmissionAcknowledgement(message: string): string {
+function getTransmissionAcknowledgement(message: string, room: CommanderShellRoomId): string {
   if (isContinueTransmission(message)) return 'Continue order received.';
-  return 'Transmission received. Current operation cards updated where applicable.';
+  return getCommanderRoomBehavior(room, 'reported').acknowledgement;
 }
 
 export function isContinueTransmission(message: string): boolean {
@@ -545,7 +566,14 @@ export function getCommanderNextAction(
   };
 }
 
-export function getCommanderRoomTransitionText(missionState?: MissionState | undefined): string {
+export function getCommanderRoomTransitionText(
+  missionState?: MissionState | undefined,
+  activeRoom: CommanderShellRoomId = 'command',
+): string {
+  if (!isMissionLifecycleRoom(activeRoom)) {
+    return getCommanderRoomBehavior(activeRoom, 'reported', missionState).statement;
+  }
+
   if (missionState === undefined) return 'Create Mission.';
   if (missionState === 'idle') return 'Briefing is ready to begin.';
   if (missionState === 'briefing') return 'Briefing active. Review objective, authority, and observation rules.';
@@ -584,6 +612,7 @@ function buildCommanderMessageThread(
   input: CommanderExperienceInput,
   recommendedRoom: CommanderShellRoomId,
   nextAction: CommanderNextAction,
+  roomBehavior: CommanderRoomBehavior,
   interruption?: CommanderInterruption | undefined,
 ): CommanderMessage[] {
   const missionState = parseCommanderMissionState(input.activeMission?.currentState);
@@ -596,7 +625,7 @@ function buildCommanderMessageThread(
       type: 'guidance',
       tone: 'calm',
       priority: 'normal',
-      text: getCommanderStateText(input.reportState, missionState),
+      text: getCommanderStateText(input.reportState, missionState, input.activeRoom, roomBehavior),
       primaryAction,
       secondaryActions: [],
       source: 'system',
@@ -608,7 +637,7 @@ function buildCommanderMessageThread(
       type: 'transition',
       tone: 'firm',
       priority: 'normal',
-      text: getCommanderRoomTransitionText(missionState),
+      text: getCommanderRoomTransitionText(missionState, input.activeRoom),
       primaryAction,
       secondaryActions: [],
       source: 'room-transition',
@@ -686,8 +715,14 @@ function getCommanderSecondaryActions(
   return [{ id: 'secondary:review-timeline', label: 'Review Timeline', description: 'Read history after the primary action is clear.', disabled: false }];
 }
 
-function getCommanderStateText(reportState: CommanderReportState, missionState?: MissionState | undefined): string {
+function getCommanderStateText(
+  reportState: CommanderReportState,
+  missionState: MissionState | undefined,
+  activeRoom: CommanderShellRoomId,
+  roomBehavior: CommanderRoomBehavior,
+): string {
   if (reportState === 'not-reported') return 'Report for duty. Headquarters is waiting.';
+  if (!isMissionLifecycleRoom(activeRoom)) return roomBehavior.statement;
   if (missionState === undefined) return 'No active mission. Create one mission.';
   if (missionState === 'idle') return 'Mission file exists. Briefing is the next phase.';
   if (missionState === 'briefing') return 'Briefing is active. Confirm objective, authority, and observation rules.';
@@ -695,6 +730,138 @@ function getCommanderStateText(reportState: CommanderReportState, missionState?:
   if (missionState === 'authorization' || missionState === 'deployed') return 'War Room authority is active. Stay inside the plan.';
   if (missionState === 'return_to_base') return 'Return complete. Begin behavior-first debrief.';
   return 'Mission complete. Archive the record.';
+}
+
+function isMissionLifecycleRoom(room: CommanderShellRoomId): boolean {
+  return room === 'command'
+    || room === 'ready-room'
+    || room === 'observation'
+    || room === 'war-room'
+    || room === 'debrief'
+    || room === 'archive';
+}
+
+function getCommanderRoomBehavior(
+  room: CommanderShellRoomId,
+  reportState: CommanderReportState,
+  missionState?: MissionState | undefined,
+): CommanderRoomBehavior {
+  if (reportState === 'not-reported') {
+    return {
+      mode: 'ask',
+      statement: 'Security checkpoint active. Headquarters waits for the operator.',
+      prompt: 'Are you ready to report for duty?',
+      acknowledgement: 'Report note received. Checkpoint remains active.',
+    };
+  }
+
+  if (room === 'command') {
+    return {
+      mode: 'ask',
+      statement: 'Command Center online. One objective stays in front of us.',
+      prompt: getCommanderQuestion(reportState, missionState),
+      acknowledgement: 'Transmission received. Command focus remains on the next disciplined action.',
+    };
+  }
+
+  if (room === 'ready-room') {
+    return {
+      mode: 'ask',
+      statement: 'Ready Room is preparation, not action.',
+      prompt: missionState === 'briefing'
+        ? 'Confirm objective, authority, and observation rule before we move.'
+        : 'Are you briefed, seated, and ready to observe without touching execution?',
+      acknowledgement: 'Readiness note received. Preparation remains the standard.',
+    };
+  }
+
+  if (room === 'observation') {
+    return {
+      mode: 'say',
+      statement: 'Observation should begin. Hold silence and collect evidence.',
+      prompt: 'Observation should begin. Hold silence and collect evidence.',
+      acknowledgement: 'Observation note received. Hold silence.',
+    };
+  }
+
+  if (room === 'war-room') {
+    return {
+      mode: 'ask',
+      statement: 'War Room authority is active. Authorization is not automatic.',
+      prompt: getCommanderQuestion(reportState, missionState),
+      acknowledgement: 'Authorization note received. Evidence and invalidation remain the standard.',
+    };
+  }
+
+  if (room === 'debrief') {
+    return {
+      mode: 'ask',
+      statement: 'Debrief starts now. Behavior comes before outcome.',
+      prompt: 'What behavior occurred, what discipline was kept, and what lesson remains?',
+      acknowledgement: 'Debrief note received. Keep it behavior-first.',
+    };
+  }
+
+  if (room === 'archive') {
+    return {
+      mode: 'say',
+      statement: 'Archive is historical intelligence. Read the record without rewriting it.',
+      prompt: 'Archive is historical intelligence. Read the record without rewriting it.',
+      acknowledgement: 'Archive note received. The record remains unchanged.',
+    };
+  }
+
+  if (room === 'journal') {
+    return {
+      mode: 'ask',
+      statement: 'Journal is the command log. Record first; interpret second.',
+      prompt: 'What happened, before judgment?',
+      acknowledgement: 'Log note received. Record first; interpretation later.',
+    };
+  }
+
+  if (room === 'doctrine') {
+    return {
+      mode: 'ask',
+      statement: 'Doctrine is institutional memory. Evidence must repeat before it becomes law.',
+      prompt: 'Is this lesson ready to become law, or only a candidate?',
+      acknowledgement: 'Doctrine note received. Repeated evidence remains the threshold.',
+    };
+  }
+
+  if (room === 'academy') {
+    return {
+      mode: 'say',
+      statement: 'Academy recognizes behavior, not numbers.',
+      prompt: 'Academy recognizes behavior, not numbers.',
+      acknowledgement: 'Growth note received. Behavior is the measure.',
+    };
+  }
+
+  if (room === 'guardian') {
+    return {
+      mode: 'say',
+      statement: 'Guardian is watching limits. No action is required unless a boundary moves.',
+      prompt: 'Guardian is watching limits. No action is required unless a boundary moves.',
+      acknowledgement: 'Boundary note received. Guardian remains active.',
+    };
+  }
+
+  if (room === 'intelligence') {
+    return {
+      mode: 'say',
+      statement: 'Intelligence classifies patterns. Suggestions are evidence, not orders.',
+      prompt: 'Intelligence classifies patterns. Suggestions are evidence, not orders.',
+      acknowledgement: 'Intelligence note received. Patterns remain evidence.',
+    };
+  }
+
+  return {
+    mode: 'say',
+    statement: 'Settings are quiet. No operational action is required.',
+    prompt: 'Settings are quiet. No operational action is required.',
+    acknowledgement: 'Settings note received.',
+  };
 }
 
 function formatCommanderLifecycleStep(
