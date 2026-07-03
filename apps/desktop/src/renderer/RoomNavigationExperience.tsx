@@ -1,4 +1,16 @@
 import type { MissionState } from '@headquarters/shared';
+import {
+  TransitionOverlay,
+  createTransitionController,
+  getRoomArrival as getCinematicRoomArrival,
+  getTransitionDurationMs,
+  getTransitionVariant,
+  type TransitionController,
+  type TransitionVariant,
+  type TransitionQueue,
+  type RoomArrival,
+  createTransitionQueue,
+} from './CinematicTransition';
 import type { CommanderShellRoomId } from './CommanderShell';
 import type { MissionCompassStep, MissionCompassStepId } from './MissionCompass';
 import { MissionCompass } from './MissionCompass';
@@ -24,13 +36,11 @@ export interface RoomTransitionState {
   readonly fromRoom: CommanderShellRoomId;
   readonly toRoom: CommanderShellRoomId;
   readonly phase: RoomTransitionPhase;
+  readonly controller: TransitionController;
 }
 
-export interface RoomArrival {
-  readonly room: CommanderShellRoomId;
-  readonly title: string;
-  readonly message: string;
-}
+export type { RoomArrival, TransitionController, TransitionQueue, TransitionVariant };
+export { createTransitionQueue, getTransitionDurationMs, getTransitionVariant };
 
 const missionPath: readonly MissionCompassStepId[] = ['ready-room', 'observation', 'war-room', 'debrief', 'archive'];
 const missionPathLabels: Record<MissionCompassStepId, string> = {
@@ -100,10 +110,13 @@ export function createRoomTransition(
   fromRoom: CommanderShellRoomId,
   toRoom: CommanderShellRoomId,
 ): RoomTransitionState {
+  const controller = createTransitionController(fromRoom, toRoom);
+
   return {
     fromRoom,
     toRoom,
     phase: 'commander',
+    controller,
   };
 }
 
@@ -120,6 +133,7 @@ export function advanceRoomTransition(transition: RoomTransitionState): RoomTran
   return {
     ...transition,
     phase: nextPhase[transition.phase],
+    controller: createTransitionController(transition.fromRoom, transition.toRoom, nextPhase[transition.phase]),
   };
 }
 
@@ -127,31 +141,12 @@ export function recoverInterruptedTransition(transition: RoomTransitionState): R
   return {
     ...transition,
     phase: 'opening',
+    controller: createTransitionController(transition.fromRoom, transition.toRoom, 'opening'),
   };
 }
 
 export function getRoomArrival(room: CommanderShellRoomId): RoomArrival {
-  if (room === 'ready-room') {
-    return { room, title: 'Ready Room', message: 'Mission received. Preparation begins here.' };
-  }
-
-  if (room === 'observation') {
-    return { room, title: 'Observation', message: 'Observe only. Silence is the work.' };
-  }
-
-  if (room === 'war-room') {
-    return { room, title: 'War Room', message: 'Authorization required. Decide inside the plan.' };
-  }
-
-  if (room === 'debrief') {
-    return { room, title: 'Debrief Theater', message: "Summarize today's operation before memory fades." };
-  }
-
-  if (room === 'archive') {
-    return { room, title: 'Archive', message: 'Mission permanently archived. History is now the interface.' };
-  }
-
-  return { room, title: 'Headquarters', message: 'Commander guidance received. Continue.' };
+  return getCinematicRoomArrival(room);
 }
 
 export function getRoomIdentity(room: CommanderShellRoomId): string {
@@ -173,17 +168,7 @@ export function getRoomTransitionNarration(phase: RoomTransitionPhase): string {
 }
 
 export function RoomTransitionLayer({ transition }: { readonly transition: RoomTransitionState }) {
-  return (
-    <section
-      className="room-transition-layer"
-      aria-label="Room transition"
-      data-transition-from={transition.fromRoom}
-      data-transition-to={transition.toRoom}
-      data-transition-phase={transition.phase}
-    >
-      <span className="vault-door-wheel" aria-hidden="true"><span /></span>
-    </section>
-  );
+  return <TransitionOverlay controller={transition.controller} />;
 }
 
 export function RoomArrivalPanel({

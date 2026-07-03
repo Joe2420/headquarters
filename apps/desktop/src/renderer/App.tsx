@@ -83,9 +83,9 @@ import {
 import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
-  advanceRoomTransition,
   buildMissionCompassSteps,
   createRoomTransition,
+  getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
   parseMissionNavigationState,
   type RoomTransitionState,
@@ -403,7 +403,7 @@ export function App() {
 
     const timeout = window.setTimeout(() => {
       setRoomTransition(undefined);
-    }, 6800);
+    }, getTransitionDurationMs(isReducedMotionPreferred()));
 
     return () => window.clearTimeout(timeout);
   }, [roomTransition]);
@@ -612,17 +612,7 @@ export function App() {
     room: HeadquartersRoomId,
     options: { readonly openRoomAfter?: boolean; readonly fromRoom?: CommanderShellRoomId } = {},
   ) {
-    if (shouldBypassDoorTransition(room)) {
-      if (roomTransferTimeoutRef.current !== undefined) {
-        window.clearTimeout(roomTransferTimeoutRef.current);
-        roomTransferTimeoutRef.current = undefined;
-      }
-
-      setRoomTransition(undefined);
-      setActiveRoom(room);
-      if (options.openRoomAfter) setActiveOperationsView('room');
-      return;
-    }
+    if (roomTransition !== undefined) return;
 
     const fromRoom = options.fromRoom ?? currentCommanderRoom;
     const targetRoom = mapNavigationRoomToCommanderRoom(room);
@@ -642,11 +632,7 @@ export function App() {
       setActiveRoom(room);
       if (options.openRoomAfter) setActiveOperationsView('room');
       roomTransferTimeoutRef.current = undefined;
-    }, 1200);
-  }
-
-  function shouldBypassDoorTransition(room: HeadquartersRoomId): boolean {
-    return room === 'archive' || room === 'journal';
+    }, getTransitionRoomLoadDelayMs(isReducedMotionPreferred()));
   }
 
   function startDoorTransferForMissionRoomChange(previousMission: ActiveMission, nextMission: ActiveMission) {
@@ -717,6 +703,10 @@ export function App() {
     const currentState = parseMissionState(activeMission?.currentState);
     const shouldContinue = isContinueTransmission(message);
     const requestedRoom = parseCommanderRoomNavigationTransmission(message);
+
+    if (roomTransition !== undefined) {
+      return 'Transition in progress. Stand by until the destination is secure.';
+    }
 
     if (shellPhase === 'security-checkpoint') {
       if (isReportForDutyTransmission(message) || shouldContinue) {
@@ -5108,10 +5098,15 @@ function extractTransmissionField(message: string, labels: readonly string[]): s
 }
 
 function createDoorOpeningTransition(fromRoom: CommanderShellRoomId, toRoom: CommanderShellRoomId): RoomTransitionState {
-  let transition = createRoomTransition(fromRoom, toRoom);
-  transition = advanceRoomTransition(transition);
-  transition = advanceRoomTransition(transition);
-  return advanceRoomTransition(transition);
+  return createRoomTransition(fromRoom, toRoom);
+}
+
+function isReducedMotionPreferred(): boolean {
+  return globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+}
+
+function getTransitionRoomLoadDelayMs(reducedMotion: boolean): number {
+  return reducedMotion ? 350 : 3600;
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {

@@ -1793,3 +1793,633 @@ dd {
     animation-iteration-count: 1 !important;
   }
 }
+
+.cinematic-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 3rem);
+  pointer-events: auto;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(78, 122, 158, 0.2), transparent 16%),
+    radial-gradient(circle at 50% 88%, rgba(196, 170, 101, 0.18), transparent 22%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.92)),
+    #030609;
+  border: 0;
+  animation: cinematic-overlay-lifecycle 7000ms cubic-bezier(0.18, 0.72, 0.16, 1) forwards;
+}
+
+.cinematic-transition-overlay::before,
+.cinematic-transition-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 51%;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 18%, rgba(0, 0, 0, 0.5) 54%, rgba(197, 166, 95, 0.08)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 42px),
+    radial-gradient(circle at 50% 50%, rgba(196, 170, 101, 0.16) 0 5px, transparent 6px 100%),
+    #090d10;
+  border: 1px solid rgba(201, 214, 219, 0.16);
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 12px rgba(255, 255, 255, 0.03),
+    0 0 44px rgba(0, 0, 0, 0.7);
+  will-change: transform, filter;
+}
+
+.cinematic-transition-overlay::before {
+  left: 0;
+  transform-origin: left center;
+  animation: cinematic-door-left 7000ms cubic-bezier(0.15, 0.86, 0.15, 1) forwards;
+}
+
+.cinematic-transition-overlay::after {
+  right: 0;
+  transform-origin: right center;
+  animation: cinematic-door-right 7000ms cubic-bezier(0.15, 0.86, 0.15, 1) forwards;
+}
+
+.transition-scene {
+  position: relative;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  width: min(1040px, 92vw);
+  min-height: min(620px, 82vh);
+  overflow: hidden;
+  border: 1px solid rgba(150, 180, 205, 0.26);
+  background:
+    radial-gradient(circle at 50% 46%, rgba(146, 190, 226, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(14, 24, 34, 0.88), rgba(3, 7, 11, 0.96));
+  box-shadow:
+    inset 0 0 90px rgba(0, 0, 0, 0.76),
+    0 32px 90px rgba(0, 0, 0, 0.72);
+  isolation: isolate;
+}
+
+.transition-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, transparent 0 7%, rgba(255, 255, 255, 0.04) 7.2% 7.4%, transparent 7.6% 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 58px);
+  opacity: 0.52;
+}
+
+.transition-commander-line {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
+  z-index: 12;
+  max-width: 560px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(114, 255, 189, 0.28);
+  background: rgba(2, 20, 14, 0.84);
+  color: #b9ffd9;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  box-shadow: 0 0 28px rgba(24, 255, 154, 0.12);
+}
+
+.transition-commander-line-departure {
+  top: 1rem;
+  animation: commander-departure-line 7000ms ease forwards;
+}
+
+.transition-commander-line-arrival {
+  bottom: 1rem;
+  opacity: 0;
+  animation: commander-arrival-line 7000ms ease forwards;
+}
+
+.transition-environment {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.transition-particles,
+.transition-light-beam,
+.transition-door,
+.transition-vault-wheel,
+.transition-journal-desk,
+.transition-projector,
+.transition-scanner-grid,
+.transition-situation-map,
+.transition-doctrine-hologram,
+.transition-simulator-holograms,
+.transition-cockpit,
+.cockpit-canopy,
+.cockpit-hud,
+.cockpit-thrusters {
+  position: absolute;
+  pointer-events: none;
+}
+
+.transition-particles {
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(219, 235, 255, 0.38) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(196, 170, 101, 0.32) 0 1px, transparent 1.6px);
+  background-position: 0 0, 42px 28px;
+  background-size: 72px 72px, 116px 116px;
+  opacity: 0.26;
+  animation: transition-particle-drift 7000ms linear forwards;
+}
+
+.transition-light-beam {
+  inset: 0;
+  background: radial-gradient(circle at 50% 52%, rgba(213, 233, 255, 0.46), transparent 12%);
+  opacity: 0;
+  animation: transition-arrival-light 7000ms ease forwards;
+}
+
+.transition-door {
+  top: 14%;
+  bottom: 14%;
+  width: 37%;
+  z-index: 3;
+  border: 1px solid rgba(209, 221, 224, 0.16);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(196, 170, 101, 0.12) 0 10%, transparent 11%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.44)),
+    #0b1014;
+  box-shadow: inset 0 0 56px rgba(0, 0, 0, 0.78);
+  will-change: transform;
+}
+
+.transition-door-left {
+  left: 12%;
+  animation: transition-inner-door-left 7000ms cubic-bezier(0.17, 0.82, 0.18, 1) forwards;
+}
+
+.transition-door-right {
+  right: 12%;
+  animation: transition-inner-door-right 7000ms cubic-bezier(0.17, 0.82, 0.18, 1) forwards;
+}
+
+.transition-destination {
+  z-index: 10;
+  display: grid;
+  gap: 0.5rem;
+  place-items: center;
+  min-width: min(420px, 80vw);
+  padding: 1.3rem 1.5rem;
+  border: 1px solid rgba(150, 180, 205, 0.28);
+  background: rgba(2, 8, 14, 0.76);
+  color: #d9e7ff;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  animation: transition-destination-title 7000ms ease forwards;
+}
+
+.transition-destination span {
+  font-size: clamp(1.15rem, 3vw, 2rem);
+  font-weight: 900;
+}
+
+.transition-destination small {
+  color: #9eb6d3;
+  font-weight: 800;
+}
+
+.transition-scene[data-transition-scene="cockpit"] {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 31, 31, 0.2), transparent 18%),
+    radial-gradient(circle at 50% 100%, rgba(255, 170, 72, 0.18), transparent 22%),
+    linear-gradient(180deg, rgba(14, 20, 30, 0.96), rgba(4, 6, 9, 0.98));
+}
+
+.transition-scene[data-transition-scene="cockpit"] .transition-door {
+  display: none;
+}
+
+.transition-cockpit {
+  inset: 0;
+  z-index: 4;
+  background:
+    linear-gradient(120deg, transparent 0 30%, rgba(255, 255, 255, 0.07) 31% 32%, transparent 33% 100%),
+    radial-gradient(circle at 50% 62%, rgba(255, 34, 34, 0.24), transparent 17%);
+}
+
+.cockpit-canopy {
+  inset: 12% 16% 18%;
+  border: 1px solid rgba(154, 190, 220, 0.32);
+  border-radius: 48% 48% 20% 20%;
+  box-shadow: inset 0 0 64px rgba(67, 118, 160, 0.24), 0 0 28px rgba(255, 36, 36, 0.16);
+  animation: cockpit-canopy-close 7000ms ease forwards;
+}
+
+.cockpit-hud {
+  left: 50%;
+  top: 44%;
+  width: 240px;
+  height: 240px;
+  border: 1px solid rgba(255, 52, 52, 0.72);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  box-shadow: 0 0 32px rgba(255, 36, 36, 0.22), inset 0 0 36px rgba(255, 36, 36, 0.12);
+  animation: cockpit-hud-boot 7000ms ease forwards;
+}
+
+.cockpit-countdown {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  z-index: 7;
+  color: #ff3d3d;
+  font-size: clamp(2rem, 8vw, 5rem);
+  font-weight: 900;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: cockpit-countdown 7000ms steps(5, end) forwards;
+}
+
+.cockpit-thrusters {
+  left: 16%;
+  right: 16%;
+  bottom: -12%;
+  height: 26%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.86), rgba(255, 157, 54, 0.48) 24%, transparent 66%);
+  opacity: 0;
+  animation: cockpit-thrusters 7000ms ease forwards;
+}
+
+.transition-vault-wheel {
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  border: 8px solid rgba(196, 170, 101, 0.36);
+  background: repeating-conic-gradient(rgba(196, 170, 101, 0.42) 0 10deg, rgba(12, 16, 18, 0.92) 10deg 28deg);
+  transform: translate(-50%, -50%);
+  animation: vault-wheel-spin 2400ms cubic-bezier(0.18, 0.78, 0.2, 1) forwards;
+}
+
+.transition-journal-desk {
+  left: 18%;
+  right: 18%;
+  bottom: 12%;
+  height: 26%;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 231, 163, 0.4), transparent 28%),
+    linear-gradient(180deg, rgba(91, 69, 42, 0.22), rgba(18, 12, 7, 0.76));
+  animation: transition-desk-light 7000ms ease forwards;
+}
+
+.transition-projector {
+  left: 50%;
+  top: 12%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 240, 198, 0.92);
+  box-shadow: 0 0 80px 42px rgba(255, 240, 198, 0.12);
+  transform: translateX(-50%);
+  animation: transition-projector-light 7000ms ease forwards;
+}
+
+.transition-scanner-grid,
+.transition-situation-map,
+.transition-doctrine-hologram,
+.transition-simulator-holograms {
+  inset: 18% 14%;
+  border: 1px solid rgba(105, 180, 255, 0.26);
+  opacity: 0;
+  animation: transition-hologram-activate 7000ms ease forwards;
+}
+
+.transition-scanner-grid {
+  border-color: rgba(255, 64, 64, 0.38);
+  background: repeating-linear-gradient(0deg, rgba(255, 52, 52, 0.12) 0 1px, transparent 1px 24px);
+}
+
+.transition-situation-map {
+  background:
+    radial-gradient(circle at 22% 40%, rgba(91, 189, 255, 0.5) 0 3px, transparent 4px),
+    radial-gradient(circle at 64% 34%, rgba(91, 189, 255, 0.44) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 66%, rgba(91, 189, 255, 0.44) 0 3px, transparent 4px),
+    linear-gradient(90deg, transparent, rgba(91, 189, 255, 0.12), transparent);
+}
+
+.transition-doctrine-hologram {
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 170, 101, 0.28), transparent 42%);
+}
+
+.transition-simulator-holograms {
+  background: repeating-linear-gradient(90deg, rgba(60, 255, 190, 0.1) 0 2px, transparent 2px 44px);
+}
+
+@keyframes cinematic-overlay-lifecycle {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+
+  8%,
+  88% {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+}
+
+@keyframes cinematic-door-left {
+  0% {
+    transform: translateX(-112%);
+    filter: brightness(0.74);
+  }
+
+  28%,
+  56% {
+    transform: translateX(0);
+    filter: brightness(0.94);
+  }
+
+  100% {
+    transform: perspective(900px) translateX(-106%) rotateY(-9deg);
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes cinematic-door-right {
+  0% {
+    transform: translateX(112%);
+    filter: brightness(0.74);
+  }
+
+  28%,
+  56% {
+    transform: translateX(0);
+    filter: brightness(0.94);
+  }
+
+  100% {
+    transform: perspective(900px) translateX(106%) rotateY(9deg);
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes transition-inner-door-left {
+  0%,
+  22% {
+    transform: translateX(-132%);
+  }
+
+  42%,
+  62% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-128%);
+  }
+}
+
+@keyframes transition-inner-door-right {
+  0%,
+  22% {
+    transform: translateX(132%);
+  }
+
+  42%,
+  62% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(128%);
+  }
+}
+
+@keyframes commander-departure-line {
+  0%,
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes commander-arrival-line {
+  0%,
+  78% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  86%,
+  96% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes transition-destination-title {
+  0%,
+  44% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  52%,
+  76% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+}
+
+@keyframes transition-particle-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-46px, 64px, 0);
+  }
+}
+
+@keyframes transition-arrival-light {
+  0%,
+  64% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  82% {
+    opacity: 0.86;
+    transform: scale(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes cockpit-canopy-close {
+  0% {
+    transform: translateY(-42%) scale(1.08);
+    opacity: 0.3;
+  }
+
+  32%,
+  70% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-10%) scale(1.08);
+    opacity: 0;
+  }
+}
+
+@keyframes cockpit-hud-boot {
+  0%,
+  26% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.86);
+  }
+
+  34%,
+  72% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+}
+
+@keyframes cockpit-countdown {
+  0%,
+  34% {
+    opacity: 0;
+  }
+
+  44%,
+  66% {
+    opacity: 1;
+  }
+
+  76%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes cockpit-thrusters {
+  0%,
+  64% {
+    opacity: 0;
+    transform: scaleY(0.4);
+  }
+
+  76% {
+    opacity: 1;
+    transform: scaleY(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleY(1.8);
+  }
+}
+
+@keyframes transition-desk-light {
+  0%,
+  48% {
+    opacity: 0;
+  }
+
+  72%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes transition-projector-light {
+  0%,
+  52% {
+    opacity: 0;
+  }
+
+  72%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes transition-hologram-activate {
+  0%,
+  44% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  72%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-transition-overlay,
+  .cinematic-transition-overlay::before,
+  .cinematic-transition-overlay::after,
+  .cinematic-transition-overlay *,
+  .cinematic-transition-overlay *::before,
+  .cinematic-transition-overlay *::after {
+    animation-duration: 1000ms !important;
+    animation-timing-function: ease !important;
+  }
+
+  .transition-door,
+  .transition-vault-wheel,
+  .transition-cockpit,
+  .transition-journal-desk,
+  .transition-projector,
+  .transition-scanner-grid,
+  .transition-situation-map,
+  .transition-doctrine-hologram,
+  .transition-simulator-holograms,
+  .vault-door-wheel {
+    display: none !important;
+  }
+}
