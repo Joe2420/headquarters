@@ -3,6 +3,12 @@ import type { MissionState } from '@headquarters/shared';
 import type { CommanderMessage, CommanderMessageAction } from './CommanderMessage';
 import { createCommanderMessage, isCommanderMessageUrgent, listCommanderMessagesInDisplayOrder } from './CommanderMessage';
 import type { CommanderShellRoomId } from './CommanderShell';
+import {
+  getNextObservationInterviewQuestion,
+  getNextReadyRoomBriefingQuestion,
+  type MissionBriefingContext,
+  type MissionObservationContext,
+} from './CommanderMissionBriefing';
 import type { MissionCompassStep } from './MissionCompass';
 import { MissionCompassPanel } from './RoomNavigationExperience';
 import { recommendRoomForMissionState } from './RoomStateMachine';
@@ -15,6 +21,8 @@ export interface CommanderExperienceMission {
   readonly objective: string;
   readonly currentState: string;
   readonly createdAt: string;
+  readonly briefingContext?: MissionBriefingContext;
+  readonly observationContext?: MissionObservationContext;
 }
 
 export interface CommanderExperienceEvidence {
@@ -92,7 +100,7 @@ const observationSupportMessages = [
 
 export function buildCommanderExperienceState(input: CommanderExperienceInput): CommanderExperienceState {
   const missionState = parseCommanderMissionState(input.activeMission?.currentState);
-  const roomBehavior = getCommanderRoomBehavior(input.activeRoom, input.reportState, missionState);
+  const roomBehavior = getCommanderRoomBehavior(input.activeRoom, input.reportState, missionState, input.activeMission);
   const recommendedRoom = input.reportState === 'not-reported' ? 'command' : recommendRoomForMissionState(missionState);
   const nextAction = getCommanderNextAction(input.reportState, missionState);
   const interruption = getCommanderInterruption(input, missionState);
@@ -526,8 +534,8 @@ export function getCommanderNextAction(
     return {
       id: 'commander-action:complete-briefing',
       label: 'Complete Briefing',
-      description: 'Answer readiness questions before moving into preparation.',
-      disabled: false,
+      description: 'Answer the Commander briefing questions in chat before Observation unlocks.',
+      disabled: true,
     };
   }
 
@@ -535,8 +543,8 @@ export function getCommanderNextAction(
     return {
       id: 'commander-action:begin-observation',
       label: 'Begin Observation',
-      description: 'Remain silent and collect evidence before authorization.',
-      disabled: false,
+      description: 'Complete the Commander observation interview before War Room unlocks.',
+      disabled: true,
     };
   }
 
@@ -576,8 +584,8 @@ export function getCommanderRoomTransitionText(
 
   if (missionState === undefined) return 'Create Mission.';
   if (missionState === 'idle') return 'Briefing is ready to begin.';
-  if (missionState === 'briefing') return 'Briefing active. Review objective, authority, and observation rules.';
-  if (missionState === 'ready' || missionState === 'observation') return 'Observation begins. Remain silent.';
+  if (missionState === 'briefing') return 'Operational briefing required before Observation.';
+  if (missionState === 'ready' || missionState === 'observation') return 'Observation requires evidence before War Room.';
   if (missionState === 'authorization' || missionState === 'deployed') return 'War Room unlocked. Authorization required.';
   if (missionState === 'return_to_base') return 'Debrief Theater ready.';
   return 'Archive the mission record.';
@@ -745,6 +753,7 @@ function getCommanderRoomBehavior(
   room: CommanderShellRoomId,
   reportState: CommanderReportState,
   missionState?: MissionState | undefined,
+  mission?: CommanderExperienceMission | undefined,
 ): CommanderRoomBehavior {
   if (reportState === 'not-reported') {
     return {
@@ -769,7 +778,7 @@ function getCommanderRoomBehavior(
       mode: 'ask',
       statement: 'Ready Room is preparation, not action.',
       prompt: missionState === 'briefing'
-        ? 'Confirm objective, authority, and observation rule before we move.'
+        ? getNextReadyRoomBriefingQuestion(mission?.briefingContext)
         : 'Are you briefed, seated, and ready to observe without touching execution?',
       acknowledgement: 'Readiness note received. Preparation remains the standard.',
     };
@@ -777,10 +786,10 @@ function getCommanderRoomBehavior(
 
   if (room === 'observation') {
     return {
-      mode: 'say',
-      statement: 'Observation should begin. Hold silence and collect evidence.',
-      prompt: 'Observation should begin. Hold silence and collect evidence.',
-      acknowledgement: 'Observation note received. Hold silence.',
+      mode: 'ask',
+      statement: 'Observation is an intelligence interview. Report evidence one answer at a time.',
+      prompt: getNextObservationInterviewQuestion(mission?.observationContext),
+      acknowledgement: 'Observation note received. Evidence remains separate from impulse.',
     };
   }
 

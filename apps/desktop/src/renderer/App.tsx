@@ -80,6 +80,14 @@ import {
   isContinueTransmission,
   mapNavigationRoomToCommanderRoom,
 } from './CommanderExperience';
+import {
+  answerObservationInterview,
+  answerReadyRoomBriefing,
+  getNextObservationInterviewQuestion,
+  getNextReadyRoomBriefingQuestion,
+  type MissionBriefingContext,
+  type MissionObservationContext,
+} from './CommanderMissionBriefing';
 import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
@@ -114,6 +122,8 @@ export interface ActiveMission {
   commandAuthority: string;
   currentState: string;
   createdAt: string;
+  briefingContext?: MissionBriefingContext;
+  observationContext?: MissionObservationContext;
 }
 
 export interface MissionDraft {
@@ -509,6 +519,20 @@ export function App() {
       return;
     }
 
+    if (activeMission && currentCommanderRoom === 'ready-room' && parseMissionState(activeMission.currentState) === 'briefing') {
+      setCommanderWorkflowNotice('Operational briefing incomplete. Answer the Commander in chat.');
+      return;
+    }
+
+    if (
+      activeMission
+      && currentCommanderRoom === 'observation'
+      && (parseMissionState(activeMission.currentState) === 'ready' || parseMissionState(activeMission.currentState) === 'observation')
+    ) {
+      setCommanderWorkflowNotice('Observation interview incomplete. Answer the Commander in chat.');
+      return;
+    }
+
     if (continueMode === 'advance-mission' && activeMission) {
       await handleCommanderWorkflowContinue(activeMission);
       return;
@@ -702,6 +726,44 @@ export function App() {
     setActiveOperationsView('chat');
   }
 
+  async function completeReadyRoomBriefing(mission: ActiveMission, response: string): Promise<string> {
+    const advancedMission = await advanceMissionFromCommanderContinue(mission);
+
+    if (advancedMission) {
+      setActiveMission(advancedMission);
+      setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
+      setCommanderWorkflowNotice('Operational briefing complete. Observation Room unlocked.');
+      startDoorTransferForMissionRoomChange(mission, advancedMission);
+    }
+
+    return response;
+  }
+
+  async function beginObservationInterviewIfNeeded(mission: ActiveMission): Promise<ActiveMission> {
+    if (parseMissionState(mission.currentState) !== 'ready') return mission;
+
+    const observationMission = await advanceMissionFromCommanderContinue(mission);
+
+    if (observationMission === undefined) return mission;
+
+    setActiveMission(observationMission);
+    setMissionHistory((history) => upsertMissionHistory(history, observationMission));
+    return observationMission;
+  }
+
+  async function completeObservationInterview(mission: ActiveMission, response: string): Promise<string> {
+    const advancedMission = await advanceMissionFromCommanderContinue(mission);
+
+    if (advancedMission) {
+      setActiveMission(advancedMission);
+      setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
+      setCommanderWorkflowNotice('Observation complete. War Room authorization unlocked.');
+      startDoorTransferForMissionRoomChange(mission, advancedMission);
+    }
+
+    return response;
+  }
+
   async function handleCommanderTransmission(message: string): Promise<string> {
     const currentState = parseMissionState(activeMission?.currentState);
     const shouldContinue = isContinueTransmission(message);
@@ -718,6 +780,21 @@ export function App() {
       }
 
       return 'First step is report for duty. Transmit ready, report, or continue.';
+    }
+
+    if (requestedRoom !== undefined && activeMission !== undefined) {
+      const requestedCommanderRoom = mapNavigationRoomToCommanderRoom(requestedRoom);
+
+      if (requestedCommanderRoom === 'observation' && parseMissionState(activeMission.currentState) === 'briefing') {
+        return getNextReadyRoomBriefingQuestion(activeMission.briefingContext);
+      }
+
+      if (
+        requestedCommanderRoom === 'war-room'
+        && (parseMissionState(activeMission.currentState) === 'ready' || parseMissionState(activeMission.currentState) === 'observation')
+      ) {
+        return getNextObservationInterviewQuestion(activeMission.observationContext);
+      }
     }
 
     if (requestedRoom !== undefined) {
@@ -776,24 +853,44 @@ export function App() {
 
     if (currentCommanderRoom === 'ready-room' && (currentState === 'idle' || currentState === 'briefing')) {
       if (shouldContinue) {
-        await handleCommanderContinue();
-        return currentState === 'idle'
-          ? 'Briefing started. Confirm the objective, authority, and observation rule.'
-          : 'Briefing complete. Ready Room is prepared for observation.';
+        if (currentState === 'idle') {
+          await handleCommanderContinue();
+          return 'Briefing opened. Headquarters needs the operational context before Observation unlocks.';
+        }
+
+        return getNextReadyRoomBriefingQuestion(activeMission.briefingContext);
       }
 
-      return 'Ready Room note received. Confirm objective, authority, and observation rule; transmit continue when preparation is complete.';
+      const result = answerReadyRoomBriefing(activeMission.briefingContext, message);
+      const missionWithContext = { ...activeMission, briefingContext: result.context };
+
+      setActiveMission(missionWithContext);
+      setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
+
+      if (result.complete) {
+        return completeReadyRoomBriefing(missionWithContext, result.response);
+      }
+
+      return result.response;
     }
 
     if (currentCommanderRoom === 'observation' && (currentState === 'ready' || currentState === 'observation')) {
       if (shouldContinue) {
-        await handleCommanderContinue();
-        return currentState === 'ready'
-          ? 'Observation begins. Hold silence and collect evidence.'
-          : 'Observation complete. War Room authorization is the next checkpoint.';
+        return getNextObservationInterviewQuestion(activeMission.observationContext);
       }
 
-      return 'Observation note received. Do not authorize yet; keep evidence separate from impulse.';
+      const missionForInterview = await beginObservationInterviewIfNeeded(activeMission);
+      const result = answerObservationInterview(missionForInterview.observationContext, message);
+      const missionWithContext = { ...missionForInterview, observationContext: result.context };
+
+      setActiveMission(missionWithContext);
+      setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
+
+      if (result.complete) {
+        return completeObservationInterview(missionWithContext, result.response);
+      }
+
+      return result.response;
     }
 
     if (currentState === 'authorization') {

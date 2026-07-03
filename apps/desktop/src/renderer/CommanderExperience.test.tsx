@@ -54,11 +54,57 @@ describe('CommanderExperience', () => {
     expect(journalHtml).toContain('Commander transmission channel');
     expect(journalHtml).toContain('commander-transmission-question');
 
-    expect(observationState.roomPromptMode).toBe('say');
-    expect(observationState.commanderQuestion).toBe('Observation should begin. Hold silence and collect evidence.');
+    expect(observationState.roomPromptMode).toBe('ask');
+    expect(observationState.commanderQuestion).toContain('Observation has begun.');
     expect(observationHtml).toContain('Commander transmission channel');
-    expect(observationHtml).toContain('data-room-prompt-mode="say"');
-    expect(observationHtml).not.toContain('commander-transmission-question');
+    expect(observationHtml).toContain('data-room-prompt-mode="ask"');
+    expect(observationHtml).toContain('commander-transmission-question');
+  });
+
+  it('asks the next Ready Room briefing question from stored mission context', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'ready-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'briefing',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        briefingContext: {
+          missionObjective: 'Trade the morning breakout.',
+          marketEnvironment: 'Trending.',
+        },
+      },
+    });
+
+    expect(state.roomPromptMode).toBe('ask');
+    expect(state.commanderQuestion).toBe("Are there any scheduled economic events capable of changing today's conditions?");
+  });
+
+  it('asks the next Observation intelligence question from stored evidence context', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'observation',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        observationContext: {
+          marketDirection: 'Up.',
+          marketStructure: 'Higher highs.',
+          volume: 'Rising.',
+          liquidity: 'Above prior high.',
+          keyLevels: 'London high and VWAP.',
+          bias: 'Long continuation.',
+        },
+      },
+    });
+
+    expect(state.roomPromptMode).toBe('ask');
+    expect(state.commanderQuestion).toBe('What evidence would invalidate your current idea?');
   });
 
   it('keeps each support room Commander chat tone distinct', () => {
@@ -156,7 +202,9 @@ describe('CommanderExperience', () => {
     expect(getCommanderNextAction('not-reported').label).toBe('Report for Duty');
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');
     expect(getCommanderNextAction('reported', 'briefing').label).toBe('Complete Briefing');
+    expect(getCommanderNextAction('reported', 'briefing').disabled).toBe(true);
     expect(getCommanderNextAction('reported', 'observation').label).toBe('Begin Observation');
+    expect(getCommanderNextAction('reported', 'observation').disabled).toBe(true);
     expect(getCommanderNextAction('reported', 'authorization').label).toBe('Proceed to War Room');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
     expect(getCommanderNextAction('reported', 'debrief').label).toBe('Archive Mission');
@@ -249,8 +297,8 @@ describe('CommanderExperience', () => {
 
   it('generates room transition messages from mission lifecycle state', () => {
     expect(getCommanderRoomTransitionText(undefined)).toBe('Create Mission.');
-    expect(getCommanderRoomTransitionText('briefing')).toBe('Briefing active. Review objective, authority, and observation rules.');
-    expect(getCommanderRoomTransitionText('observation')).toBe('Observation begins. Remain silent.');
+    expect(getCommanderRoomTransitionText('briefing')).toBe('Operational briefing required before Observation.');
+    expect(getCommanderRoomTransitionText('observation')).toBe('Observation requires evidence before War Room.');
     expect(getCommanderRoomTransitionText('authorization')).toBe('War Room unlocked. Authorization required.');
     expect(getCommanderRoomTransitionText('return_to_base')).toBe('Debrief Theater ready.');
     expect(getCommanderRoomTransitionText('debrief')).toBe('Archive the mission record.');
