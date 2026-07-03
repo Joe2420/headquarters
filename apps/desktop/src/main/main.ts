@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import type { MissionState } from '@headquarters/shared';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { initializeAppStartup, type AppStartupRuntime } from './startup.js';
@@ -12,10 +13,13 @@ async function createWindow() {
   });
 
   ipcMain.handle('headquarters:get-startup-status', () => startupRuntime?.status);
+  ipcMain.handle('headquarters:list-missions', () => startupRuntime?.listMissions());
   ipcMain.handle('headquarters:list-doctrine-records', () => startupRuntime?.listDoctrineRecords());
   ipcMain.handle('headquarters:list-doctrine-history', () => startupRuntime?.listDoctrineHistory());
+  ipcMain.handle('headquarters:list-journal-entries', () => startupRuntime?.listJournalEntries());
   ipcMain.handle('headquarters:promote-doctrine-candidate', (_event, input: unknown) => startupRuntime?.promoteDoctrineCandidate(parseDoctrinePromotionInput(input)));
   ipcMain.handle('headquarters:create-mission', (_event, input: unknown) => startupRuntime?.createMission(parseCreateMissionInput(input)));
+  ipcMain.handle('headquarters:create-journal-entry', (_event, input: unknown) => startupRuntime?.createJournalEntry(parseCreateJournalEntryInput(input)));
   ipcMain.handle('headquarters:start-briefing', (_event, input: unknown) => startupRuntime?.startBriefing(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:complete-briefing', (_event, input: unknown) => startupRuntime?.completeBriefing(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:start-observation', (_event, input: unknown) => startupRuntime?.startObservation(parseMissionCommandInput(input)));
@@ -23,6 +27,8 @@ async function createWindow() {
   ipcMain.handle('headquarters:request-authorization', (_event, input: unknown) => startupRuntime?.requestAuthorization(parseAuthorizationInput(input)));
   ipcMain.handle('headquarters:declare-deployment', (_event, input: unknown) => startupRuntime?.declareDeployment(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:return-to-base', (_event, input: unknown) => startupRuntime?.requestReturnToBase(parseMissionCommandInput(input)));
+  ipcMain.handle('headquarters:abort-mission', (_event, input: unknown) => startupRuntime?.abortMission(parseMissionCommandInput(input)));
+  ipcMain.handle('headquarters:rewind-mission', (_event, input: unknown) => startupRuntime?.rewindMission(parseRewindMissionInput(input)));
   ipcMain.handle('headquarters:save-debrief', (_event, input: unknown) => startupRuntime?.saveDebrief(parseDebriefInput(input)));
   ipcMain.handle('headquarters:archive-after-debrief', (_event, input: unknown) => startupRuntime?.archiveAfterDebrief(parseMissionCommandInput(input)));
 
@@ -63,6 +69,35 @@ function parseCreateMissionInput(input: unknown): { codename: string; objective:
   };
 }
 
+function parseCreateJournalEntryInput(input: unknown): {
+  content: string;
+  entryDate: string;
+  mood?: string;
+  marketConditions?: string;
+} {
+  if (typeof input !== 'object' || input === null) {
+    throw new Error('Journal entry input must be an object.');
+  }
+
+  const candidate = input as {
+    content?: unknown;
+    entryDate?: unknown;
+    mood?: unknown;
+    marketConditions?: unknown;
+  };
+
+  if (typeof candidate.content !== 'string' || typeof candidate.entryDate !== 'string') {
+    throw new Error('Journal entry requires content and entryDate.');
+  }
+
+  return {
+    content: candidate.content,
+    entryDate: candidate.entryDate,
+    ...(typeof candidate.mood === 'string' ? { mood: candidate.mood } : {}),
+    ...(typeof candidate.marketConditions === 'string' ? { marketConditions: candidate.marketConditions } : {}),
+  };
+}
+
 function parseMissionCommandInput(input: unknown): { missionId: string; reason?: string } {
   if (typeof input !== 'object' || input === null) {
     throw new Error('Mission command input must be an object.');
@@ -78,6 +113,32 @@ function parseMissionCommandInput(input: unknown): { missionId: string; reason?:
     missionId: candidate.missionId,
     ...(typeof candidate.reason === 'string' ? { reason: candidate.reason } : {}),
   };
+}
+
+function parseRewindMissionInput(input: unknown): { missionId: string; targetState: MissionState; reason?: string } {
+  const command = parseMissionCommandInput(input);
+  const candidate = input as { targetState?: unknown };
+
+  if (!isMissionState(candidate.targetState)) {
+    throw new Error('Mission rewind requires a valid targetState.');
+  }
+
+  return {
+    ...command,
+    targetState: candidate.targetState,
+  };
+}
+
+function isMissionState(value: unknown): value is MissionState {
+  return value === 'idle'
+    || value === 'briefing'
+    || value === 'ready'
+    || value === 'observation'
+    || value === 'authorization'
+    || value === 'deployed'
+    || value === 'return_to_base'
+    || value === 'debrief'
+    || value === 'archived';
 }
 
 function parseAuthorizationInput(input: unknown): {

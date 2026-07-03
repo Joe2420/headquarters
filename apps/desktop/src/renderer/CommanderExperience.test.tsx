@@ -20,9 +20,139 @@ describe('CommanderExperience', () => {
 
     expect(html).toContain('aria-label="Persistent Commander shell"');
     expect(html).toContain('data-current-room="journal"');
-    expect(html).toContain('Create Mission');
+    expect(html).toContain('Commander transmission channel');
+    expect(html).toContain('Transmit to Commander');
+    expect(html).toContain('Lifecycle: Mission Creation');
+    expect(html).toContain('Journal is the command log. Record first; interpret second.');
+    expect(html).toContain('What happened, before judgment?');
     expect(html).toContain('Commander message thread');
     expect(html).toContain('Commander memory surface');
+  });
+
+  it('adapts Commander chat behavior by room without replacing the chat surface', () => {
+    const journalState = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'journal',
+      activeMission: undefined,
+    });
+    const observationState = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'observation',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const journalHtml = renderToStaticMarkup(<CommanderExperiencePanel state={journalState} />);
+    const observationHtml = renderToStaticMarkup(<CommanderExperiencePanel state={observationState} />);
+
+    expect(journalState.roomPromptMode).toBe('ask');
+    expect(journalState.commanderQuestion).toBe('What happened, before judgment?');
+    expect(journalHtml).toContain('Commander transmission channel');
+    expect(journalHtml).toContain('commander-transmission-question');
+
+    expect(observationState.roomPromptMode).toBe('ask');
+    expect(observationState.commanderQuestion).toContain('Observation has begun.');
+    expect(observationHtml).toContain('Commander transmission channel');
+    expect(observationHtml).toContain('data-room-prompt-mode="ask"');
+    expect(observationHtml).toContain('commander-transmission-question');
+  });
+
+  it('asks the next Ready Room briefing question from stored mission context', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'ready-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'briefing',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        briefingContext: {
+          missionObjective: 'Trade the morning breakout.',
+          marketEnvironment: 'Trending.',
+        },
+      },
+    });
+
+    expect(state.roomPromptMode).toBe('ask');
+    expect(state.commanderQuestion).toBe("Are there any scheduled economic events capable of changing today's conditions?");
+  });
+
+  it('asks the next Observation intelligence question from stored evidence context', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'observation',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        observationContext: {
+          marketDirection: 'Up.',
+          marketStructure: 'Higher highs.',
+          volume: 'Rising.',
+          liquidity: 'Above prior high.',
+          keyLevels: 'London high and VWAP.',
+          bias: 'Long continuation.',
+        },
+      },
+    });
+
+    expect(state.roomPromptMode).toBe('ask');
+    expect(state.commanderQuestion).toBe('What evidence would invalidate your current idea?');
+  });
+
+  it('does not render a Commander question twice when the current response already contains it', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'observation',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        observationContext: {
+          marketDirection: 'Up.',
+        },
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel
+      state={{
+        ...state,
+        currentMessage: {
+          ...state.currentMessage,
+          text: `Logged. ${state.commanderQuestion}`,
+        },
+      }}
+    />);
+
+    expect(html.match(/What market structure is currently present/g)).toHaveLength(1);
+  });
+
+  it('keeps each support room Commander chat tone distinct', () => {
+    const rooms = [
+      ['doctrine', 'Is this lesson ready to become law, or only a candidate?'],
+      ['academy', 'Academy recognizes behavior, not numbers.'],
+      ['guardian', 'Guardian is watching limits. No action is required unless a boundary moves.'],
+      ['intelligence', 'Intelligence classifies patterns. Suggestions are evidence, not orders.'],
+      ['settings', 'Settings are quiet. No operational action is required.'],
+    ] as const;
+
+    for (const [room, expectedQuestionOrStatement] of rooms) {
+      const state = buildCommanderExperienceState({
+        reportState: 'reported',
+        activeRoom: room,
+        activeMission: undefined,
+      });
+
+      expect(state.commanderQuestion).toBe(expectedQuestionOrStatement);
+    }
   });
 
   it('renders Commander-led Continue and mission compass context when provided', () => {
@@ -51,6 +181,7 @@ describe('CommanderExperience', () => {
 
     expect(html).toContain('aria-label="Continue to Ready Room"');
     expect(html).toContain('Commander mission compass');
+    expect(html).toContain('Mission compass');
     expect(html).toContain('Ready Room active. 3 future rooms locked.');
   });
 
@@ -89,7 +220,8 @@ describe('CommanderExperience', () => {
       situationBoard={<section>Situation Board Presence</section>}
     />);
 
-    expect(html).toContain('aria-label="Commander atmosphere deck"');
+    expect(html).toContain('aria-label="Commander instruments"');
+    expect(html).not.toContain('Commander overview');
     expect(html).toContain('Command Chair Presence');
     expect(html).toContain('Situation Board Presence');
   });
@@ -97,11 +229,75 @@ describe('CommanderExperience', () => {
   it('derives exactly one primary next action for main lifecycle states', () => {
     expect(getCommanderNextAction('not-reported').label).toBe('Report for Duty');
     expect(getCommanderNextAction('reported').label).toBe('Create Mission');
-    expect(getCommanderNextAction('reported', 'briefing').label).toBe('Enter Ready Room');
-    expect(getCommanderNextAction('reported', 'observation').label).toBe('Begin Observation');
+    expect(getCommanderNextAction('reported', 'briefing').label).toBe('Complete Briefing');
+    expect(getCommanderNextAction('reported', 'briefing').disabled).toBe(true);
+    expect(getCommanderNextAction('reported', 'ready').label).toBe('Begin Observation');
+    expect(getCommanderNextAction('reported', 'ready').disabled).toBe(false);
+    expect(getCommanderNextAction('reported', 'observation').label).toBe('Complete Observation');
+    expect(getCommanderNextAction('reported', 'observation').disabled).toBe(true);
     expect(getCommanderNextAction('reported', 'authorization').label).toBe('Proceed to War Room');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
     expect(getCommanderNextAction('reported', 'debrief').label).toBe('Archive Mission');
+  });
+
+  it('unlocks lifecycle Continue after required briefing and observation context is saved', () => {
+    const briefingAction = getCommanderNextAction('reported', 'briefing', {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      currentState: 'briefing',
+      createdAt: '2026-07-02T00:00:00.000Z',
+      briefingContext: {
+        missionObjective: 'Trade the morning breakout.',
+        marketEnvironment: 'Trending.',
+        highImpactNews: 'None.',
+        personalReadiness: 'Focused.',
+        riskParameters: '1%.',
+        successCriteria: 'Follow the plan.',
+      },
+    });
+    const observationAction = getCommanderNextAction('reported', 'observation', {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      currentState: 'observation',
+      createdAt: '2026-07-02T00:00:00.000Z',
+      observationContext: {
+        marketDirection: 'Up.',
+        marketStructure: 'Higher highs.',
+        volume: 'Rising.',
+        liquidity: 'Above prior high.',
+        keyLevels: 'London high and VWAP.',
+        bias: 'Long continuation.',
+        invalidationEvidence: 'Break below VWAP.',
+        emotionalCheck: 'Focused.',
+        readiness: 'yes',
+        operationalPicture: 'Trend up, liquidity above, invalidation below VWAP.',
+      },
+    });
+
+    expect(briefingAction.disabled).toBe(false);
+    expect(briefingAction.description).toContain('Proceed to Observation');
+    expect(observationAction.disabled).toBe(false);
+    expect(observationAction.label).toBe('Complete Observation');
+    expect(observationAction.description).toContain('Proceed to War Room');
+  });
+
+  it('exposes lifecycle step and relevant Commander question for active mission state', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+
+    expect(state.lifecycleStep).toBe('Lifecycle: Authorization');
+    expect(state.commanderQuestion).toBe('State the reason: market condition, session, volume, divergence, and invalidation.');
   });
 
   it('orders deterministic Commander messages and marks the newest message current', () => {
@@ -174,11 +370,12 @@ describe('CommanderExperience', () => {
 
   it('generates room transition messages from mission lifecycle state', () => {
     expect(getCommanderRoomTransitionText(undefined)).toBe('Create Mission.');
-    expect(getCommanderRoomTransitionText('briefing')).toBe('Proceed to Ready Room.');
-    expect(getCommanderRoomTransitionText('observation')).toBe('Observation begins. Remain silent.');
+    expect(getCommanderRoomTransitionText('briefing')).toBe('Operational briefing required before Observation.');
+    expect(getCommanderRoomTransitionText('observation')).toBe('Observation requires evidence before War Room.');
     expect(getCommanderRoomTransitionText('authorization')).toBe('War Room unlocked. Authorization required.');
     expect(getCommanderRoomTransitionText('return_to_base')).toBe('Debrief Theater ready.');
     expect(getCommanderRoomTransitionText('debrief')).toBe('Archive the mission record.');
+    expect(getCommanderRoomTransitionText(undefined, 'guardian')).toBe('Guardian is watching limits. No action is required unless a boundary moves.');
   });
 
   it('renders deterministic memory snippets from local evidence only', () => {

@@ -108,11 +108,13 @@ export function OperationalCommandChair({
   currentRoom,
   mission,
   primaryAction,
+  onCommandAction,
 }: {
   readonly reportState: 'not-reported' | 'reported';
   readonly currentRoom: string;
   readonly mission?: HeadquartersAtmosphereMission | undefined;
   readonly primaryAction: string;
+  readonly onCommandAction?: (() => void) | undefined;
 }) {
   return (
     <div className="operational-command-chair">
@@ -122,6 +124,7 @@ export function OperationalCommandChair({
         currentAuthority={mission?.commandAuthority ?? 'Headquarters standby'}
         currentRoom={formatRoomLabel(currentRoom)}
         primaryAction={primaryAction}
+        onCommandAction={onCommandAction}
       />
     </div>
   );

@@ -8,7 +8,9 @@ describe('Sprint 3 desktop experience review', () => {
     const commandCenterHtml = renderToStaticMarkup(<CommandCenterPlaceholder />);
 
     expect(firstLaunchHtml).toContain('Security Checkpoint');
-    expect(firstLaunchHtml).toContain('REPORT FOR DUTY');
+    expect(firstLaunchHtml).toContain('Commander Chat');
+    expect(firstLaunchHtml).toContain('Current Room');
+    expect(firstLaunchHtml).toContain('Report for Duty');
     expect(firstLaunchHtml).toContain('HQOS Status');
     expect(firstLaunchHtml).toContain('aria-label="Primary"');
     expect(reportForDuty('security-checkpoint')).toEqual({

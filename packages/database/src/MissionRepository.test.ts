@@ -70,6 +70,37 @@ describe('MissionRepository', () => {
     database.close();
   });
 
+  it('lists mission records in creation order', () => {
+    const database = openHeadquartersDatabase(createTempDatabasePath());
+    runMigrations(database, loadMigrationsFromDirectory(migrationsDirectory));
+    const repository = new MissionRepository(database);
+    const first = createMission();
+    const second: Mission = {
+      ...createMission(),
+      id: '33333333-3333-4333-8333-333333333333',
+      codename: 'Second Mission',
+      createdAt: '2026-06-28T20:05:00.000Z',
+      updatedAt: '2026-06-28T20:05:00.000Z',
+    };
+
+    repository.save(second);
+    repository.save(first);
+
+    expect(repository.list().map((mission) => mission.id)).toEqual([first.id, second.id]);
+
+    database.close();
+  });
+
+  it('applies the journal entry persistence migration', () => {
+    const database = openHeadquartersDatabase(createTempDatabasePath());
+    const migrations = loadMigrationsFromDirectory(migrationsDirectory);
+    const firstRun = runMigrations(database, migrations);
+
+    expect(firstRun.applied).toContain('008_journal_entries');
+
+    database.close();
+  });
+
   it('keeps mission creation schema migration idempotent', () => {
     const database = openHeadquartersDatabase(createTempDatabasePath());
     const migrations = loadMigrationsFromDirectory(migrationsDirectory);

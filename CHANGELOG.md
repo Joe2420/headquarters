@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0180 - Added Sprint 17 Guided Room Experience review package.
+
+HQ-TASK-0179 - Unified implemented mission rooms around the GuidedRoom interaction model.
+
+HQ-TASK-0178 - Redesigned Archive as a chronological mission dossier.
+
+HQ-TASK-0177 - Redesigned Debrief Theater around behavior-first reflection.
+
+HQ-TASK-0176 - Redesigned War Room around one authorization decision.
+
+HQ-TASK-0175 - Redesigned Observation Room as a calm observation workspace without future controls.
+
+HQ-TASK-0174 - Redesigned Ready Room as a mission preparation experience.
+
+HQ-TASK-0173 - Added reusable GuidedRoom layout component.
+
 HQ-TASK-0172 - Added Sprint 16 Headquarters Atmosphere review package.
 
 HQ-TASK-0171 - Polished Headquarters transitions with subtle CSS motion and reduced-motion support.

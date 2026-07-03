@@ -29,10 +29,21 @@ describe('CommandChair', () => {
 
     expect(html).toContain('data-command-chair-status="mission-active"');
     expect(html).toContain('Mission command active');
+    expect(html).toContain('Confirm Seat');
+    expect(html).toContain('Awaiting operator confirmation');
     expect(html).toContain('Operator seated');
     expect(html).toContain('Professional command');
     expect(html).toContain('War Room');
     expect(html).toContain('Return To Base');
+  });
+
+  it('supports an application-provided command action handler', () => {
+    const html = renderToStaticMarkup(
+      <CommandChair status="occupied" onCommandAction={() => undefined} />,
+    );
+
+    expect(html).toContain('Open Command Room');
+    expect(html).toContain('data-command-chair-status="occupied"');
   });
 
   it('toggles local command status for development', () => {

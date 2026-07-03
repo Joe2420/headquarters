@@ -2,6 +2,22 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0180 - Sprint 17 Guided Room Experience Review Package
+
+- HQ-TASK-0179 - Guided Room Pattern Validation
+
+- HQ-TASK-0178 - Archive Experience
+
+- HQ-TASK-0177 - Debrief Theater Experience
+
+- HQ-TASK-0176 - War Room Experience
+
+- HQ-TASK-0175 - Observation Room Experience
+
+- HQ-TASK-0174 - Ready Room Experience
+
+- HQ-TASK-0173 - Guided Room Layout Component
+
 - HQ-TASK-0172 - Sprint 16 Headquarters Atmosphere Review Package
 
 - HQ-TASK-0171 - Subtle Motion and Transition Polish

@@ -38,6 +38,7 @@ import {
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
+  abortDesktopMission,
   getActiveMissionAfterMissionChange,
   getCommanderContinueMode,
   createArchiveWritePlaceholder,
@@ -72,16 +73,19 @@ import {
   getCommanderMessage,
   getJournalCommanderPrompt,
   getJournalWorkflowSteps,
+  getMissionLifecycleStation,
   getMissionNextAction,
   getMissionNotificationSummary,
   getMissionPhaseWorkspaceDescription,
   getMissionPhaseWorkspaceTitle,
   getPrimaryNavigationItems,
+  isAbortMissionTransmission,
   listArchivedMissionSummaries,
   listMissionHistory,
   mapMissionRecordToActiveMission,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
+  parseCommanderRoomNavigationTransmission,
   promoteDesktopDoctrineCandidate,
   reportForDuty,
   requestLocalReturnToBase,
@@ -98,10 +102,28 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.nav-item:hover');
     expect(styles).toContain('.nav-item[data-nav-section="commander"]');
     expect(styles).toContain('.commander-atmosphere-deck');
+    expect(styles).toContain('.commander-transmission-console');
+    expect(styles).toContain('@keyframes commander-transmission-arrival');
+    expect(styles).toContain('@keyframes commander-transmission-status');
+    expect(styles).toContain('.commander-context-drawer');
+    expect(styles).toContain('.room-context-drawer');
     expect(styles).toContain('.ambient-status-strip');
     expect(styles).toContain('@keyframes commander-message-arrival');
     expect(styles).toContain('.room-transition-layer::before');
+    expect(styles).toContain('contain: layout paint');
+    expect(styles).toContain('.operations-viewport > .room-transition-layer');
+    expect(styles).toContain('min-height: min(820px, calc(100vh - 4rem))');
+    expect(styles).toContain('.commander-chat-stage .commander-shell');
+    expect(styles).toContain('min-height: min(760px, calc(100vh - 6rem))');
     expect(styles).toContain('.skip-link:focus-visible');
+  });
+
+  it('keeps transition rendering in the stable operations viewport while preparing destination room', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('{roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}');
+    expect(source).toContain('Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.82)');
+    expect(source).not.toContain('* 0.46');
   });
 
   it('renders the security checkpoint startup surface', () => {
@@ -109,7 +131,9 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('Headquarters');
     expect(html).toContain('Security Checkpoint');
-    expect(html).toContain('REPORT FOR DUTY');
+    expect(html).toContain('Commander Chat');
+    expect(html).toContain('Current Room');
+    expect(html).toContain('Report for Duty');
     expect(html).toContain('Status');
     expect(html).toContain('HQOS Status');
     expect(html).toContain('Database');
@@ -120,11 +144,20 @@ describe('Desktop shell', () => {
   it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {
     const html = renderToStaticMarkup(<App />);
 
-    expect(html).toContain('Commander atmosphere deck');
+    expect(html).toContain('Commander instruments');
     expect(html).toContain('Command Chair');
     expect(html).toContain('Situation Board');
     expect(html).toContain('Ambient Headquarters status');
     expect(html).toContain('HQOS:');
+  });
+
+  it('keeps Commander chat as the main operating place with room output optional', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('Commander transmission channel');
+    expect(html).toContain('Lifecycle: Security Checkpoint');
+    expect(html).toContain('Report for Duty');
+    expect(html).not.toContain('Commander mission creation controls');
   });
 
   it('renders beta accessibility landmarks and live status semantics', () => {
@@ -177,6 +210,50 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-identity="decision"');
     expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-identity="reflection"');
     expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
+  });
+
+  it('renders Sprint 17 guided room structure for mission path rooms', () => {
+    const mission: ActiveMission = {
+      id: 'mission-001',
+      campaign: 'Foundation Patrol',
+      objective: 'Hold discipline',
+      condition: 'Ready',
+      commandAuthority: 'Professional command',
+      currentState: 'ready',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    };
+
+    const readyHtml = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
+    const observationHtml = renderToStaticMarkup(<ObservationRoom activeMission={{ ...mission, currentState: 'observation' }} />);
+    const warHtml = renderToStaticMarkup(<WarRoom activeMission={{ ...mission, currentState: 'authorization' }} missionHistory={[mission]} />);
+    const debriefHtml = renderToStaticMarkup(<DebriefTheater activeMission={{ ...mission, currentState: 'return_to_base' }} />);
+
+    expect(readyHtml).toContain('class="guided-room room-layout"');
+    expect(readyHtml).toContain('Begin Observation');
+    expect(observationHtml).toContain('Observe quietly and collect evidence.');
+    expect(observationHtml).not.toContain('Evaluate Authorization');
+    expect(warHtml).toContain('Evaluate Authorization');
+    expect(warHtml).toContain('Mission next action');
+    expect(debriefHtml).toContain('Behavior Sequence');
+    expect(debriefHtml).toContain('Mission next action');
+  });
+
+  it('renders Archive as a chronological guided dossier instead of a dashboard surface', () => {
+    const html = renderToStaticMarkup(<ArchiveRoom
+      archivedMissionSummaries={[{
+        missionId: 'mission-001',
+        codename: 'Foundation Patrol',
+        archivedAt: '2026-07-02T00:10:00.000Z',
+        eventCount: 2,
+      }]}
+      archivedJournalEntries={[]}
+      doctrineRecords={[]}
+    />);
+
+    expect(html).toContain('Read records chronologically without editing the past.');
+    expect(html).toContain('Foundation Patrol preserved as institutional memory.');
+    expect(html).toContain('Timeline / History');
+    expect(html).toContain('Mission Archive Viewer');
   });
 
   it('renders restrained atmosphere tokens for major rooms', () => {
@@ -649,10 +726,10 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
 
     expect(html).toContain('data-room-id="ready-room"');
-    expect(html).toContain('ReadinessReport');
-    expect(html).toContain('DailyOrdersCard');
-    expect(html).toContain('OathPanel');
-    expect(html).toContain('LockerPanel');
+    expect(html).toContain('Readiness Checklist');
+    expect(html).toContain('Daily Orders');
+    expect(html).toContain('Command Oath');
+    expect(html).toContain('Operator Locker');
     expect(html).toContain('Foundation Patrol');
   });
 
@@ -667,10 +744,10 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ObservationRoom activeMission={{ ...mission, currentState: 'observation' }} />);
 
     expect(html).toContain('data-room-id="observation-room"');
-    expect(html).toContain('ObservationTimer');
-    expect(html).toContain('CompassIndicator');
-    expect(html).toContain('ArtificialHorizon');
-    expect(html).toContain('SilenceStateDisplay');
+    expect(html).toContain('Observation Timer');
+    expect(html).toContain('Compass Indicator');
+    expect(html).toContain('Artificial Horizon');
+    expect(html).toContain('Silence State');
     expect(html).toContain('Headquarters observes and records');
   });
 
@@ -686,9 +763,9 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('data-room-id="war-room"');
     expect(html).toContain('Mission Authorization');
-    expect(html).toContain('WarTableProjection');
-    expect(html).toContain('GuardianStatusPanel');
-    expect(html).toContain('GhostComparisonPanel');
+    expect(html).toContain('War Table Projection');
+    expect(html).toContain('Guardian Status');
+    expect(html).toContain('Ghost Comparison');
     expect(html).toContain('Headquarters never places trades');
   });
 
@@ -710,8 +787,8 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('data-room-id="debrief-theater"');
     expect(html).toContain('Mission timeline viewer');
-    expect(html).toContain('BlackBoxViewer');
-    expect(html).toContain('DecisionReportPanel');
+    expect(html).toContain('Black Box Viewer');
+    expect(html).toContain('Decision Report');
     expect(html).toContain('Behavior Summary');
   });
 
@@ -886,9 +963,47 @@ describe('Desktop shell', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
     };
 
-    expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('navigate-room');
+    expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('advance-mission');
     expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('advance-mission');
     await expect(advanceMissionFromCommanderContinue(mission)).resolves.toBeUndefined();
+  });
+
+  it('parses explicit Commander room routing transmissions without treating notes as navigation', () => {
+    expect(parseCommanderRoomNavigationTransmission('open journal')).toBe('journal');
+    expect(parseCommanderRoomNavigationTransmission('go to archive')).toBe('archive');
+    expect(parseCommanderRoomNavigationTransmission('enter observation room')).toBe('observation');
+    expect(parseCommanderRoomNavigationTransmission('show guardian wing')).toBe('guardian');
+    expect(parseCommanderRoomNavigationTransmission('move to war room')).toBe('war');
+    expect(parseCommanderRoomNavigationTransmission('route to command center')).toBe('command');
+    expect(parseCommanderRoomNavigationTransmission('journal')).toBeUndefined();
+    expect(parseCommanderRoomNavigationTransmission('observation note: wait for evidence')).toBeUndefined();
+  });
+
+  it('recognizes explicit Commander abort transmissions without matching ordinary mission text', () => {
+    expect(isAbortMissionTransmission('abort mission')).toBe(true);
+    expect(isAbortMissionTransmission('mission abort')).toBe(true);
+    expect(isAbortMissionTransmission('scrub mission')).toBe(true);
+    expect(isAbortMissionTransmission('terminate mission')).toBe(true);
+    expect(isAbortMissionTransmission('mission objective is still valid')).toBe(false);
+    expect(isAbortMissionTransmission('abortive price action is not enough')).toBe(false);
+  });
+
+  it('archives an active mission through the desktop abort fallback', async () => {
+    const mission: ActiveMission = {
+      id: 'mission-abort',
+      campaign: 'Foundation',
+      objective: 'Stop when invalidated',
+      condition: 'Observation',
+      commandAuthority: 'Operator',
+      currentState: 'observation',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    await expect(abortDesktopMission(mission)).resolves.toMatchObject({
+      id: 'mission-abort',
+      currentState: 'archived',
+      condition: 'Archived',
+    });
   });
 
   it('clears the active mission after archive so a new mission can be created', () => {
@@ -1403,13 +1518,14 @@ describe('Desktop shell', () => {
       currentState: 'return_to_base',
     });
     expect(formatMissionClosingState(closingMission)).toBe('Returning to base');
-    expect(formatMissionLifecycleSummary(closingMission)).toBe('Current lifecycle state: Return To Base');
+    expect(formatMissionLifecycleSummary(closingMission)).toBe('Current station: Debrief Theater Return');
+    expect(getMissionLifecycleStation('authorization')).toBe('War Room Authorization');
   });
 
   it('keeps return-to-base helper safe when no mission is loaded', () => {
     expect(requestLocalReturnToBase(undefined)).toBeUndefined();
     expect(formatMissionClosingState(undefined)).toBe('No mission loaded');
-    expect(formatMissionLifecycleSummary(undefined)).toBe('No mission lifecycle loaded');
+    expect(formatMissionLifecycleSummary(undefined)).toBe('Mission route standing by');
   });
 
   it('builds a read-only mission lifecycle path without transition rules', () => {
@@ -1471,9 +1587,11 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<CommandCenter activeMission={markLocalMissionArchived(mission)} />);
 
     expect(html).toContain('aria-label="Mission lifecycle"');
+    expect(html).toContain('Operational Sequence');
+    expect(html).toContain('Archive Vault');
     expect(html).toContain('data-step-status="completed"');
     expect(html).toContain('data-step-status="current"');
-    expect(html).toContain('Current lifecycle state: Archived');
+    expect(html).toContain('Current station: Archive Vault');
   });
 
   it('creates a local behavior-first mission debrief', () => {
