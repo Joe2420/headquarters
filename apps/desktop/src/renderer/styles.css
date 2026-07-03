@@ -939,7 +939,7 @@ dd {
     0 0 0 8px rgba(5, 8, 10, 0.84),
     0 0 0 10px rgba(196, 170, 101, 0.2),
     0 22px 44px rgba(0, 0, 0, 0.42);
-  animation: vault-wheel-spin 2200ms cubic-bezier(0.16, 0.86, 0.2, 1) forwards;
+  animation: vault-wheel-settle 2200ms cubic-bezier(0.16, 0.86, 0.2, 1) forwards;
 }
 
 .room-transition-layer .vault-door-wheel > span::before,
@@ -1677,21 +1677,21 @@ dd {
   }
 }
 
-@keyframes vault-wheel-spin {
+@keyframes vault-wheel-settle {
   0% {
-    transform: rotate(0deg) scale(1);
+    filter: brightness(0.9);
   }
 
   36% {
-    transform: rotate(220deg) scale(1.04);
+    filter: brightness(1.08);
   }
 
   74% {
-    transform: rotate(430deg) scale(1.06);
+    filter: brightness(1);
   }
 
   100% {
-    transform: rotate(405deg) scale(0.98);
+    filter: brightness(0.94);
   }
 }
 
@@ -2153,7 +2153,7 @@ dd {
   border: 8px solid rgba(196, 170, 101, 0.36);
   background: repeating-conic-gradient(rgba(196, 170, 101, 0.42) 0 10deg, rgba(12, 16, 18, 0.92) 10deg 28deg);
   transform: translate(-50%, -50%);
-  animation: vault-wheel-spin 2400ms cubic-bezier(0.18, 0.78, 0.2, 1) forwards;
+  animation: vault-wheel-settle 2400ms cubic-bezier(0.18, 0.78, 0.2, 1) forwards;
 }
 
 .transition-journal-desk {
