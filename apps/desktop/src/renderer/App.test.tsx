@@ -111,15 +111,18 @@ describe('Desktop shell', () => {
     expect(styles).toContain('@keyframes commander-message-arrival');
     expect(styles).toContain('.room-transition-layer::before');
     expect(styles).toContain('contain: layout paint');
+    expect(styles).toContain('.operations-viewport > .room-transition-layer');
+    expect(styles).toContain('min-height: min(820px, calc(100vh - 4rem))');
     expect(styles).toContain('.commander-chat-stage .commander-shell');
     expect(styles).toContain('min-height: min(760px, calc(100vh - 6rem))');
     expect(styles).toContain('.skip-link:focus-visible');
   });
 
-  it('keeps destination room changes until after the transition host releases control', () => {
+  it('keeps transition rendering in the stable operations viewport while preparing destination room', () => {
     const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
 
-    expect(source).toContain('getTransitionDurationMs(reducedMotion, controller) + 75');
+    expect(source).toContain('{roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}');
+    expect(source).toContain('Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.82)');
     expect(source).not.toContain('* 0.46');
   });
 

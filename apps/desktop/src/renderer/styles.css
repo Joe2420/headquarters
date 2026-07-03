@@ -209,6 +209,8 @@ dd {
   display: grid;
   align-content: start;
   gap: 0;
+  min-height: min(820px, calc(100vh - 4rem));
+  overflow: hidden;
 }
 
 .operations-view-tabs {
@@ -279,6 +281,12 @@ dd {
 .commander-chat-stage .room-transition-layer {
   inset: 0 0.8rem 0.8rem;
   min-height: min(640px, calc(100vh - 7rem));
+}
+
+.operations-viewport > .room-transition-layer {
+  inset: 3.2rem 0.8rem 0.8rem;
+  min-height: min(680px, calc(100vh - 7rem));
+  z-index: 40;
 }
 
 .commander-chat-stage .commander-shell {

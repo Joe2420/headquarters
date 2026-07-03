@@ -981,9 +981,10 @@ export function App() {
               </div>
             ) : null}
 
+            {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
+
             {activeOperationsView === 'chat' ? (
               <section className="commander-chat-stage" aria-label="Commander chat stage">
-                {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
                 <CommanderExperiencePanel
                   state={commanderState}
                   compassSteps={missionCompassSteps}
@@ -1050,7 +1051,6 @@ export function App() {
             {activeOperationsView === 'room' ? (
               <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
                 <MissionCeremonyMoment ceremony={missionCeremony} />
-                {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
                 ) : (
@@ -5129,7 +5129,7 @@ function isReducedMotionPreferred(): boolean {
 }
 
 function getTransitionRoomLoadDelayMs(reducedMotion: boolean, controller?: TransitionController): number {
-  return getTransitionDurationMs(reducedMotion, controller) + 75;
+  return Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.82);
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {
