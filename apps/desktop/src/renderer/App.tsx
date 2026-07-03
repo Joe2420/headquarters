@@ -716,6 +716,7 @@ export function App() {
   async function handleCommanderTransmission(message: string): Promise<string> {
     const currentState = parseMissionState(activeMission?.currentState);
     const shouldContinue = isContinueTransmission(message);
+    const requestedRoom = parseCommanderRoomNavigationTransmission(message);
 
     if (shellPhase === 'security-checkpoint') {
       if (isReportForDutyTransmission(message) || shouldContinue) {
@@ -724,6 +725,11 @@ export function App() {
       }
 
       return 'First step is report for duty. Transmit ready, report, or continue.';
+    }
+
+    if (requestedRoom !== undefined) {
+      startDoorTransfer(requestedRoom);
+      return `Route acknowledged. Opening ${formatRoomLabel(mapNavigationRoomToCommanderRoom(requestedRoom))}.`;
     }
 
     if (activeMission === undefined) {
@@ -770,6 +776,28 @@ export function App() {
         : 'Mission creation card is active. Transmit the mission codename first.';
     }
 
+    if (currentCommanderRoom === 'ready-room' && (currentState === 'idle' || currentState === 'briefing')) {
+      if (shouldContinue) {
+        await handleCommanderContinue();
+        return currentState === 'idle'
+          ? 'Briefing started. Confirm the objective, authority, and observation rule.'
+          : 'Briefing complete. Ready Room is prepared for observation.';
+      }
+
+      return 'Ready Room note received. Confirm objective, authority, and observation rule; transmit continue when preparation is complete.';
+    }
+
+    if (currentCommanderRoom === 'observation' && (currentState === 'ready' || currentState === 'observation')) {
+      if (shouldContinue) {
+        await handleCommanderContinue();
+        return currentState === 'ready'
+          ? 'Observation begins. Hold silence and collect evidence.'
+          : 'Observation complete. War Room authorization is the next checkpoint.';
+      }
+
+      return 'Observation note received. Do not authorize yet; keep evidence separate from impulse.';
+    }
+
     if (currentState === 'authorization') {
       const authorizationDraft = parseAuthorizationTransmission(message);
       const nextDraft = fillAuthorizationDraftFromTransmission({
@@ -813,6 +841,15 @@ export function App() {
       if (!nextJustification) return 'Authorization needs operator justification first.';
       if (!nextInvalidation) return 'Justification set. Now transmit the invalidation condition.';
       return 'Authorization card updated. Use Continue when ready to evaluate.';
+    }
+
+    if (currentCommanderRoom === 'war-room' && currentState === 'deployed') {
+      if (shouldContinue) {
+        await handleCommanderContinue();
+        return 'Deployment closed. Return to Base is active; debrief before archive.';
+      }
+
+      return 'War Room note received. Stay with the authorized plan until return to base is required.';
     }
 
     if (currentState === 'return_to_base') {
@@ -4932,6 +4969,31 @@ function isReportForDutyTransmission(message: string): boolean {
     || normalized === 'report for duty'
     || normalized === 'i am ready'
     || normalized === 'ready for duty';
+}
+
+export function parseCommanderRoomNavigationTransmission(message: string): HeadquartersRoomId | undefined {
+  const normalized = message.trim().toLowerCase();
+  if (normalized.length === 0) return undefined;
+
+  const routeIntents = ['open', 'go to', 'enter', 'show', 'move to', 'route to'];
+  const hasRouteIntent = routeIntents.some((intent) => normalized === intent || normalized.startsWith(`${intent} `));
+  if (!hasRouteIntent) return undefined;
+
+  if (normalized.includes('journal') || normalized.includes('command log')) return 'journal';
+  if (normalized.includes('archive') || normalized.includes('archives')) return 'archive';
+  if (normalized.includes('ready')) return 'ready';
+  if (normalized.includes('observation') || normalized.includes('observe')) return 'observation';
+  if (normalized.includes('war')) return 'war';
+  if (normalized.includes('debrief')) return 'debrief';
+  if (normalized.includes('doctrine')) return 'doctrine';
+  if (normalized.includes('academy')) return 'academy';
+  if (normalized.includes('guardian')) return 'guardian';
+  if (normalized.includes('intelligence')) return 'intelligence';
+  if (normalized.includes('mission')) return 'missions';
+  if (normalized.includes('command')) return 'command';
+  if (normalized.includes('settings')) return 'settings';
+
+  return undefined;
 }
 
 function parseAuthorizationTransmission(message: string): MissionAuthorizationDraft {

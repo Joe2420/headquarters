@@ -82,6 +82,7 @@ import {
   mapMissionRecordToActiveMission,
   markLocalMissionArchived,
   markLocalMissionDebriefed,
+  parseCommanderRoomNavigationTransmission,
   promoteDesktopDoctrineCandidate,
   reportForDuty,
   requestLocalReturnToBase,
@@ -949,6 +950,17 @@ describe('Desktop shell', () => {
     expect(getCommanderContinueMode(mission, 'observation', 'war-room')).toBe('advance-mission');
     expect(getCommanderContinueMode(mission, 'war-room', 'war-room')).toBe('advance-mission');
     await expect(advanceMissionFromCommanderContinue(mission)).resolves.toBeUndefined();
+  });
+
+  it('parses explicit Commander room routing transmissions without treating notes as navigation', () => {
+    expect(parseCommanderRoomNavigationTransmission('open journal')).toBe('journal');
+    expect(parseCommanderRoomNavigationTransmission('go to archive')).toBe('archive');
+    expect(parseCommanderRoomNavigationTransmission('enter observation room')).toBe('observation');
+    expect(parseCommanderRoomNavigationTransmission('show guardian wing')).toBe('guardian');
+    expect(parseCommanderRoomNavigationTransmission('move to war room')).toBe('war');
+    expect(parseCommanderRoomNavigationTransmission('route to command center')).toBe('command');
+    expect(parseCommanderRoomNavigationTransmission('journal')).toBeUndefined();
+    expect(parseCommanderRoomNavigationTransmission('observation note: wait for evidence')).toBeUndefined();
   });
 
   it('clears the active mission after archive so a new mission can be created', () => {
