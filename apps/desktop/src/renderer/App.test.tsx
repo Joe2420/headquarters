@@ -91,6 +91,7 @@ import {
   requestLocalReturnToBase,
   upsertMissionHistory,
   withBriefingMissionContext,
+  withObservationMissionContext,
 } from './App';
 
 describe('Desktop shell', () => {
@@ -1403,6 +1404,53 @@ describe('Desktop shell', () => {
     });
     expect(missionWithBriefing.missionContext?.readiness.briefingComplete).toBe(true);
     expect(missionWithBriefing.missionContext?.updatedAt).toBe('2026-01-01T00:03:00.000Z');
+  });
+
+  it('stores Observation evidence in mission context memory and unlocks War Room readiness', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (mission === undefined) throw new Error('Expected local mission fixture to be created.');
+
+    const missionWithObservation = withObservationMissionContext({
+      ...mission,
+      currentState: 'observation',
+    }, {
+      marketDirection: 'Up.',
+      marketStructure: 'Higher highs.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP and prior high.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      readiness: 'yes',
+      operationalPicture: 'Trend up, liquidity above, invalidation below VWAP.',
+    }, { updatedAt: '2026-01-01T00:07:00.000Z' });
+
+    expect(missionWithObservation.missionContext?.observation).toEqual({
+      observedDirection: 'Up.',
+      marketStructure: 'Higher highs.',
+      volume: 'Rising.',
+      liquidityNotes: 'Above prior high.',
+      keyLevels: 'VWAP and prior high.',
+      directionalHypothesis: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      evidenceReadiness: 'yes',
+      operationalSummary: 'Trend up, liquidity above, invalidation below VWAP.',
+    });
+    expect(missionWithObservation.missionContext?.readiness.observationComplete).toBe(true);
+    expect(missionWithObservation.missionContext?.readiness.warRoomReady).toBe(true);
+    expect(missionWithObservation.missionContext?.updatedAt).toBe('2026-01-01T00:07:00.000Z');
   });
 
   it('creates a desktop mission through the Headquarters bridge when available', async () => {

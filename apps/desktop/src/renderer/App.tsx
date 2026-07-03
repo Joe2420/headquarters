@@ -93,9 +93,11 @@ import {
 import {
   createEmptyMissionContext,
   updateMissionContextBriefing,
+  updateMissionContextObservation,
   updateMissionContextReadiness,
   type MissionContext,
   type MissionContextBriefingAnswers,
+  type MissionContextObservationAnswers,
 } from './MissionContextMemory';
 import type { CommanderShellRoomId } from './CommanderShell';
 import {
@@ -890,7 +892,7 @@ export function App() {
 
       const missionForInterview = await beginObservationInterviewIfNeeded(activeMission);
       const result = answerObservationInterview(missionForInterview.observationContext, message);
-      const missionWithContext = { ...missionForInterview, observationContext: result.context };
+      const missionWithContext = withObservationMissionContext(missionForInterview, result.context);
 
       setActiveMission(missionWithContext);
       setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
@@ -4433,6 +4435,34 @@ export function withBriefingMissionContext(
   };
 }
 
+export function withObservationMissionContext(
+  mission: ActiveMission,
+  observationContext: MissionObservationContext,
+  options: { readonly updatedAt?: string } = {},
+): ActiveMission {
+  const baseContext = mission.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt });
+  const contextWithObservation = updateMissionContextObservation(
+    baseContext,
+    buildMissionContextObservationAnswers(observationContext),
+    options,
+  );
+  const observationComplete = isObservationInterviewComplete(observationContext);
+  const missionContext = updateMissionContextReadiness(
+    contextWithObservation,
+    {
+      observationComplete,
+      warRoomReady: observationComplete,
+    },
+    options,
+  );
+
+  return {
+    ...mission,
+    observationContext,
+    missionContext,
+  };
+}
+
 function buildMissionContextBriefingAnswers(context: MissionBriefingContext): MissionContextBriefingAnswers {
   return {
     ...(hasMissionContextText(context.missionObjective) ? { missionObjective: context.missionObjective } : {}),
@@ -4442,6 +4472,24 @@ function buildMissionContextBriefingAnswers(context: MissionBriefingContext): Mi
     ...(hasMissionContextText(context.personalReadiness) ? { personalReadiness: context.personalReadiness } : {}),
     ...(hasMissionContextText(context.riskParameters) ? { riskParameters: context.riskParameters } : {}),
     ...(hasMissionContextText(context.successCriteria) ? { successCriteria: context.successCriteria } : {}),
+  };
+}
+
+function buildMissionContextObservationAnswers(context: MissionObservationContext): MissionContextObservationAnswers {
+  return {
+    ...(hasMissionContextText(context.marketDirection) ? { observedDirection: context.marketDirection } : {}),
+    ...(hasMissionContextText(context.marketStructure) ? { marketStructure: context.marketStructure } : {}),
+    ...(hasMissionContextText(context.volume) ? { volume: context.volume } : {}),
+    ...(hasMissionContextText(context.liquidity) ? { liquidityNotes: context.liquidity } : {}),
+    ...(hasMissionContextText(context.keyLevels) ? { keyLevels: context.keyLevels } : {}),
+    ...(hasMissionContextText(context.bias) ? { directionalHypothesis: context.bias } : {}),
+    ...(hasMissionContextText(context.invalidationEvidence) ? { invalidationEvidence: context.invalidationEvidence } : {}),
+    ...(hasMissionContextText(context.emotionalCheck) ? { emotionalCheck: context.emotionalCheck } : {}),
+    ...(context.readiness ? { evidenceReadiness: context.readiness } : {}),
+    ...(hasMissionContextText(context.operationalPicture) ? { operationalSummary: context.operationalPicture } : {}),
+    ...(context.additionalObservations && context.additionalObservations.length > 0
+      ? { additionalObservations: [...context.additionalObservations] }
+      : {}),
   };
 }
 
