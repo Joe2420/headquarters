@@ -91,7 +91,6 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Authorization granted.',
     commanderArrival: 'Decision authority transferred.',
     soundEvents,
-    videoSrc: '/transitions/war-room.mp4',
   },
   debrief: {
     room: 'debrief',
@@ -185,17 +184,28 @@ export function createTransitionController(
   fromRoom: CommanderShellRoomId,
   toRoom: CommanderShellRoomId,
   phase: TransitionPhase = 'commander',
+  variant: TransitionVariant = getTransitionVariant(toRoom),
 ): TransitionController {
   return {
     fromRoom,
     toRoom,
     phase,
-    variant: getTransitionVariant(toRoom),
+    variant,
     durationMs: 7000,
     reducedMotionDurationMs: 1000,
     canInterrupt: false,
     escapeDisabled: true,
   };
+}
+
+export function createAuthorizationTransitionController(
+  room: CommanderShellRoomId = 'war-room',
+  phase: TransitionPhase = 'commander',
+): TransitionController {
+  return createTransitionController(room, room, phase, {
+    ...getTransitionVariant('war-room'),
+    videoSrc: '/transitions/war-room.mp4',
+  });
 }
 
 export function createTransitionQueue(active?: TransitionController): TransitionQueue {
@@ -266,17 +276,26 @@ export function TransitionOverlay({ controller }: { readonly controller: Transit
 export function TransitionSceneView({ controller }: { readonly controller: TransitionController }) {
   const variant = controller.variant;
 
+  if (variant.videoSrc) {
+    return (
+      <div className="transition-scene transition-scene-video-only" data-transition-scene={variant.scene}>
+        <TransitionVideo variant={variant} />
+      </div>
+    );
+  }
+
   return (
     <div className="transition-scene" data-transition-scene={variant.scene}>
       <div className="transition-commander-line transition-commander-line-departure">
         {variant.commanderDeparture}
       </div>
       <div className="transition-environment" aria-hidden="true">
-        {variant.videoSrc ? <TransitionVideo variant={variant} /> : null}
         <span className="transition-particles" />
         <span className="transition-light-beam" />
-        {variant.scene === 'cockpit' ? <CockpitSequence hasVideo={variant.videoSrc !== undefined} /> : null}
-        {variant.scene === 'vault' && variant.videoSrc === undefined ? <span className="transition-vault-wheel" /> : null}
+        <span className="transition-door transition-door-left" />
+        <span className="transition-door transition-door-right" />
+        {variant.scene === 'cockpit' ? <CockpitSequence /> : null}
+        {variant.scene === 'vault' ? <span className="transition-vault-wheel" /> : null}
         {variant.scene === 'desk' ? <span className="transition-journal-desk" /> : null}
         {variant.scene === 'theater' ? <span className="transition-projector" /> : null}
         {variant.scene === 'security' ? <span className="transition-scanner-grid" /> : null}
@@ -313,9 +332,9 @@ function TransitionVideo({ variant }: { readonly variant: TransitionVariant }) {
   );
 }
 
-function CockpitSequence({ hasVideo }: { readonly hasVideo: boolean }) {
+function CockpitSequence() {
   return (
-    <div className="transition-cockpit" data-has-video={hasVideo} aria-hidden="true">
+    <div className="transition-cockpit" aria-hidden="true">
       <span className="cockpit-canopy" />
       <span className="cockpit-hud" />
       <span className="cockpit-countdown">

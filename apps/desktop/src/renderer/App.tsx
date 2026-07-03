@@ -84,6 +84,7 @@ import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
   buildMissionCompassSteps,
+  createAuthorizationTransition,
   createRoomTransition,
   getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
@@ -540,7 +541,7 @@ export function App() {
         const deployedMission = await declareDesktopDeployment(mission);
         setActiveMission(deployedMission);
         setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
-        startDoorTransferForMissionRoomChange(mission, deployedMission);
+        setRoomTransition(createAuthorizationTransition('war-room'));
       }
       return;
     }

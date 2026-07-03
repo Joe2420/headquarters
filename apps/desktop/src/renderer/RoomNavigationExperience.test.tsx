@@ -6,6 +6,7 @@ import {
   RoomTransitionLayer,
   advanceRoomTransition,
   buildMissionCompassSteps,
+  createAuthorizationTransition,
   createRoomTransition,
   createTransitionQueue,
   getCommanderCompassReference,
@@ -87,9 +88,9 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).toContain('data-transition-scene="standard"');
     expect(transitionHtml).toContain('data-transition-has-video="true"');
     expect(transitionHtml).toContain('src="/transitions/observation-room.mp4"');
-    expect(transitionHtml).toContain('Proceeding to Observation Room.');
-    expect(transitionHtml).toContain('Observation Room');
-    expect(transitionHtml).toContain('Observe. Do not interfere.');
+    expect(transitionHtml).toContain('transition-scene-video-only');
+    expect(transitionHtml).not.toContain('Proceeding to Observation Room.');
+    expect(transitionHtml).not.toContain('Observe. Do not interfere.');
     expect(arrivalHtml).toContain('aria-label="Observation Room arrival"');
     expect(arrivalHtml).toContain('Observe. Do not interfere.');
     expect(arrivalHtml).toContain('Continue');
@@ -129,23 +130,35 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionVariant('war-room').commanderArrival).toBe('Decision authority transferred.');
     expect(getTransitionVariant('archive').commanderArrival).toBe('History preserved.');
     expect(getTransitionVariant('observation').videoSrc).toBe('/transitions/observation-room.mp4');
-    expect(getTransitionVariant('war-room').videoSrc).toBe('/transitions/war-room.mp4');
+    expect(getTransitionVariant('war-room').videoSrc).toBeUndefined();
     expect(getTransitionVariant('archive').videoSrc).toBe('/transitions/archive-vault.mp4');
     expect(getTransitionVariant('archive').videoStartSeconds).toBe(1);
     expect(getTransitionDurationMs(false)).toBe(7000);
     expect(getTransitionDurationMs(true)).toBe(1000);
   });
 
-  it('renders the War Room cockpit video with a real sequential countdown surface', () => {
+  it('renders the War Room cockpit as generated animation for normal room entry', () => {
     const transitionHtml = renderToStaticMarkup(
       <RoomTransitionLayer transition={createRoomTransition('observation', 'war-room')} />,
     );
 
     expect(transitionHtml).toContain('data-transition-scene="cockpit"');
-    expect(transitionHtml).toContain('src="/transitions/war-room.mp4"');
+    expect(transitionHtml).not.toContain('src="/transitions/war-room.mp4"');
+    expect(transitionHtml).not.toContain('transition-scene-video-only');
     expect(transitionHtml).toContain('class="cockpit-countdown"');
-    expect(transitionHtml).toContain('<span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>');
     expect(transitionHtml).not.toContain('5 4 3 2 1');
+  });
+
+  it('renders the authorization cockpit video only from the approval transition', () => {
+    const transitionHtml = renderToStaticMarkup(
+      <RoomTransitionLayer transition={createAuthorizationTransition('war-room')} />,
+    );
+
+    expect(transitionHtml).toContain('data-transition-from="war-room"');
+    expect(transitionHtml).toContain('data-transition-to="war-room"');
+    expect(transitionHtml).toContain('src="/transitions/war-room.mp4"');
+    expect(transitionHtml).toContain('transition-scene-video-only');
+    expect(transitionHtml).not.toContain('class="cockpit-countdown"');
   });
 
   it('renders the Archive vault video from the one-second mark', () => {
@@ -154,7 +167,8 @@ describe('RoomNavigationExperience', () => {
     );
 
     expect(transitionHtml).toContain('src="/transitions/archive-vault.mp4#t=1"');
-    expect(transitionHtml).toContain('History preserved.');
+    expect(transitionHtml).toContain('transition-scene-video-only');
+    expect(transitionHtml).not.toContain('History preserved.');
   });
 
   it('creates a locked transition queue while the cinematic transition owns control', () => {
@@ -187,6 +201,7 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('.room-transition-layer');
     expect(styles).toContain('.cinematic-transition-overlay');
     expect(styles).toContain('.transition-video');
+    expect(styles).toContain('object-fit: contain');
     expect(styles).toContain('data-transition-has-video="true"');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-countdown-number');

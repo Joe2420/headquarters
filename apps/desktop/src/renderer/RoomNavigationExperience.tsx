@@ -1,6 +1,7 @@
 import type { MissionState } from '@headquarters/shared';
 import {
   TransitionOverlay,
+  createAuthorizationTransitionController,
   createTransitionController,
   getRoomArrival as getCinematicRoomArrival,
   getTransitionDurationMs,
@@ -115,6 +116,17 @@ export function createRoomTransition(
   return {
     fromRoom,
     toRoom,
+    phase: 'commander',
+    controller,
+  };
+}
+
+export function createAuthorizationTransition(room: CommanderShellRoomId = 'war-room'): RoomTransitionState {
+  const controller = createAuthorizationTransitionController(room);
+
+  return {
+    fromRoom: room,
+    toRoom: room,
     phase: 'commander',
     controller,
   };
