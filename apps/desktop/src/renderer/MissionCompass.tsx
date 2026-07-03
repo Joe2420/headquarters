@@ -23,10 +23,11 @@ export function MissionCompass({ steps }: MissionCompassProps) {
   return (
     <nav className="mission-compass" aria-label="Mission compass">
       <ol>
-        {steps.map((step) => (
+        {steps.map((step, index) => (
           <li key={step.id} data-compass-step={step.id} data-compass-state={step.state}>
-            <span>{step.label}</span>
-            <span>{formatMissionCompassStepState(step.state)}</span>
+            <span className="mission-compass-index">{String(index + 1).padStart(2, '0')}</span>
+            <span className="mission-compass-label">{step.label}</span>
+            <span className="mission-compass-state">{formatMissionCompassStepState(step.state)}</span>
           </li>
         ))}
       </ol>

@@ -18,6 +18,9 @@ describe('MissionCompass', () => {
     expect(html).toContain('War Room');
     expect(html).toContain('Debrief');
     expect(html).toContain('Archive');
+    expect(html).toContain('mission-compass-index');
+    expect(html).toContain('mission-compass-label');
+    expect(html).toContain('mission-compass-state');
     expect(html).toContain('data-compass-state="completed"');
     expect(html).toContain('data-compass-state="active"');
     expect(html).toContain('data-compass-state="available"');

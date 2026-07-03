@@ -87,8 +87,10 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).toContain('data-transition-to="observation"');
     expect(transitionHtml).toContain('data-transition-scene="standard"');
     expect(transitionHtml).toContain('data-transition-has-video="true"');
+    expect(transitionHtml).toContain('data-transition-room="observation"');
     expect(transitionHtml).toContain('src="/transitions/observation-room.mp4"');
     expect(transitionHtml).toContain('transition-scene-video-only');
+    expect(transitionHtml).not.toContain('loop');
     expect(transitionHtml).not.toContain('Proceeding to Observation Room.');
     expect(transitionHtml).not.toContain('Observe. Do not interfere.');
     expect(arrivalHtml).toContain('aria-label="Observation Room arrival"');
@@ -205,6 +207,9 @@ describe('RoomNavigationExperience', () => {
     expect(styles).toContain('object-position: center center');
     expect(styles).toContain('align-items: start');
     expect(styles).toContain('transform: translateY(-8%) scale(1.08)');
+    expect(styles).toContain('transform: translateY(-11%) scale(1.08)');
+    expect(styles).toContain('.transition-video-ended');
+    expect(styles).toContain('filter: brightness(0.18) saturate(0.65) !important');
     expect(styles).toContain('data-transition-has-video="true"');
     expect(styles).toContain('cinematic-door-left');
     expect(styles).toContain('cockpit-countdown-number');

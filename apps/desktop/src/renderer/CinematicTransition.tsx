@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { CommanderShellRoomId } from './CommanderShell';
 
 export type TransitionPhase = 'commander' | 'closing' | 'transitioning' | 'opening' | 'arrival' | 'interrupted';
@@ -278,7 +278,11 @@ export function TransitionSceneView({ controller }: { readonly controller: Trans
 
   if (variant.videoSrc) {
     return (
-      <div className="transition-scene transition-scene-video-only" data-transition-scene={variant.scene}>
+      <div
+        className="transition-scene transition-scene-video-only"
+        data-transition-room={variant.room}
+        data-transition-scene={variant.scene}
+      >
         <TransitionVideo variant={variant} />
       </div>
     );
@@ -314,18 +318,20 @@ export function TransitionSceneView({ controller }: { readonly controller: Trans
 }
 
 function TransitionVideo({ variant }: { readonly variant: TransitionVariant }) {
+  const [hasEnded, setHasEnded] = useState(false);
   const videoSrc = variant.videoStartSeconds !== undefined
     ? `${variant.videoSrc}#t=${variant.videoStartSeconds}`
     : variant.videoSrc;
 
   return (
     <video
-      className="transition-video"
+      className={hasEnded ? 'transition-video transition-video-ended' : 'transition-video'}
       src={videoSrc}
       autoPlay
       muted
       playsInline
       preload="auto"
+      onEnded={() => setHasEnded(true)}
     />
   );
 }
