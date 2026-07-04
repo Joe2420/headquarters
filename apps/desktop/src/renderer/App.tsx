@@ -122,6 +122,7 @@ import {
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
 import { GuidedRoom } from './GuidedRoom';
+import { RoomAtmosphere } from './RoomAtmosphere';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 import { detectCommanderContradictions } from './CommanderContradictionDetection';
 
@@ -3296,6 +3297,7 @@ export function JournalRoom({
 
   return (
     <div className="room-layout" data-room-id="journal-room" data-room-atmosphere="journal">
+      <RoomAtmosphere variant="journal" />
       <section className="command-center-header" aria-label="Journal room status">
         <p className="section-label">Journal Room</p>
         <h2>Guided Journal</h2>
@@ -4231,6 +4233,7 @@ export function DoctrineRoom({
 }) {
   return (
     <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
+      <RoomAtmosphere variant="doctrine" />
       <section className="command-center-header" aria-label="Doctrine room status">
         <p className="section-label">Doctrine Chamber</p>
         <h2>Doctrine Review</h2>

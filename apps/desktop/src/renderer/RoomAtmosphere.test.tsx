@@ -64,4 +64,14 @@ describe('RoomAtmosphere', () => {
     expect(html).toContain('data-room-atmosphere-element="vault-seal"');
     expect(html).toContain('data-room-atmosphere-element="record-lines"');
   });
+
+  it('renders distinct Journal and Doctrine atmosphere elements', () => {
+    const journalHtml = renderToStaticMarkup(<RoomAtmosphere variant="journal" />);
+    const doctrineHtml = renderToStaticMarkup(<RoomAtmosphere variant="doctrine" />);
+
+    expect(journalHtml).toContain('data-room-atmosphere-element="desk-lamp"');
+    expect(journalHtml).toContain('data-room-atmosphere-element="logbook-lines"');
+    expect(doctrineHtml).toContain('data-room-atmosphere-element="doctrine-seal"');
+    expect(doctrineHtml).toContain('data-room-atmosphere-element="memory-chamber"');
+  });
 });
