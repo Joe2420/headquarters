@@ -121,6 +121,7 @@ import {
   formatRoomLabel,
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
+import { AudioQASurface } from './AudioQASurface';
 import { GuidedRoom } from './GuidedRoom';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 import { detectCommanderContradictions } from './CommanderContradictionDetection';
@@ -4442,6 +4443,7 @@ function SettingsRoom() {
       <p className="section-label">Settings</p>
       <h2>Settings</h2>
       <p className="muted">No completed settings workflow is available yet.</p>
+      <AudioQASurface events={[]} />
     </section>
   );
 }
