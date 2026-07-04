@@ -90,6 +90,8 @@ import {
   reportForDuty,
   requestLocalReturnToBase,
   upsertMissionHistory,
+  withBriefingMissionContext,
+  withObservationMissionContext,
 } from './App';
 
 describe('Desktop shell', () => {
@@ -767,6 +769,54 @@ describe('Desktop shell', () => {
     expect(html).toContain('Guardian Status');
     expect(html).toContain('Ghost Comparison');
     expect(html).toContain('Headquarters never places trades');
+    expect(html).toContain('Mission Context');
+    expect(html).toContain('Context incomplete');
+    expect(html).toContain('Is this authorization based on your plan or on pressure?');
+  });
+
+  it('renders War Room mission context summary with contradictions when available', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Low volatility range.',
+      highImpactNews: 'CPI.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow the plan.',
+    });
+    const missionWithObservation = withObservationMissionContext(missionWithBriefing, {
+      marketDirection: 'Up.',
+      marketStructure: 'High volatility expansion.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      readiness: 'yes',
+      operationalPicture: 'High volatility expansion above VWAP.',
+    });
+
+    const html = renderToStaticMarkup(<WarRoom
+      activeMission={{ ...missionWithObservation, currentState: 'authorization' }}
+      missionHistory={[missionWithObservation]}
+    />);
+
+    expect(html).toContain('Trade the morning breakout.');
+    expect(html).toContain('Low volatility range.');
+    expect(html).toContain('High volatility expansion above VWAP.');
+    expect(html).toContain('Long continuation.');
+    expect(html).toContain('Break below VWAP.');
+    expect(html).toContain('Commander Challenge');
+    expect(html).toContain('This conflicts with your earlier briefing.');
+    expect(html).toContain('Which rule protects this decision?');
   });
 
   it('renders the Debrief Theater with timeline, black box, decision report, and debrief form boundary', () => {
@@ -786,10 +836,61 @@ describe('Desktop shell', () => {
     />);
 
     expect(html).toContain('data-room-id="debrief-theater"');
+    expect(html).toContain('Context Recall');
+    expect(html).toContain('Context incomplete');
+    expect(html).toContain('What did you execute well?');
+    expect(html).toContain('Did you respect the risk parameter?');
     expect(html).toContain('Mission timeline viewer');
     expect(html).toContain('Black Box Viewer');
     expect(html).toContain('Decision Report');
     expect(html).toContain('Behavior Summary');
+  });
+
+  it('renders Debrief context recall from mission context memory', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Low volatility range.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow plan and stop after two attempts.',
+    });
+    const missionWithObservation = withObservationMissionContext(missionWithBriefing, {
+      marketDirection: 'Up.',
+      marketStructure: 'High volatility expansion.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      readiness: 'yes',
+      operationalPicture: 'High volatility expansion above VWAP.',
+    });
+
+    const html = renderToStaticMarkup(<DebriefTheater
+      activeMission={{ ...missionWithObservation, currentState: 'return_to_base' }}
+      onMissionChanged={() => undefined}
+      onRequestAuthorization={() => undefined}
+      onSaveDebrief={() => undefined}
+      onArchiveMission={() => undefined}
+    />);
+
+    expect(html).toContain('Trade the morning breakout.');
+    expect(html).toContain('Follow plan and stop after two attempts.');
+    expect(html).toContain('1%.');
+    expect(html).toContain('Long continuation.');
+    expect(html).toContain('Break below VWAP.');
+    expect(html).toContain('This conflicts with your earlier briefing.');
+    expect(html).toContain('What should future Joe see first?');
   });
 
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {
@@ -1315,6 +1416,21 @@ describe('Desktop shell', () => {
       commandAuthority: 'Professional command',
       currentState: 'briefing',
       createdAt: '2026-01-01T00:00:00.000Z',
+      missionContext: {
+        missionId: 'mission-001',
+        briefing: {},
+        observation: {},
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: false,
+          debriefReady: false,
+          observationComplete: false,
+          warRoomReady: false,
+        },
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      },
     });
   });
 
@@ -1334,7 +1450,106 @@ describe('Desktop shell', () => {
       commandAuthority: 'Professional command',
       currentState: 'idle',
       createdAt: '2026-01-01T00:00:00.000Z',
+      missionContext: {
+        missionId: 'mission-001',
+        briefing: {},
+        observation: {},
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: false,
+          debriefReady: false,
+          observationComplete: false,
+          warRoomReady: false,
+        },
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      },
     });
+  });
+
+  it('stores Ready Room briefing answers in mission context memory', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (mission === undefined) throw new Error('Expected local mission fixture to be created.');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Trending.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow the plan.',
+    }, { updatedAt: '2026-01-01T00:03:00.000Z' });
+
+    expect(missionWithBriefing.missionContext?.briefing).toEqual({
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Trending.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow the plan.',
+    });
+    expect(missionWithBriefing.missionContext?.readiness.briefingComplete).toBe(true);
+    expect(missionWithBriefing.missionContext?.updatedAt).toBe('2026-01-01T00:03:00.000Z');
+  });
+
+  it('stores Observation evidence in mission context memory and unlocks War Room readiness', () => {
+    const mission = createLocalMission(
+      {
+        codename: 'Foundation Patrol',
+        objective: 'Hold the line',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-001',
+      },
+    );
+
+    if (mission === undefined) throw new Error('Expected local mission fixture to be created.');
+
+    const missionWithObservation = withObservationMissionContext({
+      ...mission,
+      currentState: 'observation',
+    }, {
+      marketDirection: 'Up.',
+      marketStructure: 'Higher highs.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP and prior high.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      readiness: 'yes',
+      operationalPicture: 'Trend up, liquidity above, invalidation below VWAP.',
+    }, { updatedAt: '2026-01-01T00:07:00.000Z' });
+
+    expect(missionWithObservation.missionContext?.observation).toEqual({
+      observedDirection: 'Up.',
+      marketStructure: 'Higher highs.',
+      volume: 'Rising.',
+      liquidityNotes: 'Above prior high.',
+      keyLevels: 'VWAP and prior high.',
+      directionalHypothesis: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Focused.',
+      evidenceReadiness: 'yes',
+      operationalSummary: 'Trend up, liquidity above, invalidation below VWAP.',
+    });
+    expect(missionWithObservation.missionContext?.readiness.observationComplete).toBe(true);
+    expect(missionWithObservation.missionContext?.readiness.warRoomReady).toBe(true);
+    expect(missionWithObservation.missionContext?.updatedAt).toBe('2026-01-01T00:07:00.000Z');
   });
 
   it('creates a desktop mission through the Headquarters bridge when available', async () => {
@@ -1371,6 +1586,21 @@ describe('Desktop shell', () => {
         commandAuthority: 'Professional command',
         currentState: 'idle',
         createdAt: '2026-01-01T00:00:00.000Z',
+        missionContext: {
+          missionId: 'mission-001',
+          briefing: {},
+          observation: {},
+          commanderNotes: [],
+          contradictionFlags: [],
+          readiness: {
+            briefingComplete: false,
+            debriefReady: false,
+            observationComplete: false,
+            warRoomReady: false,
+          },
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
       });
     } finally {
       Object.defineProperty(globalThis, 'window', {

@@ -90,6 +90,16 @@ import {
   type MissionBriefingContext,
   type MissionObservationContext,
 } from './CommanderMissionBriefing';
+import {
+  createEmptyMissionContext,
+  updateMissionContextBriefing,
+  updateMissionContextObservation,
+  updateMissionContextReadiness,
+  type MissionContext,
+  type MissionContextBriefingAnswers,
+  type MissionContextContradictionFlag,
+  type MissionContextObservationAnswers,
+} from './MissionContextMemory';
 import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
@@ -113,6 +123,7 @@ import {
 } from './HeadquartersAtmosphere';
 import { GuidedRoom } from './GuidedRoom';
 import { recommendRoomForMissionState } from './RoomStateMachine';
+import { detectCommanderContradictions } from './CommanderContradictionDetection';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -126,6 +137,7 @@ export interface ActiveMission {
   createdAt: string;
   briefingContext?: MissionBriefingContext;
   observationContext?: MissionObservationContext;
+  missionContext?: MissionContext;
 }
 
 export interface MissionDraft {
@@ -863,7 +875,7 @@ export function App() {
       }
 
       const result = answerReadyRoomBriefing(activeMission.briefingContext, message);
-      const missionWithContext = { ...activeMission, briefingContext: result.context };
+      const missionWithContext = withBriefingMissionContext(activeMission, result.context);
 
       setActiveMission(missionWithContext);
       setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
@@ -882,7 +894,7 @@ export function App() {
 
       const missionForInterview = await beginObservationInterviewIfNeeded(activeMission);
       const result = answerObservationInterview(missionForInterview.observationContext, message);
-      const missionWithContext = { ...missionForInterview, observationContext: result.context };
+      const missionWithContext = withObservationMissionContext(missionForInterview, result.context);
 
       setActiveMission(missionWithContext);
       setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
@@ -2008,6 +2020,9 @@ export function WarRoom({
   const lockout = buildDesktopGuardianLockoutState();
   const comparisonMission = missionHistory.find((mission) => mission.id !== activeMission?.id);
   const authorizationDenied = authorizationStatus?.decision === 'denied';
+  const contradictions = activeMission?.missionContext
+    ? detectCommanderContradictions(activeMission.missionContext)
+    : [];
 
   return (
     <GuidedRoom
@@ -2020,6 +2035,7 @@ export function WarRoom({
       primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
       workspace={(
         <>
+          <WarRoomContextSummary activeMission={activeMission} contradictions={contradictions} />
           <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
           {parseMissionState(activeMission?.currentState) === 'authorization' ? (
             <MissionNextActionPanel
@@ -2059,6 +2075,59 @@ export function WarRoom({
   );
 }
 
+function WarRoomContextSummary({
+  activeMission,
+  contradictions,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly contradictions: readonly MissionContextContradictionFlag[];
+}) {
+  const missionContext = activeMission?.missionContext;
+
+  return (
+    <section className="journal-panel" aria-label="War Room mission context summary">
+      <p className="section-label">Mission Context</p>
+      <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
+      <dl>
+        <dt>Mission Objective</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
+        <dt>Market Environment</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.marketEnvironment)}</dd>
+        <dt>High-Impact News</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.highImpactNews)}</dd>
+        <dt>Risk Limit</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.riskParameters)}</dd>
+        <dt>Observation Summary</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.operationalSummary)}</dd>
+        <dt>Directional Hypothesis</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.directionalHypothesis)}</dd>
+        <dt>Invalidation Criteria</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.invalidationEvidence)}</dd>
+      </dl>
+      {contradictions.length > 0 ? (
+        <div aria-label="Commander contradiction challenges">
+          <p className="section-label">Commander Challenge</p>
+          <ul>
+            {contradictions.map((contradiction) => (
+              <li key={contradiction.id}>{contradiction.message}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="muted">No context contradictions detected.</p>
+      )}
+      <div aria-label="Commander authorization questions">
+        <p>Is this authorization based on your plan or on pressure?</p>
+        <p>Which rule protects this decision?</p>
+      </div>
+    </section>
+  );
+}
+
+function formatMissionContextDisplay(value: string | undefined): string {
+  return value && value.trim().length > 0 ? value : 'Context incomplete';
+}
+
 export function DebriefTheater({
   activeMission,
   authorizationStatus,
@@ -2077,6 +2146,9 @@ export function DebriefTheater({
     missionDebrief,
     archiveSummary,
   });
+  const contradictions = activeMission?.missionContext
+    ? detectCommanderContradictions(activeMission.missionContext)
+    : [];
 
   return (
     <GuidedRoom
@@ -2089,6 +2161,7 @@ export function DebriefTheater({
       primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
       workspace={(
         <>
+          <DebriefContextRecall activeMission={activeMission} contradictions={contradictions} />
           <section className="journal-panel" aria-label="Black box viewer">
             <p className="section-label">Black Box Viewer</p>
             <h3>Behavior Sequence</h3>
@@ -2132,6 +2205,54 @@ export function DebriefTheater({
         </>
       )}
     />
+  );
+}
+
+function DebriefContextRecall({
+  activeMission,
+  contradictions,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly contradictions: readonly MissionContextContradictionFlag[];
+}) {
+  const missionContext = activeMission?.missionContext;
+
+  return (
+    <section className="journal-panel" aria-label="Debrief mission context recall">
+      <p className="section-label">Context Recall</p>
+      <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
+      <dl>
+        <dt>Original Objective</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
+        <dt>Success Criteria</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.successCriteria)}</dd>
+        <dt>Risk Parameter</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.briefing.riskParameters)}</dd>
+        <dt>Observation Hypothesis</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.directionalHypothesis)}</dd>
+        <dt>Invalidation Criteria</dt>
+        <dd>{formatMissionContextDisplay(missionContext?.observation.invalidationEvidence)}</dd>
+      </dl>
+      {contradictions.length > 0 ? (
+        <div aria-label="Debrief contradiction recall">
+          <p className="section-label">Contradictions</p>
+          <ul>
+            {contradictions.map((contradiction) => (
+              <li key={contradiction.id}>{contradiction.message}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="muted">No contradictions require debrief attention.</p>
+      )}
+      <ol aria-label="Commander debrief prompts">
+        <li>What did you execute well?</li>
+        <li>What behavior must not repeat?</li>
+        <li>Did the mission follow the original objective?</li>
+        <li>Did you respect the risk parameter?</li>
+        <li>What should future Joe see first?</li>
+      </ol>
+    </section>
   );
 }
 
@@ -4373,14 +4494,18 @@ export function createLocalMission(
     return undefined;
   }
 
+  const id = options.id ?? crypto.randomUUID();
+  const createdAt = options.createdAt ?? new Date().toISOString();
+
   return {
-    id: options.id ?? crypto.randomUUID(),
+    id,
     campaign: codename,
     objective,
     condition: 'Briefing',
     commandAuthority: 'Professional command',
     currentState: 'briefing',
-    createdAt: options.createdAt ?? new Date().toISOString(),
+    createdAt,
+    missionContext: createEmptyMissionContext(id, { createdAt }),
   };
 }
 
@@ -4393,7 +4518,94 @@ export function mapMissionRecordToActiveMission(mission: Mission): ActiveMission
     commandAuthority: 'Professional command',
     currentState: mission.state,
     createdAt: mission.createdAt,
+    missionContext: createEmptyMissionContext(mission.id, { createdAt: mission.createdAt }),
   };
+}
+
+export function withBriefingMissionContext(
+  mission: ActiveMission,
+  briefingContext: MissionBriefingContext,
+  options: { readonly updatedAt?: string } = {},
+): ActiveMission {
+  const baseContext = mission.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt });
+  const contextWithBriefing = updateMissionContextBriefing(
+    baseContext,
+    buildMissionContextBriefingAnswers(briefingContext),
+    options,
+  );
+  const missionContext = updateMissionContextReadiness(
+    contextWithBriefing,
+    { briefingComplete: isReadyRoomBriefingComplete(briefingContext) },
+    options,
+  );
+
+  return {
+    ...mission,
+    briefingContext,
+    missionContext,
+  };
+}
+
+export function withObservationMissionContext(
+  mission: ActiveMission,
+  observationContext: MissionObservationContext,
+  options: { readonly updatedAt?: string } = {},
+): ActiveMission {
+  const baseContext = mission.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt });
+  const contextWithObservation = updateMissionContextObservation(
+    baseContext,
+    buildMissionContextObservationAnswers(observationContext),
+    options,
+  );
+  const observationComplete = isObservationInterviewComplete(observationContext);
+  const missionContext = updateMissionContextReadiness(
+    contextWithObservation,
+    {
+      observationComplete,
+      warRoomReady: observationComplete,
+    },
+    options,
+  );
+
+  return {
+    ...mission,
+    observationContext,
+    missionContext,
+  };
+}
+
+function buildMissionContextBriefingAnswers(context: MissionBriefingContext): MissionContextBriefingAnswers {
+  return {
+    ...(hasMissionContextText(context.missionObjective) ? { missionObjective: context.missionObjective } : {}),
+    ...(hasMissionContextText(context.market) ? { market: context.market } : {}),
+    ...(hasMissionContextText(context.marketEnvironment) ? { marketEnvironment: context.marketEnvironment } : {}),
+    ...(hasMissionContextText(context.highImpactNews) ? { highImpactNews: context.highImpactNews } : {}),
+    ...(hasMissionContextText(context.personalReadiness) ? { personalReadiness: context.personalReadiness } : {}),
+    ...(hasMissionContextText(context.riskParameters) ? { riskParameters: context.riskParameters } : {}),
+    ...(hasMissionContextText(context.successCriteria) ? { successCriteria: context.successCriteria } : {}),
+  };
+}
+
+function buildMissionContextObservationAnswers(context: MissionObservationContext): MissionContextObservationAnswers {
+  return {
+    ...(hasMissionContextText(context.marketDirection) ? { observedDirection: context.marketDirection } : {}),
+    ...(hasMissionContextText(context.marketStructure) ? { marketStructure: context.marketStructure } : {}),
+    ...(hasMissionContextText(context.volume) ? { volume: context.volume } : {}),
+    ...(hasMissionContextText(context.liquidity) ? { liquidityNotes: context.liquidity } : {}),
+    ...(hasMissionContextText(context.keyLevels) ? { keyLevels: context.keyLevels } : {}),
+    ...(hasMissionContextText(context.bias) ? { directionalHypothesis: context.bias } : {}),
+    ...(hasMissionContextText(context.invalidationEvidence) ? { invalidationEvidence: context.invalidationEvidence } : {}),
+    ...(hasMissionContextText(context.emotionalCheck) ? { emotionalCheck: context.emotionalCheck } : {}),
+    ...(context.readiness ? { evidenceReadiness: context.readiness } : {}),
+    ...(hasMissionContextText(context.operationalPicture) ? { operationalSummary: context.operationalPicture } : {}),
+    ...(context.additionalObservations && context.additionalObservations.length > 0
+      ? { additionalObservations: [...context.additionalObservations] }
+      : {}),
+  };
+}
+
+function hasMissionContextText(value: string | undefined): value is string {
+  return value !== undefined && value.trim().length > 0;
 }
 
 export function formatMissionStateForDisplay(state: Mission['state']): string {

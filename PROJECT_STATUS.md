@@ -2,6 +2,22 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0196 - Sprint 19 Adaptive Commander Review Package
+
+- HQ-TASK-0195 - Debrief Context Recall
+
+- HQ-TASK-0194 - War Room Context Summary
+
+- HQ-TASK-0193 - Commander Contradiction Detection
+
+- HQ-TASK-0192 - Commander Follow-up Engine
+
+- HQ-TASK-0191 - Observation Evidence Context Capture
+
+- HQ-TASK-0190 - Ready Room Briefing Context Capture
+
+- HQ-TASK-0189 - Mission Context Memory Model
+
 - HQ-TASK-0180 - Sprint 17 Guided Room Experience Review Package
 
 - HQ-TASK-0179 - Guided Room Pattern Validation
