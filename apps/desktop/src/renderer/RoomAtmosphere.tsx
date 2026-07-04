@@ -35,6 +35,7 @@ const variantElements: Partial<Record<RoomAtmosphereVariant, readonly string[]>>
   observation: ['radar-sweep', 'horizon-drift', 'scan-lines'],
   'war-room': ['authorization-indicator', 'hud-grid', 'countdown-rails'],
   debrief: ['theater-light', 'replay-timeline'],
+  archive: ['vault-seal', 'record-lines'],
 };
 
 export function normalizeRoomAtmosphereVariant(room: string): RoomAtmosphereVariant {

@@ -57,4 +57,11 @@ describe('RoomAtmosphere', () => {
     expect(html).toContain('data-room-atmosphere-element="theater-light"');
     expect(html).toContain('data-room-atmosphere-element="replay-timeline"');
   });
+
+  it('renders Archive Vault atmosphere elements', () => {
+    const html = renderToStaticMarkup(<RoomAtmosphere variant="archive" />);
+
+    expect(html).toContain('data-room-atmosphere-element="vault-seal"');
+    expect(html).toContain('data-room-atmosphere-element="record-lines"');
+  });
 });
