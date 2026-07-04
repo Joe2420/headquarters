@@ -9,6 +9,7 @@ import {
   createAuthorizationTransition,
   createRoomTransition,
   createTransitionQueue,
+  buildTransitionAudioEvents,
   getCommanderCompassReference,
   getRoomArrival,
   getRoomIdentity,
@@ -98,6 +99,16 @@ describe('RoomNavigationExperience', () => {
     expect(arrivalHtml).toContain('Continue');
   });
 
+  it('suppresses legacy door layers for cinematic video transitions', () => {
+    const styles = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
+
+    expect(styles).toContain('.room-transition-layer.cinematic-transition-overlay::before');
+    expect(styles).toContain('.room-transition-layer.cinematic-transition-overlay::after');
+    expect(styles).toContain('.cinematic-transition-overlay[data-transition-has-video="true"]');
+    expect(styles).toContain('grid-template: minmax(0, 1fr) / minmax(0, 1fr)');
+    expect(styles).toContain('max-height: calc(100vh - 1.25rem)');
+  });
+
   it('defines cinematic variants and reduced-motion timing for every room', () => {
     const rooms = [
       'command',
@@ -131,11 +142,15 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionVariant('war-room').commanderDeparture).toBe('Authorization granted.');
     expect(getTransitionVariant('war-room').commanderArrival).toBe('Decision authority transferred.');
     expect(getTransitionVariant('archive').commanderArrival).toBe('History preserved.');
+    expect(getTransitionVariant('ready-room').videoSrc).toBe('/transitions/ready-room.mp4');
     expect(getTransitionVariant('observation').videoSrc).toBe('/transitions/observation-room.mp4');
     expect(getTransitionVariant('war-room').videoSrc).toBeUndefined();
+    expect(getTransitionVariant('debrief').videoSrc).toBe('/transitions/debrief-theater.mp4');
     expect(getTransitionVariant('archive').videoSrc).toBe('/transitions/archive-vault.mp4');
     expect(getTransitionVariant('archive').videoStartSeconds).toBe(1);
+    expect(getTransitionVariant('ready-room').durationMs).toBe(4400);
     expect(getTransitionVariant('observation').durationMs).toBe(4400);
+    expect(getTransitionVariant('debrief').durationMs).toBe(4400);
     expect(getTransitionVariant('archive').durationMs).toBe(3600);
     expect(getTransitionDurationMs(false)).toBe(7000);
     expect(getTransitionDurationMs(true)).toBe(1000);
@@ -173,6 +188,44 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).not.toContain('class="cockpit-countdown"');
   });
 
+  it('builds deterministic transition audio hook event sequences', () => {
+    const transition = createRoomTransition('ready-room', 'observation');
+    const audioEvents = buildTransitionAudioEvents(transition.controller, { createdAt: '2026-07-04T10:00:00.000Z' });
+
+    expect(audioEvents.map((event) => event.cueId)).toEqual([
+      'transition_start',
+      'transition_door_lock',
+      'transition_door_close',
+      'transition_hydraulic_motion',
+      'transition_door_open',
+      'transition_arrival',
+    ]);
+    expect(audioEvents.every((event) => event.channel === 'transition')).toBe(true);
+  });
+
+  it('builds cockpit-specific audio hook events for War Room transitions', () => {
+    const transition = createRoomTransition('observation', 'war-room');
+    const audioEvents = buildTransitionAudioEvents(transition.controller, { createdAt: '2026-07-04T10:00:00.000Z' });
+
+    expect(audioEvents.map((event) => event.cueId)).toEqual([
+      'transition_start',
+      'cockpit_power',
+      'cockpit_countdown',
+      'cockpit_launch',
+      'transition_arrival',
+    ]);
+  });
+
+  it('keeps reduced-motion transition audio hooks minimal', () => {
+    const transition = createRoomTransition('ready-room', 'observation');
+    const audioEvents = buildTransitionAudioEvents(transition.controller, {
+      reducedMotion: true,
+      createdAt: '2026-07-04T10:00:00.000Z',
+    });
+
+    expect(audioEvents.map((event) => event.cueId)).toEqual(['transition_start', 'transition_arrival']);
+  });
+
   it('renders the Archive vault video from the one-second mark', () => {
     const transitionHtml = renderToStaticMarkup(
       <RoomTransitionLayer transition={createRoomTransition('debrief', 'archive')} />,
@@ -181,6 +234,22 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).toContain('src="/transitions/archive-vault.mp4#t=1"');
     expect(transitionHtml).toContain('transition-scene-video-only');
     expect(transitionHtml).not.toContain('History preserved.');
+  });
+
+  it('renders the Ready Room and Debrief Theater as video-only transitions', () => {
+    const readyHtml = renderToStaticMarkup(
+      <RoomTransitionLayer transition={createRoomTransition('command', 'ready-room')} />,
+    );
+    const debriefHtml = renderToStaticMarkup(
+      <RoomTransitionLayer transition={createRoomTransition('war-room', 'debrief')} />,
+    );
+
+    expect(readyHtml).toContain('src="/transitions/ready-room.mp4"');
+    expect(readyHtml).toContain('transition-scene-video-only');
+    expect(readyHtml).not.toContain('Prepare yourself.');
+    expect(debriefHtml).toContain('src="/transitions/debrief-theater.mp4"');
+    expect(debriefHtml).toContain('transition-scene-video-only');
+    expect(debriefHtml).not.toContain("Let's understand what happened.");
   });
 
   it('creates a locked transition queue while the cinematic transition owns control', () => {

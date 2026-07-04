@@ -1,8 +1,18 @@
 import { type CSSProperties, useEffect, useState } from 'react';
 import type { CommanderShellRoomId } from './CommanderShell';
+import { createAudioEvent, type AudioEvent, type AudioCueId } from './AudioEvents';
 
 export type TransitionPhase = 'commander' | 'closing' | 'transitioning' | 'opening' | 'arrival' | 'interrupted';
-export type TransitionSoundEvent = 'transition_start' | 'door_lock' | 'door_close' | 'hydraulic' | 'door_open' | 'arrival';
+export type TransitionSoundEvent =
+  | 'transition_start'
+  | 'door_lock'
+  | 'door_close'
+  | 'hydraulic_motion'
+  | 'door_open'
+  | 'arrival'
+  | 'cockpit_power'
+  | 'cockpit_countdown'
+  | 'cockpit_launch';
 export type TransitionScene = 'standard' | 'cockpit' | 'theater' | 'vault' | 'desk' | 'simulator' | 'doctrine' | 'security' | 'intelligence';
 
 export interface TransitionVariant {
@@ -47,8 +57,16 @@ const soundEvents: readonly TransitionSoundEvent[] = [
   'transition_start',
   'door_lock',
   'door_close',
-  'hydraulic',
+  'hydraulic_motion',
   'door_open',
+  'arrival',
+];
+
+const cockpitSoundEvents: readonly TransitionSoundEvent[] = [
+  'transition_start',
+  'cockpit_power',
+  'cockpit_countdown',
+  'cockpit_launch',
   'arrival',
 ];
 
@@ -72,6 +90,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Ready Room.',
     commanderArrival: 'Prepare yourself.',
     soundEvents,
+    videoSrc: '/transitions/ready-room.mp4',
+    durationMs: 4400,
   },
   observation: {
     room: 'observation',
@@ -93,7 +113,7 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     standby: 'COUNTDOWN',
     commanderDeparture: 'Authorization granted.',
     commanderArrival: 'Decision authority transferred.',
-    soundEvents,
+    soundEvents: cockpitSoundEvents,
   },
   debrief: {
     room: 'debrief',
@@ -104,6 +124,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Debrief Theater.',
     commanderArrival: "Let's understand what happened.",
     soundEvents,
+    videoSrc: '/transitions/debrief-theater.mp4',
+    durationMs: 4400,
   },
   archive: {
     room: 'archive',
@@ -209,8 +231,43 @@ export function createAuthorizationTransitionController(
   return createTransitionController(room, room, phase, {
     ...getTransitionVariant('war-room'),
     videoSrc: '/transitions/war-room.mp4',
+    soundEvents: cockpitSoundEvents,
     durationMs: 4600,
   });
+}
+
+export function buildTransitionAudioEvents(
+  controller: TransitionController,
+  input: { readonly reducedMotion?: boolean | undefined; readonly createdAt?: string | undefined } = {},
+): AudioEvent[] {
+  const events = input.reducedMotion
+    ? controller.variant.soundEvents.filter((eventName) => eventName === 'transition_start' || eventName === 'arrival')
+    : controller.variant.soundEvents;
+
+  return events.map((eventName, index) => {
+    const createdAt = input.createdAt === undefined ? {} : { createdAt: `${input.createdAt}:${index}` };
+    return createAudioEvent({
+      type: 'transition_cue',
+      cueId: mapTransitionSoundEventToCueId(eventName),
+      channel: 'transition',
+      priority: eventName === 'arrival' || eventName === 'transition_start' ? 'normal' : 'low',
+      ...createdAt,
+      room: controller.toRoom,
+      reason: `Transition audio hook: ${eventName}.`,
+    });
+  });
+}
+
+function mapTransitionSoundEventToCueId(eventName: TransitionSoundEvent): AudioCueId {
+  if (eventName === 'door_lock') return 'transition_door_lock';
+  if (eventName === 'door_close') return 'transition_door_close';
+  if (eventName === 'hydraulic_motion') return 'transition_hydraulic_motion';
+  if (eventName === 'door_open') return 'transition_door_open';
+  if (eventName === 'arrival') return 'transition_arrival';
+  if (eventName === 'cockpit_power') return 'cockpit_power';
+  if (eventName === 'cockpit_countdown') return 'cockpit_countdown';
+  if (eventName === 'cockpit_launch') return 'cockpit_launch';
+  return 'transition_start';
 }
 
 export function createTransitionQueue(active?: TransitionController): TransitionQueue {
@@ -240,13 +297,20 @@ export function TransitionOverlay({ controller }: { readonly controller: Transit
     const target = globalThis.window;
     if (!target) return undefined;
 
-    for (const eventName of controller.variant.soundEvents) {
+    const audioEvents = buildTransitionAudioEvents(controller, {
+      reducedMotion: globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
+    });
+
+    for (const audioEvent of audioEvents) {
       target.dispatchEvent(new CustomEvent('headquarters:transition-audio-cue', {
         detail: {
-          event: eventName,
+          event: audioEvent.cueId,
           room: controller.toRoom,
           scene: controller.variant.scene,
         },
+      }));
+      target.dispatchEvent(new CustomEvent('headquarters:audio-event', {
+        detail: audioEvent,
       }));
     }
 

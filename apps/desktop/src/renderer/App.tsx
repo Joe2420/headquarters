@@ -121,7 +121,9 @@ import {
   formatRoomLabel,
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
+import { AudioQASurface } from './AudioQASurface';
 import { GuidedRoom } from './GuidedRoom';
+import { RoomAtmosphere } from './RoomAtmosphere';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 import { detectCommanderContradictions } from './CommanderContradictionDetection';
 
@@ -495,7 +497,11 @@ export function App() {
     };
   }, []);
 
-  const currentCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
+  const activeMissionState = parseMissionState(activeMission?.currentState);
+  const navigationCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
+  const currentCommanderRoom = activeMission
+    ? recommendRoomForMissionState(activeMissionState)
+    : navigationCommanderRoom;
   const commanderState = buildCommanderExperienceState({
     reportState: shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported',
     activeRoom: currentCommanderRoom,
@@ -516,8 +522,8 @@ export function App() {
   const guardianStatus = formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts');
   const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
   const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
-  const activeMissionState = parseMissionState(activeMission?.currentState);
   const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
+  const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
 
   async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
@@ -1093,8 +1099,16 @@ export function App() {
 
             {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
 
-            {activeOperationsView === 'chat' ? (
-              <section className="commander-chat-stage" aria-label="Commander chat stage">
+            <div
+              className="operations-panel"
+              data-operations-panel="chat"
+              hidden={activeOperationsView !== 'chat'}
+            >
+              <section
+                className="commander-chat-stage"
+                aria-label="Commander chat stage"
+                data-active-room-atmosphere={getRoomAtmosphereToken(currentCommanderRoom)}
+              >
                 <CommanderExperiencePanel
                   state={commanderState}
                   compassSteps={missionCompassSteps}
@@ -1156,15 +1170,19 @@ export function App() {
                   currentRoom: currentRoomLabel,
                 }} />
               </section>
-            ) : null}
+            </div>
 
-            {activeOperationsView === 'room' ? (
-              <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
+            <div
+              className="operations-panel"
+              data-operations-panel="room"
+              hidden={activeOperationsView !== 'room'}
+            >
+              <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(currentRoomView)}>
                 <MissionCeremonyMoment ceremony={missionCeremony} />
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
                 ) : (
-                  renderHeadquartersRoom(activeRoom, {
+                  renderHeadquartersRoom(currentRoomView, {
                     activeMission,
                     archiveWrite,
                     authorizationStatus,
@@ -1206,7 +1224,7 @@ export function App() {
                   })
                 )}
               </section>
-            ) : null}
+            </div>
           </section>
 
           <aside className="status-panel" aria-label="Status area" aria-live="polite">
@@ -3296,6 +3314,7 @@ export function JournalRoom({
 
   return (
     <div className="room-layout" data-room-id="journal-room" data-room-atmosphere="journal">
+      <RoomAtmosphere variant="journal" />
       <section className="command-center-header" aria-label="Journal room status">
         <p className="section-label">Journal Room</p>
         <h2>Guided Journal</h2>
@@ -3475,6 +3494,7 @@ export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
 
   return (
     <div className="room-layout" data-room-id="academy-room" data-room-atmosphere="academy">
+      <RoomAtmosphere variant="academy" />
       <section className="command-center-header" aria-label="Academy room status">
         <p className="section-label">Academy Room</p>
         <h2>Academy Dashboard</h2>
@@ -3564,6 +3584,7 @@ export function GuardianRoom() {
 
   return (
     <div className="room-layout" data-room-id="guardian-room" data-room-atmosphere="guardian">
+      <RoomAtmosphere variant="guardian" />
       <section className="command-center-header" aria-label="Guardian room status">
         <p className="section-label">Guardian Wing</p>
         <h2>Guardian Alerts</h2>
@@ -3636,6 +3657,7 @@ export function IntelligenceCenterRoom({
 
   return (
     <div className="room-layout" data-room-id="intelligence-center" data-room-atmosphere="intelligence">
+      <RoomAtmosphere variant="intelligence" />
       <section className="command-center-header" aria-label="Intelligence center status">
         <p className="section-label">Intelligence Center</p>
         <h2>Journal Classification</h2>
@@ -4231,6 +4253,7 @@ export function DoctrineRoom({
 }) {
   return (
     <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
+      <RoomAtmosphere variant="doctrine" />
       <section className="command-center-header" aria-label="Doctrine room status">
         <p className="section-label">Doctrine Chamber</p>
         <h2>Doctrine Review</h2>
@@ -4442,6 +4465,7 @@ function SettingsRoom() {
       <p className="section-label">Settings</p>
       <h2>Settings</h2>
       <p className="muted">No completed settings workflow is available yet.</p>
+      <AudioQASurface events={[]} />
     </section>
   );
 }
@@ -5439,7 +5463,7 @@ function isReducedMotionPreferred(): boolean {
 }
 
 function getTransitionRoomLoadDelayMs(reducedMotion: boolean, controller?: TransitionController): number {
-  return Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.82);
+  return Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.62);
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {

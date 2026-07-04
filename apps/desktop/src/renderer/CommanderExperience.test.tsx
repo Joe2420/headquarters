@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
@@ -134,6 +135,17 @@ describe('CommanderExperience', () => {
     />);
 
     expect(html.match(/What market structure is currently present/g)).toHaveLength(1);
+  });
+
+  it('queues Commander transmissions so delivered lines do not replay after panel switches', () => {
+    const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain("readonly status: 'queued' | 'transmitting' | 'delivered'");
+    expect(source).toContain("entry.speaker === 'Commander' && entry.status === 'transmitting'");
+    expect(source).toContain("entry.speaker === 'Commander' && entry.status === 'queued'");
+    expect(source).toContain("transmission.status !== 'queued'");
+    expect(source).toContain("transmission.status === 'delivered'");
+    expect(source).toContain('? transmission.text');
   });
 
   it('keeps each support room Commander chat tone distinct', () => {
