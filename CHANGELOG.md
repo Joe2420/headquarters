@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0262 - Added Sprint 27 Operational Psychology review documentation.
+
+HQ-TASK-0261 - Added deterministic long-session awareness support to room psychology.
+
+HQ-TASK-0260 - Added operator presence copy to room psychology profiles.
+
+HQ-TASK-0259 - Added environmental reinforcement cues to the Situation Board.
+
+HQ-TASK-0258 - Added guided room mindset surfaces for focus mode.
+
+HQ-TASK-0257 - Added mission ceremony psychology copy.
+
+HQ-TASK-0256 - Added deliberate psychological friction markers for important actions.
+
+HQ-TASK-0255 - Added deterministic room mindset engine.
+
 HQ-TASK-0254 - Added Sprint 26 Living Headquarters review documentation.
 
 HQ-TASK-0253 - Added operational awareness to the Situation Board.

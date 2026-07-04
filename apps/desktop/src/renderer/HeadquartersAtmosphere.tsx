@@ -3,6 +3,7 @@ import type { CommandChairStatus } from './CommandChair';
 import { CommandChair } from './CommandChair';
 import type { CommanderShellRoomId } from './CommanderShell';
 import type { HeadquartersEvent, HeadquartersOperationalAwareness } from './HeadquartersEventEngine';
+import type { OperationalPsychologyProfile } from './OperationalPsychology';
 
 export interface HeadquartersAtmosphereMission {
   readonly campaign: string;
@@ -20,6 +21,7 @@ export interface SituationBoardInput {
   readonly recentGrowth?: string | undefined;
   readonly intelligenceIndicator?: string | undefined;
   readonly operationalAwareness?: HeadquartersOperationalAwareness | undefined;
+  readonly psychologyProfile?: OperationalPsychologyProfile | undefined;
 }
 
 export interface AmbientStatusInput {
@@ -157,6 +159,14 @@ export function SituationBoard({ input }: { readonly input: SituationBoardInput 
           <p>{input.operationalAwareness.headquartersActivity}</p>
         </div>
       ) : null}
+      {input.psychologyProfile ? (
+        <div className="operational-mindset-panel" aria-label="Operational mindset">
+          <p className="section-label">Mindset</p>
+          <strong>{input.psychologyProfile.mindset}</strong>
+          <p>{input.psychologyProfile.focusInstruction}</p>
+          {input.psychologyProfile.deliberateFriction ? <p>{input.psychologyProfile.deliberateFriction}</p> : null}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -173,13 +183,20 @@ export function AmbientStatusStrip({ input }: { readonly input: AmbientStatusInp
   );
 }
 
-export function MissionCeremonyMoment({ ceremony }: { readonly ceremony?: MissionCeremony | undefined }) {
-  if (!ceremony) return null;
+export function MissionCeremonyMoment({
+  ceremony,
+  psychology,
+}: {
+  readonly ceremony?: MissionCeremony | undefined;
+  readonly psychology?: OperationalPsychologyProfile | undefined;
+}) {
+  if (!ceremony && !psychology?.ceremony) return null;
 
   return (
-    <section className="mission-ceremony" aria-label="Mission ceremony" data-ceremony-id={ceremony.id}>
-      <p className="section-label">{ceremony.label}</p>
-      <strong>{ceremony.message}</strong>
+    <section className="mission-ceremony" aria-label="Mission ceremony" data-ceremony-id={ceremony?.id ?? 'ceremony:psychology'}>
+      <p className="section-label">{ceremony?.label ?? 'Operational Ceremony'}</p>
+      <strong>{psychology?.ceremony ?? ceremony?.message}</strong>
+      {ceremony && psychology?.ceremony ? <p>{ceremony.message}</p> : null}
     </section>
   );
 }

@@ -681,6 +681,23 @@ dd {
   margin: 0;
 }
 
+.operational-mindset-panel {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(240, 210, 138, 0.16);
+  background: rgba(22, 18, 10, 0.62);
+  color: #d8cfae;
+}
+
+.operational-mindset-panel strong {
+  text-transform: capitalize;
+}
+
+.operational-mindset-panel p {
+  margin: 0;
+}
+
 .commander-workflow-surface {
   display: grid;
   gap: 0.65rem;
@@ -969,6 +986,28 @@ dd {
   display: grid;
   align-content: start;
   gap: 1rem;
+}
+
+.guided-room-mindset {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 720px;
+  margin-top: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  border-left: 2px solid rgba(240, 210, 138, 0.7);
+  background: rgba(240, 210, 138, 0.06);
+}
+
+.guided-room-mindset span {
+  color: #f0d28a;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.guided-room-mindset p {
+  margin: 0;
+  color: #bec9d1;
 }
 
 .commander-instrument-strip .mission-compass ol {
