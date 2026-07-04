@@ -1095,7 +1095,11 @@ export function App() {
             {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
 
             {activeOperationsView === 'chat' ? (
-              <section className="commander-chat-stage" aria-label="Commander chat stage">
+              <section
+                className="commander-chat-stage"
+                aria-label="Commander chat stage"
+                data-active-room-atmosphere={getRoomAtmosphereToken(currentCommanderRoom)}
+              >
                 <CommanderExperiencePanel
                   state={commanderState}
                   compassSteps={missionCompassSteps}
