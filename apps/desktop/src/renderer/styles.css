@@ -1274,6 +1274,68 @@ dd {
   opacity: 0.28;
 }
 
+.room-atmosphere--war-room .room-atmosphere__field {
+  background:
+    radial-gradient(circle at 78% 22%, rgba(216, 178, 92, 0.18), transparent 21%),
+    radial-gradient(circle at 16% 76%, rgba(166, 63, 52, 0.14), transparent 24%),
+    linear-gradient(145deg, rgba(216, 178, 92, 0.08), transparent 46%),
+    #141410;
+}
+
+.room-atmosphere__authorization-indicator,
+.room-atmosphere__hud-grid,
+.room-atmosphere__countdown-rails {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.room-atmosphere__authorization-indicator {
+  width: 8rem;
+  height: 8rem;
+  right: 1.5rem;
+  top: 1.2rem;
+  border: 1px solid rgba(216, 178, 92, 0.34);
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgba(166, 63, 52, 0.1), inset 0 0 28px rgba(216, 178, 92, 0.08);
+  opacity: 0.52;
+}
+
+.room-atmosphere__authorization-indicator::before,
+.room-atmosphere__authorization-indicator::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 68%;
+  height: 1px;
+  background: rgba(216, 178, 92, 0.45);
+  transform-origin: left center;
+}
+
+.room-atmosphere__authorization-indicator::after {
+  transform: rotate(90deg);
+}
+
+.room-atmosphere__hud-grid {
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(216, 178, 92, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 178, 92, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.42;
+}
+
+.room-atmosphere__countdown-rails {
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  height: 3px;
+  background:
+    linear-gradient(90deg, rgba(166, 63, 52, 0.78) 0 18%, transparent 18% 24%, rgba(216, 178, 92, 0.72) 24% 64%, transparent 64% 70%, rgba(216, 178, 92, 0.42) 70% 100%);
+  box-shadow: 0 0 22px rgba(216, 178, 92, 0.18);
+  opacity: 0.6;
+}
+
 @keyframes atmosphere-radar-sweep {
   from {
     transform: rotate(0deg);

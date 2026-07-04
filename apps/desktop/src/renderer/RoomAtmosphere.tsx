@@ -33,6 +33,7 @@ const atmosphereAliases: Record<string, RoomAtmosphereVariant> = {
 
 const variantElements: Partial<Record<RoomAtmosphereVariant, readonly string[]>> = {
   observation: ['radar-sweep', 'horizon-drift', 'scan-lines'],
+  'war-room': ['authorization-indicator', 'hud-grid', 'countdown-rails'],
 };
 
 export function normalizeRoomAtmosphereVariant(room: string): RoomAtmosphereVariant {

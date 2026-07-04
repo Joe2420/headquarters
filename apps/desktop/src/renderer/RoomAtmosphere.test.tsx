@@ -42,4 +42,12 @@ describe('RoomAtmosphere', () => {
     expect(html).toContain('data-room-atmosphere-element="horizon-drift"');
     expect(html).toContain('data-room-atmosphere-element="scan-lines"');
   });
+
+  it('renders War Room tactical atmosphere elements', () => {
+    const html = renderToStaticMarkup(<RoomAtmosphere variant="war-room" />);
+
+    expect(html).toContain('data-room-atmosphere-element="authorization-indicator"');
+    expect(html).toContain('data-room-atmosphere-element="hud-grid"');
+    expect(html).toContain('data-room-atmosphere-element="countdown-rails"');
+  });
 });
