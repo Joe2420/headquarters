@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0246 - Sprint 25 Adaptive Commander Review
+- HQ-TASK-0245 - Commander Guardian Behavioral Context
+- HQ-TASK-0244 - Commander Positive Reinforcement
+- HQ-TASK-0243 - Evidence-Based Behavioral Warnings
+- HQ-TASK-0242 - Adaptive Commander Question Selection
+- HQ-TASK-0241 - Commander Adaptation Engine
+- HQ-TASK-0240 - Behavioral Profile Evidence Model
+- HQ-TASK-0239 - Adaptive Commander Foundation
+
 - HQ-TASK-0238 - Sprint 24 Mission Intelligence Package Review
 - HQ-TASK-0237 - Debrief and Archive Mission Intelligence
 - HQ-TASK-0236 - Authorization Intelligence

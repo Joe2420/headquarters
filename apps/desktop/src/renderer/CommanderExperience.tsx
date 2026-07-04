@@ -14,6 +14,13 @@ import {
 import type { MissionCompassStep } from './MissionCompass';
 import { MissionCompassPanel } from './RoomNavigationExperience';
 import { recommendRoomForMissionState } from './RoomStateMachine';
+import {
+  adaptCommanderQuestion,
+  buildAdaptiveCommanderGuidance,
+  formatCommanderBehaviorMemory,
+  type CommanderBehaviorProfile,
+} from './CommanderBehaviorProfile';
+import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
 
 export type CommanderReportState = 'not-reported' | 'reported';
 
@@ -39,6 +46,8 @@ export interface CommanderExperienceInput {
   readonly activeRoom: CommanderShellRoomId;
   readonly activeMission?: CommanderExperienceMission | undefined;
   readonly evidence?: CommanderExperienceEvidence | undefined;
+  readonly behaviorProfile?: CommanderBehaviorProfile | undefined;
+  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
   readonly acknowledgedInterruptionIds?: readonly string[] | undefined;
 }
 
@@ -103,7 +112,13 @@ const observationSupportMessages = [
 
 export function buildCommanderExperienceState(input: CommanderExperienceInput): CommanderExperienceState {
   const missionState = parseCommanderMissionState(input.activeMission?.currentState);
-  const roomBehavior = getCommanderRoomBehavior(input.activeRoom, input.reportState, missionState, input.activeMission);
+  const baseRoomBehavior = getCommanderRoomBehavior(input.activeRoom, input.reportState, missionState, input.activeMission);
+  const adaptiveGuidance = buildAdaptiveCommanderGuidance(input.behaviorProfile, input.activeRoom, input.missionIntelligence);
+  const roomBehavior = {
+    ...baseRoomBehavior,
+    statement: adaptiveGuidance ? `${baseRoomBehavior.statement}\n\n${adaptiveGuidance}` : baseRoomBehavior.statement,
+    prompt: adaptCommanderQuestion(baseRoomBehavior.prompt, input.behaviorProfile, input.activeRoom),
+  };
   const recommendedRoom = input.reportState === 'not-reported' ? 'command' : recommendRoomForMissionState(missionState);
   const nextAction = getCommanderNextAction(input.reportState, missionState, input.activeMission);
   const interruption = getCommanderInterruption(input, missionState);
@@ -126,7 +141,7 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
     nextAction,
     secondaryActions: getCommanderSecondaryActions(input.reportState, missionState),
     interruption,
-    memory: buildCommanderMemorySurface(input.evidence),
+    memory: buildCommanderMemorySurface(input.evidence, input.behaviorProfile),
   };
 }
 
@@ -702,7 +717,10 @@ export function getCommanderRoomTransitionText(
   return 'Archive the mission record.';
 }
 
-export function buildCommanderMemorySurface(evidence?: CommanderExperienceEvidence | undefined): CommanderMemorySnippet[] {
+export function buildCommanderMemorySurface(
+  evidence?: CommanderExperienceEvidence | undefined,
+  behaviorProfile?: CommanderBehaviorProfile | undefined,
+): CommanderMemorySnippet[] {
   return [
     {
       id: 'memory:doctrine',
@@ -723,6 +741,11 @@ export function buildCommanderMemorySurface(evidence?: CommanderExperienceEviden
       id: 'memory:guardian',
       label: 'Guardian',
       value: formatMemoryValue(evidence?.guardianStatus, 'Guardian standing by'),
+    },
+    {
+      id: 'memory:behavior',
+      label: 'Behavior',
+      value: formatCommanderBehaviorMemory(behaviorProfile),
     },
   ];
 }
@@ -842,13 +865,18 @@ function getCommanderStateText(
 ): string {
   if (reportState === 'not-reported') return 'Report for duty. Headquarters is waiting.';
   if (!isMissionLifecycleRoom(activeRoom)) return roomBehavior.statement;
-  if (missionState === undefined) return 'No active mission. Create one mission.';
-  if (missionState === 'idle') return 'Mission file exists. Briefing is the next phase.';
-  if (missionState === 'briefing') return 'Briefing is active. Confirm objective, authority, and observation rules.';
-  if (missionState === 'ready' || missionState === 'observation') return 'Observation is active work. Remain silent.';
-  if (missionState === 'authorization' || missionState === 'deployed') return 'War Room authority is active. Stay inside the plan.';
-  if (missionState === 'return_to_base') return 'Return complete. Begin behavior-first debrief.';
-  return 'Mission complete. Archive the record.';
+  if (missionState === undefined) return appendAdaptiveStateText('No active mission. Create one mission.', roomBehavior.statement);
+  if (missionState === 'idle') return appendAdaptiveStateText('Mission file exists. Briefing is the next phase.', roomBehavior.statement);
+  if (missionState === 'briefing') return appendAdaptiveStateText('Briefing is active. Confirm objective, authority, and observation rules.', roomBehavior.statement);
+  if (missionState === 'ready' || missionState === 'observation') return appendAdaptiveStateText('Observation is active work. Remain silent.', roomBehavior.statement);
+  if (missionState === 'authorization' || missionState === 'deployed') return appendAdaptiveStateText('War Room authority is active. Stay inside the plan.', roomBehavior.statement);
+  if (missionState === 'return_to_base') return appendAdaptiveStateText('Return complete. Begin behavior-first debrief.', roomBehavior.statement);
+  return appendAdaptiveStateText('Mission complete. Archive the record.', roomBehavior.statement);
+}
+
+function appendAdaptiveStateText(baseText: string, roomStatement: string): string {
+  const adaptiveText = roomStatement.split('\n\n').slice(1).join('\n\n').trim();
+  return adaptiveText ? `${baseText}\n\n${adaptiveText}` : baseText;
 }
 
 function isMissionLifecycleRoom(room: CommanderShellRoomId): boolean {

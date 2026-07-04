@@ -133,6 +133,7 @@ import {
   buildMissionIntelligencePackage,
   type MissionIntelligencePackage,
 } from './MissionIntelligencePackage';
+import { buildCommanderBehaviorProfile } from './CommanderBehaviorProfile';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -509,28 +510,8 @@ export function App() {
   const currentCommanderRoom = activeMission
     ? recommendRoomForMissionState(activeMissionState)
     : navigationCommanderRoom;
-  const commanderState = buildCommanderExperienceState({
-    reportState: shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported',
-    activeRoom: currentCommanderRoom,
-    activeMission,
-    evidence: {
-      recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
-      recentMission: missionHistory.at(-1)?.campaign,
-      recentGrowthEvent: formatRecentGrowthHighlight(growthEvents),
-      guardianStatus: formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts'),
-    },
-    acknowledgedInterruptionIds: acknowledgedCommanderInterruptions,
-  });
-  const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
-  const missionCompassSteps = activeMission
-    ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
-    : undefined;
+  const guardianAlerts = buildDesktopGuardianAlerts();
   const reportState = shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported';
-  const guardianStatus = formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts');
-  const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
-  const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
-  const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
-  const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
   const missionIntelligencePackage = activeMission
     ? buildDesktopMissionIntelligencePackage(activeMission, {
       authorizationStatus,
@@ -543,6 +524,38 @@ export function App() {
       lesson: commanderLesson,
     })
     : undefined;
+  const behaviorMissionHistory = activeMission && !missionHistory.some((mission) => mission.id === activeMission.id)
+    ? [...missionHistory, activeMission]
+    : missionHistory;
+  const commanderBehaviorProfile = buildCommanderBehaviorProfile({
+    missions: behaviorMissionHistory,
+    growthEvents,
+    guardianAlerts,
+    missionIntelligence: missionIntelligencePackage,
+  });
+  const commanderState = buildCommanderExperienceState({
+    reportState,
+    activeRoom: currentCommanderRoom,
+    activeMission,
+    evidence: {
+      recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
+      recentMission: missionHistory.at(-1)?.campaign,
+      recentGrowthEvent: formatRecentGrowthHighlight(growthEvents),
+      guardianStatus: formatJournalCount(guardianAlerts.length, 'Guardian alert', 'Guardian alerts'),
+    },
+    behaviorProfile: commanderBehaviorProfile,
+    missionIntelligence: missionIntelligencePackage,
+    acknowledgedInterruptionIds: acknowledgedCommanderInterruptions,
+  });
+  const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
+  const missionCompassSteps = activeMission
+    ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
+    : undefined;
+  const guardianStatus = formatJournalCount(guardianAlerts.length, 'Guardian alert', 'Guardian alerts');
+  const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
+  const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
+  const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
+  const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
 
   async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
