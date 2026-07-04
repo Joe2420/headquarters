@@ -9,6 +9,8 @@ import {
   getCommanderRoomTransitionText,
   mapNavigationRoomToCommanderRoom,
 } from './CommanderExperience';
+import { buildCommanderBehaviorProfile } from './CommanderBehaviorProfile';
+import { createEmptyMissionContext, updateMissionContextObservation, updateMissionContextReadiness } from './MissionContextMemory';
 
 describe('CommanderExperience', () => {
   it('renders a persistent Commander shell with current room beneath guidance', () => {
@@ -448,6 +450,7 @@ describe('CommanderExperience', () => {
       'Foundation Patrol',
       'Held discipline',
       'Guardian standing by',
+      'No behavioral profile yet',
     ]);
 
     expect(buildCommanderMemorySurface().map((snippet) => snippet.value)).toEqual([
@@ -455,7 +458,65 @@ describe('CommanderExperience', () => {
       'No recent mission evidence',
       'No recent growth evidence',
       'Guardian standing by',
+      'No behavioral profile yet',
     ]);
+  });
+
+  it('adapts Commander wording from deterministic behavior evidence', () => {
+    const profile = buildCommanderBehaviorProfile({
+      missions: [{
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        currentState: 'observation',
+        missionContext: updateMissionContextObservation(createEmptyMissionContext('mission-001'), {
+          evidenceReadiness: 'no',
+        }),
+      }],
+    });
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+      behaviorProfile: profile,
+    });
+
+    expect(state.commanderQuestion).toContain('If hesitation is present');
+    expect(state.memory.find((snippet) => snippet.id === 'memory:behavior')?.value).toContain('hesitation');
+  });
+
+  it('adds evidence-based Commander guidance without changing lifecycle requirements', () => {
+    const profile = buildCommanderBehaviorProfile({
+      missions: [{
+        id: 'mission-002',
+        campaign: 'Preparation Drill',
+        currentState: 'briefing',
+        missionContext: updateMissionContextReadiness(createEmptyMissionContext('mission-002'), {
+          briefingComplete: true,
+        }),
+      }],
+    });
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'ready-room',
+      activeMission: {
+        id: 'mission-003',
+        campaign: 'New Mission',
+        objective: 'Protect process',
+        currentState: 'briefing',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+      behaviorProfile: profile,
+    });
+
+    expect(state.nextAction.label).toBe('Complete Briefing');
+    expect(state.nextAction.disabled).toBe(true);
+    expect(state.messages.map((message) => message.text).join('\n')).toContain('Preparation Drill completed operational briefing.');
   });
 
   it('maps legacy navigation rooms into Commander room ids', () => {

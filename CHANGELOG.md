@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0246 - Added Sprint 25 Adaptive Commander review documentation.
+
+HQ-TASK-0245 - Added Guardian behavioral context to Commander adaptation.
+
+HQ-TASK-0244 - Added process-focused Commander positive reinforcement.
+
+HQ-TASK-0243 - Added evidence-based Commander behavioral warnings.
+
+HQ-TASK-0242 - Added adaptive Commander question selection.
+
+HQ-TASK-0241 - Added deterministic Commander adaptation engine.
+
+HQ-TASK-0240 - Added behavioral profile evidence model.
+
+HQ-TASK-0239 - Added Adaptive Commander foundation.
+
 HQ-TASK-0238 - Added Sprint 24 Mission Intelligence Package review documentation.
 
 HQ-TASK-0237 - Added Debrief and Archive mission intelligence preservation surfaces.
