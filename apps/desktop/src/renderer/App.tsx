@@ -79,6 +79,7 @@ import {
   buildCommanderExperienceState,
   isContinueTransmission,
   mapNavigationRoomToCommanderRoom,
+  type CommanderExperienceInput,
 } from './CommanderExperience';
 import {
   answerObservationInterview,
@@ -114,6 +115,7 @@ import {
 } from './RoomNavigationExperience';
 import {
   AmbientStatusStrip,
+  HeadquartersMissionFeed,
   MissionCeremonyMoment,
   OperationalCommandChair,
   SituationBoard,
@@ -134,6 +136,11 @@ import {
   type MissionIntelligencePackage,
 } from './MissionIntelligencePackage';
 import { buildCommanderBehaviorProfile } from './CommanderBehaviorProfile';
+import {
+  buildHeadquartersEvents,
+  buildOperationalAwareness,
+  selectPassiveCommanderMessage,
+} from './HeadquartersEventEngine';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -533,7 +540,7 @@ export function App() {
     guardianAlerts,
     missionIntelligence: missionIntelligencePackage,
   });
-  const commanderState = buildCommanderExperienceState({
+  const commanderExperienceInput: CommanderExperienceInput = {
     reportState,
     activeRoom: currentCommanderRoom,
     activeMission,
@@ -546,15 +553,50 @@ export function App() {
     behaviorProfile: commanderBehaviorProfile,
     missionIntelligence: missionIntelligencePackage,
     acknowledgedInterruptionIds: acknowledgedCommanderInterruptions,
+  };
+  const baseCommanderState = buildCommanderExperienceState(commanderExperienceInput);
+  const guardianStatus = formatJournalCount(guardianAlerts.length, 'Guardian alert', 'Guardian alerts');
+  const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
+  const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
+  const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
+  const desktopJournalClassifications = buildDesktopJournalClassifications(journalEntries);
+  const desktopIntelligenceEvidenceRecords = buildDesktopIntelligenceEvidenceRecords(desktopJournalClassifications);
+  const desktopDoctrineSuggestions = buildDesktopDoctrineSuggestions(desktopIntelligenceEvidenceRecords);
+  const desktopArchiveRecordCount = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries).length;
+  const headquartersEvents = buildHeadquartersEvents({
+    reportState,
+    currentRoom: currentCommanderRoom,
+    recommendedRoom: baseCommanderState.recommendedRoom,
+    missionId: activeMission?.id,
+    missionPhase: missionPhaseSummary,
+    missionIntelligence: missionIntelligencePackage,
+    guardianAlerts,
+    growthEvents,
+    doctrineCandidateCount: desktopDoctrineSuggestions.length,
+    archiveRecordCount: desktopArchiveRecordCount,
+    currentObjective: baseCommanderState.nextAction.description,
+  });
+  const operationalAwareness = buildOperationalAwareness({
+    reportState,
+    currentRoom: currentCommanderRoom,
+    recommendedRoom: baseCommanderState.recommendedRoom,
+    missionId: activeMission?.id,
+    missionPhase: missionPhaseSummary,
+    missionIntelligence: missionIntelligencePackage,
+    guardianAlerts,
+    growthEvents,
+    doctrineCandidateCount: desktopDoctrineSuggestions.length,
+    archiveRecordCount: desktopArchiveRecordCount,
+    currentObjective: baseCommanderState.nextAction.description,
+  });
+  const commanderState = buildCommanderExperienceState({
+    ...commanderExperienceInput,
+    passiveCommanderMessage: selectPassiveCommanderMessage(headquartersEvents),
   });
   const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
   const missionCompassSteps = activeMission
     ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
     : undefined;
-  const guardianStatus = formatJournalCount(guardianAlerts.length, 'Guardian alert', 'Guardian alerts');
-  const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
-  const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
-  const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
   const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
 
   async function handleCommanderContinue() {
@@ -1162,7 +1204,8 @@ export function App() {
                     guardianStatus,
                     recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
                     recentGrowth: formatRecentGrowthHighlight(growthEvents),
-                    intelligenceIndicator: formatJournalCount(buildDesktopIntelligenceEvidenceRecords(buildDesktopJournalClassifications(journalEntries)).length, 'intelligence record', 'intelligence records'),
+                    intelligenceIndicator: formatJournalCount(desktopIntelligenceEvidenceRecords.length, 'intelligence record', 'intelligence records'),
+                    operationalAwareness,
                   }} />}
                   workflowSurface={<CommanderWorkflowSurface
                     currentRoom={currentCommanderRoom}
@@ -1204,6 +1247,7 @@ export function App() {
                   guardian: guardianStatus,
                   currentRoom: currentRoomLabel,
                 }} />
+                <HeadquartersMissionFeed events={headquartersEvents} />
               </section>
             </div>
 

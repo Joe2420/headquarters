@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0254 - Sprint 26 Living Headquarters Review
+- HQ-TASK-0253 - Operational Awareness Surface
+- HQ-TASK-0252 - Headquarters Mission Feed
+- HQ-TASK-0251 - Operational Interruptions
+- HQ-TASK-0250 - Dynamic Room Environment
+- HQ-TASK-0249 - Living Mission Status
+- HQ-TASK-0248 - Commander Passive Messages
+- HQ-TASK-0247 - Headquarters Event Engine
+
 - HQ-TASK-0246 - Sprint 25 Adaptive Commander Review
 - HQ-TASK-0245 - Commander Guardian Behavioral Context
 - HQ-TASK-0244 - Commander Positive Reinforcement

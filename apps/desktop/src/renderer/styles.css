@@ -668,6 +668,19 @@ dd {
   z-index: 1;
 }
 
+.operational-awareness-panel {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(112, 255, 156, 0.16);
+  background: rgba(9, 16, 14, 0.72);
+  color: #c8d7cf;
+}
+
+.operational-awareness-panel p {
+  margin: 0;
+}
+
 .commander-workflow-surface {
   display: grid;
   gap: 0.65rem;
@@ -900,6 +913,56 @@ dd {
   color: #93a4b1;
   font-size: 0.78rem;
   text-transform: uppercase;
+}
+
+.headquarters-mission-feed {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 1.5rem 1.1rem;
+  border-top: 1px solid rgba(112, 255, 156, 0.12);
+  background:
+    linear-gradient(90deg, rgba(112, 255, 156, 0.08), transparent 38%),
+    #090d10;
+}
+
+.headquarters-mission-feed > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.headquarters-mission-feed ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.headquarters-mission-feed li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.65rem;
+  border-left: 2px solid rgba(143, 184, 255, 0.38);
+  background: rgba(15, 18, 21, 0.82);
+}
+
+.headquarters-mission-feed li[data-event-priority="high"] {
+  border-left-color: rgba(240, 210, 138, 0.92);
+  background: rgba(39, 31, 16, 0.52);
+}
+
+.headquarters-mission-feed span {
+  color: #dce7ef;
+  font-weight: 700;
+}
+
+.headquarters-mission-feed p {
+  margin: 0;
+  color: #9fb0bd;
 }
 
 .room-layout {

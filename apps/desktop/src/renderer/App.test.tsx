@@ -162,7 +162,10 @@ describe('Desktop shell', () => {
     expect(html).toContain('Commander instruments');
     expect(html).toContain('Command Chair');
     expect(html).toContain('Situation Board');
+    expect(html).toContain('Operational awareness');
     expect(html).toContain('Ambient Headquarters status');
+    expect(html).toContain('Headquarters mission feed');
+    expect(html).toContain('Headquarters operating');
     expect(html).toContain('HQOS:');
   });
 

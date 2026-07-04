@@ -2,6 +2,7 @@ import type { MissionState } from '@headquarters/shared';
 import type { CommandChairStatus } from './CommandChair';
 import { CommandChair } from './CommandChair';
 import type { CommanderShellRoomId } from './CommanderShell';
+import type { HeadquartersEvent, HeadquartersOperationalAwareness } from './HeadquartersEventEngine';
 
 export interface HeadquartersAtmosphereMission {
   readonly campaign: string;
@@ -18,6 +19,7 @@ export interface SituationBoardInput {
   readonly recentDoctrine?: string | undefined;
   readonly recentGrowth?: string | undefined;
   readonly intelligenceIndicator?: string | undefined;
+  readonly operationalAwareness?: HeadquartersOperationalAwareness | undefined;
 }
 
 export interface AmbientStatusInput {
@@ -149,6 +151,12 @@ export function SituationBoard({ input }: { readonly input: SituationBoardInput 
         <div><dt>Growth</dt><dd>{growth}</dd></div>
         <div><dt>Intelligence</dt><dd>{intelligence}</dd></div>
       </dl>
+      {input.operationalAwareness ? (
+        <div className="operational-awareness-panel" aria-label="Operational awareness">
+          <p>{input.operationalAwareness.whyHere}</p>
+          <p>{input.operationalAwareness.headquartersActivity}</p>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -172,6 +180,31 @@ export function MissionCeremonyMoment({ ceremony }: { readonly ceremony?: Missio
     <section className="mission-ceremony" aria-label="Mission ceremony" data-ceremony-id={ceremony.id}>
       <p className="section-label">{ceremony.label}</p>
       <strong>{ceremony.message}</strong>
+    </section>
+  );
+}
+
+export function HeadquartersMissionFeed({ events }: { readonly events: readonly HeadquartersEvent[] }) {
+  const visibleEvents = events.slice(0, 5);
+
+  return (
+    <section className="headquarters-mission-feed" aria-label="Headquarters mission feed">
+      <div>
+        <p className="section-label">Mission Feed</p>
+        <strong>Headquarters operating</strong>
+      </div>
+      {visibleEvents.length > 0 ? (
+        <ol>
+          {visibleEvents.map((event) => (
+            <li key={event.id} data-event-type={event.type} data-event-priority={event.priority}>
+              <span>{event.title}</span>
+              <p>{event.message}</p>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="muted">Operational feed standing by.</p>
+      )}
     </section>
   );
 }

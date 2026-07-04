@@ -48,6 +48,7 @@ export interface CommanderExperienceInput {
   readonly evidence?: CommanderExperienceEvidence | undefined;
   readonly behaviorProfile?: CommanderBehaviorProfile | undefined;
   readonly missionIntelligence?: MissionIntelligencePackage | undefined;
+  readonly passiveCommanderMessage?: string | undefined;
   readonly acknowledgedInterruptionIds?: readonly string[] | undefined;
 }
 
@@ -813,6 +814,21 @@ function buildCommanderMessageThread(
       primaryAction,
       secondaryActions: [],
       source: 'mission-state',
+    }));
+  }
+
+  if (input.passiveCommanderMessage && !thread.some((message) => message.text === input.passiveCommanderMessage)) {
+    thread.push(createCommanderMessage({
+      id: `commander:passive:${normalizeCommanderText(input.passiveCommanderMessage).slice(0, 48)}`,
+      timestamp: '2026-07-02T00:00:04.000Z',
+      room: recommendedRoom,
+      type: 'guidance',
+      tone: 'calm',
+      priority: 'normal',
+      text: input.passiveCommanderMessage,
+      primaryAction,
+      secondaryActions: [],
+      source: 'system',
     }));
   }
 

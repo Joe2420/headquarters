@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0254 - Added Sprint 26 Living Headquarters review documentation.
+
+HQ-TASK-0253 - Added operational awareness to the Situation Board.
+
+HQ-TASK-0252 - Added Headquarters Mission Feed to the Commander shell.
+
+HQ-TASK-0251 - Added calm operational interruption candidates.
+
+HQ-TASK-0250 - Added dynamic room environment status events.
+
+HQ-TASK-0249 - Added living mission status event derivation.
+
+HQ-TASK-0248 - Added passive Commander update selection.
+
+HQ-TASK-0247 - Added deterministic Headquarters Event Engine.
+
 HQ-TASK-0246 - Added Sprint 25 Adaptive Commander review documentation.
 
 HQ-TASK-0245 - Added Guardian behavioral context to Commander adaptation.
