@@ -126,6 +126,13 @@ import { GuidedRoom } from './GuidedRoom';
 import { RoomAtmosphere } from './RoomAtmosphere';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 import { detectCommanderContradictions } from './CommanderContradictionDetection';
+import {
+  buildAuthorizationIntelligenceQuestion,
+  buildCommanderIntelligenceSummary,
+  buildDebriefIntelligenceComparison,
+  buildMissionIntelligencePackage,
+  type MissionIntelligencePackage,
+} from './MissionIntelligencePackage';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -524,6 +531,18 @@ export function App() {
   const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
   const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
   const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
+  const missionIntelligencePackage = activeMission
+    ? buildDesktopMissionIntelligencePackage(activeMission, {
+      authorizationStatus,
+      missionDebrief,
+      archiveSummary,
+      operatorJustification: commanderOperatorJustification,
+      invalidation: commanderInvalidation,
+      behaviorSummary: commanderBehaviorSummary,
+      disciplineNotes: commanderDisciplineNotes,
+      lesson: commanderLesson,
+    })
+    : undefined;
 
   async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
@@ -573,9 +592,10 @@ export function App() {
     const currentState = parseMissionState(mission.currentState);
 
     if (currentState === 'authorization') {
+      const recordedInvalidation = getRecordedObservationInvalidation(mission);
       const authorization = await requestDesktopAuthorization(mission, {
         operatorJustification: commanderOperatorJustification,
-        invalidation: commanderInvalidation,
+        invalidation: commanderInvalidation || recordedInvalidation,
       });
 
       if (authorization === undefined) {
@@ -913,10 +933,11 @@ export function App() {
     }
 
     if (currentState === 'authorization') {
+      const recordedInvalidation = getRecordedObservationInvalidation(activeMission);
       const authorizationDraft = parseAuthorizationTransmission(message);
       const nextDraft = fillAuthorizationDraftFromTransmission({
         currentJustification: commanderOperatorJustification,
-        currentInvalidation: commanderInvalidation,
+        currentInvalidation: commanderInvalidation || recordedInvalidation,
         draft: authorizationDraft,
         message,
         shouldContinue,
@@ -1133,6 +1154,7 @@ export function App() {
                   workflowSurface={<CommanderWorkflowSurface
                     currentRoom={currentCommanderRoom}
                     activeMission={activeMission}
+                    missionIntelligencePackage={missionIntelligencePackage}
                     authorizationStatus={authorizationStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
@@ -1184,6 +1206,7 @@ export function App() {
                 ) : (
                   renderHeadquartersRoom(currentRoomView, {
                     activeMission,
+                    missionIntelligencePackage,
                     archiveWrite,
                     authorizationStatus,
                     missionDebrief,
@@ -1320,6 +1343,7 @@ function canCommanderContinueAdvanceMission(mission: ActiveMission): boolean {
 
 function CommanderWorkflowSurface({
   activeMission,
+  missionIntelligencePackage,
   currentRoom,
   authorizationStatus,
   missionDebrief,
@@ -1343,6 +1367,7 @@ function CommanderWorkflowSurface({
 }: {
   readonly currentRoom: string;
   readonly activeMission?: ActiveMission | undefined;
+  readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
@@ -1384,22 +1409,44 @@ function CommanderWorkflowSurface({
         </section>
       ) : null}
 
+      {missionIntelligencePackage && currentRoom === 'war-room' ? (
+        <MissionIntelligencePanel
+          missionPackage={missionIntelligencePackage}
+          mode="authorization"
+          title="Mission Intelligence Summary"
+        />
+      ) : null}
+
       {currentState === 'authorization' && currentRoom === 'war-room' ? (
         <section className="commander-workflow-card" aria-label="Commander authorization controls">
           <div>
             <p className="section-label">Authorization</p>
             <h3>War Room Authorization</h3>
-            <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
+            <p className="muted">{missionIntelligencePackage
+              ? buildAuthorizationIntelligenceQuestion(missionIntelligencePackage)
+              : formatAuthorizationStatus(authorizationStatus)}</p>
           </div>
           <label>
-            <span>Operator Justification</span>
+            <span>Authorization Reasoning</span>
             <input value={operatorJustification} onChange={(event) => onOperatorJustificationChange(event.target.value)} />
           </label>
-          <label>
-            <span>Invalidation</span>
-            <input value={invalidation} onChange={(event) => onInvalidationChange(event.target.value)} />
-          </label>
+          {missionIntelligencePackage?.invalidation ? (
+            <p className="muted">Observation invalidation recorded: {missionIntelligencePackage.invalidation}</p>
+          ) : (
+            <label>
+              <span>Invalidation</span>
+              <input value={invalidation} onChange={(event) => onInvalidationChange(event.target.value)} />
+            </label>
+          )}
         </section>
+      ) : null}
+
+      {missionIntelligencePackage && currentRoom === 'debrief' ? (
+        <MissionIntelligencePanel
+          missionPackage={missionIntelligencePackage}
+          mode="debrief"
+          title="Debrief Intelligence"
+        />
       ) : null}
 
       {currentState === 'return_to_base' && currentRoom === 'debrief' ? (
@@ -1424,6 +1471,14 @@ function CommanderWorkflowSurface({
         </section>
       ) : null}
 
+      {missionIntelligencePackage && currentRoom === 'archive' ? (
+        <MissionIntelligencePanel
+          missionPackage={missionIntelligencePackage}
+          mode="archive"
+          title="Archive Intelligence"
+        />
+      ) : null}
+
       {currentState === 'debrief' && currentRoom === 'archive' ? (
         <section className="commander-workflow-card" aria-label="Commander archive controls">
           <p className="section-label">Archive</p>
@@ -1443,6 +1498,7 @@ interface SecurityCheckpointProps {
 
 interface HeadquartersRoomContext {
   activeMission?: ActiveMission | undefined;
+  missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
   missionDebrief?: MissionDebrief | undefined;
@@ -1474,6 +1530,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
     return (
       <MissionRoom
         activeMission={context.activeMission}
+        missionIntelligencePackage={context.missionIntelligencePackage}
         archiveWrite={context.archiveWrite}
         authorizationStatus={context.authorizationStatus}
         missionDebrief={context.missionDebrief}
@@ -1502,6 +1559,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
     return (
       <ObservationRoom
         activeMission={context.activeMission}
+        missionIntelligencePackage={context.missionIntelligencePackage}
         authorizationStatus={context.authorizationStatus}
         missionDebrief={context.missionDebrief}
         archiveSummary={context.archiveSummary}
@@ -1513,6 +1571,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
     return (
       <WarRoom
         activeMission={context.activeMission}
+        missionIntelligencePackage={context.missionIntelligencePackage}
         authorizationStatus={context.authorizationStatus}
         missionHistory={context.missionHistory}
         missionDebrief={context.missionDebrief}
@@ -1528,6 +1587,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
     return (
       <DebriefTheater
         activeMission={context.activeMission}
+        missionIntelligencePackage={context.missionIntelligencePackage}
         authorizationStatus={context.authorizationStatus}
         missionDebrief={context.missionDebrief}
         archiveSummary={context.archiveSummary}
@@ -1581,6 +1641,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   if (room === 'archive') {
     return (
       <ArchiveRoom
+        missionIntelligencePackage={context.missionIntelligencePackage}
         archivedMissionSummaries={context.archivedMissionSummaries}
         archivedJournalEntries={context.archivedJournalEntries}
         doctrineRecords={context.doctrineRecords}
@@ -1950,6 +2011,7 @@ function buildReadyRoomBriefingItems(
 
 export function ObservationRoom({
   activeMission,
+  missionIntelligencePackage,
   authorizationStatus,
   missionDebrief,
   archiveSummary,
@@ -1984,6 +2046,13 @@ export function ObservationRoom({
             <h3>{currentState === 'observation' ? 'Discipline Is Holding' : 'Await Observation'}</h3>
             <p className="muted">Waiting is part of the work. Evidence comes first; authorization comes later.</p>
           </section>
+          {missionIntelligencePackage ? (
+            <MissionIntelligencePanel
+              missionPackage={missionIntelligencePackage}
+              mode="observation"
+              title="Observation Intelligence"
+            />
+          ) : null}
         </div>
       )}
       timeline={<MissionTimelineViewerPanel
@@ -2017,6 +2086,7 @@ export function ObservationRoom({
 
 export function WarRoom({
   activeMission,
+  missionIntelligencePackage,
   authorizationStatus,
   missionDebrief,
   missionHistory,
@@ -2026,6 +2096,7 @@ export function WarRoom({
   onArchiveMission,
 }: {
   activeMission?: ActiveMission | undefined;
+  missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
   missionDebrief?: MissionDebrief | undefined;
   missionHistory: ActiveMission[];
@@ -2053,7 +2124,11 @@ export function WarRoom({
       primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
       workspace={(
         <>
-          <WarRoomContextSummary activeMission={activeMission} contradictions={contradictions} />
+          <WarRoomContextSummary
+            activeMission={activeMission}
+            missionIntelligencePackage={missionIntelligencePackage}
+            contradictions={contradictions}
+          />
           <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
           {parseMissionState(activeMission?.currentState) === 'authorization' ? (
             <MissionNextActionPanel
@@ -2095,9 +2170,11 @@ export function WarRoom({
 
 function WarRoomContextSummary({
   activeMission,
+  missionIntelligencePackage,
   contradictions,
 }: {
   readonly activeMission?: ActiveMission | undefined;
+  readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly contradictions: readonly MissionContextContradictionFlag[];
 }) {
   const missionContext = activeMission?.missionContext;
@@ -2106,6 +2183,13 @@ function WarRoomContextSummary({
     <section className="journal-panel" aria-label="War Room mission context summary">
       <p className="section-label">Mission Context</p>
       <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
+      {missionIntelligencePackage ? (
+        <MissionIntelligencePanel
+          missionPackage={missionIntelligencePackage}
+          mode="authorization"
+          title="Mission Intelligence Summary"
+        />
+      ) : null}
       <dl>
         <dt>Mission Objective</dt>
         <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
@@ -2135,7 +2219,9 @@ function WarRoomContextSummary({
         <p className="muted">No context contradictions detected.</p>
       )}
       <div aria-label="Commander authorization questions">
-        <p>Is this authorization based on your plan or on pressure?</p>
+        <p>{missionIntelligencePackage
+          ? buildAuthorizationIntelligenceQuestion(missionIntelligencePackage)
+          : 'Is this authorization based on your plan or on pressure?'}</p>
         <p>Which rule protects this decision?</p>
       </div>
     </section>
@@ -2146,8 +2232,73 @@ function formatMissionContextDisplay(value: string | undefined): string {
   return value && value.trim().length > 0 ? value : 'Context incomplete';
 }
 
+function getRecordedObservationInvalidation(mission: ActiveMission | undefined): string {
+  return mission?.missionContext?.observation.invalidationEvidence?.trim()
+    || mission?.observationContext?.invalidationEvidence?.trim()
+    || '';
+}
+
+function MissionIntelligencePanel({
+  missionPackage,
+  mode,
+  title,
+}: {
+  readonly missionPackage: MissionIntelligencePackage;
+  readonly mode: 'observation' | 'authorization' | 'debrief' | 'archive';
+  readonly title: string;
+}) {
+  const summary = buildCommanderIntelligenceSummary(missionPackage, mode);
+  const debriefComparison = mode === 'debrief'
+    ? buildDebriefIntelligenceComparison(missionPackage)
+    : [];
+
+  return (
+    <section className="mission-intelligence-panel" aria-label={title}>
+      <div className="mission-intelligence-panel-header">
+        <div>
+          <p className="section-label">Mission Intelligence</p>
+          <h3>{title}</h3>
+        </div>
+        <strong>{missionPackage.confidence.level} / {missionPackage.confidence.score}%</strong>
+      </div>
+      <dl className="mission-intelligence-grid">
+        <div>
+          <dt>Objective</dt>
+          <dd>{formatMissionContextDisplay(missionPackage.missionObjective)}</dd>
+        </div>
+        <div>
+          <dt>Risk</dt>
+          <dd>{formatMissionContextDisplay(missionPackage.riskLimit)}</dd>
+        </div>
+        <div>
+          <dt>Evidence</dt>
+          <dd>{formatMissionContextDisplay(missionPackage.observationSummary ?? missionPackage.directionalHypothesis)}</dd>
+        </div>
+        <div>
+          <dt>Invalidation</dt>
+          <dd>{formatMissionContextDisplay(missionPackage.invalidation)}</dd>
+        </div>
+      </dl>
+      <ul className="mission-intelligence-list" aria-label={`${title} summary`}>
+        {summary.map((item) => <li key={item}>{item}</li>)}
+      </ul>
+      {debriefComparison.length > 0 ? (
+        <ol className="mission-intelligence-list mission-intelligence-list-ordered" aria-label="Mission intelligence comparison">
+          {debriefComparison.map((item) => <li key={item}>{item}</li>)}
+        </ol>
+      ) : null}
+      {missionPackage.missingEvidence.length > 0 ? (
+        <p className="muted">Remaining unknowns: {missionPackage.missingEvidence.slice(0, 4).map((item) => item.label).join(', ')}</p>
+      ) : (
+        <p className="muted">Intelligence package contains the required briefing and observation evidence.</p>
+      )}
+    </section>
+  );
+}
+
 export function DebriefTheater({
   activeMission,
+  missionIntelligencePackage,
   authorizationStatus,
   missionDebrief,
   archiveSummary,
@@ -2179,7 +2330,11 @@ export function DebriefTheater({
       primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
       workspace={(
         <>
-          <DebriefContextRecall activeMission={activeMission} contradictions={contradictions} />
+          <DebriefContextRecall
+            activeMission={activeMission}
+            missionIntelligencePackage={missionIntelligencePackage}
+            contradictions={contradictions}
+          />
           <section className="journal-panel" aria-label="Black box viewer">
             <p className="section-label">Black Box Viewer</p>
             <h3>Behavior Sequence</h3>
@@ -2228,9 +2383,11 @@ export function DebriefTheater({
 
 function DebriefContextRecall({
   activeMission,
+  missionIntelligencePackage,
   contradictions,
 }: {
   readonly activeMission?: ActiveMission | undefined;
+  readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly contradictions: readonly MissionContextContradictionFlag[];
 }) {
   const missionContext = activeMission?.missionContext;
@@ -2239,6 +2396,13 @@ function DebriefContextRecall({
     <section className="journal-panel" aria-label="Debrief mission context recall">
       <p className="section-label">Context Recall</p>
       <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
+      {missionIntelligencePackage ? (
+        <MissionIntelligencePanel
+          missionPackage={missionIntelligencePackage}
+          mode="debrief"
+          title="Debrief Intelligence Comparison"
+        />
+      ) : null}
       <dl>
         <dt>Original Objective</dt>
         <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
@@ -2276,6 +2440,7 @@ function DebriefContextRecall({
 
 interface CommandCenterProps {
   activeMission?: ActiveMission | undefined;
+  missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   archiveWrite?: ArchiveWritePlaceholder | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
   missionDebrief?: MissionDebrief | undefined;
@@ -2556,6 +2721,7 @@ function MissionHistoryPanel({ missionHistory }: MissionHistoryPanelProps) {
 
 interface MissionTimelineViewerPanelProps {
   activeMission?: ActiveMission | undefined;
+  missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
   missionDebrief?: MissionDebrief | undefined;
   archiveSummary?: LocalMissionArchiveSummary | undefined;
@@ -2734,9 +2900,10 @@ function MissionNextActionPanel({
     }
 
     if (currentState === 'authorization') {
+      const recordedInvalidation = getRecordedObservationInvalidation(activeMission);
       const authorization = await requestDesktopAuthorization(activeMission, {
         operatorJustification,
-        invalidation,
+        invalidation: invalidation || recordedInvalidation,
       });
 
       if (authorization === undefined) return;
@@ -2784,6 +2951,7 @@ function MissionNextActionPanel({
 
   const nextAction = getMissionNextAction(activeMission);
   const currentState = parseMissionState(activeMission?.currentState);
+  const recordedInvalidation = getRecordedObservationInvalidation(activeMission);
 
   return (
     <form className="mission-next-action-panel" aria-label="Mission next action" onSubmit={handleNextAction}>
@@ -2798,10 +2966,14 @@ function MissionNextActionPanel({
             <span>Operator Justification</span>
             <input value={operatorJustification} onChange={(event) => setOperatorJustification(event.target.value)} />
           </label>
-          <label>
-            <span>Invalidation</span>
-            <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
-          </label>
+          {recordedInvalidation ? (
+            <p className="muted">Observation invalidation recorded: {recordedInvalidation}</p>
+          ) : (
+            <label>
+              <span>Invalidation</span>
+              <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
+            </label>
+          )}
         </>
       ) : null}
       {currentState === 'return_to_base' ? (
@@ -3968,10 +4140,12 @@ function JournalArchivePanel({
 }
 
 export function ArchiveRoom({
+  missionIntelligencePackage,
   archivedMissionSummaries,
   archivedJournalEntries,
   doctrineRecords,
 }: {
+  missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   archivedMissionSummaries: LocalMissionArchiveSummary[];
   archivedJournalEntries: ArchivedJournalEntry[];
   doctrineRecords: DoctrineRecord[];
@@ -3994,7 +4168,16 @@ export function ArchiveRoom({
       objective={latestMissionSummary ? `${latestMissionSummary.codename} preserved as institutional memory.` : 'Historical records will appear after mission archive.'}
       primaryAction={<strong>{formatArchiveViewerStatus(archivedMissionSummaries)}</strong>}
       workspace={(
-        <ArchiveCardPanel records={records} />
+        <>
+          {missionIntelligencePackage ? (
+            <MissionIntelligencePanel
+              missionPackage={missionIntelligencePackage}
+              mode="archive"
+              title="Preserved Mission Intelligence"
+            />
+          ) : null}
+          <ArchiveCardPanel records={records} />
+        </>
       )}
       timeline={(
         <>
@@ -4596,6 +4779,50 @@ export function withObservationMissionContext(
     observationContext,
     missionContext,
   };
+}
+
+export function buildDesktopMissionIntelligencePackage(
+  mission: ActiveMission,
+  input: {
+    readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+    readonly missionDebrief?: MissionDebrief | undefined;
+    readonly archiveSummary?: LocalMissionArchiveSummary | undefined;
+    readonly operatorJustification?: string | undefined;
+    readonly invalidation?: string | undefined;
+    readonly behaviorSummary?: string | undefined;
+    readonly disciplineNotes?: string | undefined;
+    readonly lesson?: string | undefined;
+  } = {},
+): MissionIntelligencePackage {
+  const packageInput = {
+    missionId: mission.id,
+    missionName: mission.campaign,
+    currentState: mission.currentState,
+    fallbackObjective: mission.objective,
+    authorization: {
+      ...(input.authorizationStatus ? {
+        decision: input.authorizationStatus.decision,
+        reason: input.authorizationStatus.reason,
+      } : {}),
+      ...(hasMissionContextText(input.operatorJustification) ? { operatorJustification: input.operatorJustification } : {}),
+      ...(hasMissionContextText(input.invalidation) ? { invalidation: input.invalidation } : {}),
+    },
+    debrief: {
+      ...(input.missionDebrief ? {
+        behaviorSummary: input.missionDebrief.behaviorSummary,
+        disciplineNotes: input.missionDebrief.disciplineNotes,
+        lesson: input.missionDebrief.lesson,
+      } : {}),
+      ...(hasMissionContextText(input.behaviorSummary) ? { behaviorSummary: input.behaviorSummary } : {}),
+      ...(hasMissionContextText(input.disciplineNotes) ? { disciplineNotes: input.disciplineNotes } : {}),
+      ...(hasMissionContextText(input.lesson) ? { lesson: input.lesson } : {}),
+    },
+    ...(input.archiveSummary ? { archiveReference: `archive:${input.archiveSummary.missionId}` } : {}),
+    guardianNotes: buildDesktopGuardianAlerts().map((alert) => alert.message),
+    ...(mission.missionContext ? { missionContext: mission.missionContext } : {}),
+  };
+
+  return buildMissionIntelligencePackage(packageInput);
 }
 
 function buildMissionContextBriefingAnswers(context: MissionBriefingContext): MissionContextBriefingAnswers {

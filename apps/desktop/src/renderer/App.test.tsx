@@ -31,6 +31,7 @@ import {
   buildDesktopIntelligenceEvidenceRecords,
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
+  buildDesktopMissionIntelligencePackage,
   buildDesktopRepeatedMistakes,
   buildDesktopRepeatedSuccesses,
   buildDoctrineDiffPreview,
@@ -250,6 +251,76 @@ describe('Desktop shell', () => {
     expect(warHtml).toContain('Mission next action');
     expect(debriefHtml).toContain('Behavior Sequence');
     expect(debriefHtml).toContain('Mission next action');
+  });
+
+  it('surfaces Sprint 24 mission intelligence in War Room, Debrief, and Archive without changing lifecycle state', () => {
+    const mission: ActiveMission = withObservationMissionContext(withBriefingMissionContext({
+      id: 'mission-024',
+      campaign: 'Intelligence Patrol',
+      objective: 'Trade only if evidence confirms continuation',
+      condition: 'Authorization',
+      commandAuthority: 'Professional command',
+      currentState: 'authorization',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    }, {
+      missionObjective: 'Trade only if evidence confirms continuation',
+      market: 'NQ',
+      marketEnvironment: 'Trending',
+      highImpactNews: 'None',
+      personalReadiness: 'focused',
+      riskParameters: '1%',
+      successCriteria: 'Follow the plan without forcing execution',
+    }), {
+      marketDirection: 'up',
+      marketStructure: 'higher highs',
+      volume: 'steady',
+      liquidity: 'above prior high',
+      keyLevels: '18200',
+      bias: 'long continuation',
+      invalidationEvidence: 'break below 18140',
+      emotionalCheck: 'calm',
+      readiness: 'yes',
+      operationalPicture: 'Trend and risk are aligned.',
+    });
+    const missionPackage = buildDesktopMissionIntelligencePackage(mission, {
+      authorizationStatus: {
+        missionId: mission.id,
+        decision: 'approved',
+        reason: 'Evidence sufficient',
+      },
+      missionDebrief: {
+        id: 'debrief-024',
+        missionId: mission.id,
+        behaviorSummary: 'Followed the plan.',
+        disciplineNotes: 'Respected invalidation.',
+        lesson: 'Let evidence lead.',
+        createdAt: '2026-07-02T00:10:00.000Z',
+      },
+    });
+
+    const warHtml = renderToStaticMarkup(<WarRoom
+      activeMission={mission}
+      missionIntelligencePackage={missionPackage}
+      missionHistory={[mission]}
+    />);
+    const debriefHtml = renderToStaticMarkup(<DebriefTheater
+      activeMission={{ ...mission, currentState: 'return_to_base' }}
+      missionIntelligencePackage={missionPackage}
+    />);
+    const archiveHtml = renderToStaticMarkup(<ArchiveRoom
+      missionIntelligencePackage={missionPackage}
+      archivedMissionSummaries={[]}
+      archivedJournalEntries={[]}
+      doctrineRecords={[]}
+    />);
+
+    expect(mission.currentState).toBe('authorization');
+    expect(warHtml).toContain('Mission Intelligence Summary');
+    expect(warHtml).toContain('Based on this intelligence, why should Headquarters authorize execution?');
+    expect(debriefHtml).toContain('Debrief Intelligence Comparison');
+    expect(debriefHtml).toContain('Original plan: Trade only if evidence confirms continuation');
+    expect(archiveHtml).toContain('Preserved Mission Intelligence');
+    expect(archiveHtml).toContain('Intelligence package contains the required briefing and observation evidence.');
   });
 
   it('renders Archive as a chronological guided dossier instead of a dashboard surface', () => {

@@ -170,6 +170,8 @@ export function CommanderExperiencePanel({
 
     activePromptKeyRef.current = currentPromptKey;
     setTransmissions((current) => {
+      if (latestCommanderResponseContains(current, state.commanderQuestion)) return current;
+
       const currentAlreadyVisible = commanderFeedAlreadyContains(current, state.currentMessage.text);
       const questionAlreadyVisible = state.roomPromptMode === 'ask'
         && commanderFeedAlreadyContains(current, state.commanderQuestion);
@@ -221,20 +223,26 @@ export function CommanderExperiencePanel({
   }, [transmissions]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || state.lifecycleStep !== 'Lifecycle: Observation') return undefined;
+    if (
+      typeof window === 'undefined'
+      || state.lifecycleStep !== 'Lifecycle: Observation'
+      || isCommanderQuestionPending(state)
+    ) {
+      return undefined;
+    }
 
     const interval = window.setInterval(() => {
       const message = observationSupportMessages[observationSupportIndexRef.current % observationSupportMessages.length]
         ?? 'Commander check-in. Hold the observation.';
       observationSupportIndexRef.current += 1;
 
-      setTransmissions((current) => [...current, {
+      setTransmissions((current) => appendCommanderTransmission(current, {
         id: `commander:observation-support:${Date.now()}:${current.length}`,
         speaker: 'Commander',
         text: message,
         kind: 'support',
         status: 'queued',
-      }]);
+      }));
     }, 45000);
 
     return () => window.clearInterval(interval);
@@ -256,13 +264,13 @@ export function CommanderExperiencePanel({
 
     const response = await onTransmit?.(message);
     const commanderResponse = response ?? getTransmissionAcknowledgement(message, state.currentRoom);
-    setTransmissions((current) => [...current, {
+    setTransmissions((current) => appendCommanderTransmission(current, {
       id: `commander:response:${Date.now()}:${current.length}`,
       speaker: 'Commander',
       text: commanderResponse,
       kind: 'response',
       status: 'queued',
-    }]);
+    }));
   }
 
   function handleCommanderTransmissionComplete(transmission: CommanderTransmissionEntry) {
@@ -315,7 +323,7 @@ export function CommanderExperiencePanel({
               <strong>{state.lifecycleStep}</strong>
               <span>{state.nextAction.description}</span>
             </div>
-            {onContinue ? (
+            {onContinue && !isCommanderQuestionPending(state) ? (
               <button
                 type="button"
                 className="primary-action commander-continue"
@@ -486,6 +494,35 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
   return entries;
 }
 
+function appendCommanderTransmission(
+  transmissions: readonly CommanderTransmissionEntry[],
+  nextTransmission: CommanderTransmissionEntry,
+): CommanderTransmissionEntry[] {
+  const lastCommanderTransmission = [...transmissions].reverse().find((entry) => entry.speaker === 'Commander');
+  if (
+    lastCommanderTransmission
+    && lastCommanderTransmission.kind === nextTransmission.kind
+    && normalizeCommanderText(lastCommanderTransmission.text) === normalizeCommanderText(nextTransmission.text)
+  ) {
+    return [...transmissions];
+  }
+
+  return [...transmissions, nextTransmission];
+}
+
+function latestCommanderResponseContains(
+  transmissions: readonly CommanderTransmissionEntry[],
+  text: string,
+): boolean {
+  const normalizedText = normalizeCommanderText(text);
+  if (!normalizedText) return false;
+
+  const lastCommanderTransmission = [...transmissions].reverse().find((entry) => entry.speaker === 'Commander');
+  return lastCommanderTransmission !== undefined
+    && lastCommanderTransmission.kind === 'response'
+    && normalizeCommanderText(lastCommanderTransmission.text).includes(normalizedText);
+}
+
 function commanderFeedAlreadyContains(
   transmissions: readonly CommanderTransmissionEntry[],
   text: string,
@@ -514,6 +551,14 @@ function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): s
     state.commanderQuestion,
     state.roomPromptMode,
   ].join('|');
+}
+
+function isCommanderQuestionPending(state: CommanderExperienceState): boolean {
+  return state.roomPromptMode === 'ask'
+    && (
+      (state.lifecycleStep === 'Lifecycle: Briefing' && state.nextAction.disabled)
+      || (state.lifecycleStep === 'Lifecycle: Observation' && state.nextAction.disabled)
+    );
 }
 
 function getTransmissionAcknowledgement(message: string, room: CommanderShellRoomId): string {
@@ -863,8 +908,8 @@ function getCommanderRoomBehavior(
     return {
       mode: 'ask',
       statement: 'War Room authority is active. Authorization is not automatic.',
-      prompt: getCommanderQuestion(reportState, missionState),
-      acknowledgement: 'Authorization note received. Evidence and invalidation remain the standard.',
+      prompt: getWarRoomAuthorizationQuestion(reportState, missionState, mission),
+      acknowledgement: 'Authorization note received. Evidence and rules remain the standard.',
     };
   }
 
@@ -963,6 +1008,25 @@ function getCommanderQuestion(
   if (missionState === 'return_to_base') return 'What behavior occurred, what discipline was kept, and what lesson remains?';
   if (missionState === 'debrief') return 'Is the debrief complete enough to archive as institutional memory?';
   return 'Mission is archived. Do you want to review records or open a new mission?';
+}
+
+function getWarRoomAuthorizationQuestion(
+  reportState: CommanderReportState,
+  missionState?: MissionState | undefined,
+  mission?: CommanderExperienceMission | undefined,
+): string {
+  if (missionState !== 'authorization') return getCommanderQuestion(reportState, missionState);
+
+  const invalidationEvidence = mission?.observationContext?.invalidationEvidence?.trim();
+  if (invalidationEvidence) {
+    return `Observation invalidation recorded: ${trimTrailingSentencePunctuation(invalidationEvidence)}. Which rule protects this authorization decision?`;
+  }
+
+  return 'State the authorization reasoning and the invalidation condition that protects this decision.';
+}
+
+function trimTrailingSentencePunctuation(value: string): string {
+  return value.replace(/[.!?]+$/u, '').trim();
 }
 
 function toCommanderMessageAction(action: CommanderNextAction): CommanderMessageAction {
