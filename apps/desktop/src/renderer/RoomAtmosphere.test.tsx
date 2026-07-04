@@ -50,4 +50,11 @@ describe('RoomAtmosphere', () => {
     expect(html).toContain('data-room-atmosphere-element="hud-grid"');
     expect(html).toContain('data-room-atmosphere-element="countdown-rails"');
   });
+
+  it('renders Debrief Theater replay atmosphere elements', () => {
+    const html = renderToStaticMarkup(<RoomAtmosphere variant="debrief" />);
+
+    expect(html).toContain('data-room-atmosphere-element="theater-light"');
+    expect(html).toContain('data-room-atmosphere-element="replay-timeline"');
+  });
 });
