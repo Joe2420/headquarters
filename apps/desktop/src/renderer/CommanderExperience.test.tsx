@@ -192,7 +192,7 @@ describe('CommanderExperience', () => {
       ]}
     />);
 
-    expect(html).toContain('aria-label="Continue to Ready Room"');
+    expect(html).not.toContain('aria-label="Continue to Ready Room"');
     expect(html).toContain('Commander mission compass');
     expect(html).toContain('Mission compass');
     expect(html).toContain('Ready Room active. 3 future rooms locked.');
@@ -307,11 +307,56 @@ describe('CommanderExperience', () => {
         objective: 'Hold discipline',
         currentState: 'authorization',
         createdAt: '2026-07-02T00:00:00.000Z',
+        observationContext: {
+          invalidationEvidence: 'Sweep of highs.',
+        },
       },
     });
 
     expect(state.lifecycleStep).toBe('Lifecycle: Authorization');
-    expect(state.commanderQuestion).toBe('State the reason: market condition, session, volume, divergence, and invalidation.');
+    expect(state.commanderQuestion).toBe('Observation invalidation recorded: Sweep of highs. Which rule protects this authorization decision?');
+  });
+
+  it('keeps War Room from recollecting Observation invalidation unless it is missing', () => {
+    const withInvalidation = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-001',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        observationContext: {
+          invalidationEvidence: 'Sweep of highs.',
+        },
+      },
+    });
+    const withoutInvalidation = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-002',
+        campaign: 'Foundation Patrol',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+
+    expect(withInvalidation.commanderQuestion).toContain('Observation invalidation recorded: Sweep of highs.');
+    expect(withInvalidation.commanderQuestion).not.toContain('State the authorization reasoning and the invalidation condition');
+    expect(withoutInvalidation.commanderQuestion).toBe('State the authorization reasoning and the invalidation condition that protects this decision.');
+  });
+
+  it('suppresses prompt re-emission and passive check-ins during active dialogue', () => {
+    const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('latestCommanderResponseContains(current, state.commanderQuestion)');
+    expect(source).toContain('appendCommanderTransmission(current');
+    expect(source).toContain('isCommanderQuestionPending(state)');
+    expect(source).toContain("state.lifecycleStep === 'Lifecycle: Briefing' && state.nextAction.disabled");
+    expect(source).toContain("state.lifecycleStep === 'Lifecycle: Observation' && state.nextAction.disabled");
   });
 
   it('orders deterministic Commander messages and marks the newest message current', () => {

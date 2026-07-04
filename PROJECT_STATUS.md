@@ -2,6 +2,16 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0238 - Sprint 24 Mission Intelligence Package Review
+- HQ-TASK-0237 - Debrief and Archive Mission Intelligence
+- HQ-TASK-0236 - Authorization Intelligence
+- HQ-TASK-0235 - Mission Intelligence Confidence Estimation
+- HQ-TASK-0234 - Missing Evidence Detection
+- HQ-TASK-0233 - Progressive Mission Intelligence Visualization
+- HQ-TASK-0232 - Commander Mission Intelligence Summary Engine
+- HQ-TASK-0231 - Live Mission Intelligence Builder
+- HQ-TASK-0230 - Mission Intelligence Package Foundation
+
 - HQ-TASK-0229 - Sprint 23 Immersive Headquarters Review Package
 - HQ-TASK-0228 - Room Environmental Storytelling Contracts
 - HQ-TASK-0227 - Context-Sensitive Room Arrival Alignment

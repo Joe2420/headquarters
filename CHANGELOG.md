@@ -1,5 +1,23 @@
 ﻿# Changelog
 
+HQ-TASK-0238 - Added Sprint 24 Mission Intelligence Package review documentation.
+
+HQ-TASK-0237 - Added Debrief and Archive mission intelligence preservation surfaces.
+
+HQ-TASK-0236 - Added authorization intelligence prompts that reuse collected mission context.
+
+HQ-TASK-0235 - Added deterministic Mission Intelligence confidence estimation.
+
+HQ-TASK-0234 - Added missing evidence detection for mission intelligence.
+
+HQ-TASK-0233 - Added progressive Mission Intelligence visualization in mission rooms.
+
+HQ-TASK-0232 - Added Commander summary helpers for mission intelligence.
+
+HQ-TASK-0231 - Added live Mission Intelligence builder from current mission context.
+
+HQ-TASK-0230 - Added Mission Intelligence Package foundation for desktop mission flow.
+
 HQ-TASK-0229 - Added Sprint 23 Immersive Headquarters review package.
 
 HQ-TASK-0228 - Added room environmental storytelling contracts.

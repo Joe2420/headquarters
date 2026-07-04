@@ -1919,6 +1919,7 @@ dd {
 .mission-archive-viewer-panel,
 .mission-timeline-viewer-panel,
 .mission-history-panel,
+.mission-intelligence-panel,
 .archive-write-panel,
 .hqos-dashboard-panel,
 .journal-panel {
@@ -1935,6 +1936,7 @@ dd {
 .mission-authorization-panel,
 .mission-next-action-panel,
 .debrief-panel,
+.mission-intelligence-panel,
 .journal-panel {
   background: #101418;
 }
@@ -1973,6 +1975,7 @@ dd {
 
 .mission-closing-panel dl,
 .mission-details-panel dl,
+.mission-intelligence-panel dl,
 .debrief-panel dl,
 .mission-archive-summary-panel dl,
 .archive-write-panel dl {
@@ -1980,6 +1983,77 @@ dd {
   grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
   gap: 0.55rem 1rem;
   margin: 0;
+}
+
+.mission-intelligence-panel {
+  border-color: #2f3d49;
+  background:
+    linear-gradient(135deg, rgba(69, 105, 138, 0.14), rgba(12, 17, 21, 0.88)),
+    #101418;
+}
+
+.mission-intelligence-panel-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mission-intelligence-panel-header strong {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid #3c5364;
+  color: #dbeafe;
+  background: rgba(19, 32, 42, 0.82);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.mission-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.mission-intelligence-grid div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.mission-intelligence-grid dt {
+  color: #8eb5d5;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.mission-intelligence-grid dd {
+  margin: 0;
+  color: #eef3f6;
+  font-weight: 700;
+}
+
+.mission-intelligence-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mission-intelligence-list li {
+  padding-left: 0.75rem;
+  border-left: 2px solid #87c2f2;
+  color: #c9d8e2;
+}
+
+.mission-intelligence-list-ordered {
+  list-style: decimal;
+  padding-left: 1.2rem;
+}
+
+.mission-intelligence-list-ordered li {
+  padding-left: 0.25rem;
 }
 
 .mission-archive-list {
