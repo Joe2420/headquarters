@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0229 - Sprint 23 Immersive Headquarters Review Package
+- HQ-TASK-0228 - Room Environmental Storytelling Contracts
+- HQ-TASK-0227 - Context-Sensitive Room Arrival Alignment
+- HQ-TASK-0226 - Mission Route and Room Purpose Integration
+- HQ-TASK-0225 - Commander Presence Room Profiles
+- HQ-TASK-0224 - Room Exit and Arrival Cues
+- HQ-TASK-0223 - Room Mindset and Atmosphere Profiles
+- HQ-TASK-0222 - Immersive Headquarters Room Identity Foundation
+
 - HQ-TASK-0221 - Sprint 22 Living Commander Review Package
 - HQ-TASK-0220 - Commander Tone and Challenge Behavior
 - HQ-TASK-0219 - Commander Conversation Variety

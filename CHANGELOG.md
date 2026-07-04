@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0229 - Added Sprint 23 Immersive Headquarters review package.
+
+HQ-TASK-0228 - Added room environmental storytelling contracts.
+
+HQ-TASK-0227 - Aligned room arrival messages with room identity profiles.
+
+HQ-TASK-0226 - Integrated mission route surfaces with explicit room purpose metadata.
+
+HQ-TASK-0225 - Added Commander presence expectations to room profiles.
+
+HQ-TASK-0224 - Added room exit and arrival cue definitions.
+
+HQ-TASK-0223 - Added room mindset and atmosphere profiles.
+
+HQ-TASK-0222 - Added immersive Headquarters room identity foundation.
+
 HQ-TASK-0221 - Added Sprint 22 Living Commander review package.
 
 HQ-TASK-0220 - Added deterministic Commander tone and challenge behavior.

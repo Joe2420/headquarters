@@ -31,6 +31,9 @@ describe('RoomAtmosphere', () => {
 
     expect(html).toContain(`room-atmosphere--${variant}`);
     expect(html).toContain(`data-room-atmosphere-layer="${variant}"`);
+    expect(html).toContain('data-room-purpose=');
+    expect(html).toContain('data-room-mindset=');
+    expect(html).toContain('data-room-primary-focus=');
     expect(html).toContain('data-reduced-motion-safe="true"');
     expect(html).toContain('aria-hidden="true"');
   });

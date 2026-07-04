@@ -1,3 +1,5 @@
+import { getRoomIdentityProfile } from './RoomIdentity';
+
 export const roomAtmosphereVariants = [
   'command',
   'ready-room',
@@ -49,12 +51,16 @@ export function normalizeRoomAtmosphereVariant(room: string): RoomAtmosphereVari
 
 export function RoomAtmosphere({ variant }: { readonly variant: string }) {
   const normalizedVariant = normalizeRoomAtmosphereVariant(variant);
+  const profile = getRoomIdentityProfile(normalizedVariant === 'guardian' ? 'guardian' : normalizedVariant);
 
   return (
     <div
       className={`room-atmosphere room-atmosphere--${normalizedVariant}`}
       aria-hidden="true"
       data-room-atmosphere-layer={normalizedVariant}
+      data-room-purpose={profile.purpose}
+      data-room-mindset={profile.mindset}
+      data-room-primary-focus={profile.primaryFocus}
       data-reduced-motion-safe="true"
     >
       <span className="room-atmosphere__field" />

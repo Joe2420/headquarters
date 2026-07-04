@@ -16,6 +16,7 @@ import {
 import type { CommanderShellRoomId } from './CommanderShell';
 import type { MissionCompassStep, MissionCompassStepId } from './MissionCompass';
 import { MissionCompass } from './MissionCompass';
+import { getRoomIdentityProfile, type RoomIdentityProfile } from './RoomIdentity';
 
 export type HeadquartersNavigationTarget =
   | 'command'
@@ -159,16 +160,21 @@ export function recoverInterruptedTransition(transition: RoomTransitionState): R
 }
 
 export function getRoomArrival(room: CommanderShellRoomId): RoomArrival {
-  return getCinematicRoomArrival(room);
+  const cinematicArrival = getCinematicRoomArrival(room);
+  const identity = getRoomIdentityProfile(room);
+
+  return {
+    ...cinematicArrival,
+    message: identity.arrivalCue,
+  };
 }
 
 export function getRoomIdentity(room: CommanderShellRoomId): string {
-  if (room === 'ready-room') return 'preparation';
-  if (room === 'observation') return 'silence';
-  if (room === 'war-room') return 'decision';
-  if (room === 'debrief') return 'reflection';
-  if (room === 'archive') return 'historical';
-  return 'headquarters';
+  return getRoomIdentityProfile(room).identity;
+}
+
+export function getRoomExperienceProfile(room: CommanderShellRoomId): RoomIdentityProfile {
+  return getRoomIdentityProfile(room);
 }
 
 export function getRoomTransitionNarration(phase: RoomTransitionPhase): string {
@@ -197,6 +203,8 @@ export function RoomArrivalPanel({
       aria-label={`${arrival.title} arrival`}
       data-arrival-room={arrival.room}
       data-room-identity={getRoomIdentity(arrival.room)}
+      data-room-purpose={getRoomExperienceProfile(arrival.room).purpose}
+      data-room-primary-focus={getRoomExperienceProfile(arrival.room).primaryFocus}
     >
       <p className="section-label">Arrival</p>
       <h2>{arrival.title}</h2>
