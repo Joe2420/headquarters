@@ -38,6 +38,9 @@ const variantElements: Partial<Record<RoomAtmosphereVariant, readonly string[]>>
   archive: ['vault-seal', 'record-lines'],
   journal: ['desk-lamp', 'logbook-lines'],
   doctrine: ['doctrine-seal', 'memory-chamber'],
+  academy: ['training-grid', 'recognition-glow'],
+  guardian: ['security-grid', 'risk-beacon'],
+  intelligence: ['analysis-map', 'connection-lines'],
 };
 
 export function normalizeRoomAtmosphereVariant(room: string): RoomAtmosphereVariant {

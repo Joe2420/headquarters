@@ -74,4 +74,17 @@ describe('RoomAtmosphere', () => {
     expect(doctrineHtml).toContain('data-room-atmosphere-element="doctrine-seal"');
     expect(doctrineHtml).toContain('data-room-atmosphere-element="memory-chamber"');
   });
+
+  it('renders Academy, Guardian, and Intelligence atmosphere elements', () => {
+    const academyHtml = renderToStaticMarkup(<RoomAtmosphere variant="academy" />);
+    const guardianHtml = renderToStaticMarkup(<RoomAtmosphere variant="guardian" />);
+    const intelligenceHtml = renderToStaticMarkup(<RoomAtmosphere variant="intelligence" />);
+
+    expect(academyHtml).toContain('data-room-atmosphere-element="training-grid"');
+    expect(academyHtml).toContain('data-room-atmosphere-element="recognition-glow"');
+    expect(guardianHtml).toContain('data-room-atmosphere-element="security-grid"');
+    expect(guardianHtml).toContain('data-room-atmosphere-element="risk-beacon"');
+    expect(intelligenceHtml).toContain('data-room-atmosphere-element="analysis-map"');
+    expect(intelligenceHtml).toContain('data-room-atmosphere-element="connection-lines"');
+  });
 });
