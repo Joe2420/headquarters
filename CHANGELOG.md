@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0212 - Added Sprint 21 Commander Voice and Audio Hooks review package.
+
+HQ-TASK-0211 - Added a quiet audio QA surface for inspecting future cue candidates.
+
+HQ-TASK-0210 - Added local muted and reduced audio preference contracts.
+
+HQ-TASK-0209 - Added Guardian alert audio hook candidates.
+
+HQ-TASK-0208 - Added mission ceremony audio event candidates.
+
+HQ-TASK-0207 - Added deterministic Commander voice cue mapping.
+
+HQ-TASK-0206 - Added transition audio hook points for room movement.
+
+HQ-TASK-0205 - Added deterministic audio event contracts for future sound integration.
+
 HQ-TASK-0196 - Added Sprint 19 Adaptive Commander review package.
 
 HQ-TASK-0195 - Added Debrief context recall from mission briefing and observation memory.
