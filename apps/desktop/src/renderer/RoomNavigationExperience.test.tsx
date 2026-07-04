@@ -99,6 +99,16 @@ describe('RoomNavigationExperience', () => {
     expect(arrivalHtml).toContain('Continue');
   });
 
+  it('suppresses legacy door layers for cinematic video transitions', () => {
+    const styles = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
+
+    expect(styles).toContain('.room-transition-layer.cinematic-transition-overlay::before');
+    expect(styles).toContain('.room-transition-layer.cinematic-transition-overlay::after');
+    expect(styles).toContain('.cinematic-transition-overlay[data-transition-has-video="true"]');
+    expect(styles).toContain('grid-template: minmax(0, 1fr) / minmax(0, 1fr)');
+    expect(styles).toContain('max-height: calc(100vh - 1.25rem)');
+  });
+
   it('defines cinematic variants and reduced-motion timing for every room', () => {
     const rooms = [
       'command',

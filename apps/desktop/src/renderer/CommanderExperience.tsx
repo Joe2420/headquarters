@@ -90,6 +90,7 @@ type CommanderTransmissionEntry = {
   readonly text: string;
   readonly kind: 'current' | 'question' | 'operator' | 'response' | 'support';
   readonly promptKey?: string | undefined;
+  readonly status: 'queued' | 'transmitting' | 'delivered';
 };
 
 const baseTimestamp = '2026-07-02T00:00:00.000Z';
@@ -155,7 +156,6 @@ export function CommanderExperiencePanel({
   ));
   const feedRef = useRef<HTMLOListElement | null>(null);
   const activePromptKeyRef = useRef(typeof window === 'undefined' ? currentPromptKey : '');
-  const pendingQuestionRef = useRef<{ key: string; text: string } | undefined>();
   const observationSupportIndexRef = useRef(0);
 
   useEffect(() => {
@@ -170,28 +170,55 @@ export function CommanderExperiencePanel({
 
     activePromptKeyRef.current = currentPromptKey;
     setTransmissions((current) => {
+      const currentAlreadyVisible = commanderFeedAlreadyContains(current, state.currentMessage.text);
       const questionAlreadyVisible = state.roomPromptMode === 'ask'
         && commanderFeedAlreadyContains(current, state.commanderQuestion);
+      const next: CommanderTransmissionEntry[] = currentAlreadyVisible
+        ? [...current]
+        : [
+          ...current,
+          {
+            id: `${currentPromptKey}:current`,
+            speaker: 'Commander',
+            text: state.currentMessage.text,
+            kind: 'current',
+            promptKey: currentPromptKey,
+            status: 'queued',
+          },
+        ];
 
-      pendingQuestionRef.current = state.roomPromptMode === 'ask' && !questionAlreadyVisible
-        ? {
-          key: currentPromptKey,
-          text: state.commanderQuestion,
-        }
-        : undefined;
+      if (state.roomPromptMode !== 'ask' || questionAlreadyVisible) return next;
 
       return [
-        ...current,
+        ...next,
         {
-          id: `${currentPromptKey}:current`,
+          id: `${currentPromptKey}:question`,
           speaker: 'Commander',
-          text: state.currentMessage.text,
-          kind: 'current',
+          text: state.commanderQuestion,
+          kind: 'question',
           promptKey: currentPromptKey,
+          status: 'queued',
         },
       ];
     });
   }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text, state.roomPromptMode]);
+
+  useEffect(() => {
+    setTransmissions((current) => {
+      if (current.some((entry) => entry.speaker === 'Commander' && entry.status === 'transmitting')) {
+        return current;
+      }
+
+      const nextQueuedIndex = current.findIndex((entry) => (
+        entry.speaker === 'Commander' && entry.status === 'queued'
+      ));
+      if (nextQueuedIndex < 0) return current;
+
+      return current.map((entry, index) => (
+        index === nextQueuedIndex ? { ...entry, status: 'transmitting' } : entry
+      ));
+    });
+  }, [transmissions]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || state.lifecycleStep !== 'Lifecycle: Observation') return undefined;
@@ -206,6 +233,7 @@ export function CommanderExperiencePanel({
         speaker: 'Commander',
         text: message,
         kind: 'support',
+        status: 'queued',
       }]);
     }, 45000);
 
@@ -222,6 +250,7 @@ export function CommanderExperiencePanel({
       speaker: 'Operator',
       text: message,
       kind: 'operator',
+      status: 'delivered',
     }]);
     setDraftTransmission('');
 
@@ -232,30 +261,18 @@ export function CommanderExperiencePanel({
       speaker: 'Commander',
       text: commanderResponse,
       kind: 'response',
+      status: 'queued',
     }]);
   }
 
   function handleCommanderTransmissionComplete(transmission: CommanderTransmissionEntry) {
-    if (transmission.kind !== 'current' || !transmission.promptKey) return;
-
-    const pendingQuestion = pendingQuestionRef.current;
-    if (!pendingQuestion || pendingQuestion.key !== transmission.promptKey) return;
-
-    pendingQuestionRef.current = undefined;
     setTransmissions((current) => {
-      const questionId = `${pendingQuestion.key}:question`;
-      if (current.some((entry) => entry.id === questionId)) return current;
+      const target = current.find((entry) => entry.id === transmission.id);
+      if (!target || target.status === 'delivered') return current;
 
-      return [
-        ...current,
-        {
-          id: questionId,
-          speaker: 'Commander',
-          text: pendingQuestion.text,
-          kind: 'question',
-          promptKey: pendingQuestion.key,
-        },
-      ];
+      return current.map((entry) => (
+        entry.id === transmission.id ? { ...entry, status: 'delivered' } : entry
+      ));
     });
   }
 
@@ -274,7 +291,7 @@ export function CommanderExperiencePanel({
             <span>{state.lifecycleStep}</span>
           </div>
           <ol ref={feedRef} className="commander-transmission-feed" aria-label="Commander briefing feed" aria-live="polite">
-            {transmissions.map((transmission) => (
+            {transmissions.filter((transmission) => transmission.status !== 'queued').map((transmission) => (
               <li
                 key={transmission.id}
                 className={transmission.speaker === 'Operator'
@@ -285,7 +302,9 @@ export function CommanderExperiencePanel({
               >
                 <span>{transmission.speaker}</span>
                 <p>{transmission.speaker === 'Commander'
-                  ? <TransmittedText text={transmission.text} onComplete={() => handleCommanderTransmissionComplete(transmission)} />
+                  ? transmission.status === 'delivered'
+                    ? transmission.text
+                    : <TransmittedText text={transmission.text} onComplete={() => handleCommanderTransmissionComplete(transmission)} />
                   : transmission.text}</p>
               </li>
             ))}
@@ -449,6 +468,7 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
       text: state.currentMessage.text,
       kind: 'current',
       promptKey,
+      status: 'delivered',
     },
   ];
 
@@ -459,6 +479,7 @@ function buildInitialCommanderTransmissions(state: CommanderExperienceState): Co
       text: state.commanderQuestion,
       kind: 'question',
       promptKey,
+      status: 'delivered',
     });
   }
 

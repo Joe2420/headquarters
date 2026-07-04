@@ -124,8 +124,18 @@ describe('Desktop shell', () => {
     const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
 
     expect(source).toContain('{roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}');
-    expect(source).toContain('Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.82)');
+    expect(source).toContain('Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.62)');
     expect(source).not.toContain('* 0.46');
+  });
+
+  it('keeps Commander Chat and Current Room panels mounted while switching tabs', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('data-operations-panel="chat"');
+    expect(source).toContain('hidden={activeOperationsView !== \'chat\'}');
+    expect(source).toContain('data-operations-panel="room"');
+    expect(source).toContain('hidden={activeOperationsView !== \'room\'}');
+    expect(source).toContain('renderHeadquartersRoom(currentRoomView, {');
   });
 
   it('renders the security checkpoint startup surface', () => {

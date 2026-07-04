@@ -497,7 +497,11 @@ export function App() {
     };
   }, []);
 
-  const currentCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
+  const activeMissionState = parseMissionState(activeMission?.currentState);
+  const navigationCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
+  const currentCommanderRoom = activeMission
+    ? recommendRoomForMissionState(activeMissionState)
+    : navigationCommanderRoom;
   const commanderState = buildCommanderExperienceState({
     reportState: shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported',
     activeRoom: currentCommanderRoom,
@@ -518,8 +522,8 @@ export function App() {
   const guardianStatus = formatJournalCount(buildDesktopGuardianAlerts().length, 'Guardian alert', 'Guardian alerts');
   const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
   const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
-  const activeMissionState = parseMissionState(activeMission?.currentState);
   const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
+  const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
 
   async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
@@ -1095,7 +1099,11 @@ export function App() {
 
             {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
 
-            {activeOperationsView === 'chat' ? (
+            <div
+              className="operations-panel"
+              data-operations-panel="chat"
+              hidden={activeOperationsView !== 'chat'}
+            >
               <section
                 className="commander-chat-stage"
                 aria-label="Commander chat stage"
@@ -1162,15 +1170,19 @@ export function App() {
                   currentRoom: currentRoomLabel,
                 }} />
               </section>
-            ) : null}
+            </div>
 
-            {activeOperationsView === 'room' ? (
-              <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(activeRoom)}>
+            <div
+              className="operations-panel"
+              data-operations-panel="room"
+              hidden={activeOperationsView !== 'room'}
+            >
+              <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(currentRoomView)}>
                 <MissionCeremonyMoment ceremony={missionCeremony} />
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
                 ) : (
-                  renderHeadquartersRoom(activeRoom, {
+                  renderHeadquartersRoom(currentRoomView, {
                     activeMission,
                     archiveWrite,
                     authorizationStatus,
@@ -1212,7 +1224,7 @@ export function App() {
                   })
                 )}
               </section>
-            ) : null}
+            </div>
           </section>
 
           <aside className="status-panel" aria-label="Status area" aria-live="polite">
@@ -5451,7 +5463,7 @@ function isReducedMotionPreferred(): boolean {
 }
 
 function getTransitionRoomLoadDelayMs(reducedMotion: boolean, controller?: TransitionController): number {
-  return Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.82);
+  return Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.62);
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {
