@@ -31,6 +31,10 @@ const atmosphereAliases: Record<string, RoomAtmosphereVariant> = {
   intelligence: 'intelligence',
 };
 
+const variantElements: Partial<Record<RoomAtmosphereVariant, readonly string[]>> = {
+  observation: ['radar-sweep', 'horizon-drift', 'scan-lines'],
+};
+
 export function normalizeRoomAtmosphereVariant(room: string): RoomAtmosphereVariant {
   return atmosphereAliases[room] ?? 'command';
 }
@@ -48,6 +52,13 @@ export function RoomAtmosphere({ variant }: { readonly variant: string }) {
       <span className="room-atmosphere__field" />
       <span className="room-atmosphere__signal" />
       <span className="room-atmosphere__focus" />
+      {(variantElements[normalizedVariant] ?? []).map((element) => (
+        <span
+          key={element}
+          className={`room-atmosphere__${element}`}
+          data-room-atmosphere-element={element}
+        />
+      ))}
     </div>
   );
 }

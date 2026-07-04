@@ -34,4 +34,12 @@ describe('RoomAtmosphere', () => {
     expect(html).toContain('data-reduced-motion-safe="true"');
     expect(html).toContain('aria-hidden="true"');
   });
+
+  it('renders calm Observation Room ambient systems', () => {
+    const html = renderToStaticMarkup(<RoomAtmosphere variant="observation" />);
+
+    expect(html).toContain('data-room-atmosphere-element="radar-sweep"');
+    expect(html).toContain('data-room-atmosphere-element="horizon-drift"');
+    expect(html).toContain('data-room-atmosphere-element="scan-lines"');
+  });
 });

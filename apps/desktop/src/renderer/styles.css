@@ -1230,6 +1230,71 @@ dd {
   background: linear-gradient(90deg, rgba(11, 13, 15, 0.18), transparent 28%, transparent 72%, rgba(11, 13, 15, 0.2));
 }
 
+.room-atmosphere--observation .room-atmosphere__field {
+  background:
+    radial-gradient(circle at 72% 20%, rgba(132, 173, 203, 0.13), transparent 24%),
+    linear-gradient(160deg, rgba(74, 104, 128, 0.16), transparent 52%),
+    #0c1114;
+}
+
+.room-atmosphere__radar-sweep,
+.room-atmosphere__horizon-drift,
+.room-atmosphere__scan-lines {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.room-atmosphere__radar-sweep {
+  width: 34rem;
+  height: 34rem;
+  right: -13rem;
+  top: -12rem;
+  border: 1px solid rgba(143, 184, 255, 0.08);
+  border-radius: 50%;
+  background: conic-gradient(from 12deg, rgba(143, 184, 255, 0.14), transparent 16%, transparent);
+  opacity: 0.3;
+  animation: atmosphere-radar-sweep 18s linear infinite;
+}
+
+.room-atmosphere__horizon-drift {
+  left: 8%;
+  right: 8%;
+  top: 46%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(143, 184, 255, 0.3), transparent);
+  box-shadow: 0 18px 40px rgba(83, 102, 120, 0.16);
+  opacity: 0.42;
+  animation: atmosphere-horizon-drift 12s ease-in-out infinite;
+}
+
+.room-atmosphere__scan-lines {
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(217, 231, 255, 0.018) 0 1px, transparent 1px 9px);
+  opacity: 0.28;
+}
+
+@keyframes atmosphere-radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes atmosphere-horizon-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
 .guided-room-commander,
 .guided-room-header,
 .guided-room-primary-action,
