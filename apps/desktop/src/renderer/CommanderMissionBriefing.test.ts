@@ -16,7 +16,12 @@ describe('CommanderMissionBriefing', () => {
 
     context = answerReadyRoomBriefing(context, 'ES futures').context;
     context = answerReadyRoomBriefing(context, 'Trending').context;
-    context = answerReadyRoomBriefing(context, 'CPI at 8:30').context;
+    const newsResult = answerReadyRoomBriefing(context, 'CPI at 8:30');
+
+    expect(newsResult.response).toContain('Account for event volatility');
+    expect(newsResult.response).not.toContain('Logged.');
+
+    context = newsResult.context;
     context = answerReadyRoomBriefing(context, 'focused').context;
     context = answerReadyRoomBriefing(context, '1%').context;
     const result = answerReadyRoomBriefing(context, 'Follow plan and stop after two attempts.');
@@ -38,6 +43,8 @@ describe('CommanderMissionBriefing', () => {
     const biasResult = answerObservationInterview(context, 'Long continuation');
 
     expect(biasResult.response).toContain('Hypotheses are not evidence.');
+    expect(biasResult.response).toContain('War Room requires evidence');
+    expect(biasResult.response).not.toContain('Logged.');
 
     context = answerObservationInterview(biasResult.context, 'Break below VWAP').context;
     context = answerObservationInterview(context, 'Still focused').context;
