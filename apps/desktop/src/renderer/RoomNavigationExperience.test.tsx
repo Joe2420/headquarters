@@ -12,6 +12,7 @@ import {
   buildTransitionAudioEvents,
   getCommanderCompassReference,
   getRoomArrival,
+  getRoomExperienceProfile,
   getRoomIdentity,
   getTransitionDurationMs,
   getTransitionVariant,
@@ -95,8 +96,21 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).not.toContain('Proceeding to Observation Room.');
     expect(transitionHtml).not.toContain('Observe. Do not interfere.');
     expect(arrivalHtml).toContain('aria-label="Observation Room arrival"');
+    expect(arrivalHtml).toContain('data-room-identity="silence"');
+    expect(arrivalHtml).toContain('data-room-purpose="Evidence gathering without action pressure."');
+    expect(arrivalHtml).toContain('data-room-primary-focus="visible evidence only"');
     expect(arrivalHtml).toContain('Observe. Do not interfere.');
     expect(arrivalHtml).toContain('Continue');
+  });
+
+  it('exposes room experience profiles through the navigation boundary', () => {
+    expect(getRoomIdentity('war-room')).toBe('decision');
+    expect(getRoomExperienceProfile('war-room')).toMatchObject({
+      label: 'War Room',
+      purpose: 'Disciplined authorization and responsibility.',
+      primaryFocus: 'authorization and invalidation',
+    });
+    expect(getRoomArrival('archive').message).toBe('History preserved.');
   });
 
   it('suppresses legacy door layers for cinematic video transitions', () => {
