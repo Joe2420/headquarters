@@ -1,6 +1,7 @@
 import type { MissionState } from '@headquarters/shared';
 import {
   TransitionOverlay,
+  buildTransitionAudioEvents,
   createAuthorizationTransitionController,
   createTransitionController,
   getRoomArrival as getCinematicRoomArrival,
@@ -41,7 +42,7 @@ export interface RoomTransitionState {
 }
 
 export type { RoomArrival, TransitionController, TransitionQueue, TransitionVariant };
-export { createTransitionQueue, getTransitionDurationMs, getTransitionVariant };
+export { buildTransitionAudioEvents, createTransitionQueue, getTransitionDurationMs, getTransitionVariant };
 
 const missionPath: readonly MissionCompassStepId[] = ['ready-room', 'observation', 'war-room', 'debrief', 'archive'];
 const missionPathLabels: Record<MissionCompassStepId, string> = {

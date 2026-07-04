@@ -121,6 +121,7 @@ import {
   formatRoomLabel,
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
+import { AudioQASurface } from './AudioQASurface';
 import { GuidedRoom } from './GuidedRoom';
 import { RoomAtmosphere } from './RoomAtmosphere';
 import { recommendRoomForMissionState } from './RoomStateMachine';
@@ -1095,7 +1096,11 @@ export function App() {
             {roomTransition ? <RoomTransitionLayer transition={roomTransition} /> : null}
 
             {activeOperationsView === 'chat' ? (
-              <section className="commander-chat-stage" aria-label="Commander chat stage">
+              <section
+                className="commander-chat-stage"
+                aria-label="Commander chat stage"
+                data-active-room-atmosphere={getRoomAtmosphereToken(currentCommanderRoom)}
+              >
                 <CommanderExperiencePanel
                   state={commanderState}
                   compassSteps={missionCompassSteps}
@@ -4448,6 +4453,7 @@ function SettingsRoom() {
       <p className="section-label">Settings</p>
       <h2>Settings</h2>
       <p className="muted">No completed settings workflow is available yet.</p>
+      <AudioQASurface events={[]} />
     </section>
   );
 }

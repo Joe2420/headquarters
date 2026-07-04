@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0212 - Sprint 21 Commander Voice and Audio Hooks Review Package
+- HQ-TASK-0211 - Audio QA Surface
+- HQ-TASK-0210 - Muted and Reduced Audio Preference
+- HQ-TASK-0209 - Guardian Alert Audio Hooks
+- HQ-TASK-0208 - Mission Ceremony Audio Events
+- HQ-TASK-0207 - Commander Voice Cue Mapping
+- HQ-TASK-0206 - Transition Audio Hook Points
+- HQ-TASK-0205 - Audio Event Contract
+
 - HQ-TASK-0204 - Sprint 20 Room Atmosphere Review Package
 
 - HQ-TASK-0203 - Academy, Guardian, and Intelligence Atmosphere

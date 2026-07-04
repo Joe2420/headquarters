@@ -134,6 +134,8 @@ describe('Desktop shell', () => {
     expect(html).toContain('Headquarters');
     expect(html).toContain('Security Checkpoint');
     expect(html).toContain('Commander Chat');
+    expect(html).toContain('class="commander-chat-stage"');
+    expect(html).toContain('data-active-room-atmosphere="command"');
     expect(html).toContain('Current Room');
     expect(html).toContain('Report for Duty');
     expect(html).toContain('Status');

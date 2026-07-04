@@ -9,6 +9,7 @@ import {
   createAuthorizationTransition,
   createRoomTransition,
   createTransitionQueue,
+  buildTransitionAudioEvents,
   getCommanderCompassReference,
   getRoomArrival,
   getRoomIdentity,
@@ -175,6 +176,44 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).toContain('src="/transitions/war-room.mp4"');
     expect(transitionHtml).toContain('transition-scene-video-only');
     expect(transitionHtml).not.toContain('class="cockpit-countdown"');
+  });
+
+  it('builds deterministic transition audio hook event sequences', () => {
+    const transition = createRoomTransition('ready-room', 'observation');
+    const audioEvents = buildTransitionAudioEvents(transition.controller, { createdAt: '2026-07-04T10:00:00.000Z' });
+
+    expect(audioEvents.map((event) => event.cueId)).toEqual([
+      'transition_start',
+      'transition_door_lock',
+      'transition_door_close',
+      'transition_hydraulic_motion',
+      'transition_door_open',
+      'transition_arrival',
+    ]);
+    expect(audioEvents.every((event) => event.channel === 'transition')).toBe(true);
+  });
+
+  it('builds cockpit-specific audio hook events for War Room transitions', () => {
+    const transition = createRoomTransition('observation', 'war-room');
+    const audioEvents = buildTransitionAudioEvents(transition.controller, { createdAt: '2026-07-04T10:00:00.000Z' });
+
+    expect(audioEvents.map((event) => event.cueId)).toEqual([
+      'transition_start',
+      'cockpit_power',
+      'cockpit_countdown',
+      'cockpit_launch',
+      'transition_arrival',
+    ]);
+  });
+
+  it('keeps reduced-motion transition audio hooks minimal', () => {
+    const transition = createRoomTransition('ready-room', 'observation');
+    const audioEvents = buildTransitionAudioEvents(transition.controller, {
+      reducedMotion: true,
+      createdAt: '2026-07-04T10:00:00.000Z',
+    });
+
+    expect(audioEvents.map((event) => event.cueId)).toEqual(['transition_start', 'transition_arrival']);
   });
 
   it('renders the Archive vault video from the one-second mark', () => {

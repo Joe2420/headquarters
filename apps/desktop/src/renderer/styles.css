@@ -276,6 +276,60 @@ dd {
   min-width: 0;
   min-height: min(760px, calc(100vh - 6rem));
   align-content: start;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(109, 236, 149, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(10, 16, 18, 0.55), rgba(6, 10, 12, 0.86));
+  transition: background 220ms ease;
+}
+
+.commander-chat-stage[data-active-room-atmosphere="ready"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(236, 211, 148, 0.11), transparent 35%),
+    linear-gradient(180deg, rgba(18, 15, 10, 0.58), rgba(7, 10, 11, 0.88));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="observation"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(107, 171, 220, 0.11), transparent 36%),
+    linear-gradient(180deg, rgba(7, 15, 20, 0.62), rgba(5, 9, 13, 0.9));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="war"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(226, 83, 66, 0.12), transparent 35%),
+    linear-gradient(180deg, rgba(22, 8, 7, 0.62), rgba(8, 8, 9, 0.92));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="debrief"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(214, 174, 112, 0.1), transparent 35%),
+    linear-gradient(180deg, rgba(18, 13, 9, 0.6), rgba(7, 8, 10, 0.9));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="archive"],
+.commander-chat-stage[data-active-room-atmosphere="doctrine"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(204, 171, 98, 0.1), transparent 35%),
+    linear-gradient(180deg, rgba(16, 13, 8, 0.62), rgba(7, 8, 9, 0.91));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="journal"],
+.commander-chat-stage[data-active-room-atmosphere="academy"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(118, 207, 164, 0.1), transparent 35%),
+    linear-gradient(180deg, rgba(10, 17, 13, 0.6), rgba(6, 9, 9, 0.9));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="guardian"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(218, 74, 79, 0.1), transparent 35%),
+    linear-gradient(180deg, rgba(18, 9, 10, 0.62), rgba(7, 8, 9, 0.92));
+}
+
+.commander-chat-stage[data-active-room-atmosphere="intelligence"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(126, 181, 222, 0.1), transparent 35%),
+    linear-gradient(180deg, rgba(7, 13, 18, 0.62), rgba(5, 8, 11, 0.92));
 }
 
 .commander-chat-stage .room-transition-layer {
@@ -1715,6 +1769,36 @@ dd {
 
 .commander-briefing-archive[open] {
   gap: 0.85rem;
+}
+
+.audio-qa-surface {
+  max-width: 620px;
+  margin-top: 1rem;
+  border: 1px solid rgba(165, 209, 255, 0.16);
+  background: rgba(7, 12, 18, 0.72);
+}
+
+.audio-qa-surface summary {
+  cursor: pointer;
+  padding: 0.85rem 1rem;
+  color: #a5d1ff;
+  font-weight: 700;
+}
+
+.audio-qa-surface__body {
+  padding: 0 1rem 1rem;
+}
+
+.audio-qa-surface ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.audio-qa-surface li span,
+.audio-qa-surface li small {
+  display: block;
 }
 
 .supporting-information-panel {
