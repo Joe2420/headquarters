@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0221 - Added Sprint 22 Living Commander review package.
+
+HQ-TASK-0220 - Added deterministic Commander tone and challenge behavior.
+
+HQ-TASK-0219 - Added varied professional Commander conversation responses.
+
+HQ-TASK-0218 - Added Commander dynamic conversation state for answered and missing mission intelligence.
+
+HQ-TASK-0217 - Strengthened Commander memory behavior to avoid repeated questionnaire prompts.
+
+HQ-TASK-0216 - Added mission intelligence projection for briefing and observation context.
+
+HQ-TASK-0215 - Added Commander conversation state model.
+
+HQ-TASK-0214 - Added Commander response library for contextual acknowledgements.
+
 HQ-TASK-0212 - Added Sprint 21 Commander Voice and Audio Hooks review package.
 
 HQ-TASK-0211 - Added a quiet audio QA surface for inspecting future cue candidates.

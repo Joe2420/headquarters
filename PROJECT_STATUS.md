@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0221 - Sprint 22 Living Commander Review Package
+- HQ-TASK-0220 - Commander Tone and Challenge Behavior
+- HQ-TASK-0219 - Commander Conversation Variety
+- HQ-TASK-0218 - Commander Dynamic Question Selection
+- HQ-TASK-0217 - Commander Memory and Duplicate Prevention
+- HQ-TASK-0216 - Mission Intelligence Memory
+- HQ-TASK-0215 - Commander Conversation State
+- HQ-TASK-0214 - Commander Response Library
+
 - HQ-TASK-0212 - Sprint 21 Commander Voice and Audio Hooks Review Package
 - HQ-TASK-0211 - Audio QA Surface
 - HQ-TASK-0210 - Muted and Reduced Audio Preference

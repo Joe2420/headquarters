@@ -143,7 +143,7 @@ export function answerReadyRoomBriefing(
     complete,
     response: complete
       ? readyRoomBriefingCompleteMessage
-      : `${getReadyRoomAcknowledgement(field, trimmedAnswer)}\n\n${getNextReadyRoomBriefingQuestion(nextContext)}`,
+      : `${getReadyRoomAcknowledgement(field, trimmedAnswer, context)}\n\n${getNextReadyRoomBriefingQuestion(nextContext)}`,
   };
 }
 
@@ -218,8 +218,8 @@ export function answerObservationInterview(
       accepted: true,
       complete: false,
       response: readiness === 'yes'
-        ? `Stand by.\n\n${getNextObservationInterviewQuestion(nextContext)}`
-        : `No is accepted. Headquarters will not authorize movement on weak evidence.\n\n${getNextObservationInterviewQuestion(nextContext)}`,
+      ? `${getObservationCommanderAcknowledgement(field, 'Yes', context)}\n\n${getNextObservationInterviewQuestion(nextContext)}`
+      : `${getObservationCommanderAcknowledgement(field, 'No', context)}\n\n${getNextObservationInterviewQuestion(nextContext)}`,
     };
   }
 
@@ -233,7 +233,7 @@ export function answerObservationInterview(
     complete,
     response: complete
       ? observationInterviewCompleteMessage
-      : `${getObservationAcknowledgement(field)}\n\n${getNextObservationInterviewQuestion(nextContext)}`,
+      : `${getObservationAcknowledgement(field, trimmedAnswer, context)}\n\n${getNextObservationInterviewQuestion(nextContext)}`,
   };
 }
 
@@ -277,27 +277,20 @@ function withObservationAnswer(
   return { ...context, operationalPicture: answer };
 }
 
-function getReadyRoomAcknowledgement(field: ReadyRoomBriefingField, answer: string): string {
-  if (field === 'highImpactNews' && !/^none$/i.test(answer.trim())) {
-    return 'Economic event noted. Headquarters will account for increased volatility.';
-  }
-
-  if (field === 'personalReadiness' && /tired|stressed|distracted/i.test(answer)) {
-    return 'Condition noted. Guardian discipline applies today.';
-  }
-
-  if (field === 'riskParameters') {
-    return 'Risk ceiling logged. Headquarters will hold you to that limit.';
-  }
-
-  return 'Logged.';
+function getReadyRoomAcknowledgement(
+  field: ReadyRoomBriefingField,
+  answer: string,
+  context: MissionBriefingContext,
+): string {
+  return getReadyRoomCommanderAcknowledgement(field, answer, context);
 }
 
-function getObservationAcknowledgement(field: ObservationInterviewField): string {
-  if (field === 'bias') return 'Hypotheses are not evidence.\n\nContinue collecting observations.';
-  if (field === 'additionalObservation') return 'Additional evidence logged.';
-  if (field === 'emotionalCheck') return 'Emotional state logged. Evidence remains primary.';
-  return 'Logged.';
+function getObservationAcknowledgement(
+  field: ObservationInterviewField,
+  answer: string,
+  context: MissionObservationContext,
+): string {
+  return getObservationCommanderAcknowledgement(field, answer, context);
 }
 
 function parseReadinessAnswer(answer: string): 'yes' | 'no' | undefined {
@@ -309,3 +302,7 @@ function parseReadinessAnswer(answer: string): 'yes' | 'no' | undefined {
 function hasText(value: string | undefined): boolean {
   return value !== undefined && value.trim().length > 0;
 }
+import {
+  getObservationCommanderAcknowledgement,
+  getReadyRoomCommanderAcknowledgement,
+} from './CommanderConversation';
