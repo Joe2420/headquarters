@@ -72,6 +72,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Ready Room.',
     commanderArrival: 'Prepare yourself.',
     soundEvents,
+    videoSrc: '/transitions/ready-room.mp4',
+    durationMs: 4400,
   },
   observation: {
     room: 'observation',
@@ -104,6 +106,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Debrief Theater.',
     commanderArrival: "Let's understand what happened.",
     soundEvents,
+    videoSrc: '/transitions/debrief-theater.mp4',
+    durationMs: 4400,
   },
   archive: {
     room: 'archive',

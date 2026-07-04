@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+HQ-TASK-0204 - Added Sprint 20 Room Atmosphere review package.
+
+HQ-TASK-0203 - Added strategic room atmospheres for Academy, Guardian, and Intelligence.
+
+HQ-TASK-0202 - Added distinct Journal and Doctrine atmospheres.
+
+HQ-TASK-0201 - Added Archive Vault atmosphere.
+
+HQ-TASK-0200 - Added Debrief Theater replay atmosphere.
+
+HQ-TASK-0199 - Added War Room tactical atmosphere.
+
+HQ-TASK-0198 - Added Observation Room ambient systems.
+
+HQ-TASK-0197 - Added RoomAtmosphere runtime layer.
+
 HQ-TASK-0196 - Added Sprint 19 Adaptive Commander review package.
 
 HQ-TASK-0195 - Added Debrief context recall from mission briefing and observation memory.

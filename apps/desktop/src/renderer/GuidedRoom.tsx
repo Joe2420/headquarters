@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { RoomAtmosphere } from './RoomAtmosphere';
 
 export interface GuidedRoomProps {
   readonly id: string;
@@ -32,6 +33,7 @@ export function GuidedRoom({
       data-room-identity={identity}
       data-room-atmosphere={atmosphere}
     >
+      <RoomAtmosphere variant={atmosphere} />
       <section className="guided-room-header" aria-label={`${title} objective`}>
         <p className="section-label">{title}</p>
         <h2>{useCase}</h2>

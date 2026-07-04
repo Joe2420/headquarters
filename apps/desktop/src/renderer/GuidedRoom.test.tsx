@@ -23,6 +23,7 @@ describe('GuidedRoom', () => {
     expect(html).toContain('data-room-id="test-room"');
     expect(html).toContain('data-room-identity="test-identity"');
     expect(html).toContain('data-room-atmosphere="test-atmosphere"');
+    expect(html).toContain('data-room-atmosphere-layer="command"');
     expect(html).toContain('Understand the room.');
     expect(html).not.toContain('Commander leads first.');
     expect(html).toContain('Primary Action');

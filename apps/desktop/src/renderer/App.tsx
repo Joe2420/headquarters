@@ -122,6 +122,7 @@ import {
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
 import { GuidedRoom } from './GuidedRoom';
+import { RoomAtmosphere } from './RoomAtmosphere';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 import { detectCommanderContradictions } from './CommanderContradictionDetection';
 
@@ -3296,6 +3297,7 @@ export function JournalRoom({
 
   return (
     <div className="room-layout" data-room-id="journal-room" data-room-atmosphere="journal">
+      <RoomAtmosphere variant="journal" />
       <section className="command-center-header" aria-label="Journal room status">
         <p className="section-label">Journal Room</p>
         <h2>Guided Journal</h2>
@@ -3475,6 +3477,7 @@ export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
 
   return (
     <div className="room-layout" data-room-id="academy-room" data-room-atmosphere="academy">
+      <RoomAtmosphere variant="academy" />
       <section className="command-center-header" aria-label="Academy room status">
         <p className="section-label">Academy Room</p>
         <h2>Academy Dashboard</h2>
@@ -3564,6 +3567,7 @@ export function GuardianRoom() {
 
   return (
     <div className="room-layout" data-room-id="guardian-room" data-room-atmosphere="guardian">
+      <RoomAtmosphere variant="guardian" />
       <section className="command-center-header" aria-label="Guardian room status">
         <p className="section-label">Guardian Wing</p>
         <h2>Guardian Alerts</h2>
@@ -3636,6 +3640,7 @@ export function IntelligenceCenterRoom({
 
   return (
     <div className="room-layout" data-room-id="intelligence-center" data-room-atmosphere="intelligence">
+      <RoomAtmosphere variant="intelligence" />
       <section className="command-center-header" aria-label="Intelligence center status">
         <p className="section-label">Intelligence Center</p>
         <h2>Journal Classification</h2>
@@ -4231,6 +4236,7 @@ export function DoctrineRoom({
 }) {
   return (
     <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
+      <RoomAtmosphere variant="doctrine" />
       <section className="command-center-header" aria-label="Doctrine room status">
         <p className="section-label">Doctrine Chamber</p>
         <h2>Doctrine Review</h2>
