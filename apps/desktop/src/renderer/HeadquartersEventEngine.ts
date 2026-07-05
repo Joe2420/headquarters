@@ -192,14 +192,12 @@ export function buildOperationalAwareness(input: HeadquartersEventEngineInput): 
 }
 
 export function selectPassiveCommanderMessage(events: readonly HeadquartersEvent[]): string | undefined {
-  const preferred = events.find((event) => event.priority === 'high')
-    ?? events.find((event) => event.type === 'intelligence_update')
-    ?? events.find((event) => event.type === 'guardian_observation');
+  const preferred = events.find((event) => event.priority === 'high');
 
   if (!preferred) return undefined;
 
-  if (preferred.type === 'guardian_observation') return `Guardian reports: ${preferred.message}`;
-  if (preferred.type === 'intelligence_update') return `Intelligence update: ${preferred.message}`;
+  if (preferred.type === 'guardian_observation') return 'Guardian confirms no active lockout. Continue.';
+  if (preferred.type === 'intelligence_update') return 'Mission intelligence is incomplete. Keep answering the active Commander prompt.';
   return preferred.message;
 }
 

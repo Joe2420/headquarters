@@ -3,6 +3,7 @@ import type { CommandChairStatus } from './CommandChair';
 import { CommandChair } from './CommandChair';
 import type { CommanderShellRoomId } from './CommanderShell';
 import type { HeadquartersEvent, HeadquartersOperationalAwareness } from './HeadquartersEventEngine';
+import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
 import type { OperationalPsychologyProfile } from './OperationalPsychology';
 
 export interface HeadquartersAtmosphereMission {
@@ -20,6 +21,7 @@ export interface SituationBoardInput {
   readonly recentDoctrine?: string | undefined;
   readonly recentGrowth?: string | undefined;
   readonly intelligenceIndicator?: string | undefined;
+  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
   readonly operationalAwareness?: HeadquartersOperationalAwareness | undefined;
   readonly psychologyProfile?: OperationalPsychologyProfile | undefined;
 }
@@ -153,6 +155,15 @@ export function SituationBoard({ input }: { readonly input: SituationBoardInput 
         <div><dt>Growth</dt><dd>{growth}</dd></div>
         <div><dt>Intelligence</dt><dd>{intelligence}</dd></div>
       </dl>
+      {input.missionIntelligence ? (
+        <div className="situation-intelligence-panel" aria-label="Mission Intelligence side panel">
+          <p className="section-label">Mission Intelligence</p>
+          <strong>{input.missionIntelligence.confidence.level} / {input.missionIntelligence.confidence.score}%</strong>
+          <p>{input.missionIntelligence.missingEvidence[0]
+            ? `Next evidence: ${input.missionIntelligence.missingEvidence[0].label}`
+            : 'Evidence package sufficient.'}</p>
+        </div>
+      ) : null}
       {input.operationalAwareness ? (
         <div className="operational-awareness-panel" aria-label="Operational awareness">
           <p>{input.operationalAwareness.whyHere}</p>

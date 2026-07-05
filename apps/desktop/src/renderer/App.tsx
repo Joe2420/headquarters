@@ -192,6 +192,7 @@ export interface MissionDebriefDraft {
 export interface MissionAuthorizationDraft {
   operatorJustification: string;
   invalidation: string;
+  protectiveRule?: string;
 }
 
 export interface MissionAuthorizationStatus {
@@ -398,6 +399,7 @@ export function App() {
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
   const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
   const [commanderInvalidation, setCommanderInvalidation] = useState('');
+  const [commanderProtectiveRule, setCommanderProtectiveRule] = useState('');
   const [commanderBehaviorSummary, setCommanderBehaviorSummary] = useState('');
   const [commanderDisciplineNotes, setCommanderDisciplineNotes] = useState('');
   const [commanderLesson, setCommanderLesson] = useState('');
@@ -472,7 +474,7 @@ export function App() {
         if (!active) return;
 
         if (missionResult) {
-          const loadedMissions = missionResult.missions.map(mapMissionRecordToActiveMission);
+          const loadedMissions = missionResult.missions.map((mission) => mapMissionRecordToActiveMission(mission));
           setMissionHistory(loadedMissions);
           setActiveMission(getLatestActiveMission(loadedMissions));
           setArchivedMissionSummaries(buildArchivedMissionSummariesFromMissions(loadedMissions));
@@ -597,10 +599,16 @@ export function App() {
     archiveRecordCount: desktopArchiveRecordCount,
     currentObjective: baseCommanderState.nextAction.description,
   });
+  const commanderQuestionFlowActive = baseCommanderState.roomPromptMode === 'ask'
+    && (
+      baseCommanderState.nextAction.disabled
+      || activeMissionState === 'authorization'
+    );
   const commanderState = buildCommanderExperienceState({
     ...commanderExperienceInput,
-    passiveCommanderMessage: selectPassiveCommanderMessage(headquartersEvents)
-      ?? buildCommanderPacingLine(operationalPsychology),
+    passiveCommanderMessage: commanderQuestionFlowActive
+      ? undefined
+      : selectPassiveCommanderMessage(headquartersEvents) ?? buildCommanderPacingLine(operationalPsychology),
   });
   const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
   const missionCompassSteps = activeMission
@@ -658,8 +666,9 @@ export function App() {
     if (currentState === 'authorization') {
       const recordedInvalidation = getRecordedObservationInvalidation(mission);
       const authorization = await requestDesktopAuthorization(mission, {
-        operatorJustification: commanderOperatorJustification,
+        operatorJustification: formatAuthorizationJustification(commanderOperatorJustification, commanderProtectiveRule),
         invalidation: commanderInvalidation || recordedInvalidation,
+        protectiveRule: commanderProtectiveRule,
       });
 
       if (authorization === undefined) {
@@ -670,6 +679,7 @@ export function App() {
       setAuthorizationStatus(authorization);
       setCommanderOperatorJustification('');
       setCommanderInvalidation('');
+      setCommanderProtectiveRule('');
       setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
 
       if (authorization.decision === 'approved') {
@@ -1002,20 +1012,32 @@ export function App() {
       const nextDraft = fillAuthorizationDraftFromTransmission({
         currentJustification: commanderOperatorJustification,
         currentInvalidation: commanderInvalidation || recordedInvalidation,
+        currentProtectiveRule: commanderProtectiveRule,
         draft: authorizationDraft,
         message,
         shouldContinue,
       });
       const nextJustification = nextDraft.operatorJustification;
       const nextInvalidation = nextDraft.invalidation;
+      const nextProtectiveRule = nextDraft.protectiveRule ?? '';
 
       if (nextJustification) setCommanderOperatorJustification(nextJustification);
-      if (nextInvalidation) setCommanderInvalidation(nextInvalidation);
+      if (nextInvalidation && !recordedInvalidation) setCommanderInvalidation(nextInvalidation);
+      if (nextProtectiveRule) setCommanderProtectiveRule(nextProtectiveRule);
+
+      if (!nextJustification) return 'State the authorization reasoning.';
+      if (!nextInvalidation) return 'Authorization reasoning recorded. State the invalidation condition once.';
+      if (!nextProtectiveRule) {
+        return recordedInvalidation
+          ? `Observation invalidation recorded: ${recordedInvalidation}. Which rule protects this authorization decision?`
+          : 'Invalidation recorded. Which rule protects this authorization decision?';
+      }
 
       if (shouldContinue) {
         const authorization = await requestDesktopAuthorization(activeMission, {
-          operatorJustification: nextJustification,
+          operatorJustification: formatAuthorizationJustification(nextJustification, nextProtectiveRule),
           invalidation: nextInvalidation,
+          protectiveRule: nextProtectiveRule,
         });
 
         if (authorization === undefined) {
@@ -1032,14 +1054,37 @@ export function App() {
           setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
           setCommanderOperatorJustification('');
           setCommanderInvalidation('');
+          setCommanderProtectiveRule('');
         }
 
         return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
       }
 
-      if (!nextJustification) return 'Authorization needs operator justification first.';
-      if (!nextInvalidation) return 'Justification set. Now transmit the invalidation condition.';
-      return 'Authorization card updated. Use Continue when ready to evaluate.';
+      const authorization = await requestDesktopAuthorization(activeMission, {
+        operatorJustification: formatAuthorizationJustification(nextJustification, nextProtectiveRule),
+        invalidation: nextInvalidation,
+        protectiveRule: nextProtectiveRule,
+      });
+
+      if (authorization === undefined) {
+        setCommanderWorkflowNotice('Authorization requires justification, invalidation, and a protective rule.');
+        return 'Authorization incomplete. Complete the War Room evidence package.';
+      }
+
+      setAuthorizationStatus(authorization);
+      setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
+
+      if (authorization.decision === 'approved') {
+        const deployedMission = await declareDesktopDeployment(activeMission);
+        setActiveMission(deployedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        setCommanderOperatorJustification('');
+        setCommanderInvalidation('');
+        setCommanderProtectiveRule('');
+        return 'Authorization accepted. Execute only within the declared plan.';
+      }
+
+      return 'Authorization withheld. Return to Observation and complete the evidence package.';
     }
 
     if (currentCommanderRoom === 'war-room' && currentState === 'deployed') {
@@ -1214,6 +1259,7 @@ export function App() {
                     recentDoctrine: formatRecentDoctrineHighlight(doctrineRecords),
                     recentGrowth: formatRecentGrowthHighlight(growthEvents),
                     intelligenceIndicator: formatJournalCount(desktopIntelligenceEvidenceRecords.length, 'intelligence record', 'intelligence records'),
+                    missionIntelligence: missionIntelligencePackage,
                     operationalAwareness,
                     psychologyProfile: operationalPsychology,
                   }} />}
@@ -1228,6 +1274,7 @@ export function App() {
                     missionObjective={commanderMissionObjective}
                     operatorJustification={commanderOperatorJustification}
                     invalidation={commanderInvalidation}
+                    protectiveRule={commanderProtectiveRule}
                     behaviorSummary={commanderBehaviorSummary}
                     disciplineNotes={commanderDisciplineNotes}
                     lesson={commanderLesson}
@@ -1235,6 +1282,7 @@ export function App() {
                     onMissionObjectiveChange={setCommanderMissionObjective}
                     onOperatorJustificationChange={setCommanderOperatorJustification}
                     onInvalidationChange={setCommanderInvalidation}
+                    onProtectiveRuleChange={setCommanderProtectiveRule}
                     onBehaviorSummaryChange={setCommanderBehaviorSummary}
                     onDisciplineNotesChange={setCommanderDisciplineNotes}
                     onLessonChange={setCommanderLesson}
@@ -1419,6 +1467,7 @@ function CommanderWorkflowSurface({
   missionObjective,
   operatorJustification,
   invalidation,
+  protectiveRule,
   behaviorSummary,
   disciplineNotes,
   lesson,
@@ -1426,6 +1475,7 @@ function CommanderWorkflowSurface({
   onMissionObjectiveChange,
   onOperatorJustificationChange,
   onInvalidationChange,
+  onProtectiveRuleChange,
   onBehaviorSummaryChange,
   onDisciplineNotesChange,
   onLessonChange,
@@ -1442,6 +1492,7 @@ function CommanderWorkflowSurface({
   readonly missionObjective: string;
   readonly operatorJustification: string;
   readonly invalidation: string;
+  readonly protectiveRule: string;
   readonly behaviorSummary: string;
   readonly disciplineNotes: string;
   readonly lesson: string;
@@ -1449,6 +1500,7 @@ function CommanderWorkflowSurface({
   readonly onMissionObjectiveChange: (value: string) => void;
   readonly onOperatorJustificationChange: (value: string) => void;
   readonly onInvalidationChange: (value: string) => void;
+  readonly onProtectiveRuleChange: (value: string) => void;
   readonly onBehaviorSummaryChange: (value: string) => void;
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
@@ -1505,6 +1557,10 @@ function CommanderWorkflowSurface({
               <input value={invalidation} onChange={(event) => onInvalidationChange(event.target.value)} />
             </label>
           )}
+          <label>
+            <span>Protective Rule</span>
+            <input value={protectiveRule} onChange={(event) => onProtectiveRuleChange(event.target.value)} />
+          </label>
         </section>
       ) : null}
 
@@ -2936,6 +2992,7 @@ function MissionNextActionPanel({
 }: MissionNextActionPanelProps) {
   const [operatorJustification, setOperatorJustification] = useState('');
   const [invalidation, setInvalidation] = useState('');
+  const [protectiveRule, setProtectiveRule] = useState('');
   const [behaviorSummary, setBehaviorSummary] = useState('');
   const [disciplineNotes, setDisciplineNotes] = useState('');
   const [lesson, setLesson] = useState('');
@@ -2969,8 +3026,9 @@ function MissionNextActionPanel({
     if (currentState === 'authorization') {
       const recordedInvalidation = getRecordedObservationInvalidation(activeMission);
       const authorization = await requestDesktopAuthorization(activeMission, {
-        operatorJustification,
+        operatorJustification: formatAuthorizationJustification(operatorJustification, protectiveRule),
         invalidation: invalidation || recordedInvalidation,
+        protectiveRule,
       });
 
       if (authorization === undefined) return;
@@ -2978,6 +3036,7 @@ function MissionNextActionPanel({
       onRequestAuthorization?.(authorization);
       setOperatorJustification('');
       setInvalidation('');
+      setProtectiveRule('');
 
       if (authorization.decision === 'approved') {
         onMissionChanged?.(await declareDesktopDeployment(activeMission));
@@ -3041,6 +3100,10 @@ function MissionNextActionPanel({
               <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
             </label>
           )}
+          <label>
+            <span>Protective Rule</span>
+            <input value={protectiveRule} onChange={(event) => setProtectiveRule(event.target.value)} />
+          </label>
         </>
       ) : null}
       {currentState === 'return_to_base' ? (
@@ -3190,7 +3253,7 @@ export async function startDesktopBriefing(mission: ActiveMission): Promise<Acti
   if (bridge === undefined) return transitionLocalMission(mission, 'briefing');
 
   const result = await bridge({ missionId: mission.id, reason: 'Mission briefing started from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function completeDesktopBriefing(mission: ActiveMission): Promise<ActiveMission> {
@@ -3198,7 +3261,7 @@ export async function completeDesktopBriefing(mission: ActiveMission): Promise<A
   if (bridge === undefined) return transitionLocalMission(mission, 'ready');
 
   const result = await bridge({ missionId: mission.id, reason: 'Mission briefing completed from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function startDesktopObservation(mission: ActiveMission): Promise<ActiveMission> {
@@ -3206,7 +3269,7 @@ export async function startDesktopObservation(mission: ActiveMission): Promise<A
   if (bridge === undefined) return transitionLocalMission(mission, 'observation');
 
   const result = await bridge({ missionId: mission.id, reason: 'Observation started from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function completeDesktopObservation(mission: ActiveMission): Promise<ActiveMission> {
@@ -3214,7 +3277,7 @@ export async function completeDesktopObservation(mission: ActiveMission): Promis
   if (bridge === undefined) return transitionLocalMission(mission, 'authorization');
 
   const result = await bridge({ missionId: mission.id, reason: 'Observation completed from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function requestDesktopAuthorization(
@@ -3242,7 +3305,7 @@ export async function declareDesktopDeployment(mission: ActiveMission): Promise<
   if (bridge === undefined) return transitionLocalMission(mission, 'deployed');
 
   const result = await bridge({ missionId: mission.id, reason: 'Manual deployment declared from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function requestDesktopReturnToBase(mission: ActiveMission): Promise<ActiveMission> {
@@ -3250,7 +3313,7 @@ export async function requestDesktopReturnToBase(mission: ActiveMission): Promis
   if (bridge === undefined) return transitionLocalMission(mission, 'return_to_base');
 
   const result = await bridge({ missionId: mission.id, reason: 'Return to base requested from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function abortDesktopMission(mission: ActiveMission): Promise<ActiveMission> {
@@ -3258,7 +3321,7 @@ export async function abortDesktopMission(mission: ActiveMission): Promise<Activ
   if (bridge === undefined) return transitionLocalMission(mission, 'archived');
 
   const result = await bridge({ missionId: mission.id, reason: 'Mission aborted by operator from Commander.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function rewindDesktopMission(mission: ActiveMission): Promise<ActiveMission | undefined> {
@@ -3278,7 +3341,7 @@ export async function rewindDesktopMission(mission: ActiveMission): Promise<Acti
     targetState,
     reason: 'Mission lifecycle stepped back by operator from Commander.',
   });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function saveDesktopDebrief(
@@ -3304,7 +3367,7 @@ export async function saveDesktopDebrief(
   });
 
   return {
-    mission: mapMissionRecordToActiveMission(result.mission),
+    mission: mapMissionRecordToActiveMission(result.mission, mission),
     debrief: result.debrief,
   };
 }
@@ -3314,7 +3377,7 @@ export async function archiveDesktopMission(mission: ActiveMission): Promise<Act
   if (bridge === undefined) return transitionLocalMission(mission, 'archived');
 
   const result = await bridge({ missionId: mission.id, reason: 'Mission archived from desktop.' });
-  return mapMissionRecordToActiveMission(result.mission);
+  return mapMissionRecordToActiveMission(result.mission, mission);
 }
 
 export async function promoteDesktopDoctrineCandidate(
@@ -4783,7 +4846,7 @@ export function createLocalMission(
   };
 }
 
-export function mapMissionRecordToActiveMission(mission: Mission): ActiveMission {
+export function mapMissionRecordToActiveMission(mission: Mission, previousMission?: ActiveMission): ActiveMission {
   return {
     id: mission.id,
     campaign: mission.codename,
@@ -4792,7 +4855,9 @@ export function mapMissionRecordToActiveMission(mission: Mission): ActiveMission
     commandAuthority: 'Professional command',
     currentState: mission.state,
     createdAt: mission.createdAt,
-    missionContext: createEmptyMissionContext(mission.id, { createdAt: mission.createdAt }),
+    ...(previousMission?.briefingContext ? { briefingContext: previousMission.briefingContext } : {}),
+    ...(previousMission?.observationContext ? { observationContext: previousMission.observationContext } : {}),
+    missionContext: previousMission?.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt }),
   };
 }
 
@@ -5323,19 +5388,24 @@ export function evaluateLocalMissionAuthorization(
 ): MissionAuthorizationStatus | undefined {
   if (mission === undefined) return undefined;
 
-  if (hasContent(draft.operatorJustification) && hasContent(draft.invalidation)) {
+  if (hasContent(draft.operatorJustification) && hasContent(draft.invalidation) && hasContent(draft.protectiveRule ?? '')) {
     return {
       missionId: mission.id,
       decision: 'approved',
-      reason: 'Manual authorization fields are complete.',
+      reason: 'Manual authorization fields and protective rule are complete.',
     };
   }
 
   return {
     missionId: mission.id,
     decision: 'denied',
-    reason: 'Manual authorization requires operator justification and invalidation.',
+    reason: 'Manual authorization requires operator justification, invalidation, and protective rule.',
   };
+}
+
+function formatAuthorizationJustification(justification: string, protectiveRule: string): string {
+  if (!hasContent(protectiveRule)) return justification;
+  return `${justification.trim()} Protective rule: ${protectiveRule.trim()}`;
 }
 
 export function formatAuthorizationStatus(status?: MissionAuthorizationStatus): string {
@@ -5658,18 +5728,21 @@ function parseAuthorizationTransmission(message: string): MissionAuthorizationDr
   return {
     operatorJustification: extractTransmissionField(message, ['justification', 'because', 'reason']) ?? '',
     invalidation: extractTransmissionField(message, ['invalidation', 'invalid if', 'invalidate if']) ?? '',
+    protectiveRule: extractTransmissionField(message, ['rule', 'protective rule', 'protection']) ?? '',
   };
 }
 
 function fillAuthorizationDraftFromTransmission({
   currentJustification,
   currentInvalidation,
+  currentProtectiveRule,
   draft,
   message,
   shouldContinue,
 }: {
   readonly currentJustification: string;
   readonly currentInvalidation: string;
+  readonly currentProtectiveRule: string;
   readonly draft: MissionAuthorizationDraft;
   readonly message: string;
   readonly shouldContinue: boolean;
@@ -5677,16 +5750,19 @@ function fillAuthorizationDraftFromTransmission({
   const singleValue = shouldContinue ? '' : message.trim();
   let operatorJustification = draft.operatorJustification || currentJustification;
   let invalidation = draft.invalidation || currentInvalidation;
+  let protectiveRule = draft.protectiveRule || currentProtectiveRule;
 
-  if (!draft.operatorJustification && !draft.invalidation && singleValue) {
+  if (!draft.operatorJustification && !draft.invalidation && !draft.protectiveRule && singleValue) {
     if (!operatorJustification) {
       operatorJustification = singleValue;
     } else if (!invalidation) {
       invalidation = singleValue;
+    } else if (!protectiveRule) {
+      protectiveRule = singleValue;
     }
   }
 
-  return { operatorJustification, invalidation };
+  return { operatorJustification, invalidation, protectiveRule };
 }
 
 function parseDebriefTransmission(message: string): MissionDebriefDraft {

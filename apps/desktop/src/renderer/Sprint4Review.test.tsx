@@ -44,6 +44,7 @@ describe('Sprint 4 mission operations review', () => {
     const authorization = evaluateLocalMissionAuthorization(mission, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
+      protectiveRule: 'No trade after failed acceptance.',
     });
     const debrief = createLocalDebrief(
       mission,
