@@ -482,6 +482,9 @@ function appendCommanderTransmission(
   nextTransmission: CommanderTransmissionEntry,
 ): CommanderTransmissionEntry[] {
   if (nextTransmission.speaker !== 'Commander') return [...transmissions, nextTransmission];
+  if (shouldSuppressAutomaticPromptAfterResponse(transmissions, nextTransmission)) {
+    return [...transmissions];
+  }
 
   const lastCommanderTransmission = getLastCommanderTransmission(transmissions);
   const orchestrated = orchestrateCommanderMessages([toCommanderMessageCandidate(nextTransmission)], {
@@ -508,6 +511,23 @@ function appendCommanderTransmission(
     room: message.room,
     lifecycleStep: message.lifecycleStep,
   }];
+}
+
+function shouldSuppressAutomaticPromptAfterResponse(
+  transmissions: readonly CommanderTransmissionEntry[],
+  nextTransmission: CommanderTransmissionEntry,
+): boolean {
+  if (nextTransmission.kind !== 'question' || !nextTransmission.promptKey) return false;
+
+  const lastTransmission = transmissions[transmissions.length - 1];
+  const lastCommanderTransmission = getLastCommanderTransmission(transmissions);
+  if (lastTransmission?.speaker === 'Operator') return true;
+  if (lastTransmission?.speaker !== 'Commander') return false;
+  if (lastCommanderTransmission?.kind !== 'response') return false;
+  if (lastCommanderTransmission.lifecycleStep !== nextTransmission.lifecycleStep) return false;
+  if (lastCommanderTransmission.room !== nextTransmission.room) return false;
+
+  return true;
 }
 
 function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): string {
