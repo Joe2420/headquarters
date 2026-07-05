@@ -163,6 +163,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Command Chair');
     expect(html).toContain('Situation Board');
     expect(html).toContain('Operational awareness');
+    expect(html).toContain('Operational mindset');
     expect(html).toContain('Ambient Headquarters status');
     expect(html).toContain('Headquarters mission feed');
     expect(html).toContain('Headquarters operating');
@@ -247,8 +248,11 @@ describe('Desktop shell', () => {
     const debriefHtml = renderToStaticMarkup(<DebriefTheater activeMission={{ ...mission, currentState: 'return_to_base' }} />);
 
     expect(readyHtml).toContain('class="guided-room room-layout"');
+    expect(readyHtml).toContain('operational mindset');
+    expect(readyHtml).toContain('Plan calmly before Headquarters commits resources.');
     expect(readyHtml).toContain('Begin Observation');
     expect(observationHtml).toContain('Observe quietly and collect evidence.');
+    expect(observationHtml).toContain('Report only visible evidence. Prediction stays silent.');
     expect(observationHtml).not.toContain('Evaluate Authorization');
     expect(warHtml).toContain('Evaluate Authorization');
     expect(warHtml).toContain('Mission next action');

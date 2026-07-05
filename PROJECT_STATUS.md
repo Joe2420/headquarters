@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0262 - Sprint 27 Operational Psychology Review
+- HQ-TASK-0261 - Long Session Awareness Support
+- HQ-TASK-0260 - Operator Presence Copy
+- HQ-TASK-0259 - Environmental Reinforcement
+- HQ-TASK-0258 - Focus Mode Mindset Surface
+- HQ-TASK-0257 - Mission Ceremony Psychology
+- HQ-TASK-0256 - Psychological Friction Markers
+- HQ-TASK-0255 - Room Mindset Engine
+
 - HQ-TASK-0254 - Sprint 26 Living Headquarters Review
 - HQ-TASK-0253 - Operational Awareness Surface
 - HQ-TASK-0252 - Headquarters Mission Feed

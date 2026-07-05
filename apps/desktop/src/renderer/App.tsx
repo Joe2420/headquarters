@@ -141,6 +141,10 @@ import {
   buildOperationalAwareness,
   selectPassiveCommanderMessage,
 } from './HeadquartersEventEngine';
+import {
+  buildCommanderPacingLine,
+  buildOperationalPsychologyProfile,
+} from './OperationalPsychology';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -559,6 +563,10 @@ export function App() {
   const missionPhaseSummary = formatMissionLifecycleSummary(activeMission);
   const currentRoomLabel = formatRoomLabel(currentCommanderRoom);
   const missionCeremony = shellPhase === 'command-center' ? buildMissionCeremony(activeMissionState) : undefined;
+  const operationalPsychology = buildOperationalPsychologyProfile({
+    room: currentCommanderRoom,
+    missionState: activeMissionState,
+  });
   const desktopJournalClassifications = buildDesktopJournalClassifications(journalEntries);
   const desktopIntelligenceEvidenceRecords = buildDesktopIntelligenceEvidenceRecords(desktopJournalClassifications);
   const desktopDoctrineSuggestions = buildDesktopDoctrineSuggestions(desktopIntelligenceEvidenceRecords);
@@ -591,7 +599,8 @@ export function App() {
   });
   const commanderState = buildCommanderExperienceState({
     ...commanderExperienceInput,
-    passiveCommanderMessage: selectPassiveCommanderMessage(headquartersEvents),
+    passiveCommanderMessage: selectPassiveCommanderMessage(headquartersEvents)
+      ?? buildCommanderPacingLine(operationalPsychology),
   });
   const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
   const missionCompassSteps = activeMission
@@ -1206,6 +1215,7 @@ export function App() {
                     recentGrowth: formatRecentGrowthHighlight(growthEvents),
                     intelligenceIndicator: formatJournalCount(desktopIntelligenceEvidenceRecords.length, 'intelligence record', 'intelligence records'),
                     operationalAwareness,
+                    psychologyProfile: operationalPsychology,
                   }} />}
                   workflowSurface={<CommanderWorkflowSurface
                     currentRoom={currentCommanderRoom}
@@ -1257,7 +1267,7 @@ export function App() {
               hidden={activeOperationsView !== 'room'}
             >
               <section className="workspace-panel" aria-label="Current room" data-active-room-atmosphere={getRoomAtmosphereToken(currentRoomView)}>
-                <MissionCeremonyMoment ceremony={missionCeremony} />
+                <MissionCeremonyMoment ceremony={missionCeremony} psychology={operationalPsychology} />
                 {shellPhase === 'security-checkpoint' ? (
                   <SecurityCheckpoint onReportForDuty={() => setShellPhase(reportForDuty(shellPhase).to)} />
                 ) : (
