@@ -165,8 +165,11 @@ describe('Desktop shell', () => {
     expect(html).toContain('Operational awareness');
     expect(html).toContain('Operational mindset');
     expect(html).toContain('Ambient Headquarters status');
-    expect(html).toContain('Headquarters mission feed');
-    expect(html).toContain('Headquarters operating');
+    expect(html).toContain('Living Headquarters OS');
+    expect(html).toContain('HQ broadcast feed');
+    expect(html).toContain('Command Chair operating console');
+    expect(html).toContain('Live operational timeline');
+    expect(html).toContain('Headquarters services');
     expect(html).toContain('HQOS:');
   });
 

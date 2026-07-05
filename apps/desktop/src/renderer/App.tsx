@@ -115,7 +115,6 @@ import {
 } from './RoomNavigationExperience';
 import {
   AmbientStatusStrip,
-  HeadquartersMissionFeed,
   MissionCeremonyMoment,
   OperationalCommandChair,
   SituationBoard,
@@ -141,6 +140,14 @@ import {
   buildOperationalAwareness,
   selectPassiveCommanderMessage,
 } from './HeadquartersEventEngine';
+import {
+  CommandChairOperatingConsole,
+  HeadquartersBroadcastFeed,
+  HeadquartersServiceActivityPanel,
+  LiveOperationalTimeline,
+  OperationalNotifications,
+  buildHeadquartersOperatingEnvironment,
+} from './HeadquartersOperatingEnvironment';
 import {
   buildCommanderPacingLine,
   buildOperationalPsychologyProfile,
@@ -604,6 +611,18 @@ export function App() {
       baseCommanderState.nextAction.disabled
       || activeMissionState === 'authorization'
     );
+  const operatingEnvironment = buildHeadquartersOperatingEnvironment({
+    events: headquartersEvents,
+    currentRoom: currentCommanderRoom,
+    missionPhase: missionPhaseSummary,
+    currentObjective: baseCommanderState.nextAction.description,
+    commanderStatus: commanderQuestionFlowActive ? 'Awaiting operator response' : 'Monitoring operation',
+    guardianStatus,
+    missionIntelligence: missionIntelligencePackage,
+    archiveRecordCount: desktopArchiveRecordCount,
+    doctrineCandidateCount: desktopDoctrineSuggestions.length,
+    growthEventCount: growthEvents.length,
+  });
   const commanderState = buildCommanderExperienceState({
     ...commanderExperienceInput,
     passiveCommanderMessage: commanderQuestionFlowActive
@@ -1305,7 +1324,13 @@ export function App() {
                   guardian: guardianStatus,
                   currentRoom: currentRoomLabel,
                 }} />
-                <HeadquartersMissionFeed events={headquartersEvents} />
+                <section className="headquarters-operating-environment" aria-label="Living Headquarters OS">
+                  <CommandChairOperatingConsole state={operatingEnvironment.commandChair} />
+                  <HeadquartersBroadcastFeed items={operatingEnvironment.broadcast} />
+                  <OperationalNotifications notifications={operatingEnvironment.notifications} />
+                  <HeadquartersServiceActivityPanel services={operatingEnvironment.services} />
+                  <LiveOperationalTimeline entries={operatingEnvironment.timeline} />
+                </section>
               </section>
             </div>
 
