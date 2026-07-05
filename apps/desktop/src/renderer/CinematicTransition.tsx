@@ -80,6 +80,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Returning to Command Center.',
     commanderArrival: 'Command Center entered.',
     soundEvents,
+    videoSrc: '/transitions/command-room.mp4',
+    durationMs: 4400,
   },
   'ready-room': {
     room: 'ready-room',
@@ -114,6 +116,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Authorization granted.',
     commanderArrival: 'Decision authority transferred.',
     soundEvents: cockpitSoundEvents,
+    videoSrc: '/transitions/war-room.mp4',
+    durationMs: 4600,
   },
   debrief: {
     room: 'debrief',
