@@ -1722,29 +1722,91 @@ describe('Desktop shell', () => {
     const approved = evaluateLocalMissionAuthorization(mission, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
+      protectiveRule: 'No trade after failed acceptance.',
     });
     const denied = evaluateLocalMissionAuthorization(mission, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: '',
+      protectiveRule: 'No trade after failed acceptance.',
+    });
+    const deniedWithoutRule = evaluateLocalMissionAuthorization(mission, {
+      operatorJustification: 'Setup matches the plan.',
+      invalidation: 'Exit if structure breaks.',
     });
 
     expect(approved).toEqual({
       missionId: 'mission-001',
       decision: 'approved',
-      reason: 'Manual authorization fields are complete.',
+      reason: 'Manual authorization fields and protective rule are complete.',
     });
     expect(formatAuthorizationStatus(approved)).toBe('Authorization approved');
 
     expect(denied).toEqual({
       missionId: 'mission-001',
       decision: 'denied',
-      reason: 'Manual authorization requires operator justification and invalidation.',
+      reason: 'Manual authorization requires operator justification, invalidation, and protective rule.',
     });
+    expect(deniedWithoutRule?.decision).toBe('denied');
     expect(formatAuthorizationStatus(denied)).toBe('Authorization denied');
     expect(evaluateLocalMissionAuthorization(undefined, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
+      protectiveRule: 'No trade after failed acceptance.',
     })).toBeUndefined();
+  });
+
+  it('preserves mission intelligence context when bridge records advance lifecycle rooms', () => {
+    const baseMission = createLocalMission(
+      {
+        codename: 'Continuity Drill',
+        objective: 'Keep intelligence continuous.',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-continuity',
+      },
+    );
+
+    if (!baseMission) throw new Error('Expected local mission to be created');
+
+    const mission = withObservationMissionContext(
+      withBriefingMissionContext(baseMission, {
+        missionObjective: 'Keep intelligence continuous.',
+        market: 'Crypto',
+        marketEnvironment: 'calm weekend',
+        highImpactNews: 'No news event',
+        personalReadiness: 'calm',
+        riskParameters: '300',
+        successCriteria: 'No FOMO long',
+      }),
+      {
+        marketDirection: 'upwards',
+        marketStructure: 'HTF bullish, LTF bearish',
+        volume: 'low',
+        liquidity: 'above the highs',
+        keyLevels: 'VAL and VAH',
+        bias: 'long',
+        invalidationEvidence: 'sweep of the highs',
+        emotionalCheck: 'unchanged',
+        readiness: 'yes',
+        operationalPicture: 'Long idea only if structure confirms and invalidation remains clear.',
+      },
+    );
+    const before = buildDesktopMissionIntelligencePackage(mission);
+    const transitioned = mapMissionRecordToActiveMission({
+      id: mission.id,
+      codename: mission.campaign,
+      objective: mission.objective,
+      state: 'authorization',
+      createdAt: mission.createdAt,
+      updatedAt: mission.createdAt,
+    }, mission);
+    const after = buildDesktopMissionIntelligencePackage(transitioned);
+
+    expect(after.confidence.score).toBeGreaterThanOrEqual(before.confidence.score);
+    expect(after.market).toBe('Crypto');
+    expect(after.invalidation).toBe('sweep of the highs');
+    expect(after.missingEvidence.map((item) => item.field)).not.toContain('market');
   });
 
   it('renders an active mission on the Mission Board', () => {

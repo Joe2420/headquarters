@@ -63,7 +63,7 @@ describe('HeadquartersEventEngine', () => {
     ]);
     expect(events[2]?.message).toContain('Confidence sufficient at 73%');
     expect(events[3]?.priority).toBe('high');
-    expect(selectPassiveCommanderMessage(events)).toBe('Guardian reports: Risk boundary remains active.');
+    expect(selectPassiveCommanderMessage(events)).toBe('Guardian confirms no active lockout. Continue.');
   });
 
   it('keeps security checkpoint events minimal before report for duty', () => {

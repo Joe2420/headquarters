@@ -20,6 +20,12 @@ import {
   formatCommanderBehaviorMemory,
   type CommanderBehaviorProfile,
 } from './CommanderBehaviorProfile';
+import {
+  normalizeCommanderText,
+  orchestrateCommanderMessages,
+  type CommanderMessageCandidate,
+  type CommanderMessagePurpose,
+} from './CommanderMessageOrchestrator';
 import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
 
 export type CommanderReportState = 'not-reported' | 'reported';
@@ -99,6 +105,9 @@ type CommanderTransmissionEntry = {
   readonly speaker: 'Operator' | 'Commander';
   readonly text: string;
   readonly kind: 'current' | 'question' | 'operator' | 'response' | 'support';
+  readonly purpose?: CommanderMessagePurpose | undefined;
+  readonly room?: CommanderShellRoomId | undefined;
+  readonly lifecycleStep?: string | undefined;
   readonly promptKey?: string | undefined;
   readonly status: 'queued' | 'transmitting' | 'delivered';
 };
@@ -173,6 +182,7 @@ export function CommanderExperiencePanel({
   const feedRef = useRef<HTMLOListElement | null>(null);
   const activePromptKeyRef = useRef(typeof window === 'undefined' ? currentPromptKey : '');
   const observationSupportIndexRef = useRef(0);
+  const passiveRoomPhaseRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const feed = feedRef.current;
@@ -186,38 +196,7 @@ export function CommanderExperiencePanel({
 
     activePromptKeyRef.current = currentPromptKey;
     setTransmissions((current) => {
-      if (latestCommanderResponseContains(current, state.commanderQuestion)) return current;
-
-      const currentAlreadyVisible = commanderFeedAlreadyContains(current, state.currentMessage.text);
-      const questionAlreadyVisible = state.roomPromptMode === 'ask'
-        && commanderFeedAlreadyContains(current, state.commanderQuestion);
-      const next: CommanderTransmissionEntry[] = currentAlreadyVisible
-        ? [...current]
-        : [
-          ...current,
-          {
-            id: `${currentPromptKey}:current`,
-            speaker: 'Commander',
-            text: state.currentMessage.text,
-            kind: 'current',
-            promptKey: currentPromptKey,
-            status: 'queued',
-          },
-        ];
-
-      if (state.roomPromptMode !== 'ask' || questionAlreadyVisible) return next;
-
-      return [
-        ...next,
-        {
-          id: `${currentPromptKey}:question`,
-          speaker: 'Commander',
-          text: state.commanderQuestion,
-          kind: 'question',
-          promptKey: currentPromptKey,
-          status: 'queued',
-        },
-      ];
+      return appendCommanderTransmission(current, buildCommanderPromptTransmission(state, currentPromptKey));
     });
   }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text, state.roomPromptMode]);
 
@@ -243,26 +222,32 @@ export function CommanderExperiencePanel({
       typeof window === 'undefined'
       || state.lifecycleStep !== 'Lifecycle: Observation'
       || isCommanderQuestionPending(state)
+      || passiveRoomPhaseRef.current.has(state.lifecycleStep)
     ) {
       return undefined;
     }
 
     const interval = window.setInterval(() => {
+      if (passiveRoomPhaseRef.current.has(state.lifecycleStep)) return;
       const message = observationSupportMessages[observationSupportIndexRef.current % observationSupportMessages.length]
         ?? 'Commander check-in. Hold the observation.';
       observationSupportIndexRef.current += 1;
+      passiveRoomPhaseRef.current.add(state.lifecycleStep);
 
       setTransmissions((current) => appendCommanderTransmission(current, {
         id: `commander:observation-support:${Date.now()}:${current.length}`,
         speaker: 'Commander',
         text: message,
         kind: 'support',
+        purpose: 'passive',
+        room: state.currentRoom,
+        lifecycleStep: state.lifecycleStep,
         status: 'queued',
       }));
-    }, 45000);
+    }, 180000);
 
     return () => window.clearInterval(interval);
-  }, [state.lifecycleStep]);
+  }, [state.currentRoom, state.lifecycleStep]);
 
   async function handleTransmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -285,6 +270,9 @@ export function CommanderExperiencePanel({
       speaker: 'Commander',
       text: commanderResponse,
       kind: 'response',
+      purpose: inferCommanderResponsePurpose(commanderResponse, state),
+      room: state.currentRoom,
+      lifecycleStep: state.lifecycleStep,
       status: 'queued',
     }));
   }
@@ -484,79 +472,42 @@ function TransmittedText({
 
 function buildInitialCommanderTransmissions(state: CommanderExperienceState): CommanderTransmissionEntry[] {
   const promptKey = buildCommanderTransmissionPromptKey(state);
+  const promptTransmission = buildCommanderPromptTransmission(state, promptKey);
 
-  const entries: CommanderTransmissionEntry[] = [
-    {
-      id: `${promptKey}:current`,
-      speaker: 'Commander',
-      text: state.currentMessage.text,
-      kind: 'current',
-      promptKey,
-      status: 'delivered',
-    },
-  ];
-
-  if (state.roomPromptMode === 'ask' && !commanderFeedAlreadyContains(entries, state.commanderQuestion)) {
-    entries.push({
-      id: `${promptKey}:question`,
-      speaker: 'Commander',
-      text: state.commanderQuestion,
-      kind: 'question',
-      promptKey,
-      status: 'delivered',
-    });
-  }
-
-  return entries;
+  return [{ ...promptTransmission, status: 'delivered' }];
 }
 
 function appendCommanderTransmission(
   transmissions: readonly CommanderTransmissionEntry[],
   nextTransmission: CommanderTransmissionEntry,
 ): CommanderTransmissionEntry[] {
-  const lastCommanderTransmission = [...transmissions].reverse().find((entry) => entry.speaker === 'Commander');
-  if (
-    lastCommanderTransmission
-    && lastCommanderTransmission.kind === nextTransmission.kind
-    && normalizeCommanderText(lastCommanderTransmission.text) === normalizeCommanderText(nextTransmission.text)
-  ) {
+  if (nextTransmission.speaker !== 'Commander') return [...transmissions, nextTransmission];
+
+  const lastCommanderTransmission = getLastCommanderTransmission(transmissions);
+  const orchestrated = orchestrateCommanderMessages([toCommanderMessageCandidate(nextTransmission)], {
+    activeQuestionPending: transmissions.some((entry) => entry.speaker === 'Commander' && entry.status !== 'delivered'),
+    previousCommanderPurpose: lastCommanderTransmission?.purpose,
+    previousCommanderText: lastCommanderTransmission?.text,
+    renderedMessages: transmissions
+      .filter((entry) => entry.speaker === 'Commander')
+      .map(toCommanderMessageCandidate),
+  });
+
+  if (orchestrated.length === 0) {
     return [...transmissions];
   }
 
-  return [...transmissions, nextTransmission];
-}
+  const [message] = orchestrated;
+  if (message === undefined) return [...transmissions];
 
-function latestCommanderResponseContains(
-  transmissions: readonly CommanderTransmissionEntry[],
-  text: string,
-): boolean {
-  const normalizedText = normalizeCommanderText(text);
-  if (!normalizedText) return false;
-
-  const lastCommanderTransmission = [...transmissions].reverse().find((entry) => entry.speaker === 'Commander');
-  return lastCommanderTransmission !== undefined
-    && lastCommanderTransmission.kind === 'response'
-    && normalizeCommanderText(lastCommanderTransmission.text).includes(normalizedText);
-}
-
-function commanderFeedAlreadyContains(
-  transmissions: readonly CommanderTransmissionEntry[],
-  text: string,
-): boolean {
-  const normalizedText = normalizeCommanderText(text);
-  if (!normalizedText) return false;
-
-  return transmissions.some((transmission) => (
-    transmission.speaker === 'Commander'
-    && normalizeCommanderText(transmission.text).includes(normalizedText)
-  ));
-}
-
-function normalizeCommanderText(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim();
+  return [...transmissions, {
+    ...nextTransmission,
+    id: message.id,
+    text: message.text,
+    purpose: message.purpose,
+    room: message.room,
+    lifecycleStep: message.lifecycleStep,
+  }];
 }
 
 function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): string {
@@ -574,7 +525,84 @@ function isCommanderQuestionPending(state: CommanderExperienceState): boolean {
     && (
       (state.lifecycleStep === 'Lifecycle: Briefing' && state.nextAction.disabled)
       || (state.lifecycleStep === 'Lifecycle: Observation' && state.nextAction.disabled)
+      || state.lifecycleStep === 'Lifecycle: Authorization'
     );
+}
+
+function buildCommanderPromptTransmission(
+  state: CommanderExperienceState,
+  promptKey: string,
+): CommanderTransmissionEntry {
+  const questionPending = state.roomPromptMode === 'ask';
+  const promptText = questionPending
+    ? mergeCommanderPromptText(state.currentMessage.text, state.commanderQuestion)
+    : state.currentMessage.text;
+
+  return {
+    id: `${promptKey}:${questionPending ? 'question' : 'current'}`,
+    speaker: 'Commander',
+    text: promptText,
+    kind: questionPending ? 'question' : 'current',
+    purpose: questionPending ? 'question' : inferCommanderMessagePurpose(state.currentMessage.type),
+    room: state.currentRoom,
+    lifecycleStep: state.lifecycleStep,
+    promptKey,
+    status: 'queued',
+  };
+}
+
+function mergeCommanderPromptText(currentText: string, questionText: string): string {
+  const normalizedCurrent = normalizeCommanderText(currentText);
+  const normalizedQuestion = normalizeCommanderText(questionText);
+  if (!normalizedCurrent) return questionText;
+  if (!normalizedQuestion) return currentText;
+  if (normalizedCurrent.includes(normalizedQuestion)) return currentText;
+  if (normalizedQuestion.includes(normalizedCurrent)) return questionText;
+  return `${currentText.trim()}\n\n${questionText.trim()}`;
+}
+
+function toCommanderMessageCandidate(transmission: CommanderTransmissionEntry): CommanderMessageCandidate {
+  return {
+    id: transmission.id,
+    room: transmission.room ?? 'command',
+    lifecycleStep: transmission.lifecycleStep ?? 'Lifecycle: Unknown',
+    purpose: transmission.purpose ?? inferCommanderTransmissionPurpose(transmission),
+    text: transmission.text,
+    source: transmission.purpose === 'passive' ? 'passive' : 'commander',
+  };
+}
+
+function getLastCommanderTransmission(
+  transmissions: readonly CommanderTransmissionEntry[],
+): CommanderTransmissionEntry | undefined {
+  return [...transmissions].reverse().find((entry) => entry.speaker === 'Commander');
+}
+
+function inferCommanderTransmissionPurpose(transmission: CommanderTransmissionEntry): CommanderMessagePurpose {
+  if (transmission.kind === 'question') return 'question';
+  if (transmission.kind === 'support') return 'passive';
+  if (transmission.kind === 'response') return 'acknowledgement';
+  return 'summary';
+}
+
+function inferCommanderResponsePurpose(
+  text: string,
+  state: CommanderExperienceState,
+): CommanderMessagePurpose {
+  const normalized = normalizeCommanderText(text);
+  if (normalized.includes('authorization')) return 'authorization';
+  if (normalized.includes('complete') || normalized.includes('proceed')) return 'completion';
+  if (state.lifecycleStep === 'Lifecycle: Debrief') return 'debrief';
+  if (normalized.endsWith('?')) return 'question';
+  return 'acknowledgement';
+}
+
+function inferCommanderMessagePurpose(type: CommanderMessage['type']): CommanderMessagePurpose {
+  if (type === 'warning') return 'warning';
+  if (type === 'transition') return 'transition';
+  if (type === 'debrief') return 'debrief';
+  if (type === 'interruption') return 'warning';
+  return 'summary';
 }
 
 function getTransmissionAcknowledgement(message: string, room: CommanderShellRoomId): string {
@@ -675,11 +703,20 @@ export function getCommanderNextAction(
     };
   }
 
-  if (missionState === 'authorization' || missionState === 'deployed') {
+  if (missionState === 'authorization') {
     return {
-      id: 'commander-action:proceed-war-room',
-      label: 'Proceed to War Room',
-      description: 'Handle authorization and deployment state deliberately.',
+      id: 'commander-action:war-room-authorization',
+      label: 'War Room Authorization',
+      description: 'Answer the Commander authorization questions before deployment unlocks.',
+      disabled: true,
+    };
+  }
+
+  if (missionState === 'deployed') {
+    return {
+      id: 'commander-action:return-to-base',
+      label: 'Return To Base',
+      description: 'Authorization is accepted. Return to base only when the declared plan has concluded.',
       disabled: false,
     };
   }

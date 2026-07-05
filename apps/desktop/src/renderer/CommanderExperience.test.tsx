@@ -250,7 +250,9 @@ describe('CommanderExperience', () => {
     expect(getCommanderNextAction('reported', 'ready').disabled).toBe(false);
     expect(getCommanderNextAction('reported', 'observation').label).toBe('Complete Observation');
     expect(getCommanderNextAction('reported', 'observation').disabled).toBe(true);
-    expect(getCommanderNextAction('reported', 'authorization').label).toBe('Proceed to War Room');
+    expect(getCommanderNextAction('reported', 'authorization').label).toBe('War Room Authorization');
+    expect(getCommanderNextAction('reported', 'authorization').disabled).toBe(true);
+    expect(getCommanderNextAction('reported', 'deployed').label).toBe('Return To Base');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
     expect(getCommanderNextAction('reported', 'debrief').label).toBe('Archive Mission');
   });
@@ -354,11 +356,12 @@ describe('CommanderExperience', () => {
   it('suppresses prompt re-emission and passive check-ins during active dialogue', () => {
     const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
 
-    expect(source).toContain('latestCommanderResponseContains(current, state.commanderQuestion)');
+    expect(source).toContain('orchestrateCommanderMessages');
     expect(source).toContain('appendCommanderTransmission(current');
     expect(source).toContain('isCommanderQuestionPending(state)');
     expect(source).toContain("state.lifecycleStep === 'Lifecycle: Briefing' && state.nextAction.disabled");
     expect(source).toContain("state.lifecycleStep === 'Lifecycle: Observation' && state.nextAction.disabled");
+    expect(source).toContain("state.lifecycleStep === 'Lifecycle: Authorization'");
   });
 
   it('orders deterministic Commander messages and marks the newest message current', () => {
