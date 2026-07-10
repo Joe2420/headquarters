@@ -31,7 +31,16 @@ import {
   buildCommanderSessionDebrief,
   buildCommanderWeeklyReview,
 } from '@headquarters/commander';
-import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
+import {
+  buildGuardianAlerts,
+  evaluateGuardianDailyLimits,
+  evaluateGuardianLockout,
+  evaluateGuardianRisk,
+  evaluateGuardianSessionLimits,
+  type GuardianAlert,
+  type GuardianAlertSource,
+  type GuardianLockoutState,
+} from '@headquarters/guardian';
 import {
   classifyJournalEntries,
   analyzeGrowth,
@@ -176,8 +185,6 @@ import { listMissionArchiveDossiers, type MissionArchiveDossier } from './Missio
 import { buildCommanderLearningVisibility, type CommanderLearningVisibility } from './CommanderLearningVisibility';
 import {
   buildCommanderGuardianAlertLines,
-  formatCommanderGuardianStatus,
-  type CommanderGuardianAlertLine,
 } from './CommanderGuardianAlerts';
 import { buildMissionJournalLink } from './MissionJournalIntegration';
 
@@ -563,7 +570,14 @@ export function App() {
   const currentCommanderRoom = activeMission
     ? recommendRoomForMissionState(activeMissionState)
     : navigationCommanderRoom;
-  const guardianAlerts = buildDesktopGuardianAlerts();
+  const guardianAlerts = buildDesktopGuardianAlerts({
+    mission: activeMission,
+    currentRoom: currentCommanderRoom,
+    authorizationStatus,
+    operatorJustification: commanderOperatorJustification,
+    invalidation: commanderInvalidation,
+    protectiveRule: commanderProtectiveRule,
+  });
   const reportState = shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported';
   const missionIntelligencePackage = activeMission
     ? buildDesktopMissionIntelligencePackage(activeMission, {
@@ -885,6 +899,18 @@ export function App() {
     setAuthorizationStatus(undefined);
     setCommanderWorkflowNotice('Mission aborted and closed. You can create a new mission when ready.');
     setActiveOperationsView('chat');
+  }
+
+  function handleResumeMissionRecovery() {
+    if (activeMission === undefined) {
+      setCommanderWorkflowNotice('No mission is available to resume.');
+      return;
+    }
+
+    setMissionPersistenceStatus(recoverIncompleteMissionStatus([activeMission])
+      ?? markMissionSavePending(missionPersistenceStatus, activeMission.id, 'Mission recovery check in progress.'));
+    setActiveOperationsView('chat');
+    setCommanderWorkflowNotice('Mission recovery reviewed. Commander remains on the active lifecycle step.');
   }
 
   async function handleRewindMission() {
@@ -1379,7 +1405,6 @@ export function App() {
                     authorizationStatus={authorizationStatus}
                     deployedCheckIns={deployedCheckIns}
                     commanderLearning={buildCommanderLearningVisibility(commanderBehaviorProfile)}
-                    commanderGuardianAlerts={buildCommanderGuardianAlertLines(guardianAlerts)}
                     missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
@@ -1401,8 +1426,11 @@ export function App() {
                     onLessonChange={setCommanderLesson}
                     onCreateMission={handleMissionCreated}
                     onReportDeployedChange={handleDeployedCheckIn}
+                    onResumeMission={handleResumeMissionRecovery}
+                    onReviewMission={handleEnterCurrentRoom}
                     reportState={reportState}
                   />}
+                  guardianTransmissions={buildCommanderGuardianAlertLines(guardianAlerts, currentCommanderRoom)}
                   onContinue={handleCommanderContinue}
                   onTransmit={handleCommanderTransmission}
                   onAcknowledgeInterruption={(id) => {
@@ -1588,7 +1616,6 @@ function CommanderWorkflowSurface({
   authorizationStatus,
   deployedCheckIns,
   commanderLearning,
-  commanderGuardianAlerts,
   missionPersistenceStatus,
   missionDebrief,
   notice,
@@ -1610,6 +1637,8 @@ function CommanderWorkflowSurface({
   onLessonChange,
   onCreateMission,
   onReportDeployedChange,
+  onResumeMission,
+  onReviewMission,
   reportState,
 }: {
   readonly currentRoom: string;
@@ -1618,7 +1647,6 @@ function CommanderWorkflowSurface({
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
   readonly commanderLearning: CommanderLearningVisibility;
-  readonly commanderGuardianAlerts: readonly CommanderGuardianAlertLine[];
   readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
@@ -1640,6 +1668,8 @@ function CommanderWorkflowSurface({
   readonly onLessonChange: (value: string) => void;
   readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   readonly onReportDeployedChange: (visibleCondition: string) => string;
+  readonly onResumeMission: () => void;
+  readonly onReviewMission: () => void;
   readonly reportState: 'not-reported' | 'reported';
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
@@ -1675,8 +1705,8 @@ function CommanderWorkflowSurface({
         <strong>{formatMissionPersistenceStatus(missionPersistenceStatus)}</strong>
         {missionPersistenceStatus.state === 'save_failed' || missionPersistenceStatus.state === 'recovery_available' ? (
           <div className="inline-actions">
-            <button type="button" className="secondary-action">Resume Mission</button>
-            <button type="button" className="secondary-action">Review Mission</button>
+            <button type="button" className="secondary-action" onClick={onResumeMission}>Resume Mission</button>
+            <button type="button" className="secondary-action" onClick={onReviewMission}>Review Mission</button>
           </div>
         ) : null}
       </section>
@@ -1688,18 +1718,6 @@ function CommanderWorkflowSurface({
         {commanderLearning.strengths.length > 0 ? (
           <ul className="compact-list">
             {commanderLearning.strengths.map((strength) => <li key={strength}>{strength}</li>)}
-          </ul>
-        ) : null}
-      </section>
-
-      <section className="commander-workflow-card commander-guardian-alerts-panel" aria-label="Guardian alerts in Commander chat">
-        <p className="section-label">Guardian</p>
-        <strong>{formatCommanderGuardianStatus(commanderGuardianAlerts)}</strong>
-        {commanderGuardianAlerts.length > 0 ? (
-          <ul className="compact-list">
-            {commanderGuardianAlerts.map((alert) => (
-              <li key={alert.id} data-guardian-priority={alert.priority}>{alert.message}</li>
-            ))}
           </ul>
         ) : null}
       </section>
@@ -4097,36 +4115,213 @@ export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
   );
 }
 
-export function buildDesktopGuardianAlerts(): readonly GuardianAlert[] {
-  return buildGuardianAlerts([
-    {
-      id: 'rule-monitoring',
-      title: 'Rule Monitoring',
-      detail: 'Guardian rules are explicit and deterministic.',
+export interface DesktopGuardianAlertInput {
+  readonly mission?: ActiveMission | undefined;
+  readonly currentRoom?: CommanderShellRoomId | undefined;
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly operatorJustification?: string | undefined;
+  readonly invalidation?: string | undefined;
+  readonly protectiveRule?: string | undefined;
+}
+
+export function buildDesktopGuardianAlerts(input: DesktopGuardianAlertInput = {}): readonly GuardianAlert[] {
+  const sources: GuardianAlertSource[] = [{
+    id: 'rule-monitoring',
+    title: 'Rule Monitoring',
+    detail: 'Guardian rules are active. Boundaries will be enforced from mission context, not mood.',
+    severity: 'notice',
+  }];
+  const missionState = parseMissionState(input.mission?.currentState);
+  const briefing = input.mission?.briefingContext;
+  const observation = input.mission?.observationContext;
+  const riskLimit = parseRiskLimitPercent(briefing?.riskParameters);
+  const declaredRiskLimit = hasMissionContextText(briefing?.riskParameters) ? briefing?.riskParameters.trim() : undefined;
+  const riskyReadiness = parseGuardianReadinessRisk(briefing?.personalReadiness);
+  const hasNews = hasGuardianHighImpactNews(briefing?.highImpactNews);
+  const missingRiskParameter = input.mission !== undefined
+    && missionState !== 'idle'
+    && !hasMissionContextText(briefing?.riskParameters);
+  const missingProtectiveRule = missionState === 'authorization' && !hasMissionContextText(input.protectiveRule);
+  const observationSaysNo = observation?.readiness === 'no';
+  const deniedAuthorization = input.authorizationStatus?.decision === 'denied';
+  const dailyLimits = evaluateGuardianDailyLimits(
+    { maxLossPercent: riskLimit ?? 1, warningPercent: 80, maxTrades: 3 },
+    { lossPercent: 0, tradesTaken: input.authorizationStatus ? 1 : 0 },
+  );
+  const sessionLimits = evaluateGuardianSessionLimits(
+    { maxMinutes: 180, warningPercent: 80, maxActions: 8 },
+    { elapsedMinutes: input.mission ? estimateMissionElapsedMinutes(input.mission) : 0, actionsTaken: estimateMissionActionCount(input) },
+  );
+  const risk = evaluateGuardianRisk({
+    dailyLossPercent: 0,
+    ruleViolationCount: missingProtectiveRule || deniedAuthorization ? 1 : 0,
+    revengeSignalCount: countPressureLanguage([
+      input.operatorJustification,
+      observation?.bias,
+      observation?.operationalPicture,
+    ]),
+    ...(riskyReadiness !== undefined ? { fatigueLevel: riskyReadiness } : {}),
+  });
+
+  if (declaredRiskLimit) {
+    sources.push({
+      id: 'declared-risk-boundary',
+      title: 'Declared Risk Boundary',
+      detail: `Risk boundary acknowledged: ${declaredRiskLimit}. Guardian will compare authorization against this limit.`,
       severity: 'notice',
+    });
+  }
+
+  if (missingRiskParameter) {
+    sources.push({
+      id: 'missing-risk-boundary',
+      title: 'Risk Boundary Missing',
+      detail: 'Risk boundary is not declared. Guardian will not clear aggressive authorization until risk is stated.',
+      severity: 'caution',
+    });
+  }
+
+  if (hasNews) {
+    sources.push({
+      id: 'high-impact-news',
+      title: 'High Impact News',
+      detail: `News risk declared: ${briefing?.highImpactNews?.trim()}. Reduce tempo and account for volatility before authorization.`,
+      severity: 'caution',
+    });
+  }
+
+  if (riskyReadiness !== undefined && riskyReadiness >= 7) {
+    sources.push({
+      id: 'operator-readiness',
+      title: 'Operator Readiness',
+      detail: `Readiness state reported as ${briefing?.personalReadiness?.trim()}. Guardian recommends slower pacing and stricter confirmation.`,
+      severity: 'caution',
+    });
+  }
+
+  if (observationSaysNo) {
+    sources.push({
+      id: 'insufficient-observation-evidence',
+      title: 'Observation Evidence',
+      detail: 'Operator reported insufficient evidence. Guardian keeps War Room pressure contained until observations improve.',
+      severity: 'caution',
+    });
+  }
+
+  if (missingProtectiveRule) {
+    sources.push({
+      id: 'missing-protective-rule',
+      title: 'Protective Rule Missing',
+      detail: 'Authorization is missing a protective rule. Guardian requires the rule before deployment authority is clean.',
+      severity: 'breach',
+    });
+  }
+
+  if (deniedAuthorization) {
+    sources.push({
+      id: 'authorization-denied',
+      title: 'Authorization Denied',
+      detail: input.authorizationStatus?.reason ?? 'Authorization was denied. Guardian keeps the mission inside War Room review.',
+      severity: 'breach',
+    });
+  }
+
+  for (const warning of [...dailyLimits.warnings, ...sessionLimits.warnings, ...risk.reasons]) {
+    if (warning === 'Risk assessment has missing inputs.') continue;
+    sources.push({
+      id: `risk-${slugifyGuardianId(warning)}`,
+      title: 'Risk Assessment',
+      detail: warning,
+      severity: risk.level === 'lock' ? 'lock' : risk.level === 'intervention' ? 'breach' : 'caution',
+    });
+  }
+
+  return dedupeGuardianAlerts(buildGuardianAlerts(sources));
+}
+
+export function buildDesktopGuardianLockoutState(input: DesktopGuardianAlertInput = {}): GuardianLockoutState {
+  const alerts = buildDesktopGuardianAlerts(input);
+  return evaluateGuardianLockout([
+    {
+      id: 'guardian-critical-alert',
+      reason: 'Critical Guardian alert is active.',
+      active: alerts.some((alert) => alert.priority === 'critical'),
     },
     {
-      id: 'risk-monitoring',
-      title: 'Risk Monitoring',
-      detail: 'Risk state is monitored from approved inputs only.',
-      severity: 'caution',
+      id: 'authorization-denied',
+      reason: input.authorizationStatus?.reason ?? 'Authorization denied by Guardian-compatible review.',
+      active: input.authorizationStatus?.decision === 'denied',
     },
   ]);
 }
 
-export function buildDesktopGuardianLockoutState(): GuardianLockoutState {
-  return evaluateGuardianLockout([
-    {
-      id: 'daily-limit',
-      reason: 'Daily limit breached.',
-      active: false,
-    },
-    {
-      id: 'repeated-override',
-      reason: 'Repeated override attempt.',
-      active: false,
-    },
-  ]);
+function parseRiskLimitPercent(value: string | undefined): number | undefined {
+  if (!hasMissionContextText(value)) return undefined;
+  const match = value.match(/(\d+(?:\.\d+)?)\s*%/);
+  if (match?.[1]) return Number.parseFloat(match[1]);
+  return undefined;
+}
+
+function parseGuardianReadinessRisk(value: string | undefined): number | undefined {
+  if (!hasMissionContextText(value)) return undefined;
+  const normalized = value.toLowerCase();
+  if (normalized.includes('tired') || normalized.includes('fatigue')) return 8;
+  if (normalized.includes('stressed') || normalized.includes('distracted')) return 7;
+  if (normalized.includes('angry') || normalized.includes('revenge')) return 9;
+  if (normalized.includes('focused') || normalized.includes('calm') || normalized.includes('confident')) return 2;
+  return undefined;
+}
+
+function hasGuardianHighImpactNews(value: string | undefined): boolean {
+  if (!hasMissionContextText(value)) return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized !== 'none' && normalized !== 'no' && normalized !== 'n/a';
+}
+
+function estimateMissionElapsedMinutes(mission: ActiveMission): number {
+  const createdAt = Date.parse(mission.createdAt);
+  if (Number.isNaN(createdAt)) return 0;
+  return Math.max(0, Math.round((Date.now() - createdAt) / 60000));
+}
+
+function estimateMissionActionCount(input: DesktopGuardianAlertInput): number {
+  return [
+    input.mission?.briefingContext?.missionObjective,
+    input.mission?.briefingContext?.riskParameters,
+    input.mission?.observationContext?.operationalPicture,
+    input.operatorJustification,
+    input.invalidation,
+    input.protectiveRule,
+  ].filter((value) => hasMissionContextText(value)).length;
+}
+
+function countPressureLanguage(values: readonly (string | undefined)[]): number {
+  return values.filter((value) => {
+    if (!hasMissionContextText(value)) return false;
+    const normalized = value.toLowerCase();
+    return normalized.includes('revenge')
+      || normalized.includes('fomo')
+      || normalized.includes('rush')
+      || normalized.includes('must trade')
+      || normalized.includes('need to win');
+  }).length;
+}
+
+function slugifyGuardianId(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 48);
+}
+
+function dedupeGuardianAlerts(alerts: readonly GuardianAlert[]): readonly GuardianAlert[] {
+  const seen = new Set<string>();
+  return alerts.filter((alert) => {
+    if (seen.has(alert.sourceId)) return false;
+    seen.add(alert.sourceId);
+    return true;
+  });
 }
 
 export function GuardianRoom() {
@@ -5360,7 +5555,12 @@ export function buildDesktopMissionIntelligencePackage(
       ...(hasMissionContextText(input.lesson) ? { lesson: input.lesson } : {}),
     },
     ...(input.archiveSummary ? { archiveReference: `archive:${input.archiveSummary.missionId}` } : {}),
-    guardianNotes: buildDesktopGuardianAlerts().map((alert) => alert.message),
+    guardianNotes: buildDesktopGuardianAlerts({
+      mission,
+      authorizationStatus: input.authorizationStatus,
+      operatorJustification: input.operatorJustification,
+      invalidation: input.invalidation,
+    }).map((alert) => alert.message),
     ...(mission.missionContext ? { missionContext: mission.missionContext } : {}),
   };
 

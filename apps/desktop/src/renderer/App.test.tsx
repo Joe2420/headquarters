@@ -190,8 +190,8 @@ describe('Desktop shell', () => {
     const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
 
     expect(source).toContain('buildCommanderGuardianAlertLines');
-    expect(source).toContain('aria-label="Guardian alerts in Commander chat"');
-    expect(source).toContain('formatCommanderGuardianStatus');
+    expect(source).toContain('guardianTransmissions={buildCommanderGuardianAlertLines(guardianAlerts, currentCommanderRoom)}');
+    expect(source).not.toContain('aria-label="Guardian alerts in Commander chat"');
   });
 
   it('renders the security checkpoint startup surface', () => {
@@ -593,7 +593,7 @@ describe('Desktop shell', () => {
     const lockout = buildDesktopGuardianLockoutState();
     const html = renderToStaticMarkup(<GuardianRoom />);
 
-    expect(alerts.map((alert) => alert.priority)).toEqual(['low', 'medium']);
+    expect(alerts.map((alert) => alert.priority)).toEqual(['low']);
     expect(lockout.status).toBe('unlocked');
     expect(html).toContain('data-room-id="guardian-room"');
     expect(html).toContain('Guardian Alerts');
@@ -601,8 +601,43 @@ describe('Desktop shell', () => {
     expect(html).toContain('JudgmentReservePanel');
     expect(html).toContain('SuccessProtocolPanel');
     expect(html).toContain('Rule Monitoring');
-    expect(html).toContain('Risk Monitoring');
     expect(html).toContain('Lockout State');
+  });
+
+  it('derives Guardian alerts from mission context instead of static placeholder copy', () => {
+    const alerts = buildDesktopGuardianAlerts({
+      mission: {
+        id: 'mission-guardian',
+        campaign: 'Guardian Context Test',
+        objective: 'Protect capital',
+        condition: 'Authorization',
+        commandAuthority: 'Professional command',
+        currentState: 'authorization',
+        createdAt: new Date().toISOString(),
+        briefingContext: {
+          missionObjective: 'Observe NQ',
+          market: 'NQ',
+          marketEnvironment: 'High volatility',
+          highImpactNews: 'FOMC',
+          personalReadiness: 'tired',
+        },
+        observationContext: {
+          readiness: 'no',
+        },
+      },
+      currentRoom: 'war-room',
+      operatorJustification: 'I need to rush this trade',
+      protectiveRule: '',
+    });
+
+    expect(alerts.map((alert) => alert.message)).toContain('Risk boundary is not declared. Guardian will not clear aggressive authorization until risk is stated.');
+    expect(alerts.map((alert) => alert.message)).toContain('Authorization is missing a protective rule. Guardian requires the rule before deployment authority is clean.');
+    expect(alerts.map((alert) => alert.message).join('\n')).not.toContain('Risk state is monitored from approved inputs only.');
+    expect(buildDesktopGuardianLockoutState({ authorizationStatus: {
+      missionId: 'mission-guardian',
+      decision: 'denied',
+      reason: 'Invalidation missing.',
+    } }).status).toBe('locked');
   });
 
   it('renders Intelligence Center journal classifications without mutating raw evidence', () => {

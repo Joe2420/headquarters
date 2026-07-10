@@ -7,13 +7,15 @@ describe('CommanderGuardianAlerts', () => {
     const lines = buildCommanderGuardianAlertLines([
       { id: 'info', title: 'Info', message: 'Informational only.', priority: 'low', sourceId: 'test' },
       { id: 'risk', title: 'Risk', message: 'Risk boundary active.', priority: 'high', sourceId: 'test' },
-    ]);
+    ], 'war-room');
 
     expect(lines).toEqual([
       {
         id: 'commander:risk',
         priority: 'high',
-        message: 'Guardian: Risk boundary active.',
+        message: 'Guardian / War Room: Risk boundary active.',
+        room: 'war-room',
+        pacing: 'direct',
       },
     ]);
     expect(formatCommanderGuardianStatus(lines)).toBe('1 Guardian alert requires Commander attention.');

@@ -27,6 +27,7 @@ import {
   type CommanderMessagePurpose,
 } from './CommanderMessageOrchestrator';
 import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
+import type { CommanderGuardianAlertLine } from './CommanderGuardianAlerts';
 
 export type CommanderReportState = 'not-reported' | 'reported';
 
@@ -164,6 +165,7 @@ export function CommanderExperiencePanel({
   situationBoard,
   workflowSurface,
   onTransmit,
+  guardianTransmissions,
 }: {
   readonly state: CommanderExperienceState;
   readonly onAcknowledgeInterruption?: ((id: string) => void) | undefined;
@@ -173,6 +175,7 @@ export function CommanderExperiencePanel({
   readonly situationBoard?: ReactNode;
   readonly workflowSurface?: ReactNode;
   readonly onTransmit?: ((message: string) => string | void | Promise<string | void>) | undefined;
+  readonly guardianTransmissions?: readonly CommanderGuardianAlertLine[] | undefined;
 }) {
   const [draftTransmission, setDraftTransmission] = useState('');
   const currentPromptKey = buildCommanderTransmissionPromptKey(state);
@@ -320,6 +323,18 @@ export function CommanderExperiencePanel({
                   : transmission.text}</p>
               </li>
             ))}
+            {guardianTransmissions?.map((transmission) => (
+              <li
+                key={transmission.id}
+                className="commander-transmission commander-transmission-guardian"
+                data-chat-speaker="guardian"
+                data-guardian-priority={transmission.priority}
+                data-guardian-pacing={transmission.pacing}
+              >
+                <span>Guardian</span>
+                <p>{transmission.message}</p>
+              </li>
+            ))}
           </ol>
           <div className="commander-next-action" aria-label="Commander next action">
             <div className="commander-lifecycle-status">
@@ -335,7 +350,7 @@ export function CommanderExperiencePanel({
                 disabled={state.nextAction.disabled}
                 onClick={onContinue}
               >
-                Continue
+                {formatCommanderContinueLabel(state.nextAction)}
               </button>
             ) : null}
           </div>
@@ -403,6 +418,11 @@ export function CommanderExperiencePanel({
       </details>
     </section>
   );
+}
+
+function formatCommanderContinueLabel(action: CommanderNextAction): string {
+  if (action.id === 'commander-action:war-room-authorization') return 'Request Authorization';
+  return action.label;
 }
 
 function TransmittedText({

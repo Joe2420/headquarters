@@ -387,6 +387,34 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Observation completed. Authorization now requires discipline.');
   });
 
+  it('renders Guardian alerts as red channel transmissions inside the Commander feed', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-guardian-feed',
+        campaign: 'Guardian Feed',
+        objective: 'Hold discipline',
+        currentState: 'authorization',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel
+      state={state}
+      guardianTransmissions={[{
+        id: 'guardian-feed-risk',
+        priority: 'high',
+        message: 'Guardian / War Room: Authorization is missing a protective rule.',
+        room: 'war-room',
+        pacing: 'direct',
+      }]}
+    />);
+
+    expect(html).toContain('commander-transmission-guardian');
+    expect(html).toContain('data-chat-speaker="guardian"');
+    expect(html).toContain('Guardian / War Room: Authorization is missing a protective rule.');
+  });
+
   it('hides acknowledged interruptions from priority rendering', () => {
     const state = buildCommanderExperienceState({
       reportState: 'reported',
