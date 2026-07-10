@@ -149,6 +149,17 @@ describe('Desktop shell', () => {
     expect(source).toContain('Return to Base is now the correct next action.');
   });
 
+  it('exposes Doctrine candidate review decisions through the Doctrine room', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('aria-label="Doctrine candidate review"');
+    expect(source).toContain('Approve Doctrine');
+    expect(source).toContain('Reject Candidate');
+    expect(source).toContain('Return for Revision');
+    expect(source).toContain('recordDoctrineReviewDecision');
+    expect(source).toContain('formatDoctrineReviewAudit');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
@@ -393,7 +404,10 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<DoctrineRoom
       doctrineRecords={[]}
       doctrineHistory={[]}
+      doctrineSuggestions={[]}
+      doctrineReviewDecisions={[]}
       onPromoteDoctrineCandidate={() => undefined}
+      onDoctrineReviewDecision={() => undefined}
     />)).toContain('data-room-atmosphere="doctrine"');
     expect(renderToStaticMarkup(<AcademyRoom growthEvents={[]} />)).toContain('data-room-atmosphere="academy"');
     expect(renderToStaticMarkup(<GuardianRoom />)).toContain('data-room-atmosphere="guardian"');
@@ -1072,7 +1086,10 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<DoctrineRoom
       doctrineRecords={[]}
       doctrineHistory={[]}
+      doctrineSuggestions={[]}
+      doctrineReviewDecisions={[]}
       onPromoteDoctrineCandidate={() => undefined}
+      onDoctrineReviewDecision={() => undefined}
     />);
 
     expect(html).toContain('Doctrine Review');

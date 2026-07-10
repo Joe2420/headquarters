@@ -157,6 +157,12 @@ import {
   createDeployedMissionPresence,
   type DeployedMissionCheckIn,
 } from './MissionDeployedCheckIns';
+import {
+  buildDoctrineReviewSummary,
+  formatDoctrineReviewAudit,
+  recordDoctrineReviewDecision,
+  type DoctrineReviewRecord,
+} from './DoctrineReview';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -408,6 +414,7 @@ export function App() {
   const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
   const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
   const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
+  const [doctrineReviewDecisions, setDoctrineReviewDecisions] = useState<DoctrineReviewRecord[]>([]);
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
   const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
@@ -1411,6 +1418,8 @@ export function App() {
                     archivedJournalEntries,
                     doctrineRecords,
                     doctrineHistory,
+                    doctrineSuggestions: desktopDoctrineSuggestions,
+                    doctrineReviewDecisions,
                     onCreateMission: handleMissionCreated,
                     onMissionChanged: (mission) => {
                       setActiveMission(getActiveMissionAfterMissionChange(mission));
@@ -1434,6 +1443,9 @@ export function App() {
                     onPromoteDoctrineCandidate: (record, historyEntry) => {
                       setDoctrineRecords((records) => [...records, record]);
                       setDoctrineHistory((entries) => [...entries, historyEntry]);
+                    },
+                    onDoctrineReviewDecision: (decision) => {
+                      setDoctrineReviewDecisions((decisions) => [...decisions, decision]);
                     },
                   })
                 )}
@@ -1770,6 +1782,8 @@ interface HeadquartersRoomContext {
   archivedJournalEntries: ArchivedJournalEntry[];
   doctrineRecords: DoctrineRecord[];
   doctrineHistory: DoctrineHistoryEntry[];
+  doctrineSuggestions: readonly DoctrineSuggestion[];
+  doctrineReviewDecisions: readonly DoctrineReviewRecord[];
   onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   onMissionChanged: (mission: ActiveMission) => void;
   onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
@@ -1781,6 +1795,7 @@ interface HeadquartersRoomContext {
   onCreateGrowthEvent: (event: GrowthEvent) => void;
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
   onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
+  onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
 }
 
 function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersRoomContext) {
@@ -1879,7 +1894,10 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       <DoctrineRoom
         doctrineRecords={context.doctrineRecords}
         doctrineHistory={context.doctrineHistory}
+        doctrineSuggestions={context.doctrineSuggestions}
+        doctrineReviewDecisions={context.doctrineReviewDecisions}
         onPromoteDoctrineCandidate={context.onPromoteDoctrineCandidate}
+        onDoctrineReviewDecision={context.onDoctrineReviewDecision}
       />
     );
   }
@@ -4693,11 +4711,17 @@ function ArchiveSessionExplorerPanel({ sessionInspections }: { sessionInspection
 export function DoctrineRoom({
   doctrineRecords,
   doctrineHistory,
+  doctrineSuggestions,
+  doctrineReviewDecisions,
   onPromoteDoctrineCandidate,
+  onDoctrineReviewDecision,
 }: {
   doctrineRecords: DoctrineRecord[];
   doctrineHistory: DoctrineHistoryEntry[];
+  doctrineSuggestions: readonly DoctrineSuggestion[];
+  doctrineReviewDecisions: readonly DoctrineReviewRecord[];
   onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
+  onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
 }) {
   return (
     <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
@@ -4714,12 +4738,131 @@ export function DoctrineRoom({
           <p className="muted">Doctrine updates only after explicit review. Candidate promotion remains manual and evidence-bound.</p>
         </section>
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+        <DoctrineReviewPanel
+          doctrineSuggestions={doctrineSuggestions}
+          doctrineRecords={doctrineRecords}
+          doctrineReviewDecisions={doctrineReviewDecisions}
+          onPromoteDoctrineCandidate={onPromoteDoctrineCandidate}
+          onDoctrineReviewDecision={onDoctrineReviewDecision}
+        />
         <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
         <DoctrineDiffPanel diff={buildDoctrineDiffPreview(doctrineRecords)} />
         <TradingPlanDoctrinePanel references={buildDefaultTradingPlanDoctrineReferences(doctrineRecords)} />
         <DoctrineHistoryPanel historyEntries={doctrineHistory} />
       </section>
     </div>
+  );
+}
+
+function DoctrineReviewPanel({
+  doctrineSuggestions,
+  doctrineRecords,
+  doctrineReviewDecisions,
+  onPromoteDoctrineCandidate,
+  onDoctrineReviewDecision,
+}: {
+  doctrineSuggestions: readonly DoctrineSuggestion[];
+  doctrineRecords: readonly DoctrineRecord[];
+  doctrineReviewDecisions: readonly DoctrineReviewRecord[];
+  onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
+  onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
+}) {
+  const [revisionNote, setRevisionNote] = useState('');
+  const suggestion = doctrineSuggestions.find((candidate) => (
+    !doctrineReviewDecisions.some((decision) => (
+      decision.candidateId === candidate.id
+      && (decision.decision === 'approved' || decision.decision === 'rejected')
+    ))
+  ));
+
+  if (suggestion === undefined) {
+    return (
+      <section className="journal-panel" aria-label="Doctrine candidate review">
+        <p className="section-label">Candidate Review</p>
+        <h3>No Doctrine Candidate Waiting</h3>
+        <p className="muted">Commander will surface candidates when evidence supports manual review.</p>
+      </section>
+    );
+  }
+  const activeSuggestion = suggestion;
+
+  const summary = buildDoctrineReviewSummary({
+    candidateId: activeSuggestion.id,
+    title: activeSuggestion.title,
+    statement: activeSuggestion.title,
+    sourceMissionOrJournal: activeSuggestion.evidenceRecordIds.join(', '),
+    sourceExcerpt: activeSuggestion.rationale,
+    behaviorEvidence: activeSuggestion.rationale,
+    similarDoctrineExists: doctrineRecords.some((record) => record.title.toLowerCase() === activeSuggestion.title.toLowerCase()),
+    conflictSummary: 'No direct conflict detected by deterministic review.',
+    proposedScope: 'Operator-approved doctrine candidate',
+    confidence: `${activeSuggestion.evidenceRecordIds.length} supporting evidence record${activeSuggestion.evidenceRecordIds.length === 1 ? '' : 's'}`,
+  });
+
+  async function handleApprove() {
+    const decision = recordDoctrineReviewDecision({
+      candidateId: activeSuggestion.id,
+      decision: 'approved',
+      previous: doctrineReviewDecisions,
+    });
+    if (decision === undefined) return;
+
+    const result = await promoteDesktopDoctrineCandidate({
+      candidateId: activeSuggestion.id,
+      title: activeSuggestion.title,
+      summary: activeSuggestion.rationale,
+      sourceId: activeSuggestion.evidenceRecordIds[0] ?? activeSuggestion.id,
+      archiveId: activeSuggestion.evidenceRecordIds[0] ?? activeSuggestion.id,
+      excerpt: activeSuggestion.rationale,
+    });
+
+    if (result) onPromoteDoctrineCandidate(result.record, result.historyEntry);
+    onDoctrineReviewDecision(decision);
+  }
+
+  function handleReject() {
+    const decision = recordDoctrineReviewDecision({
+      candidateId: activeSuggestion.id,
+      decision: 'rejected',
+      reason: revisionNote || 'Evidence incomplete.',
+      previous: doctrineReviewDecisions,
+    });
+    if (decision) onDoctrineReviewDecision(decision);
+  }
+
+  function handleRevision() {
+    const decision = recordDoctrineReviewDecision({
+      candidateId: activeSuggestion.id,
+      decision: 'revision_requested',
+      reason: revisionNote || 'Needs operator revision.',
+      previous: doctrineReviewDecisions,
+    });
+    if (decision) onDoctrineReviewDecision(decision);
+  }
+
+  return (
+    <section className="journal-panel doctrine-review-panel" aria-label="Doctrine candidate review">
+      <p className="section-label">Candidate Review</p>
+      <h3>{summary.heading}</h3>
+      <ul>
+        {summary.lines.map((line) => <li key={line}>{line}</li>)}
+      </ul>
+      <p className="muted">{summary.question}</p>
+      <label>
+        <span>Review Note</span>
+        <input value={revisionNote} onChange={(event) => setRevisionNote(event.target.value)} />
+      </label>
+      <div className="inline-actions">
+        <button className="secondary-action" type="button" onClick={handleApprove}>Approve Doctrine</button>
+        <button className="secondary-action" type="button" onClick={handleReject}>Reject Candidate</button>
+        <button className="secondary-action" type="button" onClick={handleRevision}>Return for Revision</button>
+      </div>
+      {doctrineReviewDecisions.slice(-1).map((decision) => (
+        <p key={`${decision.candidateId}-${decision.decidedAt}`} className="muted">
+          {formatDoctrineReviewAudit(decision)}
+        </p>
+      ))}
+    </section>
   );
 }
 
