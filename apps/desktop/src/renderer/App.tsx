@@ -171,6 +171,7 @@ import {
   recoverIncompleteMissionStatus,
   type MissionPersistenceStatus,
 } from './MissionPersistenceGuarantee';
+import { buildCommanderDeadEndRecovery } from './CommanderDeadEndRecovery';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -1243,7 +1244,11 @@ export function App() {
       return 'Continue order received. Advancing through the current lifecycle step.';
     }
 
-    return 'Transmission attached to Commander log. Use Continue when the current step is ready.';
+    return buildCommanderDeadEndRecovery({
+      room: currentCommanderRoom,
+      missionState: currentState,
+      transmission: message,
+    }).message;
   }
 
   return (

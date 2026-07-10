@@ -171,6 +171,13 @@ describe('Desktop shell', () => {
     expect(source).toContain('Review Mission');
   });
 
+  it('routes Commander dead ends through deterministic recovery guidance', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('buildCommanderDeadEndRecovery');
+    expect(source).not.toContain('Transmission attached to Commander log. Use Continue when the current step is ready.');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
