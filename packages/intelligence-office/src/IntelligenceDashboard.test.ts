@@ -26,7 +26,7 @@ describe('buildIntelligenceDashboard', () => {
     }];
     const doctrineSuggestions = [{
       id: 'suggestion-001',
-      title: 'Review doctrine candidate source',
+      title: 'Doctrine candidate requires review',
       rationale: 'Evidence supports manual review.',
       evidenceRecordIds: ['journal-005'],
       requiresManualPromotion: true as const,

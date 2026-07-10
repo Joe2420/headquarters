@@ -185,6 +185,8 @@ import { listMissionArchiveDossiers, type MissionArchiveDossier } from './Missio
 import { buildCommanderLearningVisibility, type CommanderLearningVisibility } from './CommanderLearningVisibility';
 import {
   buildCommanderGuardianAlertLines,
+  formatCommanderGuardianStatus,
+  type CommanderGuardianAlertLine,
 } from './CommanderGuardianAlerts';
 import { buildMissionJournalLink } from './MissionJournalIntegration';
 
@@ -1405,6 +1407,7 @@ export function App() {
                     authorizationStatus={authorizationStatus}
                     deployedCheckIns={deployedCheckIns}
                     commanderLearning={buildCommanderLearningVisibility(commanderBehaviorProfile)}
+                    commanderGuardianAlerts={buildCommanderGuardianAlertLines(guardianAlerts, currentCommanderRoom)}
                     missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
@@ -1430,7 +1433,6 @@ export function App() {
                     onReviewMission={handleEnterCurrentRoom}
                     reportState={reportState}
                   />}
-                  guardianTransmissions={buildCommanderGuardianAlertLines(guardianAlerts, currentCommanderRoom)}
                   onContinue={handleCommanderContinue}
                   onTransmit={handleCommanderTransmission}
                   onAcknowledgeInterruption={(id) => {
@@ -1616,6 +1618,7 @@ function CommanderWorkflowSurface({
   authorizationStatus,
   deployedCheckIns,
   commanderLearning,
+  commanderGuardianAlerts,
   missionPersistenceStatus,
   missionDebrief,
   notice,
@@ -1647,6 +1650,7 @@ function CommanderWorkflowSurface({
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
   readonly commanderLearning: CommanderLearningVisibility;
+  readonly commanderGuardianAlerts: readonly CommanderGuardianAlertLine[];
   readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
@@ -1718,6 +1722,30 @@ function CommanderWorkflowSurface({
         {commanderLearning.strengths.length > 0 ? (
           <ul className="compact-list">
             {commanderLearning.strengths.map((strength) => <li key={strength}>{strength}</li>)}
+          </ul>
+        ) : null}
+      </section>
+
+      <section
+        className="commander-workflow-card commander-guardian-alerts-panel"
+        aria-label="Guardian alerts below Commander chat"
+        data-chat-role="guardian"
+      >
+        <p className="section-label">Guardian</p>
+        <strong>{formatCommanderGuardianStatus(commanderGuardianAlerts)}</strong>
+        {commanderGuardianAlerts.length > 0 ? (
+          <ul className="compact-list guardian-chat-feed" aria-label="Guardian alert transmissions">
+            {commanderGuardianAlerts.map((alert) => (
+              <li
+                key={alert.id}
+                data-chat-speaker="guardian"
+                data-guardian-priority={alert.priority}
+                data-guardian-pacing={alert.pacing}
+              >
+                <span>Guardian</span>
+                <p>{alert.message}</p>
+              </li>
+            ))}
           </ul>
         ) : null}
       </section>
@@ -5116,14 +5144,14 @@ function DoctrineReviewPanel({
   const summary = buildDoctrineReviewSummary({
     candidateId: activeSuggestion.id,
     title: activeSuggestion.title,
-    statement: activeSuggestion.title,
-    sourceMissionOrJournal: activeSuggestion.evidenceRecordIds.join(', '),
+    statement: activeSuggestion.rationale,
+    sourceMissionOrJournal: formatDoctrineSuggestionSource(activeSuggestion),
     sourceExcerpt: activeSuggestion.rationale,
     behaviorEvidence: activeSuggestion.rationale,
     similarDoctrineExists: doctrineRecords.some((record) => record.title.toLowerCase() === activeSuggestion.title.toLowerCase()),
     conflictSummary: 'No direct conflict detected by deterministic review.',
     proposedScope: 'Operator-approved doctrine candidate',
-    confidence: `${activeSuggestion.evidenceRecordIds.length} supporting evidence record${activeSuggestion.evidenceRecordIds.length === 1 ? '' : 's'}`,
+    confidence: `${activeSuggestion.evidenceRecordIds.length} supporting ${activeSuggestion.evidenceRecordIds.length === 1 ? 'source' : 'sources'}`,
   });
 
   async function handleApprove() {
@@ -5191,6 +5219,11 @@ function DoctrineReviewPanel({
       ))}
     </section>
   );
+}
+
+function formatDoctrineSuggestionSource(suggestion: DoctrineSuggestion): string {
+  const sourceCount = suggestion.evidenceRecordIds.length;
+  return `${sourceCount} ${sourceCount === 1 ? 'journal evidence source' : 'journal evidence sources'} ready for operator review`;
 }
 
 function DoctrinePromotionPanel({
@@ -5366,15 +5399,25 @@ function DoctrineViewerPanel({ doctrineRecords }: { doctrineRecords: DoctrineRec
             <article className="timeline-item" key={record.id}>
               <strong>{record.title}</strong>
               <span>{record.summary}</span>
-              <span>
-                {record.confidence} from {record.source.sourceType}: {record.source.sourceId}
-              </span>
+              <span>{formatDoctrineRecordSource(record)}</span>
             </article>
           ))}
         </div>
       )}
     </section>
   );
+}
+
+function formatDoctrineRecordSource(record: DoctrineRecord): string {
+  const status = record.confidence === 'validated'
+    ? 'Validated Doctrine'
+    : `${record.confidence.charAt(0).toUpperCase()}${record.confidence.slice(1)} Doctrine`;
+  const source = record.source.sourceType === 'journal_entry'
+    ? 'Journal evidence'
+    : record.source.sourceType === 'trade_review'
+      ? 'Trade review evidence'
+      : 'Manual operator review';
+  return record.source.excerpt ? `${status} from ${source}: ${record.source.excerpt}` : `${status} from ${source}`;
 }
 
 function SettingsRoom() {

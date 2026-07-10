@@ -190,8 +190,9 @@ describe('Desktop shell', () => {
     const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
 
     expect(source).toContain('buildCommanderGuardianAlertLines');
-    expect(source).toContain('guardianTransmissions={buildCommanderGuardianAlertLines(guardianAlerts, currentCommanderRoom)}');
-    expect(source).not.toContain('aria-label="Guardian alerts in Commander chat"');
+    expect(source).toContain('aria-label="Guardian alerts below Commander chat"');
+    expect(source).toContain('data-chat-role="guardian"');
+    expect(source).toContain('formatCommanderGuardianStatus');
   });
 
   it('renders the security checkpoint startup surface', () => {
@@ -797,8 +798,8 @@ describe('Desktop shell', () => {
 
     expect(suggestions).toEqual([{
       id: 'doctrine-suggestion:doctrine_candidate_source',
-      title: 'Review doctrine candidate source',
-      rationale: '1 evidence record support manual doctrine review.',
+      title: 'Doctrine candidate requires review',
+      rationale: '1 supporting source surfaced a possible operating rule. Review it before it becomes Doctrine.',
       evidenceRecordIds: ['journal-001'],
       requiresManualPromotion: true,
     }]);

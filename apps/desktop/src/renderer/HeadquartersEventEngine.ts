@@ -197,7 +197,7 @@ export function selectPassiveCommanderMessage(events: readonly HeadquartersEvent
   if (!preferred) return undefined;
 
   if (preferred.type === 'guardian_observation') return 'Guardian confirms no active lockout. Continue.';
-  if (preferred.type === 'intelligence_update') return 'Mission intelligence is incomplete. Keep answering the active Commander prompt.';
+  if (preferred.type === 'intelligence_update') return `Mission intelligence incomplete. ${preferred.message}`;
   return preferred.message;
 }
 
