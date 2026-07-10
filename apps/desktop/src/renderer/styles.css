@@ -999,6 +999,99 @@ dd {
   color: #9fb0bd;
 }
 
+.headquarters-operating-environment {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(260px, 1.05fr) minmax(280px, 1.35fr);
+  gap: 0.85rem;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid rgba(112, 255, 156, 0.1);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(112, 255, 156, 0.08), transparent 34%),
+    #070b0e;
+}
+
+.command-chair-console,
+.hqos-broadcast-feed,
+.live-operational-timeline,
+.headquarters-services-panel,
+.operational-notifications {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid rgba(118, 176, 210, 0.16);
+  background: linear-gradient(180deg, rgba(8, 18, 27, 0.74), rgba(4, 10, 15, 0.84));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.command-chair-console {
+  grid-row: span 2;
+}
+
+.command-chair-console dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.command-chair-console dt {
+  color: #8fb7d2;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.command-chair-console dd {
+  margin: 0.15rem 0 0;
+  color: #f4f8fb;
+  font-weight: 800;
+}
+
+.hqos-broadcast-feed ol,
+.live-operational-timeline ol,
+.operational-notifications ol,
+.headquarters-services-panel ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hqos-broadcast-feed li,
+.live-operational-timeline li,
+.operational-notifications li {
+  border-left: 2px solid rgba(112, 255, 178, 0.35);
+  padding-left: 0.65rem;
+  color: #d6e6ef;
+}
+
+.hqos-broadcast-feed li[data-priority="high"],
+.operational-notifications li[data-priority="high"] {
+  border-left-color: rgba(255, 196, 107, 0.85);
+}
+
+.headquarters-services-panel li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: #d4e3ec;
+}
+
+.headquarters-services-panel li[data-service-status="working"] strong {
+  color: #b4ffd7;
+}
+
+.headquarters-services-panel li[data-service-status="attention"] strong {
+  color: #ffd18f;
+}
+
+.live-operational-timeline li {
+  border-left-color: rgba(118, 176, 210, 0.4);
+  font-size: 0.86rem;
+}
+
 .room-layout {
   display: grid;
   align-content: start;

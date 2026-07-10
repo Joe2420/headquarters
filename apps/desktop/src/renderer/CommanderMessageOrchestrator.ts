@@ -34,6 +34,7 @@ export function orchestrateCommanderMessages(
   context: CommanderOrchestrationContext,
 ): readonly CommanderMessageCandidate[] {
   const existingKeys = new Set((context.renderedMessages ?? []).map(buildCommanderMessageDedupeKey));
+  const existingQuestionKeys = new Set((context.renderedMessages ?? []).map(buildCommanderQuestionDedupeKey).filter(isDefined));
   const output: CommanderMessageCandidate[] = [];
   const filtered = candidates.filter((candidate) => shouldKeepCandidate(candidate, context));
 
@@ -54,12 +55,12 @@ export function orchestrateCommanderMessages(
         text: joinCommanderBlocks(candidate.text, nextCandidate.text),
       };
 
-      appendIfNew(output, merged, existingKeys);
+      appendIfNew(output, merged, existingKeys, existingQuestionKeys);
       index += 1;
       continue;
     }
 
-    appendIfNew(output, candidate, existingKeys);
+    appendIfNew(output, candidate, existingKeys, existingQuestionKeys);
   }
 
   return output;
@@ -81,6 +82,26 @@ export function buildCommanderMessageDedupeKey(candidate: CommanderMessageCandid
     candidate.purpose,
     normalizeCommanderText(candidate.text),
   ].join('|');
+}
+
+export function buildCommanderQuestionDedupeKey(candidate: CommanderMessageCandidate): string | undefined {
+  const question = extractCommanderQuestion(candidate.text);
+  if (!question) return undefined;
+
+  return [
+    candidate.room,
+    candidate.lifecycleStep,
+    normalizeCommanderText(question),
+  ].join('|');
+}
+
+export function extractCommanderQuestion(text: string): string | undefined {
+  const blocks = text
+    .split(/\n+/)
+    .map((block) => block.trim())
+    .filter((block) => block.length > 0);
+  const question = [...blocks].reverse().find((block) => block.endsWith('?'));
+  return question;
 }
 
 export function normalizeCommanderText(text: string): string {
@@ -115,13 +136,22 @@ function appendIfNew(
   output: CommanderMessageCandidate[],
   candidate: CommanderMessageCandidate,
   existingKeys: Set<string>,
+  existingQuestionKeys: Set<string>,
 ): void {
   const key = buildCommanderMessageDedupeKey(candidate);
+  const questionKey = buildCommanderQuestionDedupeKey(candidate);
   if (existingKeys.has(key)) return;
+  if (questionKey && existingQuestionKeys.has(questionKey)) return;
   if (output.some((entry) => buildCommanderMessageDedupeKey(entry) === key)) return;
+  if (questionKey && output.some((entry) => buildCommanderQuestionDedupeKey(entry) === questionKey)) return;
 
   existingKeys.add(key);
+  if (questionKey) existingQuestionKeys.add(questionKey);
   output.push(candidate);
+}
+
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined;
 }
 
 function joinCommanderBlocks(first: string, second: string): string {

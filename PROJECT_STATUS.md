@@ -2,6 +2,15 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0270 - Sprint 28 Living Headquarters OS Review
+- HQ-TASK-0269 - Living Headquarters OS Integration Tests
+- HQ-TASK-0268 - Dynamic Situation Board OS Context
+- HQ-TASK-0267 - Operational Notifications
+- HQ-TASK-0266 - Headquarters Services Activity
+- HQ-TASK-0265 - Live Operational Timeline
+- HQ-TASK-0264 - Command Chair Operating Console
+- HQ-TASK-0263 - HQ Broadcast Feed
+
 - HQ-TASK-0262 - Sprint 27 Operational Psychology Review
 - HQ-TASK-0261 - Long Session Awareness Support
 - HQ-TASK-0260 - Operator Presence Copy

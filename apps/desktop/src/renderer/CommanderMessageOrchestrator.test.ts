@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildCommanderQuestionDedupeKey,
   isRawSubsystemSignal,
   orchestrateCommanderMessages,
   type CommanderMessageCandidate,
@@ -42,6 +43,32 @@ describe('CommanderMessageOrchestrator', () => {
     ], { activeQuestionPending: false });
 
     expect(messages).toHaveLength(1);
+  });
+
+  it('suppresses duplicate questions even when lifecycle and acknowledgement prefaces differ', () => {
+    const rendered = {
+      ...baseCandidate,
+      id: 'rendered:mission-created',
+      room: 'ready-room',
+      lifecycleStep: 'Lifecycle: Briefing',
+      text: 'Mission created. Prepare before moving further.\n\nDescribe today\'s market environment?',
+    } satisfies CommanderMessageCandidate;
+    const messages = orchestrateCommanderMessages([
+      {
+        ...rendered,
+        id: 'candidate:acknowledgement',
+        purpose: 'acknowledgement',
+        text: 'The mission file now has its market.\n\nDescribe today\'s market environment?',
+      },
+    ], {
+      activeQuestionPending: false,
+      renderedMessages: [rendered],
+    });
+
+    expect(buildCommanderQuestionDedupeKey(rendered)).toBe(
+      'ready-room|Lifecycle: Briefing|describe today\'s market environment?',
+    );
+    expect(messages).toEqual([]);
   });
 
   it('filters raw intelligence and Guardian subsystem telemetry from Commander Chat', () => {
