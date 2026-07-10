@@ -173,6 +173,7 @@ import {
 } from './MissionPersistenceGuarantee';
 import { buildCommanderDeadEndRecovery } from './CommanderDeadEndRecovery';
 import { listMissionArchiveDossiers, type MissionArchiveDossier } from './MissionArchiveDossier';
+import { buildCommanderLearningVisibility, type CommanderLearningVisibility } from './CommanderLearningVisibility';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -1371,6 +1372,7 @@ export function App() {
                     missionIntelligencePackage={missionIntelligencePackage}
                     authorizationStatus={authorizationStatus}
                     deployedCheckIns={deployedCheckIns}
+                    commanderLearning={buildCommanderLearningVisibility(commanderBehaviorProfile)}
                     missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
@@ -1578,6 +1580,7 @@ function CommanderWorkflowSurface({
   currentRoom,
   authorizationStatus,
   deployedCheckIns,
+  commanderLearning,
   missionPersistenceStatus,
   missionDebrief,
   notice,
@@ -1606,6 +1609,7 @@ function CommanderWorkflowSurface({
   readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
+  readonly commanderLearning: CommanderLearningVisibility;
   readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
@@ -1665,6 +1669,17 @@ function CommanderWorkflowSurface({
             <button type="button" className="secondary-action">Resume Mission</button>
             <button type="button" className="secondary-action">Review Mission</button>
           </div>
+        ) : null}
+      </section>
+
+      <section className="commander-workflow-card commander-learning-panel" aria-label="Commander learning visibility">
+        <p className="section-label">Commander Learning</p>
+        <strong>{commanderLearning.headline}</strong>
+        <p className="muted">Coaching focus: {commanderLearning.coachingFocus}</p>
+        {commanderLearning.strengths.length > 0 ? (
+          <ul className="compact-list">
+            {commanderLearning.strengths.map((strength) => <li key={strength}>{strength}</li>)}
+          </ul>
         ) : null}
       </section>
 

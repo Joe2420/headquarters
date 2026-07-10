@@ -178,6 +178,14 @@ describe('Desktop shell', () => {
     expect(source).not.toContain('Transmission attached to Commander log. Use Continue when the current step is ready.');
   });
 
+  it('shows Commander learning visibility inside the Commander workflow', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('buildCommanderLearningVisibility');
+    expect(source).toContain('aria-label="Commander learning visibility"');
+    expect(source).toContain('Coaching focus:');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
