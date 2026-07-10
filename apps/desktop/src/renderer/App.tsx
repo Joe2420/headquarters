@@ -174,6 +174,11 @@ import {
 import { buildCommanderDeadEndRecovery } from './CommanderDeadEndRecovery';
 import { listMissionArchiveDossiers, type MissionArchiveDossier } from './MissionArchiveDossier';
 import { buildCommanderLearningVisibility, type CommanderLearningVisibility } from './CommanderLearningVisibility';
+import {
+  buildCommanderGuardianAlertLines,
+  formatCommanderGuardianStatus,
+  type CommanderGuardianAlertLine,
+} from './CommanderGuardianAlerts';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -1373,6 +1378,7 @@ export function App() {
                     authorizationStatus={authorizationStatus}
                     deployedCheckIns={deployedCheckIns}
                     commanderLearning={buildCommanderLearningVisibility(commanderBehaviorProfile)}
+                    commanderGuardianAlerts={buildCommanderGuardianAlertLines(guardianAlerts)}
                     missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
@@ -1581,6 +1587,7 @@ function CommanderWorkflowSurface({
   authorizationStatus,
   deployedCheckIns,
   commanderLearning,
+  commanderGuardianAlerts,
   missionPersistenceStatus,
   missionDebrief,
   notice,
@@ -1610,6 +1617,7 @@ function CommanderWorkflowSurface({
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
   readonly commanderLearning: CommanderLearningVisibility;
+  readonly commanderGuardianAlerts: readonly CommanderGuardianAlertLine[];
   readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
@@ -1679,6 +1687,18 @@ function CommanderWorkflowSurface({
         {commanderLearning.strengths.length > 0 ? (
           <ul className="compact-list">
             {commanderLearning.strengths.map((strength) => <li key={strength}>{strength}</li>)}
+          </ul>
+        ) : null}
+      </section>
+
+      <section className="commander-workflow-card commander-guardian-alerts-panel" aria-label="Guardian alerts in Commander chat">
+        <p className="section-label">Guardian</p>
+        <strong>{formatCommanderGuardianStatus(commanderGuardianAlerts)}</strong>
+        {commanderGuardianAlerts.length > 0 ? (
+          <ul className="compact-list">
+            {commanderGuardianAlerts.map((alert) => (
+              <li key={alert.id} data-guardian-priority={alert.priority}>{alert.message}</li>
+            ))}
           </ul>
         ) : null}
       </section>

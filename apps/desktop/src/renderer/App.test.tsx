@@ -186,6 +186,14 @@ describe('Desktop shell', () => {
     expect(source).toContain('Coaching focus:');
   });
 
+  it('surfaces Guardian alerts inside Commander chat', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('buildCommanderGuardianAlertLines');
+    expect(source).toContain('aria-label="Guardian alerts in Commander chat"');
+    expect(source).toContain('formatCommanderGuardianStatus');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
