@@ -270,7 +270,7 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<ObservationRoom activeMission={mission} />)).toContain('data-room-identity="silence"');
     expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-identity="decision"');
     expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-identity="reflection"');
-    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
+    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} missionHistory={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
   });
 
   it('renders Sprint 17 guided room structure for mission path rooms', () => {
@@ -359,6 +359,7 @@ describe('Desktop shell', () => {
     const archiveHtml = renderToStaticMarkup(<ArchiveRoom
       missionIntelligencePackage={missionPackage}
       archivedMissionSummaries={[]}
+      missionHistory={[]}
       archivedJournalEntries={[]}
       doctrineRecords={[]}
     />);
@@ -380,6 +381,7 @@ describe('Desktop shell', () => {
         archivedAt: '2026-07-02T00:10:00.000Z',
         eventCount: 2,
       }]}
+      missionHistory={[]}
       archivedJournalEntries={[]}
       doctrineRecords={[]}
     />);
@@ -388,6 +390,8 @@ describe('Desktop shell', () => {
     expect(html).toContain('Foundation Patrol preserved as institutional memory.');
     expect(html).toContain('Timeline / History');
     expect(html).toContain('Mission Archive Viewer');
+    expect(html).toContain('Mission Dossier');
+    expect(html).toContain('Archive dossier is read-only historical intelligence.');
   });
 
   it('renders restrained atmosphere tokens for major rooms', () => {
@@ -406,7 +410,7 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<ObservationRoom activeMission={mission} />)).toContain('data-room-atmosphere="observation"');
     expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-atmosphere="war"');
     expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-atmosphere="debrief"');
-    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-atmosphere="archive"');
+    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} missionHistory={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-atmosphere="archive"');
     expect(renderToStaticMarkup(<JournalRoom
       journalEntries={[]}
       dailyReflections={[]}
@@ -840,6 +844,7 @@ describe('Desktop shell', () => {
         archivedAt: '2026-01-01T00:20:00.000Z',
         eventCount: 2,
       }]}
+      missionHistory={[]}
       archivedJournalEntries={[]}
       doctrineRecords={[]}
     />);

@@ -172,6 +172,7 @@ import {
   type MissionPersistenceStatus,
 } from './MissionPersistenceGuarantee';
 import { buildCommanderDeadEndRecovery } from './CommanderDeadEndRecovery';
+import { listMissionArchiveDossiers, type MissionArchiveDossier } from './MissionArchiveDossier';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -1963,6 +1964,8 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       <ArchiveRoom
         missionIntelligencePackage={context.missionIntelligencePackage}
         archivedMissionSummaries={context.archivedMissionSummaries}
+        missionHistory={context.missionHistory}
+        missionDebrief={context.missionDebrief}
         archivedJournalEntries={context.archivedJournalEntries}
         doctrineRecords={context.doctrineRecords}
       />
@@ -4469,11 +4472,15 @@ function JournalArchivePanel({
 export function ArchiveRoom({
   missionIntelligencePackage,
   archivedMissionSummaries,
+  missionHistory,
+  missionDebrief,
   archivedJournalEntries,
   doctrineRecords,
 }: {
   missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   archivedMissionSummaries: LocalMissionArchiveSummary[];
+  missionHistory: ActiveMission[];
+  missionDebrief?: MissionDebrief | undefined;
   archivedJournalEntries: ArchivedJournalEntry[];
   doctrineRecords: DoctrineRecord[];
 }) {
@@ -4484,6 +4491,11 @@ export function ArchiveRoom({
   const records = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries);
   const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
   const latestMissionSummary = archivedMissionSummaries[archivedMissionSummaries.length - 1];
+  const dossiers = listMissionArchiveDossiers({
+    summaries: archivedMissionSummaries,
+    missionHistory,
+    debrief: missionDebrief,
+  });
 
   return (
     <GuidedRoom
@@ -4509,6 +4521,7 @@ export function ArchiveRoom({
       timeline={(
         <>
           <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+          <MissionArchiveDossierPanel dossiers={dossiers} />
           <ArchiveEventExplorerPanel eventInspections={eventInspections} />
           <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
         </>
@@ -4531,6 +4544,32 @@ export function ArchiveRoom({
         </>
       )}
     />
+  );
+}
+
+function MissionArchiveDossierPanel({ dossiers }: { dossiers: readonly MissionArchiveDossier[] }) {
+  const latest = dossiers[dossiers.length - 1];
+
+  return (
+    <section className="journal-panel mission-archive-dossier-panel" aria-label="Mission archive dossier">
+      <p className="section-label">Mission Dossier</p>
+      <h3>{latest ? latest.codename : 'No dossier sealed'}</h3>
+      <p className="muted">{latest ? latest.commanderSummary : 'Archive dossier appears after mission archive.'}</p>
+      {latest ? (
+        <dl>
+          <dt>Archived</dt>
+          <dd>{latest.archivedAt}</dd>
+          <dt>State</dt>
+          <dd>{latest.state.replaceAll('_', ' ')}</dd>
+          <dt>Events</dt>
+          <dd>{latest.eventCount}</dd>
+          <dt>Debrief</dt>
+          <dd>{latest.debriefStatus}</dd>
+          <dt>Record</dt>
+          <dd>{latest.permanenceStatement}</dd>
+        </dl>
+      ) : null}
+    </section>
   );
 }
 
