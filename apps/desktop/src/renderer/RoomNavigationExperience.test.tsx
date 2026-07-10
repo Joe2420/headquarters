@@ -173,7 +173,7 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionDurationMs(true)).toBe(1000);
     expect(getTransitionDurationMs(false, createRoomTransition('ready-room', 'observation').controller)).toBe(4400);
     expect(getTransitionDurationMs(false, createRoomTransition('debrief', 'archive').controller)).toBe(3600);
-    expect(getTransitionDurationMs(false, createAuthorizationTransition('war-room').controller)).toBe(4600);
+    expect(getTransitionDurationMs(false, createAuthorizationTransition('war-room').controller)).toBe(3200);
   });
 
   it('renders the War Room as a video-only transition for normal room entry', () => {
@@ -190,14 +190,15 @@ describe('RoomNavigationExperience', () => {
     expect(transitionHtml).not.toContain('5 4 3 2 1');
   });
 
-  it('renders the authorization cockpit video only from the approval transition', () => {
+  it('renders the authorization ceremony as distinct from War Room entry', () => {
     const transitionHtml = renderToStaticMarkup(
       <RoomTransitionLayer transition={createAuthorizationTransition('war-room')} />,
     );
 
     expect(transitionHtml).toContain('data-transition-from="war-room"');
     expect(transitionHtml).toContain('data-transition-to="war-room"');
-    expect(transitionHtml).toContain('src="/transitions/war-room.mp4"');
+    expect(transitionHtml).toContain('src="/transitions/authorization-ceremony.mp4"');
+    expect(transitionHtml).toContain('data-transition-theme="authorization"');
     expect(transitionHtml).toContain('transition-scene-video-only');
     expect(transitionHtml).not.toContain('class="cockpit-countdown"');
   });

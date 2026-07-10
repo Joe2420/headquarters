@@ -3472,3 +3472,31 @@ dd {
     display: none !important;
   }
 }
+
+.transition-video-fallback {
+  display: grid;
+  min-height: min(58vh, 34rem);
+  width: min(100%, 78rem);
+  place-content: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(163, 204, 255, 0.22);
+  background:
+    linear-gradient(180deg, rgba(10, 18, 27, 0.94), rgba(2, 5, 9, 0.98)),
+    repeating-linear-gradient(0deg, rgba(132, 193, 255, 0.08) 0 1px, transparent 1px 10px);
+  color: #eaf5ff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: inset 0 0 4rem rgba(94, 162, 255, 0.12);
+}
+
+.transition-video-fallback span:first-child {
+  color: #b9ffca;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.transition-video-fallback span:last-child {
+  color: #9fb4c8;
+  font-size: 0.9rem;
+}

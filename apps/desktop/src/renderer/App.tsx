@@ -1067,16 +1067,17 @@ export function App() {
         setAuthorizationStatus(authorization);
         setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
 
-        if (authorization.decision === 'approved') {
-          const deployedMission = await declareDesktopDeployment(activeMission);
-          setActiveMission(deployedMission);
-          setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
-          setCommanderOperatorJustification('');
-          setCommanderInvalidation('');
-          setCommanderProtectiveRule('');
-        }
+      if (authorization.decision === 'approved') {
+        const deployedMission = await declareDesktopDeployment(activeMission);
+        setActiveMission(deployedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        setCommanderOperatorJustification('');
+        setCommanderInvalidation('');
+        setCommanderProtectiveRule('');
+        setRoomTransition(createAuthorizationTransition('war-room'));
+      }
 
-        return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
+      return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
       }
 
       const authorization = await requestDesktopAuthorization(activeMission, {
@@ -1100,6 +1101,7 @@ export function App() {
         setCommanderOperatorJustification('');
         setCommanderInvalidation('');
         setCommanderProtectiveRule('');
+        setRoomTransition(createAuthorizationTransition('war-room'));
         return 'Authorization accepted. Execute only within the declared plan.';
       }
 
