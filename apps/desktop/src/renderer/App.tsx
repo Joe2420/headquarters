@@ -115,6 +115,7 @@ import {
   RoomTransitionLayer,
   buildMissionCompassSteps,
   createAuthorizationTransition,
+  createMissionAcceptedTransition,
   createRoomTransition,
   getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
@@ -824,7 +825,11 @@ export function App() {
 
   function startDoorTransfer(
     room: HeadquartersRoomId,
-    options: { readonly openRoomAfter?: boolean; readonly fromRoom?: CommanderShellRoomId } = {},
+    options: {
+      readonly openRoomAfter?: boolean;
+      readonly fromRoom?: CommanderShellRoomId;
+      readonly transition?: RoomTransitionState;
+    } = {},
   ) {
     if (roomTransition !== undefined) return;
 
@@ -840,7 +845,7 @@ export function App() {
       window.clearTimeout(roomTransferTimeoutRef.current);
     }
 
-    const transition = createDoorOpeningTransition(fromRoom, targetRoom);
+    const transition = options.transition ?? createDoorOpeningTransition(fromRoom, targetRoom);
     setRoomTransition(transition);
 
     roomTransferTimeoutRef.current = window.setTimeout(() => {
@@ -861,13 +866,17 @@ export function App() {
 
   function startDoorTransferToMissionRoom(
     mission: ActiveMission,
-    options: { readonly fromRoom?: CommanderShellRoomId } = {},
+    options: { readonly fromRoom?: CommanderShellRoomId; readonly missionAccepted?: boolean } = {},
   ) {
     const nextRoom = recommendRoomForMissionState(parseMissionState(mission.currentState));
     const transferOptions = options.fromRoom ? { fromRoom: options.fromRoom } : {};
+    const transition = options.missionAccepted
+      ? createMissionAcceptedTransition(options.fromRoom ?? currentCommanderRoom, nextRoom)
+      : undefined;
 
     startDoorTransfer(mapCommanderRoomToNavigationTarget(nextRoom) as HeadquartersRoomId, {
       ...transferOptions,
+      ...(transition ? { transition } : {}),
     });
   }
 
@@ -883,7 +892,7 @@ export function App() {
     setCommanderMissionCodename('');
     setCommanderMissionObjective('');
     setCommanderWorkflowNotice('');
-    startDoorTransferToMissionRoom(mission, { fromRoom: 'command' });
+    startDoorTransferToMissionRoom(mission, { fromRoom: 'command', missionAccepted: true });
   }
 
   async function handleAbortMission() {
@@ -6041,19 +6050,72 @@ export function evaluateLocalMissionAuthorization(
 ): MissionAuthorizationStatus | undefined {
   if (mission === undefined) return undefined;
 
-  if (hasContent(draft.operatorJustification) && hasContent(draft.invalidation) && hasContent(draft.protectiveRule ?? '')) {
+  const missingAuthorizationRequirements = getMissingAuthorizationRequirements(mission, draft);
+
+  if (missingAuthorizationRequirements.length === 0) {
     return {
       missionId: mission.id,
       decision: 'approved',
-      reason: 'Manual authorization fields and protective rule are complete.',
+      reason: 'Operational briefing, observation evidence, invalidation, and protective rule are complete.',
     };
   }
 
   return {
     missionId: mission.id,
     decision: 'denied',
-    reason: 'Manual authorization requires operator justification, invalidation, and protective rule.',
+    reason: `Authorization blocked: ${missingAuthorizationRequirements.join('; ')}.`,
   };
+}
+
+function getMissingAuthorizationRequirements(
+  mission: ActiveMission,
+  draft: MissionAuthorizationDraft,
+): string[] {
+  const missionPackage = buildDesktopMissionIntelligencePackage(mission, {
+    operatorJustification: draft.operatorJustification,
+    invalidation: draft.invalidation,
+  });
+  const pressureTerms = ['fomo', 'revenge', 'rush', 'must trade', 'need to win', 'make it back'];
+  const justification = draft.operatorJustification.trim().toLowerCase();
+  const protectiveRule = draft.protectiveRule?.trim().toLowerCase() ?? '';
+  const missing: string[] = [];
+
+  if (!isReadyRoomBriefingComplete(mission.briefingContext)) {
+    missing.push('complete the Ready Room operational briefing');
+  }
+
+  if (!isObservationInterviewComplete(mission.observationContext)) {
+    missing.push('complete the Observation evidence interview');
+  }
+
+  if (!hasContent(draft.operatorJustification)) {
+    missing.push('state the authorization evidence');
+  }
+
+  if (!hasContent(draft.invalidation)) {
+    missing.push('state invalidation evidence');
+  }
+
+  if (!hasContent(draft.protectiveRule ?? '')) {
+    missing.push('state the protective rule');
+  }
+
+  if (hasContent(draft.operatorJustification) && pressureTerms.some((term) => justification.includes(term))) {
+    missing.push('remove pressure language from the authorization reasoning');
+  }
+
+  if (
+    hasContent(draft.protectiveRule ?? '')
+    && !['risk', 'stop', 'invalidation', 'loss', 'limit', 'rule', 'plan', 'doctrine', 'no trade'].some((term) => protectiveRule.includes(term))
+  ) {
+    missing.push('protective rule must name the risk, stop, invalidation, plan, doctrine, or no-trade boundary');
+  }
+
+  if (missionPackage.confidence.level === 'incomplete') {
+    missing.push('mission intelligence is still incomplete');
+  }
+
+  return missing;
 }
 
 function formatAuthorizationJustification(justification: string, protectiveRule: string): string {

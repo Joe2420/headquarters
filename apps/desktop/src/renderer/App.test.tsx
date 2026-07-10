@@ -1850,7 +1850,36 @@ describe('Desktop shell', () => {
 
     if (!mission) throw new Error('Expected local mission to be created');
 
-    const approved = evaluateLocalMissionAuthorization(mission, {
+    const missionWithContext = withObservationMissionContext(
+      withBriefingMissionContext(mission, {
+        missionObjective: 'Hold the line',
+        market: 'ES futures',
+        marketEnvironment: 'Range with clear boundaries',
+        highImpactNews: 'None',
+        personalReadiness: 'focused',
+        riskParameters: '1%',
+        successCriteria: 'No trade unless the plan confirms.',
+      }),
+      {
+        marketDirection: 'Sideways',
+        marketStructure: 'Range',
+        volume: 'Normal',
+        liquidity: 'Resting above prior high and below prior low',
+        keyLevels: 'Prior high and prior low',
+        bias: 'Neutral until range break',
+        invalidationEvidence: 'Exit if structure breaks.',
+        emotionalCheck: 'calm',
+        readiness: 'yes',
+        operationalPicture: 'Range structure, normal volume, and clear invalidation are present.',
+      },
+    );
+
+    const approved = evaluateLocalMissionAuthorization(missionWithContext, {
+      operatorJustification: 'Setup matches the plan.',
+      invalidation: 'Exit if structure breaks.',
+      protectiveRule: 'No trade after failed acceptance.',
+    });
+    const deniedWithoutContext = evaluateLocalMissionAuthorization(mission, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
       protectiveRule: 'No trade after failed acceptance.',
@@ -1868,14 +1897,19 @@ describe('Desktop shell', () => {
     expect(approved).toEqual({
       missionId: 'mission-001',
       decision: 'approved',
-      reason: 'Manual authorization fields and protective rule are complete.',
+      reason: 'Operational briefing, observation evidence, invalidation, and protective rule are complete.',
     });
     expect(formatAuthorizationStatus(approved)).toBe('Authorization approved');
 
+    expect(deniedWithoutContext).toEqual({
+      missionId: 'mission-001',
+      decision: 'denied',
+      reason: 'Authorization blocked: complete the Ready Room operational briefing; complete the Observation evidence interview; mission intelligence is still incomplete.',
+    });
     expect(denied).toEqual({
       missionId: 'mission-001',
       decision: 'denied',
-      reason: 'Manual authorization requires operator justification, invalidation, and protective rule.',
+      reason: 'Authorization blocked: complete the Ready Room operational briefing; complete the Observation evidence interview; state invalidation evidence; mission intelligence is still incomplete.',
     });
     expect(deniedWithoutRule?.decision).toBe('denied');
     expect(formatAuthorizationStatus(denied)).toBe('Authorization denied');

@@ -246,6 +246,23 @@ export function createAuthorizationTransitionController(
   });
 }
 
+export function createMissionAcceptedTransitionController(
+  fromRoom: CommanderShellRoomId = 'command',
+  toRoom: CommanderShellRoomId = 'ready-room',
+  phase: TransitionPhase = 'commander',
+): TransitionController {
+  return createTransitionController(fromRoom, toRoom, phase, {
+    ...getTransitionVariant('ready-room'),
+    title: 'Mission Accepted',
+    standby: 'READY ROOM',
+    commanderDeparture: 'Mission accepted.',
+    commanderArrival: 'Ready Room entered. Prepare before moving further.',
+    videoSrc: '/transitions/authorization-ceremony.mp4',
+    durationMs: 3200,
+    fallbackLines: ['Mission accepted.', 'Ready Room entered.'],
+  });
+}
+
 export function buildTransitionAudioEvents(
   controller: TransitionController,
   input: { readonly reducedMotion?: boolean | undefined; readonly createdAt?: string | undefined } = {},
