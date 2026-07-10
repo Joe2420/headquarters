@@ -2,6 +2,17 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-0280 - Sprint 29 Mission Continuity, Doctrine, Guardian, and Archive Review
+- HQ-TASK-0279 - Journal Mission Integration
+- HQ-TASK-0278 - Guardian Alerts in Commander Chat
+- HQ-TASK-0277 - Commander Learning Visibility
+- HQ-TASK-0276 - Archive Mission Dossier
+- HQ-TASK-0275 - Commander Chat Dead-End Recovery
+- HQ-TASK-0274 - Mission Persistence Guarantee
+- HQ-TASK-0273 - Doctrine Review Approval and Rejection
+- HQ-TASK-0272 - Active Mission Presence and Check-Ins
+- HQ-TASK-0271 - Mission Authorization Ceremony Video
+
 - HQ-TASK-0270 - Sprint 28 Living Headquarters OS Review
 - HQ-TASK-0269 - Living Headquarters OS Integration Tests
 - HQ-TASK-0268 - Dynamic Situation Board OS Context
