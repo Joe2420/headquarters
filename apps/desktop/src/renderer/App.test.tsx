@@ -1121,6 +1121,32 @@ describe('Desktop shell', () => {
     expect(html).not.toContain('aria-label="Journal archive"');
   });
 
+  it('renders active mission journal integration when a mission is open', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const html = renderToStaticMarkup(<JournalRoom
+      activeMission={mission}
+      journalEntries={[]}
+      dailyReflections={[]}
+      tradeReviews={[]}
+      growthEvents={[]}
+      archivedJournalEntries={[]}
+      onCreateJournalEntry={() => undefined}
+      onCreateDailyReflection={() => undefined}
+      onCreateTradeReview={() => undefined}
+      onCreateGrowthEvent={() => undefined}
+      onArchiveJournalEntry={() => undefined}
+    />);
+
+    expect(html).toContain('aria-label="Mission journal integration"');
+    expect(html).toContain('Write the next command log entry for Foundation Patrol.');
+  });
+
   it('renders Doctrine as a review chamber with manual candidate promotion visible', () => {
     const html = renderToStaticMarkup(<DoctrineRoom
       doctrineRecords={[]}

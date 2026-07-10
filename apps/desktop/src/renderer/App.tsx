@@ -179,6 +179,7 @@ import {
   formatCommanderGuardianStatus,
   type CommanderGuardianAlertLine,
 } from './CommanderGuardianAlerts';
+import { buildMissionJournalLink } from './MissionJournalIntegration';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -1955,6 +1956,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   if (room === 'journal') {
     return (
       <JournalRoom
+        activeMission={context.activeMission}
         journalEntries={context.journalEntries}
         dailyReflections={context.dailyReflections}
         tradeReviews={context.tradeReviews}
@@ -3726,6 +3728,7 @@ function ArchiveWritePanel({ archiveWrite }: ArchiveWritePanelProps) {
 }
 
 interface JournalRoomProps {
+  activeMission?: ActiveMission | undefined;
   journalEntries: JournalEntry[];
   dailyReflections: DailyReflection[];
   tradeReviews: TradeReview[];
@@ -3739,6 +3742,7 @@ interface JournalRoomProps {
 }
 
 export function JournalRoom({
+  activeMission,
   journalEntries,
   dailyReflections,
   tradeReviews,
@@ -3770,6 +3774,7 @@ export function JournalRoom({
   });
   const searchResult = searchJournalEntries(journalEntries, { text: searchText });
   const activeStep = getJournalWorkflowSteps().find((step) => step.id === activeJournalStep);
+  const missionJournalLink = buildMissionJournalLink({ mission: activeMission, journalEntries });
 
   async function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -3857,6 +3862,15 @@ export function JournalRoom({
         <h2>Guided Journal</h2>
         <p className="muted">Commander-guided writing flow for entries, reflection, review, growth evidence, timeline, search, and archive.</p>
       </section>
+
+      {missionJournalLink ? (
+        <section className="journal-panel mission-journal-link-panel" aria-label="Mission journal integration">
+          <p className="section-label">Mission Link</p>
+          <h3>{missionJournalLink.codename}</h3>
+          <p className="muted">{missionJournalLink.prompt}</p>
+          <strong>{missionJournalLink.status}</strong>
+        </section>
+      ) : null}
 
       <section className="guided-workflow-layout" aria-label="Journal guided workflow">
         <section className="commander-briefing-panel" aria-label="Journal Commander prompt">
