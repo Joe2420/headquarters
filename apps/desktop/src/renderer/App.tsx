@@ -163,6 +163,14 @@ import {
   recordDoctrineReviewDecision,
   type DoctrineReviewRecord,
 } from './DoctrineReview';
+import {
+  createMissionPersistenceStatus,
+  formatMissionPersistenceStatus,
+  markMissionSavePending,
+  markMissionSaveSucceeded,
+  recoverIncompleteMissionStatus,
+  type MissionPersistenceStatus,
+} from './MissionPersistenceGuarantee';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -406,6 +414,7 @@ export function App() {
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [archivedMissionSummaries, setArchivedMissionSummaries] = useState<LocalMissionArchiveSummary[]>([]);
   const [missionHistory, setMissionHistory] = useState<ActiveMission[]>([]);
+  const [missionPersistenceStatus, setMissionPersistenceStatus] = useState<MissionPersistenceStatus>(() => createMissionPersistenceStatus());
   const [deployedCheckIns, setDeployedCheckIns] = useState<DeployedMissionCheckIn[]>([]);
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [dailyReflections, setDailyReflections] = useState<DailyReflection[]>([]);
@@ -498,6 +507,8 @@ export function App() {
           setMissionHistory(loadedMissions);
           setActiveMission(getLatestActiveMission(loadedMissions));
           setArchivedMissionSummaries(buildArchivedMissionSummariesFromMissions(loadedMissions));
+          const recovered = recoverIncompleteMissionStatus(loadedMissions);
+          if (recovered) setMissionPersistenceStatus(recovered);
         }
 
         if (journalResult) {
@@ -836,8 +847,10 @@ export function App() {
   }
 
   async function handleMissionCreated(mission: ActiveMission) {
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Mission creation persistence in progress.'));
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
     setArchiveWrite(createArchiveWritePlaceholder(mission));
     setAuthorizationStatus(undefined);
     setMissionDebrief(undefined);
@@ -852,11 +865,13 @@ export function App() {
     if (activeMission === undefined) return;
 
     const abortedMission = await abortDesktopMission(activeMission);
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, activeMission.id, 'Abort persistence in progress.'));
     const archiveSummary = createAbortArchiveSummary(abortedMission);
     setArchiveSummary(archiveSummary);
     setArchivedMissionSummaries((summaries) => upsertArchiveSummaries(summaries, archiveSummary));
     setActiveMission(getActiveMissionAfterMissionChange(abortedMission));
     setMissionHistory((history) => upsertMissionHistory(history, abortedMission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(abortedMission.id));
     setMissionDebrief(undefined);
     setAuthorizationStatus(undefined);
     setCommanderWorkflowNotice('Mission aborted and closed. You can create a new mission when ready.');
@@ -879,8 +894,10 @@ export function App() {
   }
 
   async function completeReadyRoomBriefing(mission: ActiveMission, response: string): Promise<string> {
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Ready Room answer persistence in progress.'));
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
     setCommanderWorkflowNotice('Operational briefing complete. Continue is unlocked for Observation.');
     return response;
   }
@@ -898,8 +915,10 @@ export function App() {
   }
 
   async function completeObservationInterview(mission: ActiveMission, response: string): Promise<string> {
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Observation answer persistence in progress.'));
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
     setCommanderWorkflowNotice('Observation complete. Continue is unlocked for War Room authorization.');
     return response;
   }
@@ -931,7 +950,9 @@ export function App() {
       return 'No material change recorded. Continue executing the authorized plan.';
     }
 
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, activeMission.id, 'Deployment check-in persistence in progress.'));
     setDeployedCheckIns((current) => [...current, checkIn]);
+    setMissionPersistenceStatus(markMissionSaveSucceeded(activeMission.id));
     setCommanderWorkflowNotice(lastCheckIn ? 'Mission check-in updated.' : 'Mission check-in recorded.');
 
     if (checkIn.status === 'return_requested' || checkIn.status === 'return_recommended') {
@@ -1344,6 +1365,7 @@ export function App() {
                     missionIntelligencePackage={missionIntelligencePackage}
                     authorizationStatus={authorizationStatus}
                     deployedCheckIns={deployedCheckIns}
+                    missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
                     missionCodename={commanderMissionCodename}
@@ -1550,6 +1572,7 @@ function CommanderWorkflowSurface({
   currentRoom,
   authorizationStatus,
   deployedCheckIns,
+  missionPersistenceStatus,
   missionDebrief,
   notice,
   missionCodename,
@@ -1577,6 +1600,7 @@ function CommanderWorkflowSurface({
   readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
   readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
+  readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
   readonly missionCodename: string;
@@ -1623,6 +1647,21 @@ function CommanderWorkflowSurface({
 
   return (
     <>
+      <section
+        className="commander-workflow-card mission-persistence-indicator"
+        aria-label="Mission persistence status"
+        data-persistence-state={missionPersistenceStatus.state}
+      >
+        <p className="section-label">Mission Record</p>
+        <strong>{formatMissionPersistenceStatus(missionPersistenceStatus)}</strong>
+        {missionPersistenceStatus.state === 'save_failed' || missionPersistenceStatus.state === 'recovery_available' ? (
+          <div className="inline-actions">
+            <button type="button" className="secondary-action">Resume Mission</button>
+            <button type="button" className="secondary-action">Review Mission</button>
+          </div>
+        ) : null}
+      </section>
+
       {reportState === 'reported' && activeMission === undefined ? (
         <section className="commander-workflow-card commander-workflow-card-single" aria-label="Commander mission creation controls">
           <div>

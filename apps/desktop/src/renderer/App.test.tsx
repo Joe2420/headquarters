@@ -160,6 +160,17 @@ describe('Desktop shell', () => {
     expect(source).toContain('formatDoctrineReviewAudit');
   });
 
+  it('shows mission persistence and recovery status in Commander workflow', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('aria-label="Mission persistence status"');
+    expect(source).toContain('markMissionSavePending');
+    expect(source).toContain('markMissionSaveSucceeded');
+    expect(source).toContain('recoverIncompleteMissionStatus');
+    expect(source).toContain('Resume Mission');
+    expect(source).toContain('Review Mission');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
