@@ -139,6 +139,16 @@ describe('Desktop shell', () => {
     expect(source).toContain('renderHeadquartersRoom(currentRoomView, {');
   });
 
+  it('exposes deployed mission presence and Report Change check-ins through Commander workflow', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('deployedCheckIns');
+    expect(source).toContain('aria-label="Active mission deployment"');
+    expect(source).toContain('aria-label="Report deployed mission change"');
+    expect(source).toContain('State only what changed.');
+    expect(source).toContain('Return to Base is now the correct next action.');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 

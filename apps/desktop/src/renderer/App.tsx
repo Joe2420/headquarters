@@ -152,6 +152,11 @@ import {
   buildCommanderPacingLine,
   buildOperationalPsychologyProfile,
 } from './OperationalPsychology';
+import {
+  createDeployedMissionCheckIn,
+  createDeployedMissionPresence,
+  type DeployedMissionCheckIn,
+} from './MissionDeployedCheckIns';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -395,6 +400,7 @@ export function App() {
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [archivedMissionSummaries, setArchivedMissionSummaries] = useState<LocalMissionArchiveSummary[]>([]);
   const [missionHistory, setMissionHistory] = useState<ActiveMission[]>([]);
+  const [deployedCheckIns, setDeployedCheckIns] = useState<DeployedMissionCheckIn[]>([]);
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [dailyReflections, setDailyReflections] = useState<DailyReflection[]>([]);
   const [tradeReviews, setTradeReviews] = useState<TradeReview[]>([]);
@@ -891,6 +897,47 @@ export function App() {
     return response;
   }
 
+  function handleDeployedCheckIn(visibleCondition: string): string {
+    if (activeMission === undefined || parseMissionState(activeMission.currentState) !== 'deployed') {
+      return 'No deployed mission is active.';
+    }
+
+    const lastCheckIn = [...deployedCheckIns]
+      .filter((checkIn) => checkIn.missionId === activeMission.id)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
+      .at(-1);
+    const now = new Date().toISOString();
+
+    const checkIn = createDeployedMissionCheckIn({
+      missionId: activeMission.id,
+      previous: deployedCheckIns,
+      createdAt: now,
+      draft: {
+        visibleCondition,
+        structureChanged: visibleCondition,
+        planValidity: visibleCondition,
+        continueOrReturn: visibleCondition,
+      },
+    });
+
+    if (checkIn === undefined) {
+      return 'No material change recorded. Continue executing the authorized plan.';
+    }
+
+    setDeployedCheckIns((current) => [...current, checkIn]);
+    setCommanderWorkflowNotice(lastCheckIn ? 'Mission check-in updated.' : 'Mission check-in recorded.');
+
+    if (checkIn.status === 'return_requested' || checkIn.status === 'return_recommended') {
+      return 'Material change recorded. Return to Base is now the correct next action.';
+    }
+
+    if (checkIn.status === 'invalidation_near') {
+      return 'Invalidation proximity recorded. Reduce action to the declared plan only.';
+    }
+
+    return 'Material change recorded. State only new evidence if conditions shift again.';
+  }
+
   async function handleCommanderTransmission(message: string): Promise<string> {
     const currentState = parseMissionState(activeMission?.currentState);
     const shouldContinue = isContinueTransmission(message);
@@ -1114,7 +1161,7 @@ export function App() {
         return 'Deployment closed. Return to Base is active; debrief before archive.';
       }
 
-      return 'War Room note received. Stay with the authorized plan until return to base is required.';
+      return handleDeployedCheckIn(message);
     }
 
     if (currentState === 'return_to_base') {
@@ -1289,6 +1336,7 @@ export function App() {
                     activeMission={activeMission}
                     missionIntelligencePackage={missionIntelligencePackage}
                     authorizationStatus={authorizationStatus}
+                    deployedCheckIns={deployedCheckIns}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
                     missionCodename={commanderMissionCodename}
@@ -1308,6 +1356,7 @@ export function App() {
                     onDisciplineNotesChange={setCommanderDisciplineNotes}
                     onLessonChange={setCommanderLesson}
                     onCreateMission={handleMissionCreated}
+                    onReportDeployedChange={handleDeployedCheckIn}
                     reportState={reportState}
                   />}
                   onContinue={handleCommanderContinue}
@@ -1488,6 +1537,7 @@ function CommanderWorkflowSurface({
   missionIntelligencePackage,
   currentRoom,
   authorizationStatus,
+  deployedCheckIns,
   missionDebrief,
   notice,
   missionCodename,
@@ -1507,12 +1557,14 @@ function CommanderWorkflowSurface({
   onDisciplineNotesChange,
   onLessonChange,
   onCreateMission,
+  onReportDeployedChange,
   reportState,
 }: {
   readonly currentRoom: string;
   readonly activeMission?: ActiveMission | undefined;
   readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
   readonly missionCodename: string;
@@ -1532,9 +1584,30 @@ function CommanderWorkflowSurface({
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
   readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
+  readonly onReportDeployedChange: (visibleCondition: string) => string;
   readonly reportState: 'not-reported' | 'reported';
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
+  const [deployedVisibleCondition, setDeployedVisibleCondition] = useState('');
+  const deployedPresence = activeMission && currentState === 'deployed'
+    ? createDeployedMissionPresence({
+      missionId: activeMission.id,
+      codename: activeMission.campaign,
+      objective: activeMission.objective,
+      authorizationReasoning: authorizationStatus?.reason,
+      activeInvalidation: missionIntelligencePackage?.invalidation,
+      riskLimit: activeMission.missionContext?.briefing.riskParameters,
+      currentVisibleCondition: activeMission.missionContext?.observation.operationalSummary,
+      createdAt: activeMission.createdAt,
+      checkIns: deployedCheckIns,
+    })
+    : undefined;
+
+  function handleDeployedReport(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    onReportDeployedChange(deployedVisibleCondition);
+    setDeployedVisibleCondition('');
+  }
 
   return (
     <>
@@ -1588,6 +1661,41 @@ function CommanderWorkflowSurface({
             <span>Protective Rule</span>
             <input value={protectiveRule} onChange={(event) => onProtectiveRuleChange(event.target.value)} />
           </label>
+        </section>
+      ) : null}
+
+      {deployedPresence && currentRoom === 'war-room' ? (
+        <section className="commander-workflow-card deployed-presence-card" aria-label="Active mission deployment">
+          <div>
+            <p className="section-label">Deployed Mission</p>
+            <h3>{deployedPresence.codename}</h3>
+            <p className="muted">{deployedPresence.objective}</p>
+          </div>
+          <dl>
+            <dt>Status</dt>
+            <dd>{deployedPresence.deploymentStatus.replaceAll('_', ' ')}</dd>
+            <dt>Authorization</dt>
+            <dd>{deployedPresence.authorizationReasoning}</dd>
+            <dt>Invalidation</dt>
+            <dd>{deployedPresence.activeInvalidation}</dd>
+            <dt>Risk</dt>
+            <dd>{deployedPresence.riskLimit}</dd>
+            <dt>Visible Condition</dt>
+            <dd>{deployedPresence.currentVisibleCondition}</dd>
+            <dt>Elapsed</dt>
+            <dd>{deployedPresence.elapsedLabel}</dd>
+          </dl>
+          <form className="deployed-check-in-form" aria-label="Report deployed mission change" onSubmit={handleDeployedReport}>
+            <label>
+              <span>Report Change</span>
+              <input
+                value={deployedVisibleCondition}
+                onChange={(event) => setDeployedVisibleCondition(event.target.value)}
+                placeholder="State only what changed."
+              />
+            </label>
+            <button type="submit" className="secondary-action">Record Change</button>
+          </form>
         </section>
       ) : null}
 
