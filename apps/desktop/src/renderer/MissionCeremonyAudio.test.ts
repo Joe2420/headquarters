@@ -54,5 +54,15 @@ describe('MissionCeremonyAudio', () => {
       label: 'Authorization Requested',
       message: 'War Room authority is active.',
     })).toBe('authorization_requested');
+    expect(mapMissionCeremonyToAudioMoment({
+      id: 'ceremony:authorization-granted',
+      label: 'Authorization Granted',
+      message: 'Authorization granted.',
+    })).toBe('authorization_granted');
+    expect(mapMissionCeremonyToAudioMoment({
+      id: 'ceremony:observation-complete',
+      label: 'Observation Complete',
+      message: 'Observation complete.',
+    })).toBe('observation_complete');
   });
 });

@@ -93,11 +93,15 @@ describe('HeadquartersAtmosphere', () => {
     expect(buildMissionCeremony('ready')?.label).toBe('Briefing Complete');
     expect(buildMissionCeremony('observation')?.label).toBe('Observation Begins');
     expect(buildMissionCeremony('authorization')?.label).toBe('Authorization Requested');
+    expect(buildMissionCeremony('deployed')?.label).toBe('Authorization Granted');
     expect(buildMissionCeremony('return_to_base')?.label).toBe('Return To Base');
     expect(buildMissionCeremony('debrief')?.label).toBe('Debrief Complete');
     expect(buildMissionCeremony('archived')?.label).toBe('Mission Archived');
+    expect(buildMissionCeremony('ready')?.message).toBe('Operational briefing complete.');
 
     const html = renderToStaticMarkup(<MissionCeremonyMoment ceremony={buildMissionCeremony('authorization')} />);
     expect(html).toContain('data-ceremony-id="ceremony:authorization-requested"');
+    expect(html).toContain('data-ceremony-room="war-room"');
+    expect(html).toContain('Doctrine, invalidation, and Guardian restrictions decide from here.');
   });
 });
