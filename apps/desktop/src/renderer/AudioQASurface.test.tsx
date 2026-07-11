@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { createAudioEvent } from './AudioEvents';
 import { muteAllAudioPreferences } from './AudioPreferences';
 import { AudioQASurface } from './AudioQASurface';
+import { getCommanderCeremonyDialogue } from './CommanderCeremonyDialogue';
+import { buildCommanderCeremonyAudioEvent } from './MissionCeremonyAudio';
 
 describe('AudioQASurface', () => {
   it('renders a calm empty state', () => {
@@ -32,5 +34,13 @@ describe('AudioQASurface', () => {
     const html = renderToStaticMarkup(<AudioQASurface events={[]} preferences={muteAllAudioPreferences()} />);
 
     expect(html).toContain('Preference state: Audio muted');
+  });
+
+  it('renders Commander ceremony audio candidates for QA inspection', () => {
+    const event = buildCommanderCeremonyAudioEvent(getCommanderCeremonyDialogue('authorization_granted'));
+    const html = renderToStaticMarkup(<AudioQASurface events={event ? [event] : []} />);
+
+    expect(html).toContain('ceremony_authorization_granted');
+    expect(html).toContain('ceremony / high / war-room');
   });
 });
