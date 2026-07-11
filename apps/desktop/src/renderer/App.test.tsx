@@ -1348,10 +1348,44 @@ describe('Desktop shell', () => {
 
     expect(briefing.headline).toBe('Foundation Patrol is in Observation.');
     expect(briefing.situation.recommendedRoom).toBe('Observation Room');
-    expect(briefing.situation.reason).toBe('evidence is not complete.');
-    expect(briefing.highestPriority).toBe('Collect visible evidence.');
+    expect(briefing.situation.reason).toBe('Visible evidence must be collected before War Room authorization.');
+    expect(briefing.highestPriority).toBe('Complete Observation');
+    expect(briefing.priorities[0]?.source).toBe('mission');
+    expect(briefing.priorityCounts.blocking).toBe(1);
     expect(briefing.services.some((service) => service.name === 'Mission' && service.status === 'Active')).toBe(true);
     expect(briefing.semanticEvidence.archive).toBe('Headquarters has not preserved a mission record yet.');
+  });
+
+  it('lets Guardian restrictions override normal Commander Room recommendations', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const briefing = buildCommanderRoomBriefing({
+      activeMission: { ...mission, currentState: 'observation' },
+      startupSubsystemCount: 4,
+      missionHistory: [],
+      growthEvents: [],
+      doctrineRecords: [],
+      guardianAlerts: [{
+        id: 'guardian-alert-lockout',
+        title: 'Guardian lockout',
+        message: 'Trading authorization suspended.',
+        priority: 'critical',
+        sourceId: 'lockout-rule',
+      }],
+      journalEntries: [],
+      archivedMissionSummaries: [],
+      archivedJournalEntries: [],
+    });
+
+    expect(briefing.priorities[0]?.source).toBe('guardian');
+    expect(briefing.situation.recommendedRoom).toBe('War Room');
+    expect(briefing.situation.severity).toBe('critical');
+    expect(briefing.recommendedAction).toBe('Resolve Guardian restriction');
   });
 
   it('defines a deterministic guided Journal workflow sequence', () => {

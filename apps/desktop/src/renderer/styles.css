@@ -2866,6 +2866,44 @@ dd {
   color: #d9e7ff;
 }
 
+.commander-situation-board small {
+  width: max-content;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(217, 231, 255, 0.14);
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.commander-priority-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.commander-priority-list li {
+  display: grid;
+  grid-template-columns: minmax(5rem, 0.3fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.55rem;
+  border: 1px solid rgba(217, 231, 255, 0.1);
+  background: rgba(5, 8, 10, 0.24);
+}
+
+.commander-priority-list span {
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.commander-priority-list li[data-priority-severity="critical"],
+.commander-priority-list li[data-priority-severity="blocking"] {
+  border-color: rgba(211, 91, 77, 0.34);
+}
+
 .commander-activity-log li {
   display: grid;
   grid-template-columns: minmax(8rem, 0.35fr) minmax(0, 1fr) minmax(8rem, 0.32fr);
