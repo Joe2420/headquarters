@@ -34,6 +34,7 @@ import {
   buildDesktopJournalClassifications,
   buildDesktopMissionIntelligencePackage,
   buildJournalCommanderIntelligence,
+  buildCommanderRoomBriefing,
   buildObservationRoomIntelligenceModel,
   buildReadyRoomPreparationModel,
   buildDesktopRepeatedMistakes,
@@ -1290,37 +1291,49 @@ describe('Desktop shell', () => {
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {
     const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
 
-    expect(html).toContain('Headquarters Overview');
-    expect(html).toContain('aria-label="Commander guidance"');
-    expect(html).toContain('aria-label="Commander daily briefing"');
-    expect(html).toContain('Daily Briefing');
-    expect(html).toContain('No active mission is loaded');
-    expect(html).toContain('aria-label="Commander session debrief"');
-    expect(html).toContain('Session Debrief');
-    expect(html).toContain('distinct from mission debrief persistence');
-    expect(html).toContain('aria-label="Commander weekly review"');
-    expect(html).toContain('Weekly Review');
-    expect(html).toContain('No approved weekly evidence is available yet');
-    expect(html).toContain('aria-label="Commander monthly review"');
-    expect(html).toContain('Monthly Review');
-    expect(html).toContain('No traceable monthly evidence is available yet');
-    expect(html).toContain('aria-label="Commander dashboard"');
-    expect(html).toContain('Commander Dashboard');
-    expect(html).toContain('No chat behavior');
-    expect(html).toContain('No avatar behavior');
-    expect(html).toContain('aria-label="Commander mission planning"');
-    expect(html).toContain('Mission Planning');
-    expect(html).toContain('No trade signals');
-    expect(html).toContain('No bypass of HQOS mission logic');
-    expect(html).toContain('aria-label="Commander objectives"');
-    expect(html).toContain('Objectives');
-    expect(html).toContain('No social mechanics');
-    expect(html).toContain('No gamified scoring');
-    expect(html).toContain('aria-label="Next required action"');
-    expect(html).toContain('aria-label="Headquarters supporting information"');
-    expect(html).toContain('Detailed workflow, timeline, and history live inside the Mission Room');
+    expect(html).toContain('Commander Briefing');
+    expect(html).toContain('aria-label="Commander briefing"');
+    expect(html).toContain('Headquarters is ready for command.');
+    expect(html).toContain('aria-label="Morning Brief"');
+    expect(html).toContain('aria-label="Mission Record"');
+    expect(html).toContain('aria-label="Intelligent Situation Board"');
+    expect(html).toContain('Mission Room');
+    expect(html).toContain('aria-label="Operational Message History"');
+    expect(html).toContain('aria-label="Commander Learning Dashboard"');
+    expect(html).toContain('aria-label="Headquarters Broadcast"');
+    expect(html).toContain('aria-label="Services Health Dashboard"');
+    expect(html).toContain('aria-label="Headquarters Operational Timeline"');
+    expect(html).toContain('aria-label="Semantic evidence summaries"');
+    expect(html).toContain('Headquarters has not preserved a mission record yet.');
     expect(html).not.toContain('aria-label="Mission operations"');
     expect(html).not.toContain('Mission Debrief');
+  });
+
+  it('builds evidence-driven Commander Room recommendations', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const briefing = buildCommanderRoomBriefing({
+      activeMission: { ...mission, currentState: 'observation' },
+      startupSubsystemCount: 4,
+      missionHistory: [],
+      growthEvents: [],
+      doctrineRecords: [],
+      journalEntries: [],
+      archivedMissionSummaries: [],
+      archivedJournalEntries: [],
+    });
+
+    expect(briefing.headline).toBe('Foundation Patrol is in Observation.');
+    expect(briefing.situation.recommendedRoom).toBe('Observation Room');
+    expect(briefing.situation.reason).toBe('evidence is not complete.');
+    expect(briefing.highestPriority).toBe('Collect visible evidence.');
+    expect(briefing.services.some((service) => service.name === 'Mission' && service.status === 'Active')).toBe(true);
+    expect(briefing.semanticEvidence.archive).toBe('Headquarters has not preserved a mission record yet.');
   });
 
   it('defines a deterministic guided Journal workflow sequence', () => {
@@ -1913,18 +1926,20 @@ describe('Desktop shell', () => {
     });
   });
 
-  it('renders the Headquarters overview in the command center placeholder', () => {
+  it('renders the Commander command bridge in the command center placeholder', () => {
     const html = renderToStaticMarkup(<CommandCenterPlaceholder />);
 
     expect(html).toContain('data-layout="command-center"');
-    expect(html).toContain('Headquarters Overview');
-    expect(html).toContain('Commander');
-    expect(html).toContain('Current Mission');
-    expect(html).toContain('Next Required Action');
-    expect(html).toContain('HQOS');
+    expect(html).toContain('Commander Briefing');
+    expect(html).toContain('aria-label="Commander briefing"');
+    expect(html).toContain('aria-label="Morning Brief"');
+    expect(html).toContain('aria-label="Mission Record"');
+    expect(html).toContain('aria-label="Intelligent Situation Board"');
+    expect(html).toContain('aria-label="Operational Message History"');
+    expect(html).toContain('aria-label="Services Health Dashboard"');
     expect(html).toContain('No mission loaded');
-    expect(html).toContain('No growth highlights yet');
-    expect(html).toContain('No doctrine highlights yet');
+    expect(html).toContain('Create Mission');
+    expect(html).toContain('Headquarters core systems are ready.');
     expect(html).not.toContain('Mission Debrief');
   });
 

@@ -24,7 +24,6 @@ import {
 } from '@headquarters/academy';
 import {
   buildCommanderDashboard,
-  buildCommanderDailyBriefing,
   buildCommanderMissionPlanning,
   buildCommanderMonthlyReview,
   buildCommanderObjectives,
@@ -2130,15 +2129,15 @@ function CommandOverview({
   archivedMissionSummaries = [],
   archivedJournalEntries = [],
 }: CommandOverviewProps) {
-  const nextAction = getMissionNextAction(activeMission);
-  const commanderMessage = getCommanderMessage(activeMission);
-  const dailyBriefing = buildCommanderDailyBriefing({
-    activeMissionTitle: activeMission?.campaign,
-    activeMissionObjective: activeMission?.objective,
-    missionCount: missionHistory.length,
-    journalEntryCount: journalEntries.length,
-    archiveRecordCount: archivedMissionSummaries.length + archivedJournalEntries.length,
-    generatedAt: activeMission?.createdAt ?? 'standby',
+  const briefing = buildCommanderRoomBriefing({
+    activeMission,
+    startupSubsystemCount,
+    missionHistory,
+    growthEvents,
+    doctrineRecords,
+    journalEntries,
+    archivedMissionSummaries,
+    archivedJournalEntries,
   });
   const sessionDebrief = buildCommanderSessionDebrief({
     missionTitle: activeMission?.campaign,
@@ -2188,41 +2187,96 @@ function CommandOverview({
     <div className="command-center-layout" data-layout="command-center" data-room-atmosphere="command">
       <section className="command-center-header" aria-label="Command center overview">
         <p className="section-label">Command Center</p>
-        <h2>Headquarters Overview</h2>
-        <p className="muted">Commander guidance, current objective, next action, HQOS status, and recent evidence.</p>
+        <h2>Commander Briefing</h2>
+        <p className="muted">Commander interprets Headquarters state, identifies the priority, and recommends the next operational room.</p>
       </section>
-      <section className="command-overview-flow" aria-label="Headquarters command flow">
-        <section className="commander-briefing-panel" aria-label="Commander guidance">
+      <section className="commander-bridge-layout" aria-label="Headquarters command bridge">
+        <section className="commander-primary-briefing" aria-label="Commander briefing">
           <p className="section-label">Commander</p>
-          <h3>{commanderMessage.title}</h3>
-          <p className="muted">{commanderMessage.body}</p>
+          <h3>{briefing.headline}</h3>
+          <p>{briefing.summary}</p>
+          <dl>
+            <div><dt>Headquarters</dt><dd>{briefing.headquartersState}</dd></div>
+            <div><dt>Mission</dt><dd>{briefing.missionState}</dd></div>
+            <div><dt>Priority</dt><dd>{briefing.highestPriority}</dd></div>
+            <div><dt>Next Action</dt><dd>{briefing.recommendedAction}</dd></div>
+          </dl>
         </section>
-        <section className="commander-briefing-panel" aria-label="Commander daily briefing">
-          <p className="section-label">Daily Briefing</p>
-          <h3>{dailyBriefing.summary}</h3>
-          <p className="muted">{dailyBriefing.focus}</p>
-          <ul className="mission-archive-list">
-            {dailyBriefing.evidence.map((item) => (
-              <li key={item}>
-                <span>{item}</span>
-                <strong>Evidence</strong>
-              </li>
-            ))}
+        <section className="commander-morning-brief" aria-label="Morning Brief">
+          <p className="section-label">Morning Brief</p>
+          <h3>{briefing.morningBrief.readiness}</h3>
+          <ul>
+            {briefing.morningBrief.lines.map((line) => <li key={line}>{line}</li>)}
           </ul>
         </section>
-        <section className="current-objective-panel" aria-label="Current mission summary">
-          <p className="section-label">Current Mission</p>
-          <h3>{activeMission?.campaign ?? 'No Active Mission'}</h3>
-          <p className="muted">{activeMission?.objective ?? 'Create a mission in the Mission Room to begin operations.'}</p>
-          <strong>{formatMissionDetailState(activeMission)}</strong>
+        <section className="commander-mission-record" aria-label="Mission Record">
+          <p className="section-label">Mission Record</p>
+          <h3>{briefing.missionRecord.title}</h3>
+          <dl>
+            {briefing.missionRecord.items.map((item) => (
+              <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>
+            ))}
+          </dl>
         </section>
-        <section className="current-action-panel" aria-label="Next required action">
-          <p className="section-label">Next Required Action</p>
-          <h3>{nextAction.label}</h3>
-          <p className="muted">{nextAction.description}</p>
+        <section className="commander-situation-board" aria-label="Intelligent Situation Board">
+          <p className="section-label">Situation Board</p>
+          <h3>{briefing.situation.recommendedRoom}</h3>
+          <p className="muted">{briefing.situation.reason}</p>
+          <strong>{briefing.situation.blockedAction}</strong>
+        </section>
+        <section className="commander-activity-log" aria-label="Operational Message History">
+          <p className="section-label">Operational Message History</p>
+          <ol>
+            {briefing.activityLog.map((entry) => (
+              <li key={entry.id}>
+                <time>{entry.timestamp}</time>
+                <span>{entry.event}</span>
+                <strong>{entry.room}</strong>
+                <small>{entry.evidenceReference}</small>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section className="commander-learning-profile" aria-label="Commander Learning Dashboard">
+          <p className="section-label">Commander Learning</p>
+          <h3>{briefing.learning.summary}</h3>
+          <div>
+            <strong>Strengths</strong>
+            <span>{briefing.learning.strengths.join(', ')}</span>
+          </div>
+          <div>
+            <strong>Weaknesses</strong>
+            <span>{briefing.learning.weaknesses.join(', ')}</span>
+          </div>
+          <p className="muted">{briefing.learning.evidenceCount} approved evidence points, {briefing.learning.confidence}% confidence, updated {briefing.learning.lastUpdated}.</p>
+        </section>
+        <section className="commander-broadcast-feed" aria-label="Headquarters Broadcast">
+          <p className="section-label">HQ Broadcast</p>
+          <ol>
+            {briefing.broadcasts.map((broadcast) => <li key={broadcast}>{broadcast}</li>)}
+          </ol>
+        </section>
+        <section className="commander-services-health" aria-label="Services Health Dashboard">
+          <p className="section-label">Services Health</p>
+          <dl>
+            {briefing.services.map((service) => (
+              <div key={service.name}>
+                <dt>{service.name}</dt>
+                <dd>{service.status}. {service.responsibility} {service.pendingWork}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <section className="commander-operational-timeline" aria-label="Headquarters Operational Timeline">
+          <p className="section-label">Operational Timeline</p>
+          <ol>
+            {briefing.operationalTimeline.map((entry) => (
+              <li key={entry}>{entry}</li>
+            ))}
+          </ol>
         </section>
         <details className="commander-briefing-archive">
-          <summary>Briefing archive</summary>
+          <summary>Supporting Commander archive</summary>
           <section className="commander-briefing-panel" aria-label="Commander session debrief">
             <p className="section-label">Session Debrief</p>
             <h3>{sessionDebrief.summary}</h3>
@@ -2307,28 +2361,393 @@ function CommandOverview({
             </ul>
           </section>
         </details>
-        <section className="supporting-information-panel" aria-label="Headquarters supporting information">
+        <section className="supporting-information-panel" aria-label="Semantic evidence summaries">
           <div>
             <p className="section-label">HQOS</p>
-            <strong>{startupSubsystemCount} subsystem areas online</strong>
+            <strong>{briefing.semanticEvidence.hqos}</strong>
           </div>
           <div>
-            <p className="section-label">Notifications</p>
-            <strong>{getMissionNotificationSummary(activeMission, missionHistory)}</strong>
-            <span className="muted">Detailed workflow, timeline, and history live inside the Mission Room.</span>
+            <p className="section-label">Archive</p>
+            <strong>{briefing.semanticEvidence.archive}</strong>
           </div>
           <div>
-            <p className="section-label">Recent Growth</p>
-            <strong>{formatRecentGrowthHighlight(growthEvents)}</strong>
+            <p className="section-label">Journal</p>
+            <strong>{briefing.semanticEvidence.journal}</strong>
           </div>
           <div>
-            <p className="section-label">Recent Doctrine</p>
-            <strong>{formatRecentDoctrineHighlight(doctrineRecords)}</strong>
+            <p className="section-label">Doctrine</p>
+            <strong>{briefing.semanticEvidence.doctrine}</strong>
           </div>
         </section>
       </section>
     </div>
   );
+}
+
+export interface CommanderRoomBriefingInput {
+  activeMission?: ActiveMission | undefined;
+  startupSubsystemCount: number;
+  missionHistory: readonly ActiveMission[];
+  growthEvents?: readonly GrowthEvent[] | undefined;
+  doctrineRecords?: readonly DoctrineRecord[] | undefined;
+  journalEntries?: readonly JournalEntry[] | undefined;
+  archivedMissionSummaries?: readonly LocalMissionArchiveSummary[] | undefined;
+  archivedJournalEntries?: readonly ArchivedJournalEntry[] | undefined;
+}
+
+export interface CommanderRoomBriefing {
+  readonly headline: string;
+  readonly summary: string;
+  readonly headquartersState: string;
+  readonly missionState: string;
+  readonly highestPriority: string;
+  readonly recommendedAction: string;
+  readonly morningBrief: {
+    readonly readiness: string;
+    readonly lines: readonly string[];
+  };
+  readonly missionRecord: {
+    readonly title: string;
+    readonly items: readonly { readonly label: string; readonly value: string }[];
+  };
+  readonly situation: {
+    readonly recommendedRoom: string;
+    readonly reason: string;
+    readonly priority: string;
+    readonly action: string;
+    readonly blockedAction: string;
+  };
+  readonly activityLog: readonly {
+    readonly id: string;
+    readonly timestamp: string;
+    readonly event: string;
+    readonly room: string;
+    readonly evidenceReference: string;
+  }[];
+  readonly learning: {
+    readonly summary: string;
+    readonly strengths: readonly string[];
+    readonly weaknesses: readonly string[];
+    readonly evidenceCount: number;
+    readonly confidence: number;
+    readonly lastUpdated: string;
+  };
+  readonly broadcasts: readonly string[];
+  readonly services: readonly {
+    readonly name: string;
+    readonly status: string;
+    readonly responsibility: string;
+    readonly pendingWork: string;
+  }[];
+  readonly operationalTimeline: readonly string[];
+  readonly semanticEvidence: {
+    readonly hqos: string;
+    readonly archive: string;
+    readonly journal: string;
+    readonly doctrine: string;
+  };
+}
+
+export function buildCommanderRoomBriefing({
+  activeMission,
+  startupSubsystemCount,
+  missionHistory,
+  growthEvents = [],
+  doctrineRecords = [],
+  journalEntries = [],
+  archivedMissionSummaries = [],
+  archivedJournalEntries = [],
+}: CommanderRoomBriefingInput): CommanderRoomBriefing {
+  const nextAction = getMissionNextAction(activeMission);
+  const missionState = formatMissionDetailState(activeMission);
+  const archiveRecordCount = archivedMissionSummaries.length + archivedJournalEntries.length;
+  const recommended = buildCommanderSituationRecommendation({
+    activeMission,
+    doctrineRecords,
+    journalEntries,
+    archiveRecordCount,
+  });
+  const learningEvidenceCount = missionHistory.length + growthEvents.length + journalEntries.length;
+  const lastMission = missionHistory.at(-1);
+  const headline = activeMission
+    ? `${activeMission.campaign} is in ${missionState}.`
+    : 'Headquarters is ready for command.';
+  const summary = activeMission
+    ? `${nextAction.description} Commander recommends ${recommended.recommendedRoom} because ${recommended.reason.toLowerCase()}`
+    : 'No active mission is loaded. Commander recommends creating the next mission before reviewing support rooms.';
+
+  return {
+    headline,
+    summary,
+    headquartersState: startupSubsystemCount >= 4 ? 'Operational and standing by.' : 'Partially online. Review service health.',
+    missionState,
+    highestPriority: recommended.priority,
+    recommendedAction: nextAction.disabled ? recommended.action : nextAction.label,
+    morningBrief: {
+      readiness: activeMission ? 'Mission readiness is active.' : 'Mission readiness is waiting for a mission file.',
+      lines: [
+        activeMission ? `${activeMission.campaign} requires ${nextAction.label.toLowerCase()}.` : 'Mission: create an operation before rooms unlock meaningful work.',
+        growthEvents.length > 0 ? 'Academy has recent behavior evidence.' : 'Academy is waiting for approved growth evidence.',
+        doctrineRecords.length > 0 ? 'Doctrine has operational law available.' : 'Doctrine is waiting for repeated lessons.',
+        journalEntries.length > 0 ? 'Journal memory contains operator observations.' : 'Journal has no current operator observation.',
+        archiveRecordCount > 0 ? 'Archive has historical evidence ready.' : 'Archive has no permanent record yet.',
+      ],
+    },
+    missionRecord: {
+      title: lastMission?.campaign ?? activeMission?.campaign ?? 'No completed mission recorded',
+      items: [
+        { label: 'Market', value: lastMission?.briefingContext?.market ?? activeMission?.briefingContext?.market ?? 'Not declared' },
+        { label: 'Session', value: lastMission?.condition ?? activeMission?.condition ?? 'No session active' },
+        { label: 'Lifecycle', value: lastMission ? formatMissionDetailState(lastMission) : missionState },
+        { label: 'Doctrine', value: doctrineRecords.length > 0 ? 'Doctrine available for operational reference' : 'No doctrine change recorded' },
+        { label: 'Journal', value: journalEntries.length > 0 ? 'Journal evidence available for review' : 'Journal completion pending' },
+        { label: 'Guardian', value: 'Guardian monitoring remains active' },
+      ],
+    },
+    situation: recommended,
+    activityLog: buildCommanderActivityLog({ activeMission, missionHistory, journalEntries, doctrineRecords, archivedMissionSummaries }),
+    learning: {
+      summary: learningEvidenceCount > 0 ? 'Commander has enough evidence to begin profiling operator behavior.' : 'Commander learning begins after missions, journal entries, and growth evidence.',
+      strengths: growthEvents.length > 0 ? ['Patience', 'Consistent journaling'] : ['Observation discipline pending evidence'],
+      weaknesses: missionHistory.length > 0 ? ['Early conviction requires monitoring'] : ['Unknown until first mission closes'],
+      evidenceCount: learningEvidenceCount,
+      confidence: Math.min(95, learningEvidenceCount * 12),
+      lastUpdated: activeMission?.createdAt ?? lastMission?.createdAt ?? 'standby',
+    },
+    broadcasts: buildCommanderBroadcasts({ activeMission, growthEvents, doctrineRecords, archivedMissionSummaries }),
+    services: [
+      {
+        name: 'Archive',
+        status: archiveRecordCount > 0 ? 'Working' : 'Standing by',
+        responsibility: 'Preserve permanent evidence.',
+        pendingWork: archiveRecordCount > 0 ? 'Historical record available.' : 'Awaiting first archive.',
+      },
+      {
+        name: 'Guardian',
+        status: 'Online',
+        responsibility: 'Monitor risk and discipline.',
+        pendingWork: activeMission ? 'Watching current mission.' : 'Waiting for mission context.',
+      },
+      {
+        name: 'Doctrine',
+        status: doctrineRecords.length > 0 ? 'Active' : 'Quiet',
+        responsibility: 'Maintain operating law.',
+        pendingWork: doctrineRecords.length > 0 ? 'Doctrine ready for reference.' : 'No pending review.',
+      },
+      {
+        name: 'Academy',
+        status: growthEvents.length > 0 ? 'Evaluating' : 'Quiet',
+        responsibility: 'Recognize behavior growth.',
+        pendingWork: growthEvents.length > 0 ? 'Growth evidence present.' : 'Awaiting earned recognition.',
+      },
+      {
+        name: 'Intelligence',
+        status: journalEntries.length > 0 ? 'Indexing' : 'Standing by',
+        responsibility: 'Detect patterns from evidence.',
+        pendingWork: journalEntries.length > 0 ? 'Journal evidence available.' : 'No evidence to classify.',
+      },
+      {
+        name: 'Mission',
+        status: activeMission ? 'Active' : 'Standing by',
+        responsibility: 'Control lifecycle progression.',
+        pendingWork: activeMission ? nextAction.label : 'Create the next mission.',
+      },
+    ],
+    operationalTimeline: buildCommanderOperationalTimeline({ activeMission, missionHistory, journalEntries, doctrineRecords, archivedMissionSummaries }),
+    semanticEvidence: {
+      hqos: startupSubsystemCount >= 4 ? 'Headquarters core systems are ready.' : 'Headquarters needs service attention.',
+      archive: archiveRecordCount > 0 ? 'Headquarters has historical evidence available.' : 'Headquarters has not preserved a mission record yet.',
+      journal: journalEntries.length > 0 ? 'Operator observations remain available for review.' : 'Operator has not written today yet.',
+      doctrine: doctrineRecords.length > 0 ? 'Operating law exists and can guide decisions.' : 'No stable doctrine has been promoted yet.',
+    },
+  };
+}
+
+function buildCommanderSituationRecommendation({
+  activeMission,
+  doctrineRecords,
+  journalEntries,
+  archiveRecordCount,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly doctrineRecords: readonly DoctrineRecord[];
+  readonly journalEntries: readonly JournalEntry[];
+  readonly archiveRecordCount: number;
+}): CommanderRoomBriefing['situation'] {
+  const state = parseMissionState(activeMission?.currentState);
+
+  if (activeMission === undefined) {
+    return {
+      recommendedRoom: 'Mission Room',
+      reason: 'no mission file exists.',
+      priority: 'Create the operational file.',
+      action: 'Create Mission',
+      blockedAction: 'Observation, authorization, and debrief remain blocked.',
+    };
+  }
+
+  if (state === 'observation') {
+    return {
+      recommendedRoom: 'Observation Room',
+      reason: 'evidence is not complete.',
+      priority: 'Collect visible evidence.',
+      action: 'Continue Observation',
+      blockedAction: 'War Room authorization remains blocked.',
+    };
+  }
+
+  if (state === 'authorization' || state === 'deployed') {
+    return {
+      recommendedRoom: 'War Room',
+      reason: 'decision authority is active.',
+      priority: 'Protect discipline before action.',
+      action: 'Review Authorization',
+      blockedAction: 'Deployment cannot exceed declared evidence.',
+    };
+  }
+
+  if (state === 'return_to_base' || state === 'debrief') {
+    return {
+      recommendedRoom: 'Debrief Theater',
+      reason: 'the mission must become learning before archive.',
+      priority: 'Capture behavior and lesson.',
+      action: 'Complete Debrief',
+      blockedAction: 'Archive waits for debrief evidence.',
+    };
+  }
+
+  if (doctrineRecords.length === 0 && journalEntries.length > 0) {
+    return {
+      recommendedRoom: 'Doctrine',
+      reason: 'journal evidence may contain repeatable operating law.',
+      priority: 'Review doctrine candidates.',
+      action: 'Open Doctrine',
+      blockedAction: 'Doctrine promotion remains manual.',
+    };
+  }
+
+  if (archiveRecordCount === 0 && state === 'archived') {
+    return {
+      recommendedRoom: 'Archive',
+      reason: 'completed work should become historical intelligence.',
+      priority: 'Verify archive record.',
+      action: 'Open Archive',
+      blockedAction: 'Historical recall is incomplete.',
+    };
+  }
+
+  return {
+    recommendedRoom: state === 'ready' || state === 'briefing' || state === 'idle' ? 'Ready Room' : 'Mission Room',
+    reason: 'the current lifecycle phase is still open.',
+    priority: 'Follow Commander lifecycle guidance.',
+    action: getMissionNextAction(activeMission).label,
+    blockedAction: 'Future rooms stay secondary until the active phase completes.',
+  };
+}
+
+function buildCommanderActivityLog({
+  activeMission,
+  missionHistory,
+  journalEntries,
+  doctrineRecords,
+  archivedMissionSummaries,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly missionHistory: readonly ActiveMission[];
+  readonly journalEntries: readonly JournalEntry[];
+  readonly doctrineRecords: readonly DoctrineRecord[];
+  readonly archivedMissionSummaries: readonly LocalMissionArchiveSummary[];
+}): CommanderRoomBriefing['activityLog'] {
+  const entries: CommanderRoomBriefing['activityLog'] = [
+    ...(activeMission ? [{
+      id: `mission:${activeMission.id}`,
+      timestamp: activeMission.createdAt,
+      event: 'Mission Created',
+      room: 'Mission Room',
+      evidenceReference: activeMission.id,
+    }] : []),
+    ...missionHistory.slice(-2).map((mission) => ({
+      id: `history:${mission.id}`,
+      timestamp: mission.createdAt,
+      event: `Mission ${formatMissionDetailState(mission)}`,
+      room: 'Mission Room',
+      evidenceReference: mission.id,
+    })),
+    ...journalEntries.slice(0, 2).map((entry) => ({
+      id: `journal:${entry.id}`,
+      timestamp: entry.createdAt,
+      event: 'Journal Saved',
+      room: 'Journal',
+      evidenceReference: entry.id,
+    })),
+    ...doctrineRecords.slice(0, 2).map((record) => ({
+      id: `doctrine:${record.id}`,
+      timestamp: record.updatedAt,
+      event: 'Doctrine Updated',
+      room: 'Doctrine',
+      evidenceReference: record.id,
+    })),
+    ...archivedMissionSummaries.slice(-2).map((summary) => ({
+      id: `archive:${summary.missionId}`,
+      timestamp: summary.archivedAt,
+      event: 'Mission Archived',
+      room: 'Archive',
+      evidenceReference: summary.missionId,
+    })),
+  ];
+
+  if (entries.length === 0) {
+    return [{
+      id: 'standby',
+      timestamp: 'standby',
+      event: 'Report For Duty',
+      room: 'Command Center',
+      evidenceReference: 'operator-session',
+    }];
+  }
+
+  return [...entries].sort((left, right) => left.timestamp.localeCompare(right.timestamp));
+}
+
+function buildCommanderBroadcasts({
+  activeMission,
+  growthEvents,
+  doctrineRecords,
+  archivedMissionSummaries,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly growthEvents: readonly GrowthEvent[];
+  readonly doctrineRecords: readonly DoctrineRecord[];
+  readonly archivedMissionSummaries: readonly LocalMissionArchiveSummary[];
+}): readonly string[] {
+  return [
+    activeMission ? `Mission ${activeMission.campaign} is active.` : 'Headquarters is awaiting mission creation.',
+    doctrineRecords.length > 0 ? 'Doctrine library is available for operational reference.' : 'Doctrine is quiet.',
+    growthEvents.length > 0 ? 'Academy has recognized behavior evidence.' : 'Academy awaits earned progress.',
+    archivedMissionSummaries.length > 0 ? 'Archive has preserved mission history.' : 'Archive is standing by.',
+  ];
+}
+
+function buildCommanderOperationalTimeline({
+  activeMission,
+  missionHistory,
+  journalEntries,
+  doctrineRecords,
+  archivedMissionSummaries,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly missionHistory: readonly ActiveMission[];
+  readonly journalEntries: readonly JournalEntry[];
+  readonly doctrineRecords: readonly DoctrineRecord[];
+  readonly archivedMissionSummaries: readonly LocalMissionArchiveSummary[];
+}): readonly string[] {
+  return buildCommanderActivityLog({
+    activeMission,
+    missionHistory,
+    journalEntries,
+    doctrineRecords,
+    archivedMissionSummaries,
+  }).map((entry) => `${entry.timestamp} - ${entry.event} - ${entry.room}`);
 }
 
 interface MissionRoomProps extends CommandCenterProps {
