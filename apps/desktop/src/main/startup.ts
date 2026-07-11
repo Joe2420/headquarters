@@ -8,6 +8,8 @@ import {
   JournalEntryRepository,
   type PersistedJournalEntry,
   loadMigrationsFromDirectory,
+  MissionContextRepository,
+  type MissionContextRecord,
   MissionDebriefRepository,
   MissionRepository,
   ObservationSessionRepository,
@@ -54,6 +56,10 @@ export interface DesktopMissionListResult {
   missions: Mission[];
 }
 
+export interface DesktopMissionContextListResult {
+  records: MissionContextRecord[];
+}
+
 export interface DesktopDoctrineListResult {
   records: DoctrineRecord[];
 }
@@ -75,6 +81,17 @@ export interface DesktopCreateJournalEntryInput {
 
 export interface DesktopCreateJournalEntryResult {
   entry: PersistedJournalEntry;
+}
+
+export interface DesktopSaveMissionContextInput {
+  missionId: string;
+  contextJson: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DesktopSaveMissionContextResult {
+  record: MissionContextRecord;
 }
 
 export interface DesktopDoctrinePromotionInput {
@@ -132,9 +149,11 @@ export interface AppStartupRuntime {
   listDoctrineRecords: () => Promise<DesktopDoctrineListResult>;
   listDoctrineHistory: () => Promise<DesktopDoctrineHistoryListResult>;
   listMissions: () => Promise<DesktopMissionListResult>;
+  listMissionContexts: () => Promise<DesktopMissionContextListResult>;
   listJournalEntries: () => Promise<DesktopJournalListResult>;
   promoteDoctrineCandidate: (input: DesktopDoctrinePromotionInput) => Promise<DesktopDoctrinePromotionResult>;
   createMission: (input: DesktopCreateMissionInput) => Promise<DesktopCreateMissionResult>;
+  saveMissionContext: (input: DesktopSaveMissionContextInput) => Promise<DesktopSaveMissionContextResult>;
   createJournalEntry: (input: DesktopCreateJournalEntryInput) => Promise<DesktopCreateJournalEntryResult>;
   startBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
   completeBriefing: (input: DesktopMissionCommandInput) => Promise<DesktopCreateMissionResult>;
@@ -175,6 +194,7 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
     });
     const missionService = createMissionService(database);
     const missionRepository = new MissionRepository(database);
+    const missionContextRepository = new MissionContextRepository(database);
     const doctrineRepository = new DoctrineRepository(database);
     const doctrineHistoryRepository = new DoctrineHistoryRepository(database);
     const journalEntryRepository = new JournalEntryRepository(database);
@@ -198,6 +218,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       listMissions: async () => ({
         missions: missionRepository.list(),
       }),
+      listMissionContexts: async () => ({
+        records: missionContextRepository.list(),
+      }),
       listJournalEntries: async () => ({
         entries: journalEntryRepository.list(),
       }),
@@ -215,6 +238,17 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
         const result = await missionService.createMission(input);
         return {
           mission: result.mission,
+        };
+      },
+      saveMissionContext: async (input) => {
+        const timestamp = new Date().toISOString();
+        return {
+          record: missionContextRepository.save({
+            missionId: input.missionId,
+            contextJson: input.contextJson,
+            createdAt: input.createdAt ?? timestamp,
+            updatedAt: input.updatedAt ?? timestamp,
+          }),
         };
       },
       createJournalEntry: async (input) => {
@@ -346,6 +380,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       listMissions: async () => ({
         missions: [],
       }),
+      listMissionContexts: async () => ({
+        records: [],
+      }),
       listJournalEntries: async () => ({
         entries: [],
       }),
@@ -354,6 +391,9 @@ export function initializeAppStartup(options: AppStartupOptions): AppStartupRunt
       },
       createMission: async () => {
         throw new Error('Desktop startup is not ready for mission creation.');
+      },
+      saveMissionContext: async () => {
+        throw new Error('Desktop startup is not ready for mission context persistence.');
       },
       createJournalEntry: async () => {
         throw new Error('Desktop startup is not ready for journal persistence.');

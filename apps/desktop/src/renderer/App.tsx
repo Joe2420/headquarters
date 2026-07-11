@@ -116,6 +116,7 @@ import {
 } from './CommanderMissionBriefing';
 import {
   createEmptyMissionContext,
+  snapshotMissionContext,
   updateMissionContextBriefing,
   updateMissionContextObservation,
   updateMissionContextReadiness,
@@ -425,6 +426,8 @@ declare global {
       }>;
       createMission?: (input: MissionDraft) => Promise<{ mission: Mission }>;
       listMissions?: () => Promise<{ missions: Mission[] }>;
+      listMissionContexts?: () => Promise<{ records: PersistedMissionContextRecord[] }>;
+      saveMissionContext?: (input: PersistedMissionContextDraft) => Promise<{ record: PersistedMissionContextRecord }>;
       listJournalEntries?: () => Promise<{ entries: JournalEntry[] }>;
       createJournalEntry?: (input: JournalEntryDraft) => Promise<{ entry: JournalEntry }>;
       startBriefing?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
@@ -440,6 +443,20 @@ declare global {
       archiveAfterDebrief?: (input: { missionId: string; reason?: string }) => Promise<{ mission: Mission }>;
     };
   }
+}
+
+interface PersistedMissionContextRecord {
+  readonly missionId: string;
+  readonly contextJson: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+interface PersistedMissionContextDraft {
+  readonly missionId: string;
+  readonly contextJson: string;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
 }
 
 export function App() {
@@ -536,13 +553,17 @@ export function App() {
 
     Promise.all([
       globalThis.window?.headquarters?.listMissions?.(),
+      globalThis.window?.headquarters?.listMissionContexts?.(),
       globalThis.window?.headquarters?.listJournalEntries?.(),
     ])
-      .then(([missionResult, journalResult]) => {
+      .then(([missionResult, contextResult, journalResult]) => {
         if (!active) return;
 
         if (missionResult) {
-          const loadedMissions = missionResult.missions.map((mission) => mapMissionRecordToActiveMission(mission));
+          const contextByMissionId = buildMissionContextLookup(contextResult?.records ?? []);
+          const loadedMissions = missionResult.missions.map((mission) => (
+            mapMissionRecordToActiveMission(mission, undefined, contextByMissionId.get(mission.id))
+          ));
           setMissionHistory(loadedMissions);
           setActiveMission(getLatestActiveMission(loadedMissions));
           setArchivedMissionSummaries(buildArchivedMissionSummariesFromMissions(loadedMissions));
@@ -1140,6 +1161,7 @@ export function App() {
 
       setActiveMission(missionWithContext);
       setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
+      if (result.accepted) await saveDesktopMissionContext(missionWithContext);
 
       if (result.complete) {
         return completeReadyRoomBriefing(missionWithContext, result.response);
@@ -1159,6 +1181,7 @@ export function App() {
 
       setActiveMission(missionWithContext);
       setMissionHistory((history) => upsertMissionHistory(history, missionWithContext));
+      if (result.accepted) await saveDesktopMissionContext(missionWithContext);
 
       if (result.complete) {
         return completeObservationInterview(missionWithContext, result.response);
@@ -5102,6 +5125,23 @@ export async function createDesktopJournalEntry(draft: JournalEntryDraft): Promi
   return result.entry;
 }
 
+export async function saveDesktopMissionContext(mission: ActiveMission): Promise<PersistedMissionContextRecord | undefined> {
+  if (mission.missionContext === undefined) return undefined;
+
+  const saveMissionContext = globalThis.window?.headquarters?.saveMissionContext;
+  if (saveMissionContext === undefined) return undefined;
+
+  const snapshot = snapshotMissionContext(mission.missionContext);
+  const result = await saveMissionContext({
+    missionId: mission.id,
+    contextJson: JSON.stringify(snapshot),
+    ...(snapshot.createdAt ? { createdAt: snapshot.createdAt } : {}),
+    updatedAt: snapshot.updatedAt ?? new Date().toISOString(),
+  });
+
+  return result.record;
+}
+
 export async function startDesktopBriefing(mission: ActiveMission): Promise<ActiveMission> {
   const bridge = globalThis.window?.headquarters?.startBriefing;
   if (bridge === undefined) return transitionLocalMission(mission, 'briefing');
@@ -7795,7 +7835,19 @@ export function createLocalMission(
   };
 }
 
-export function mapMissionRecordToActiveMission(mission: Mission, previousMission?: ActiveMission): ActiveMission {
+export function mapMissionRecordToActiveMission(
+  mission: Mission,
+  previousMission?: ActiveMission,
+  persistedMissionContext?: MissionContext,
+): ActiveMission {
+  const missionContext = previousMission?.missionContext
+    ?? persistedMissionContext
+    ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt });
+  const briefingContext = previousMission?.briefingContext
+    ?? buildBriefingContextFromMissionContext(missionContext);
+  const observationContext = previousMission?.observationContext
+    ?? buildObservationContextFromMissionContext(missionContext);
+
   return {
     id: mission.id,
     campaign: mission.codename,
@@ -7804,9 +7856,66 @@ export function mapMissionRecordToActiveMission(mission: Mission, previousMissio
     commandAuthority: 'Professional command',
     currentState: mission.state,
     createdAt: mission.createdAt,
-    ...(previousMission?.briefingContext ? { briefingContext: previousMission.briefingContext } : {}),
-    ...(previousMission?.observationContext ? { observationContext: previousMission.observationContext } : {}),
-    missionContext: previousMission?.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt }),
+    ...(Object.keys(briefingContext).length > 0 ? { briefingContext } : {}),
+    ...(Object.keys(observationContext).length > 0 ? { observationContext } : {}),
+    missionContext,
+  };
+}
+
+export function buildMissionContextLookup(records: readonly PersistedMissionContextRecord[]): Map<string, MissionContext> {
+  return new Map(
+    records
+      .map((record) => [record.missionId, parsePersistedMissionContext(record)] as const)
+      .filter((entry): entry is readonly [string, MissionContext] => entry[1] !== undefined),
+  );
+}
+
+export function parsePersistedMissionContext(record: PersistedMissionContextRecord): MissionContext | undefined {
+  try {
+    const parsed = JSON.parse(record.contextJson) as Partial<MissionContext>;
+    if (parsed === null || typeof parsed !== 'object' || parsed.missionId !== record.missionId) return undefined;
+
+    return {
+      missionId: record.missionId,
+      briefing: typeof parsed.briefing === 'object' && parsed.briefing !== null ? parsed.briefing : {},
+      observation: typeof parsed.observation === 'object' && parsed.observation !== null ? parsed.observation : {},
+      commanderNotes: Array.isArray(parsed.commanderNotes) ? parsed.commanderNotes : [],
+      contradictionFlags: Array.isArray(parsed.contradictionFlags) ? parsed.contradictionFlags : [],
+      readiness: {
+        briefingComplete: parsed.readiness?.briefingComplete === true,
+        observationComplete: parsed.readiness?.observationComplete === true,
+        warRoomReady: parsed.readiness?.warRoomReady === true,
+        debriefReady: parsed.readiness?.debriefReady === true,
+      },
+      ...(typeof parsed.createdAt === 'string' ? { createdAt: parsed.createdAt } : {}),
+      ...(typeof parsed.updatedAt === 'string' ? { updatedAt: parsed.updatedAt } : {}),
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+function buildBriefingContextFromMissionContext(context: MissionContext): MissionBriefingContext {
+  return {
+    ...context.briefing,
+  };
+}
+
+function buildObservationContextFromMissionContext(context: MissionContext): MissionObservationContext {
+  return {
+    ...(hasMissionContextText(context.observation.observedDirection) ? { marketDirection: context.observation.observedDirection } : {}),
+    ...(hasMissionContextText(context.observation.marketStructure) ? { marketStructure: context.observation.marketStructure } : {}),
+    ...(hasMissionContextText(context.observation.volume) ? { volume: context.observation.volume } : {}),
+    ...(hasMissionContextText(context.observation.liquidityNotes) ? { liquidity: context.observation.liquidityNotes } : {}),
+    ...(hasMissionContextText(context.observation.keyLevels) ? { keyLevels: context.observation.keyLevels } : {}),
+    ...(hasMissionContextText(context.observation.directionalHypothesis) ? { bias: context.observation.directionalHypothesis } : {}),
+    ...(hasMissionContextText(context.observation.invalidationEvidence) ? { invalidationEvidence: context.observation.invalidationEvidence } : {}),
+    ...(hasMissionContextText(context.observation.emotionalCheck) ? { emotionalCheck: context.observation.emotionalCheck } : {}),
+    ...(context.observation.evidenceReadiness ? { readiness: context.observation.evidenceReadiness } : {}),
+    ...(hasMissionContextText(context.observation.operationalSummary) ? { operationalPicture: context.observation.operationalSummary } : {}),
+    ...(context.observation.additionalObservations && context.observation.additionalObservations.length > 0
+      ? { additionalObservations: [...context.observation.additionalObservations] }
+      : {}),
   };
 }
 

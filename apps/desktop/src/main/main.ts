@@ -14,11 +14,13 @@ async function createWindow() {
 
   ipcMain.handle('headquarters:get-startup-status', () => startupRuntime?.status);
   ipcMain.handle('headquarters:list-missions', () => startupRuntime?.listMissions());
+  ipcMain.handle('headquarters:list-mission-contexts', () => startupRuntime?.listMissionContexts());
   ipcMain.handle('headquarters:list-doctrine-records', () => startupRuntime?.listDoctrineRecords());
   ipcMain.handle('headquarters:list-doctrine-history', () => startupRuntime?.listDoctrineHistory());
   ipcMain.handle('headquarters:list-journal-entries', () => startupRuntime?.listJournalEntries());
   ipcMain.handle('headquarters:promote-doctrine-candidate', (_event, input: unknown) => startupRuntime?.promoteDoctrineCandidate(parseDoctrinePromotionInput(input)));
   ipcMain.handle('headquarters:create-mission', (_event, input: unknown) => startupRuntime?.createMission(parseCreateMissionInput(input)));
+  ipcMain.handle('headquarters:save-mission-context', (_event, input: unknown) => startupRuntime?.saveMissionContext(parseMissionContextInput(input)));
   ipcMain.handle('headquarters:create-journal-entry', (_event, input: unknown) => startupRuntime?.createJournalEntry(parseCreateJournalEntryInput(input)));
   ipcMain.handle('headquarters:start-briefing', (_event, input: unknown) => startupRuntime?.startBriefing(parseMissionCommandInput(input)));
   ipcMain.handle('headquarters:complete-briefing', (_event, input: unknown) => startupRuntime?.completeBriefing(parseMissionCommandInput(input)));
@@ -112,6 +114,35 @@ function parseMissionCommandInput(input: unknown): { missionId: string; reason?:
   return {
     missionId: candidate.missionId,
     ...(typeof candidate.reason === 'string' ? { reason: candidate.reason } : {}),
+  };
+}
+
+function parseMissionContextInput(input: unknown): {
+  missionId: string;
+  contextJson: string;
+  createdAt?: string;
+  updatedAt?: string;
+} {
+  if (typeof input !== 'object' || input === null) {
+    throw new Error('Mission context input must be an object.');
+  }
+
+  const candidate = input as {
+    missionId?: unknown;
+    contextJson?: unknown;
+    createdAt?: unknown;
+    updatedAt?: unknown;
+  };
+
+  if (typeof candidate.missionId !== 'string' || typeof candidate.contextJson !== 'string') {
+    throw new Error('Mission context persistence requires missionId and contextJson.');
+  }
+
+  return {
+    missionId: candidate.missionId,
+    contextJson: candidate.contextJson,
+    ...(typeof candidate.createdAt === 'string' ? { createdAt: candidate.createdAt } : {}),
+    ...(typeof candidate.updatedAt === 'string' ? { updatedAt: candidate.updatedAt } : {}),
   };
 }
 

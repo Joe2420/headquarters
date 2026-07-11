@@ -2,6 +2,9 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-S32 - Persistent Mission Intelligence and Operational Memory
+- HQ-TASK-S31 - Headquarters Priority Engine
+
 - HQ-TASK-0280 - Sprint 29 Mission Continuity, Doctrine, Guardian, and Archive Review
 - HQ-TASK-0279 - Journal Mission Integration
 - HQ-TASK-0278 - Guardian Alerts in Commander Chat
@@ -332,7 +335,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 31 Headquarters Priority Engine is implemented on the active feature branch.
+Current milestone gate: Sprint 32 Persistent Mission Intelligence and Operational Memory is implemented on the active feature branch.
 
 ## Post-Sprint UX Alignment
 
@@ -368,6 +371,10 @@ Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspec
 ## Sprint 31 - Headquarters Priority Engine
 
 - HQ-TASK-S31 - Headquarters Priority Engine
+
+## Sprint 32 - Persistent Mission Intelligence and Operational Memory
+
+- HQ-TASK-S32 - Persistent Mission Intelligence and Operational Memory
 
 
 
