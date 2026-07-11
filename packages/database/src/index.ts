@@ -4,6 +4,7 @@ export * from './ArchiveRepository';
 export * from './MissionRepository';
 export * from './ObservationSessionRepository';
 export * from './MissionDebriefRepository';
+export * from './MissionContextRepository';
 export * from './DoctrineHistoryRepository';
 export * from './DoctrineRepository';
 export * from './JournalEntryRepository';

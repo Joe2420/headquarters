@@ -48,11 +48,12 @@ describe('App startup wiring', () => {
         '006_doctrine_records',
         '007_doctrine_history',
         '008_journal_entries',
+        '009_mission_context_records',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
       expect(firstStartup.status.performance).toEqual({
         durationMs: 125,
-        migrationCount: 8,
+        migrationCount: 9,
         budgetMs: 3000,
         status: 'within-budget',
       });
@@ -74,6 +75,7 @@ describe('App startup wiring', () => {
         '006_doctrine_records',
         '007_doctrine_history',
         '008_journal_entries',
+        '009_mission_context_records',
       ]);
     } finally {
       secondStartup.close();
@@ -152,6 +154,64 @@ describe('App startup wiring', () => {
       await expect(startup.listJournalEntries()).resolves.toEqual({ entries: [journal.entry] });
     } finally {
       startup.close();
+    }
+  });
+
+  it('persists mission context records for reload hydration', async () => {
+    const dbPath = createTempDatabasePath();
+    const firstStartup = initializeAppStartup({ dbPath, migrationsDirectory });
+    let missionId = '';
+    const contextJson = JSON.stringify({
+      missionId: 'pending',
+      briefing: { missionObjective: 'Wait for clean confirmation.' },
+      observation: {},
+      commanderNotes: [],
+      contradictionFlags: [],
+      readiness: {
+        briefingComplete: false,
+        observationComplete: false,
+        warRoomReady: false,
+        debriefReady: false,
+      },
+      createdAt: '2026-07-11T10:00:00.000Z',
+      updatedAt: '2026-07-11T10:00:00.000Z',
+    });
+
+    try {
+      const mission = await firstStartup.createMission({
+        codename: 'Memory Check',
+        objective: 'Persist mission intelligence',
+      });
+      missionId = mission.mission.id;
+      const savedContext = contextJson.replace('"pending"', `"${missionId}"`);
+
+      await expect(firstStartup.saveMissionContext({
+        missionId,
+        contextJson: savedContext,
+        createdAt: '2026-07-11T10:00:00.000Z',
+        updatedAt: '2026-07-11T10:00:00.000Z',
+      })).resolves.toMatchObject({
+        record: {
+          missionId,
+          contextJson: savedContext,
+        },
+      });
+    } finally {
+      firstStartup.close();
+    }
+
+    const secondStartup = initializeAppStartup({ dbPath, migrationsDirectory });
+
+    try {
+      await expect(secondStartup.listMissionContexts()).resolves.toMatchObject({
+        records: [
+          {
+            missionId,
+          },
+        ],
+      });
+    } finally {
+      secondStartup.close();
     }
   });
 

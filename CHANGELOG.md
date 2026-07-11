@@ -1,4 +1,8 @@
 # Changelog
+HQ-TASK-S32 - Added persistent mission context memory for reload-safe Mission Intelligence.
+
+HQ-TASK-S31 - Added deterministic Headquarters Priority Engine and restored the Ready Room transition video.
+
 HQ-TASK-0280 - Added Sprint 29 Mission Continuity, Doctrine, Guardian, and Archive review documentation.
 
 HQ-TASK-0279 - Linked the Journal room to the active mission context.

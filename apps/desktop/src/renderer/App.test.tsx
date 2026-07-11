@@ -44,6 +44,7 @@ import {
   createDesktopDoctrineCandidateFromDraft,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
+  buildMissionContextLookup,
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
@@ -2068,6 +2069,63 @@ describe('Desktop shell', () => {
         updatedAt: '2026-01-01T00:00:00.000Z',
       },
     });
+  });
+
+  it('hydrates persisted mission context into briefing and observation state after reload', () => {
+    const contextByMissionId = buildMissionContextLookup([{
+      missionId: 'mission-001',
+      contextJson: JSON.stringify({
+        missionId: 'mission-001',
+        briefing: {
+          missionObjective: 'Wait for clean confirmation.',
+          market: 'NQ',
+          marketEnvironment: 'Range.',
+          highImpactNews: 'None.',
+          personalReadiness: 'Focused.',
+          riskParameters: '1%.',
+          successCriteria: 'No trade unless evidence confirms.',
+        },
+        observation: {
+          observedDirection: 'Sideways.',
+          marketStructure: 'Range.',
+          volume: 'Light.',
+          liquidityNotes: 'Above prior high.',
+          keyLevels: 'Prior high and value low.',
+          directionalHypothesis: 'Breakout only above prior high.',
+          invalidationEvidence: 'Failure back inside range.',
+          emotionalCheck: 'Calm.',
+          evidenceReadiness: 'yes',
+          operationalSummary: 'Range remains controlled.',
+        },
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: true,
+          observationComplete: true,
+          warRoomReady: true,
+          debriefReady: false,
+        },
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:15:00.000Z',
+      }),
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:15:00.000Z',
+    }]);
+
+    const activeMission = mapMissionRecordToActiveMission({
+      id: 'mission-001',
+      codename: 'Memory Mission',
+      objective: 'Persist mission context.',
+      state: 'authorization',
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:15:00.000Z',
+    }, undefined, contextByMissionId.get('mission-001'));
+
+    expect(activeMission.briefingContext?.market).toBe('NQ');
+    expect(activeMission.observationContext?.marketDirection).toBe('Sideways.');
+    expect(activeMission.observationContext?.readiness).toBe('yes');
+    expect(activeMission.missionContext?.readiness.warRoomReady).toBe(true);
+    expect(buildDesktopMissionIntelligencePackage(activeMission).missingEvidence).toEqual([]);
   });
 
   it('stores Ready Room briefing answers in mission context memory', () => {
