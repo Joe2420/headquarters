@@ -332,7 +332,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 14 Commander Experience is complete through HQ-TASK-0156.
+Current milestone gate: Sprint 30 Persistent Mission Lifecycle Engine is implemented on the active feature branch.
 
 ## Post-Sprint UX Alignment
 
@@ -360,6 +360,10 @@ No runtime behavior, database migration, TypeScript implementation, UI, or event
 Sprint 14 Commander Experience is complete through HQ-TASK-0156.
 
 Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspection.
+
+## Sprint 30 - Persistent Mission Lifecycle Engine
+
+- HQ-TASK-S30 - Persistent Mission Lifecycle Engine
 
 
 
