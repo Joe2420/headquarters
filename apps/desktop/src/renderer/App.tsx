@@ -59,8 +59,12 @@ import {
   type RepeatedSuccess,
 } from '@headquarters/intelligence-office';
 import {
+  buildDoctrineCandidateCommanderSummary,
   buildTradingPlanDoctrineReferences,
   diffDoctrineRecords,
+  getDoctrineEvidenceStrength,
+  validateDoctrineCandidateForReview,
+  type DoctrineCandidate,
   type DoctrineDiff,
   type DoctrineHistoryEntry,
   type DoctrineRecord,
@@ -218,6 +222,12 @@ export interface DoctrinePromotionDraft {
   sourceId: string;
   archiveId: string;
   excerpt: string;
+  rationale?: string;
+  triggerCondition?: string;
+  expectedBehavior?: string;
+  exceptionOrBoundary?: string;
+  proposedScope?: string;
+  reviewNote?: string;
 }
 
 export interface ArchiveWritePlaceholder {
@@ -3686,6 +3696,17 @@ export async function promoteDesktopDoctrineCandidate(
     return undefined;
   }
 
+  const candidate = createDesktopDoctrineCandidateFromDraft({
+    ...draft,
+    candidateId,
+    title,
+    summary,
+    sourceId,
+    archiveId,
+    excerpt,
+  });
+  if (!validateDoctrineCandidateForReview(candidate).valid) return undefined;
+
   const result = await globalThis.window?.headquarters?.promoteDoctrineCandidate?.({
     candidateId,
     title,
@@ -3696,6 +3717,47 @@ export async function promoteDesktopDoctrineCandidate(
   });
 
   return result;
+}
+
+export function createDesktopDoctrineCandidateFromDraft(
+  draft: DoctrinePromotionDraft,
+  options: { readonly createdAt?: string } = {},
+): DoctrineCandidate {
+  const supportingEvidenceCount = 1;
+  const proposedTitle = draft.title.trim();
+  const proposedRule = draft.summary.trim();
+  const excerpt = draft.excerpt.trim();
+
+  const candidate: DoctrineCandidate = {
+    id: draft.candidateId.trim(),
+    title: proposedTitle,
+    summary: proposedRule,
+    status: 'pending_review',
+    proposedTitle,
+    proposedRule,
+    rationale: draft.rationale?.trim() || `Source evidence supports manual Doctrine review for ${proposedTitle}.`,
+    evidenceSummary: excerpt,
+    triggerCondition: draft.triggerCondition?.trim() || 'The operating condition described by the source evidence appears again.',
+    expectedBehavior: draft.expectedBehavior?.trim() || proposedRule,
+    exceptionOrBoundary: draft.exceptionOrBoundary?.trim() || 'This rule applies only when the source condition is present.',
+    proposedScope: draft.proposedScope?.trim() || 'Operator-reviewed trading missions matching the source condition.',
+    similarDoctrineIds: [],
+    conflictSummary: 'No accepted Doctrine comparison has been performed yet.',
+    supportingEvidenceCount,
+    source: {
+      sourceType: 'journal_entry',
+      sourceId: draft.sourceId.trim(),
+      archiveId: draft.archiveId.trim(),
+      excerpt,
+    },
+    createdAt: options.createdAt ?? new Date().toISOString(),
+    ...(draft.reviewNote?.trim() ? { reviewNote: draft.reviewNote.trim() } : {}),
+  };
+
+  return {
+    ...candidate,
+    status: validateDoctrineCandidateForReview(candidate).valid ? 'pending_review' : 'draft',
+  };
 }
 
 interface MissionClosingPanelProps {
@@ -4572,6 +4634,7 @@ function DoctrineSuggestionPanel({ suggestions }: { suggestions: readonly Doctri
               <span>{suggestion.title}</span>
               <strong>Manual promotion required</strong>
               <span>{suggestion.rationale}</span>
+              {suggestion.evidenceSummaries[0] ? <span>Evidence: {suggestion.evidenceSummaries[0]}</span> : null}
             </li>
           ))}
         </ol>
@@ -5246,9 +5309,36 @@ function DoctrinePromotionPanel({
   const [sourceId, setSourceId] = useState('');
   const [archiveId, setArchiveId] = useState('');
   const [excerpt, setExcerpt] = useState('');
+  const [triggerCondition, setTriggerCondition] = useState('');
+  const [expectedBehavior, setExpectedBehavior] = useState('');
+  const [exceptionOrBoundary, setExceptionOrBoundary] = useState('');
+  const [proposedScope, setProposedScope] = useState('');
+  const [reviewNote, setReviewNote] = useState('');
+  const [decisionState, setDecisionState] = useState<'pending' | 'rejected' | 'revision_requested'>('pending');
+
+  const candidate = createDesktopDoctrineCandidateFromDraft({
+    candidateId,
+    title,
+    summary,
+    sourceId,
+    archiveId,
+    excerpt,
+    triggerCondition,
+    expectedBehavior,
+    exceptionOrBoundary,
+    proposedScope,
+    reviewNote,
+  }, { createdAt: 'desktop-preview' });
+  const validation = validateDoctrineCandidateForReview(candidate);
+  const evidenceStrength = getDoctrineEvidenceStrength(candidate.supportingEvidenceCount);
+  const commanderSummary = validation.valid
+    ? buildDoctrineCandidateCommanderSummary(candidate)
+    : 'Candidate incomplete. More evidence or clarification is required.';
 
   async function handlePromotion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!validation.valid) return;
+
     const result = await promoteDesktopDoctrineCandidate({
       candidateId,
       title,
@@ -5256,6 +5346,11 @@ function DoctrinePromotionPanel({
       sourceId,
       archiveId,
       excerpt,
+      triggerCondition,
+      expectedBehavior,
+      exceptionOrBoundary,
+      proposedScope,
+      reviewNote,
     });
 
     if (result === undefined) return;
@@ -5267,12 +5362,30 @@ function DoctrinePromotionPanel({
     setSourceId('');
     setArchiveId('');
     setExcerpt('');
+    setTriggerCondition('');
+    setExpectedBehavior('');
+    setExceptionOrBoundary('');
+    setProposedScope('');
+    setReviewNote('');
+    setDecisionState('pending');
   }
 
   return (
-    <form className="journal-panel" aria-label="Manual doctrine promotion" onSubmit={handlePromotion}>
-      <p className="section-label">Manual Promotion</p>
-      <h3>Promote Candidate</h3>
+    <form className="journal-panel doctrine-review-panel" aria-label="Doctrine candidate review" onSubmit={handlePromotion}>
+      <p className="section-label">Candidate Review</p>
+      <h3>Doctrine Candidate</h3>
+      <p className="muted">{commanderSummary}</p>
+      <section aria-label="Candidate overview">
+        <h4>Candidate Overview</h4>
+        <dl>
+          <dt>Status</dt>
+          <dd>{validation.valid ? 'pending_review' : 'draft'}</dd>
+          <dt>Evidence Strength</dt>
+          <dd>{evidenceStrength.label}: {evidenceStrength.description}</dd>
+          <dt>Proposed Scope</dt>
+          <dd>{candidate.proposedScope || 'Awaiting scope'}</dd>
+        </dl>
+      </section>
       <label>
         <span>Candidate Id</span>
         <input value={candidateId} onChange={(event) => setCandidateId(event.target.value)} placeholder="candidate-001" />
@@ -5282,8 +5395,24 @@ function DoctrinePromotionPanel({
         <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Wait for confirmation" />
       </label>
       <label>
-        <span>Summary</span>
-        <textarea value={summary} onChange={(event) => setSummary(event.target.value)} placeholder="Doctrine summary" />
+        <span>Proposed Rule</span>
+        <textarea value={summary} onChange={(event) => setSummary(event.target.value)} placeholder="Exact rule that will become Doctrine" />
+      </label>
+      <label>
+        <span>Trigger Condition</span>
+        <textarea value={triggerCondition} onChange={(event) => setTriggerCondition(event.target.value)} placeholder="When this rule applies" />
+      </label>
+      <label>
+        <span>Expected Behavior</span>
+        <textarea value={expectedBehavior} onChange={(event) => setExpectedBehavior(event.target.value)} placeholder="What the operator must do" />
+      </label>
+      <label>
+        <span>Exception or Boundary</span>
+        <textarea value={exceptionOrBoundary} onChange={(event) => setExceptionOrBoundary(event.target.value)} placeholder="When this rule should not apply" />
+      </label>
+      <label>
+        <span>Scope</span>
+        <input value={proposedScope} onChange={(event) => setProposedScope(event.target.value)} placeholder="Market-open missions during abnormal volatility" />
       </label>
       <label>
         <span>Source Journal Entry Id</span>
@@ -5297,9 +5426,52 @@ function DoctrinePromotionPanel({
         <span>Source Excerpt</span>
         <textarea value={excerpt} onChange={(event) => setExcerpt(event.target.value)} placeholder="Evidence excerpt" />
       </label>
-      <button className="secondary-action" type="submit">
-        Promote Candidate
+      <section aria-label="Doctrine evidence">
+        <h4>Evidence</h4>
+        <p className="muted">{candidate.evidenceSummary || 'No source evidence has been supplied yet.'}</p>
+        <div className="room-action-row">
+          <button className="secondary-action" type="button" disabled={!sourceId}>
+            Open Source Journal Entry
+          </button>
+          <button className="secondary-action" type="button" disabled>
+            Open Source Mission
+          </button>
+          <button className="secondary-action" type="button" disabled>
+            Open Similar Doctrine
+          </button>
+          <button className="secondary-action" type="button" disabled={!excerpt}>
+            Open Full Evidence
+          </button>
+        </div>
+      </section>
+      <section aria-label="Doctrine comparison">
+        <h4>Comparison</h4>
+        <p className="muted">{candidate.conflictSummary}</p>
+      </section>
+      <label>
+        <span>Review Note</span>
+        <textarea value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} placeholder="Why this decision is appropriate" />
+      </label>
+      {!validation.valid ? (
+        <p className="muted">Candidate incomplete. More evidence or clarification is required. Issues: {validation.issues.map((issue) => issue.code).join(', ')}</p>
+      ) : null}
+      {decisionState === 'rejected' && !reviewNote.trim() ? (
+        <p className="muted">Reject Candidate requires a rejection reason.</p>
+      ) : null}
+      {decisionState === 'revision_requested' && !reviewNote.trim() ? (
+        <p className="muted">Return for Revision requires a revision note.</p>
+      ) : null}
+      <button className="secondary-action" type="submit" disabled={!validation.valid}>
+        Approve Doctrine
       </button>
+      <div className="room-action-row" aria-label="Doctrine candidate decisions">
+        <button className="secondary-action" type="button" onClick={() => setDecisionState('rejected')}>
+          Reject Candidate
+        </button>
+        <button className="secondary-action" type="button" onClick={() => setDecisionState('revision_requested')}>
+          Return for Revision
+        </button>
+      </div>
     </form>
   );
 }

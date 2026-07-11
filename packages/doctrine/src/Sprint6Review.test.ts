@@ -58,7 +58,7 @@ describe('Sprint 6 Doctrine Review', () => {
       name: 'Primary Trading Plan',
     }, [promoted]);
 
-    expect(candidate.status).toBe('candidate');
+    expect(candidate.status).toBe('pending_review');
     expect(promoted.confidence).toBe('validated');
     expect(historyEntry.action).toBe('promoted');
     expect(diff.changed).toBe(true);

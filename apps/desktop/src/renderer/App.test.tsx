@@ -34,6 +34,7 @@ import {
   buildDesktopMissionIntelligencePackage,
   buildDesktopRepeatedMistakes,
   buildDesktopRepeatedSuccesses,
+  createDesktopDoctrineCandidateFromDraft,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildVisibleMissionLifecycleSteps,
@@ -798,9 +799,10 @@ describe('Desktop shell', () => {
 
     expect(suggestions).toEqual([{
       id: 'doctrine-suggestion:doctrine_candidate_source',
-      title: 'Doctrine candidate requires review',
-      rationale: '1 supporting source surfaced a possible operating rule. Review it before it becomes Doctrine.',
+      title: 'Review evidence-backed doctrine source',
+      rationale: 'Source evidence requires manual doctrine review: Rule source',
       evidenceRecordIds: ['journal-001'],
+      evidenceSummaries: ['Rule source'],
       requiresManualPromotion: true,
     }]);
     expect(html).toContain('Doctrine Suggestions');
@@ -1196,7 +1198,9 @@ describe('Desktop shell', () => {
     expect(html).toContain('Doctrine Review');
     expect(html).toContain('aria-label="Doctrine Commander prompt"');
     expect(html).toContain('Review the lesson before it becomes law.');
-    expect(html).toContain('aria-label="Manual doctrine promotion"');
+    expect(html).toContain('aria-label="Doctrine candidate review"');
+    expect(html).toContain('Candidate incomplete. More evidence or clarification is required.');
+    expect(html).toContain('Approve Doctrine');
   });
 
   it('formats recent Headquarters highlights without exposing subsystem detail in Command', () => {
@@ -1444,7 +1448,17 @@ describe('Desktop shell', () => {
       sourceId: 'journal-001',
       archiveId: 'archive-001',
       excerpt: 'Wait for confirmation before entry.',
+      triggerCondition: 'Entry consideration before confirmation is visible.',
+      expectedBehavior: 'Wait and collect evidence before authorization.',
     })).resolves.toEqual({ record: promotedRecord, historyEntry });
+    await expect(promoteDesktopDoctrineCandidate({
+      candidateId: 'candidate-placeholder',
+      title: 'Doctrine candidate requires review',
+      summary: 'Possible operating rule',
+      sourceId: 'journal-001',
+      archiveId: 'archive-001',
+      excerpt: 'Wait for confirmation before entry.',
+    })).resolves.toBeUndefined();
     await expect(promoteDesktopDoctrineCandidate({
       candidateId: '',
       title: 'Wait for confirmation',
@@ -1458,6 +1472,25 @@ describe('Desktop shell', () => {
       configurable: true,
       value: originalWindow,
     });
+  });
+
+  it('builds Doctrine candidates with reviewable evidence and Commander summary content', () => {
+    const candidate = createDesktopDoctrineCandidateFromDraft({
+      candidateId: 'candidate-001',
+      title: 'Wait for opening volatility to stabilize',
+      summary: 'Do not take the first available entry during disorderly market-open conditions.',
+      sourceId: 'journal-001',
+      archiveId: 'archive-001',
+      excerpt: 'Wait for markets to open, preferably until initial volatility settles.',
+      triggerCondition: 'Abnormal or disorderly market opening.',
+      expectedBehavior: 'Wait and collect evidence before authorization.',
+      exceptionOrBoundary: 'The rule does not block entries after conditions stabilize.',
+      proposedScope: 'Market-open missions during abnormal volatility.',
+    }, { createdAt: '2026-07-01T00:00:00.000Z' });
+
+    expect(candidate.proposedRule).toContain('Do not take the first available entry');
+    expect(candidate.source.excerpt).toContain('Wait for markets to open');
+    expect(candidate.status).toBe('pending_review');
   });
 
   it('builds a read-only doctrine diff preview when two doctrine records are present', () => {
