@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildCommanderCeremonyAudioEvent,
   buildMissionCeremonyAudioEvent,
+  mapCommanderCeremonyDialogueToAudioMoment,
   mapMissionCeremonyToAudioMoment,
   resolveMissionCeremonyCue,
   type MissionCeremonyAudioMoment,
 } from './MissionCeremonyAudio';
+import { getCommanderCeremonyDialogue, listCommanderCeremonyDialogues } from './CommanderCeremonyDialogue';
 
 describe('MissionCeremonyAudio', () => {
   it('maps each mission ceremony moment to an expected audio cue', () => {
@@ -64,5 +67,37 @@ describe('MissionCeremonyAudio', () => {
       label: 'Observation Complete',
       message: 'Observation complete.',
     })).toBe('observation_complete');
+  });
+
+  it('maps Commander ceremony dialogue to deterministic audio moments', () => {
+    expect(listCommanderCeremonyDialogues().map(mapCommanderCeremonyDialogueToAudioMoment)).toEqual([
+      'report_for_duty_accepted',
+      'mission_created',
+      'briefing_complete',
+      'observation_started',
+      'observation_complete',
+      'authorization_requested',
+      'authorization_granted',
+      'return_to_base',
+      'debrief_complete',
+      'mission_archived',
+    ]);
+  });
+
+  it('builds audio event candidates from Commander ceremony dialogue without playback', () => {
+    const event = buildCommanderCeremonyAudioEvent(
+      getCommanderCeremonyDialogue('authorization_granted'),
+      '2026-07-04T10:00:00.000Z',
+    );
+
+    expect(event).toMatchObject({
+      id: 'audio:war-room:ceremony_authorization_granted:2026-07-04T10:00:00.000Z',
+      type: 'ceremony_cue',
+      cueId: 'ceremony_authorization_granted',
+      channel: 'ceremony',
+      priority: 'high',
+      room: 'war-room',
+      reason: 'Mission ceremony audio hook: authorization_granted.',
+    });
   });
 });

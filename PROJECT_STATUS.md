@@ -3,6 +3,7 @@
 ## Completed Foundation Tasks
 
 - HQ-TASK-S34 - Commander Ceremony Dialogue Expansion
+- HQ-TASK-S37 - Commander Ceremony Audio Candidate Alignment
 - HQ-TASK-S36 - Commander Ceremony Cadence and Timing Refinement
 - HQ-TASK-S35 - Commander Ceremony Transmission Integration
 - HQ-TASK-S33 - Adaptive Commander Personality and Dialogue Engine
@@ -339,7 +340,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 36 Commander Ceremony Cadence and Timing Refinement is implemented on the active feature branch.
+Current milestone gate: Sprint 37 Commander Ceremony Audio Candidate Alignment is implemented on the active feature branch.
 
 ## Post-Sprint UX Alignment
 
@@ -395,6 +396,10 @@ Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspec
 ## Sprint 36 - Commander Ceremony Cadence and Timing Refinement
 
 - HQ-TASK-S36 - Commander Ceremony Cadence and Timing Refinement
+
+## Sprint 37 - Commander Ceremony Audio Candidate Alignment
+
+- HQ-TASK-S37 - Commander Ceremony Audio Candidate Alignment
 
 
 
