@@ -154,7 +154,7 @@ describe('CommanderExperience', () => {
     expect(source).toContain('? transmission.text');
   });
 
-  it('transmits mission ceremony dialogue through the Commander chat feed', () => {
+  it('keeps ceremony dialogue available without replaying it into the Commander chat feed', () => {
     const state = buildCommanderExperienceState({
       reportState: 'reported',
       activeRoom: 'war-room',
@@ -169,19 +169,17 @@ describe('CommanderExperience', () => {
     const html = renderToStaticMarkup(<CommanderExperiencePanel state={state} />);
 
     expect(state.ceremonyDialogue?.moment).toBe('authorization_granted');
-    expect(html).toContain('commander-transmission-ceremony');
-    expect(html).toContain('Authorization granted.');
-    expect(html).toContain('Decision authority transferred. Execute only the declared plan.');
+    expect(html).not.toContain('commander-transmission-ceremony');
+    expect(html).not.toContain('Decision authority transferred. Execute only the declared plan.');
+    expect(html).toContain('Mission deployed. Monitor the authorized plan.');
   });
 
-  it('uses dedicated ceremony cadence without changing normal room dialogue timing', () => {
+  it('keeps ceremony metadata out of the automatic chat transmission path', () => {
     const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
 
     expect(source).toContain('readonly timing?: CommanderTransmissionTiming | undefined');
-    expect(source).toContain('timing: getCommanderCeremonyTransmissionTiming(ceremony)');
     expect(source).toContain('timing={transmission.timing ?? state.dialogueProfile.timing}');
-    expect(source).toContain("if (ceremony.tone === 'direct')");
-    expect(source).toContain("if (ceremony.tone === 'reflective')");
+    expect(source).not.toContain('buildCommanderCeremonyTransmission');
   });
 
   it('keeps ceremony transmission stable while Ready Room questions advance', () => {
@@ -214,7 +212,7 @@ describe('CommanderExperience', () => {
 
     expect(firstQuestion.ceremonyDialogue?.moment).toBe('mission_created');
     expect(laterQuestion.ceremonyDialogue?.moment).toBe('mission_created');
-    expect(firstQuestion.commanderQuestion).toContain("What is today's primary mission?");
+    expect(firstQuestion.commanderQuestion).toContain('What market are you trading?');
     expect(laterQuestion.commanderQuestion).toBe("Describe today's market environment.");
   });
 
@@ -320,7 +318,7 @@ describe('CommanderExperience', () => {
     expect(getCommanderNextAction('reported', 'observation').disabled).toBe(true);
     expect(getCommanderNextAction('reported', 'authorization').label).toBe('War Room Authorization');
     expect(getCommanderNextAction('reported', 'authorization').disabled).toBe(true);
-    expect(getCommanderNextAction('reported', 'deployed').label).toBe('Return To Base');
+    expect(getCommanderNextAction('reported', 'deployed').label).toBe('Plan Concluded');
     expect(getCommanderNextAction('reported', 'return_to_base').label).toBe('Begin Debrief');
     expect(getCommanderNextAction('reported', 'debrief').label).toBe('Archive Mission');
   });
@@ -455,7 +453,7 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Observation completed. Authorization now requires discipline.');
   });
 
-  it('renders return-to-base as a red eject action', () => {
+  it('renders deployed plan conclusion as a red eject action', () => {
     const state = buildCommanderExperienceState({
       reportState: 'reported',
       activeRoom: 'war-room',
@@ -470,7 +468,7 @@ describe('CommanderExperience', () => {
     const html = renderToStaticMarkup(<CommanderExperiencePanel state={state} onContinue={() => undefined} />);
 
     expect(html).toContain('commander-eject-action');
-    expect(html).toContain('Return To Base');
+    expect(html).toContain('Plan Concluded');
   });
 
   it('hides acknowledged interruptions from priority rendering', () => {

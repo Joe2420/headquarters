@@ -1,3 +1,5 @@
+HQ-TASK-STABILIZATION - Stabilized Commander conversation ownership and mission lifecycle consistency.
+
 HQ-TASK-S38 - Exposed Commander ceremony audio candidates in the Audio QA surface.
 
 HQ-TASK-S37 - Aligned Commander ceremony dialogue with audio event candidates.

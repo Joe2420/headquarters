@@ -9,7 +9,6 @@ export interface MissionBriefingContext {
 }
 
 export type ReadyRoomBriefingField =
-  | 'missionObjective'
   | 'market'
   | 'marketEnvironment'
   | 'highImpactNews'
@@ -61,8 +60,7 @@ export interface ObservationInterviewAnswerResult {
 }
 
 const readyRoomBriefingQuestions: Record<ReadyRoomBriefingField, string> = {
-  missionObjective: "Operator. Before Headquarters commits resources, I need today's operational briefing. What is today's primary mission?",
-  market: 'What market are you trading?',
+  market: "Operator. Before Headquarters commits resources, I need today's operational briefing. What market are you trading?",
   marketEnvironment: "Describe today's market environment.",
   highImpactNews: "Are there any scheduled economic events capable of changing today's conditions?",
   personalReadiness: 'Evaluate your current operational condition.',
@@ -85,10 +83,9 @@ const observationInterviewQuestions: Record<ObservationInterviewField, string> =
 };
 
 export const readyRoomBriefingCompleteMessage = 'Operational briefing complete.\n\nMission profile accepted.\n\nProceed to Observation Room.';
-export const observationInterviewCompleteMessage = 'Observation complete.\n\nEvidence appears sufficient.\n\nAuthorization granted.\n\nProceed to War Room.';
+export const observationInterviewCompleteMessage = 'Observation complete.\n\nThe evidence package is ready for authorization review.\n\nProceed to the War Room.';
 
 export function getNextReadyRoomBriefingField(context: MissionBriefingContext = {}): ReadyRoomBriefingField | undefined {
-  if (!hasText(context.missionObjective)) return 'missionObjective';
   if (!hasText(context.market)) return 'market';
   if (!hasText(context.marketEnvironment)) return 'marketEnvironment';
   if (!hasText(context.highImpactNews)) return 'highImpactNews';
@@ -242,10 +239,9 @@ function withReadyRoomAnswer(
   field: ReadyRoomBriefingField,
   answer: string,
 ): MissionBriefingContext {
-  if (field === 'missionObjective') return { ...context, missionObjective: answer };
   if (field === 'market') return { ...context, market: answer };
   if (field === 'marketEnvironment') return { ...context, marketEnvironment: answer };
-  if (field === 'highImpactNews') return { ...context, highImpactNews: answer };
+  if (field === 'highImpactNews') return { ...context, highImpactNews: normalizeEconomicEventAnswer(answer) };
   if (field === 'personalReadiness') return { ...context, personalReadiness: answer };
   if (field === 'riskParameters') return { ...context, riskParameters: answer };
   return { ...context, successCriteria: answer };
@@ -294,9 +290,23 @@ function getObservationAcknowledgement(
 }
 
 function parseReadinessAnswer(answer: string): 'yes' | 'no' | undefined {
-  if (/^(yes|y|ready|affirmative)\b/i.test(answer)) return 'yes';
-  if (/^(no|n|not yet|negative)\b/i.test(answer)) return 'no';
+  const parsed = parseAffirmativeNegativeAnswer(answer);
+  if (parsed === 'yes') return 'yes';
+  if (parsed === 'no') return 'no';
   return undefined;
+}
+
+export function parseAffirmativeNegativeAnswer(answer: string): 'yes' | 'no' | undefined {
+  const normalized = answer.trim().toLowerCase();
+  if (/^(yes|y|yep|yeah|affirmative|ready)\b/.test(normalized)) return 'yes';
+  if (/^(no|n|nope|none|no news|negative|not yet|nothing|n\/a)\b/.test(normalized)) return 'no';
+  return undefined;
+}
+
+export function normalizeEconomicEventAnswer(answer: string): string {
+  const parsed = parseAffirmativeNegativeAnswer(answer);
+  if (parsed === 'no') return 'None';
+  return answer.trim();
 }
 
 function hasText(value: string | undefined): boolean {

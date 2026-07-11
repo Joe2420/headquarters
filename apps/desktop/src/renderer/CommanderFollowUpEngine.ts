@@ -74,7 +74,7 @@ function shouldAskFollowUp(context: MissionContext, id: CommanderFollowUpId): bo
 
 function hasMeaningfulNews(value: string | undefined): boolean {
   if (!hasText(value)) return false;
-  return !/^(none|no|nothing|n\/a)$/i.test(value.trim());
+  return !/^(none|no|nope|no news|negative|nothing|n\/a)$/i.test(value.trim());
 }
 
 function hasReadinessConstraint(value: string | undefined): boolean {

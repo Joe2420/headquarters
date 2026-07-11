@@ -2019,9 +2019,14 @@ describe('Desktop shell', () => {
       commandAuthority: 'Professional command',
       currentState: 'briefing',
       createdAt: '2026-01-01T00:00:00.000Z',
+      briefingContext: {
+        missionObjective: 'Hold the line',
+      },
       missionContext: {
         missionId: 'mission-001',
-        briefing: {},
+        briefing: {
+          missionObjective: 'Hold the line',
+        },
         observation: {},
         commanderNotes: [],
         contradictionFlags: [],
@@ -2332,6 +2337,11 @@ describe('Desktop shell', () => {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
     });
+    const deniedWithShallowRule = evaluateLocalMissionAuthorization(missionWithContext, {
+      operatorJustification: 'qwer',
+      invalidation: 'Exit if structure breaks.',
+      protectiveRule: 'asdf',
+    });
 
     expect(approved).toEqual({
       missionId: 'mission-001',
@@ -2343,20 +2353,51 @@ describe('Desktop shell', () => {
     expect(deniedWithoutContext).toEqual({
       missionId: 'mission-001',
       decision: 'denied',
-      reason: 'Authorization blocked: complete the Ready Room operational briefing; complete the Observation evidence interview; mission intelligence is still incomplete.',
+      reason: 'Authorization blocked: complete the Ready Room operational briefing; state the operating market; state the risk ceiling; complete the Observation evidence interview; summarize the Observation evidence package; mission intelligence is still incomplete.',
     });
     expect(denied).toEqual({
       missionId: 'mission-001',
       decision: 'denied',
-      reason: 'Authorization blocked: complete the Ready Room operational briefing; complete the Observation evidence interview; state invalidation evidence; mission intelligence is still incomplete.',
+      reason: 'Authorization blocked: complete the Ready Room operational briefing; state the operating market; state the risk ceiling; complete the Observation evidence interview; summarize the Observation evidence package; state invalidation evidence; mission intelligence is still incomplete.',
     });
     expect(deniedWithoutRule?.decision).toBe('denied');
+    expect(deniedWithShallowRule?.decision).toBe('denied');
+    expect(deniedWithShallowRule?.reason).toContain('protective rule must name the risk, stop, invalidation, plan, doctrine, or no-trade boundary');
     expect(formatAuthorizationStatus(denied)).toBe('Authorization denied');
     expect(evaluateLocalMissionAuthorization(undefined, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
       protectiveRule: 'No trade after failed acceptance.',
     })).toBeUndefined();
+  });
+
+  it('does not project deployed lifecycle without an active mission and uses deliberate deployed actions', () => {
+    expect(formatMissionLifecycleSummary(undefined)).not.toContain('Deployed');
+
+    const mission = createLocalMission(
+      {
+        codename: 'Deployed Patrol',
+        objective: 'Execute only the declared plan',
+      },
+      {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        id: 'mission-deployed',
+      },
+    );
+
+    if (!mission) throw new Error('Expected local mission to be created');
+
+    const deployedMission: ActiveMission = {
+      ...mission,
+      currentState: 'deployed',
+      condition: 'Deployed',
+    };
+    const action = getMissionNextAction(deployedMission);
+
+    expect(formatMissionLifecycleSummary(deployedMission)).toBe('Current station: War Room Deployment');
+    expect(action.label).toBe('Plan Concluded');
+    expect(action.buttonLabel).toBe('Plan Concluded');
+    expect(action.description).toContain('explicitly concluded');
   });
 
   it('preserves mission intelligence context when bridge records advance lifecycle rooms', () => {

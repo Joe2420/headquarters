@@ -193,8 +193,10 @@ export function CommanderExperiencePanel({
   const [transmissions, setTransmissions] = useState<CommanderTransmissionEntry[]>(() => (
     typeof window === 'undefined' ? buildInitialCommanderTransmissions(state) : []
   ));
+  const [isSubmittingTransmission, setIsSubmittingTransmission] = useState(false);
   const feedRef = useRef<HTMLOListElement | null>(null);
   const activePromptKeyRef = useRef(typeof window === 'undefined' ? currentPromptKey : '');
+  const submittingTransmissionRef = useRef(false);
   const observationSupportIndexRef = useRef(0);
   const passiveRoomPhaseRef = useRef<Set<string>>(new Set());
 
@@ -210,12 +212,7 @@ export function CommanderExperiencePanel({
 
     activePromptKeyRef.current = currentPromptKey;
     setTransmissions((current) => {
-      const ceremonyTransmission = buildCommanderCeremonyTransmission(state);
-      const withCeremony = ceremonyTransmission && !current.some((entry) => entry.id === ceremonyTransmission.id)
-        ? appendCommanderTransmission(current, ceremonyTransmission)
-        : current;
-
-      return appendCommanderTransmission(withCeremony, buildCommanderPromptTransmission(state, currentPromptKey));
+      return appendCommanderTransmission(current, buildCommanderPromptTransmission(state, currentPromptKey));
     });
   }, [
     currentPromptKey,
@@ -278,7 +275,10 @@ export function CommanderExperiencePanel({
     event.preventDefault();
     const message = draftTransmission.trim();
     if (message.length === 0) return;
+    if (submittingTransmissionRef.current || hasUndeliveredCommanderTransmission(transmissions)) return;
 
+    submittingTransmissionRef.current = true;
+    setIsSubmittingTransmission(true);
     setTransmissions((current) => [...current, {
       id: `operator:${Date.now()}:${current.length}`,
       speaker: 'Operator',
@@ -288,18 +288,23 @@ export function CommanderExperiencePanel({
     }]);
     setDraftTransmission('');
 
-    const response = await onTransmit?.(message);
-    const commanderResponse = response ?? getTransmissionAcknowledgement(message, state.currentRoom);
-    setTransmissions((current) => appendCommanderTransmission(current, {
-      id: `commander:response:${Date.now()}:${current.length}`,
-      speaker: 'Commander',
-      text: commanderResponse,
-      kind: 'response',
-      purpose: inferCommanderResponsePurpose(commanderResponse, state),
-      room: state.currentRoom,
-      lifecycleStep: state.lifecycleStep,
-      status: 'queued',
-    }));
+    try {
+      const response = await onTransmit?.(message);
+      const commanderResponse = response ?? getTransmissionAcknowledgement(message, state.currentRoom);
+      setTransmissions((current) => appendCommanderTransmission(current, {
+        id: `commander:response:${Date.now()}:${current.length}`,
+        speaker: 'Commander',
+        text: commanderResponse,
+        kind: 'response',
+        purpose: inferCommanderResponsePurpose(commanderResponse, state),
+        room: state.currentRoom,
+        lifecycleStep: state.lifecycleStep,
+        status: 'queued',
+      }));
+    } finally {
+      submittingTransmissionRef.current = false;
+      setIsSubmittingTransmission(false);
+    }
   }
 
   function handleCommanderTransmissionComplete(transmission: CommanderTransmissionEntry) {
@@ -366,7 +371,10 @@ export function CommanderExperiencePanel({
                 className={[
                   'primary-action',
                   'commander-continue',
-                  state.nextAction.id === 'commander-action:return-to-base' ? 'commander-eject-action' : '',
+                  state.nextAction.id === 'commander-action:return-to-base'
+                    || state.nextAction.id === 'commander-action:plan-concluded'
+                    ? 'commander-eject-action'
+                    : '',
                 ].filter(Boolean).join(' ')}
                 data-action-id={state.nextAction.id}
                 aria-label={`Continue to ${formatCommanderRoomLabel(state.recommendedRoom)}`}
@@ -382,8 +390,15 @@ export function CommanderExperiencePanel({
               value={draftTransmission}
               onChange={(event) => setDraftTransmission(event.target.value)}
               placeholder="Transmit a short operational note..."
+              disabled={isSubmittingTransmission || hasUndeliveredCommanderTransmission(transmissions)}
             />
-            <button className="secondary-action" type="submit">Transmit</button>
+            <button
+              className="secondary-action"
+              type="submit"
+              disabled={isSubmittingTransmission || hasUndeliveredCommanderTransmission(transmissions)}
+            >
+              Transmit
+            </button>
           </form>
           {workflowSurface ? (
             <div className="commander-workflow-surface" aria-label="Commander workflow controls">
@@ -532,12 +547,14 @@ function TransmittedText({
 function buildInitialCommanderTransmissions(state: CommanderExperienceState): CommanderTransmissionEntry[] {
   const promptKey = buildCommanderTransmissionPromptKey(state);
   const promptTransmission = buildCommanderPromptTransmission(state, promptKey);
-  const ceremonyTransmission = buildCommanderCeremonyTransmission(state);
 
   return [
-    ...(ceremonyTransmission ? [{ ...ceremonyTransmission, status: 'delivered' as const }] : []),
     { ...promptTransmission, status: 'delivered' },
   ];
+}
+
+function hasUndeliveredCommanderTransmission(transmissions: readonly CommanderTransmissionEntry[]): boolean {
+  return transmissions.some((entry) => entry.speaker === 'Commander' && entry.status !== 'delivered');
 }
 
 function appendCommanderTransmission(
@@ -601,76 +618,6 @@ function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): s
     state.commanderQuestion,
     state.roomPromptMode,
   ].join('|');
-}
-
-function buildCommanderCeremonyTransmission(
-  state: CommanderExperienceState,
-): CommanderTransmissionEntry | undefined {
-  const ceremony = state.ceremonyDialogue;
-  if (!ceremony) return undefined;
-
-  return {
-    id: `commander:ceremony:${ceremony.moment}`,
-    speaker: 'Commander',
-    text: `${ceremony.commanderLine}\n\n${ceremony.supportingLine}`,
-    kind: 'ceremony',
-    purpose: inferCommanderCeremonyPurpose(ceremony),
-    room: ceremony.room,
-    lifecycleStep: state.lifecycleStep,
-    timing: getCommanderCeremonyTransmissionTiming(ceremony),
-    status: 'queued',
-  };
-}
-
-function getCommanderCeremonyTransmissionTiming(
-  ceremony: CommanderCeremonyDialogue,
-): CommanderTransmissionTiming {
-  const baseTiming: CommanderTransmissionTiming = {
-    startDelayMs: 420,
-    characterDelayMs: 42,
-    commaDelayMs: 190,
-    sentenceDelayMs: 520,
-    breathEveryCharacters: 18,
-    breathDelayMs: 260,
-  };
-
-  if (ceremony.tone === 'direct') {
-    return {
-      ...baseTiming,
-      startDelayMs: 260,
-      characterDelayMs: 34,
-      commaDelayMs: 140,
-      sentenceDelayMs: 360,
-      breathDelayMs: 180,
-    };
-  }
-
-  if (ceremony.tone === 'reflective') {
-    return {
-      ...baseTiming,
-      startDelayMs: 520,
-      characterDelayMs: 48,
-      sentenceDelayMs: 680,
-      breathEveryCharacters: 16,
-      breathDelayMs: 340,
-    };
-  }
-
-  return baseTiming;
-}
-
-function inferCommanderCeremonyPurpose(ceremony: CommanderCeremonyDialogue): CommanderMessagePurpose {
-  if (ceremony.moment === 'authorization_granted') return 'authorization';
-  if (ceremony.moment === 'debrief_complete' || ceremony.moment === 'return_to_base') return 'debrief';
-  if (
-    ceremony.moment === 'briefing_complete'
-    || ceremony.moment === 'observation_complete'
-    || ceremony.moment === 'mission_archived'
-  ) {
-    return 'completion';
-  }
-
-  return 'transition';
 }
 
 function isCommanderQuestionPending(state: CommanderExperienceState): boolean {
@@ -868,9 +815,9 @@ export function getCommanderNextAction(
 
   if (missionState === 'deployed') {
     return {
-      id: 'commander-action:return-to-base',
-      label: 'Return To Base',
-      description: 'Authorization is accepted. Return to base only when the declared plan has concluded.',
+      id: 'commander-action:plan-concluded',
+      label: 'Plan Concluded',
+      description: 'Mission deployed. Report material change, review authorization, or conclude the plan deliberately.',
       disabled: false,
     };
   }
@@ -1239,7 +1186,7 @@ function getCommanderQuestion(
   if (missionState === 'ready') return 'Are you seated, briefed, and ready to begin observation without touching execution?';
   if (missionState === 'observation') return 'Observation check: what evidence has appeared, and what is still missing?';
   if (missionState === 'authorization') return 'State the reason: market condition, session, volume, divergence, and invalidation.';
-  if (missionState === 'deployed') return 'Has the authorized plan concluded so we can return to base?';
+  if (missionState === 'deployed') return 'Mission deployed. Monitor the authorized plan. Available actions: Report Material Change, Plan Concluded, or Review Authorization.';
   if (missionState === 'return_to_base') return 'What behavior occurred, what discipline was kept, and what lesson remains?';
   if (missionState === 'debrief') return 'Is the debrief complete enough to archive as institutional memory?';
   return 'Mission is archived. Do you want to review records or open a new mission?';
