@@ -1478,8 +1478,45 @@ dd {
 
 .observation-workspace {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
   gap: 0.75rem;
+}
+
+.observation-primary-action {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.observation-current-focus {
+  grid-column: 1 / -1;
+  min-height: 260px;
+  border-color: rgba(122, 190, 255, 0.34);
+  background:
+    linear-gradient(135deg, rgba(122, 190, 255, 0.12), transparent 48%),
+    #0d1116;
+}
+
+.observation-current-focus h3 {
+  max-width: 780px;
+  font-size: clamp(1.45rem, 2vw, 2.3rem);
+  line-height: 1.18;
+}
+
+.observation-focus-grid,
+.observation-board-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.75rem;
+}
+
+.observation-focus-grid ul,
+.observation-board-columns ul,
+.observation-log ol {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .observation-check-in {
@@ -1487,6 +1524,53 @@ dd {
   background:
     linear-gradient(135deg, rgba(112, 255, 156, 0.07), transparent 42%),
     #0f1215;
+}
+
+.observation-intelligence-board {
+  border-color: rgba(122, 190, 255, 0.24);
+}
+
+.observation-confidence-meter {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(122, 190, 255, 0.28);
+  background: rgba(7, 10, 13, 0.8);
+}
+
+.observation-confidence-meter span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #7abeff, #70ff9c);
+}
+
+.observation-evidence-row,
+.observation-score-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.55fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(217, 231, 255, 0.08);
+}
+
+.observation-evidence-row dt,
+.observation-score-row dt {
+  color: #9db1c4;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.observation-score-row dd {
+  color: #70ff9c;
+  letter-spacing: 0.08em;
+}
+
+.observation-log li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(217, 231, 255, 0.08);
 }
 
 .room-layout[data-room-identity="silence"] {

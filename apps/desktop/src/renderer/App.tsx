@@ -2660,13 +2660,13 @@ export function ObservationRoom({
   archiveSummary,
 }: MissionTimelineViewerPanelProps) {
   const currentState = parseMissionState(activeMission?.currentState);
+  const observation = buildObservationRoomIntelligenceModel(activeMission, missionIntelligencePackage);
   const entries = buildDesktopMissionTimelineEntries({
     activeMission,
     authorizationStatus,
     missionDebrief,
     archiveSummary,
   });
-  const nextAction = getMissionNextAction(activeMission);
 
   return (
     <GuidedRoom
@@ -2675,46 +2675,142 @@ export function ObservationRoom({
       atmosphere="observation"
       title="Observation Room"
       useCase="Observe quietly and collect evidence."
-      objective="Keep charts and notes central until observation is complete."
-      primaryAction={<strong>{nextAction.label === 'Complete Observation' ? 'Complete Observation' : 'Observe'}</strong>}
-      workspace={(
-        <div className="observation-workspace" aria-label="Observation workspace">
-          <section className="journal-panel" aria-label="Observation timer">
-            <p className="section-label">Observation Timer</p>
-            <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
-            <p className="muted">{formatTimelineViewerStatus(entries)}</p>
-          </section>
-          <section className="journal-panel observation-check-in" aria-label="Commander observation check-in">
-            <p className="section-label">Commander Check-In</p>
-            <h3>{currentState === 'observation' ? 'Discipline Is Holding' : 'Await Observation'}</h3>
-            <p className="muted">Waiting is part of the work. Evidence comes first; authorization comes later.</p>
-          </section>
-          {missionIntelligencePackage ? (
-            <MissionIntelligencePanel
-              missionPackage={missionIntelligencePackage}
-              mode="observation"
-              title="Observation Intelligence"
-            />
-          ) : null}
+      objective="Build conviction from visible evidence. Prediction stays outside the room."
+      primaryAction={(
+        <div className="observation-primary-action">
+          <strong>{observation.primaryAction}</strong>
+          <p className="muted">{observation.primaryDetail}</p>
         </div>
       )}
-      timeline={<MissionTimelineViewerPanel
-        activeMission={activeMission}
-        authorizationStatus={authorizationStatus}
-        missionDebrief={missionDebrief}
-        archiveSummary={archiveSummary}
-      />}
+      workspace={(
+        <div className="observation-workspace" aria-label="Observation workspace">
+          <section className="journal-panel observation-current-focus" aria-label="Current observation focus">
+            <p className="section-label">Current Observation</p>
+            <h3>{observation.currentFocus.question}</h3>
+            <p className="muted">{observation.currentFocus.guidance}</p>
+            <div className="observation-focus-grid" aria-label="Observation evidence progress">
+              <div>
+                <p className="section-label">Completed</p>
+                <ul>
+                  {observation.completedEvidence.map((item) => <li key={item.id}>✓ {item.label}</li>)}
+                  {observation.completedEvidence.length === 0 ? <li>No evidence recorded yet</li> : null}
+                </ul>
+              </div>
+              <div>
+                <p className="section-label">Pending</p>
+                <ul>
+                  {observation.pendingEvidence.map((item) => <li key={item.id}>○ {item.label}</li>)}
+                  {observation.pendingEvidence.length === 0 ? <li>Core observation file complete</li> : null}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section className="journal-panel observation-check-in" aria-label="Commander observation check-in">
+            <p className="section-label">Commander Check-In</p>
+            <h3>{observation.commanderCheckIn.title}</h3>
+            <p>{observation.commanderCheckIn.body}</p>
+            <p className="muted">{observation.commanderCheckIn.reminder}</p>
+          </section>
+
+          <section className="journal-panel observation-metrics" aria-label="Observation metrics">
+            <p className="section-label">Observation Metrics</p>
+            <h3>{currentState === 'observation' ? 'Observation Active' : 'Observation Standby'}</h3>
+            <dl>
+              <dt>Timeline</dt>
+              <dd>{formatTimelineViewerStatus(entries)}</dd>
+              <dt>Evidence Collected</dt>
+              <dd>{observation.completedEvidence.length}</dd>
+              <dt>Commander Check-ins</dt>
+              <dd>{observation.commanderCheckIns}</dd>
+              <dt>Last Evidence</dt>
+              <dd>{observation.lastEvidence}</dd>
+            </dl>
+          </section>
+
+          <section className="journal-panel observation-intelligence-board" aria-label="Intelligence board">
+            <p className="section-label">Intelligence Board</p>
+            <h3>Mission Confidence</h3>
+            <div className="observation-confidence-meter" aria-label={`Mission confidence ${observation.confidenceScore}%`}>
+              <span style={{ width: `${observation.confidenceScore}%` }} />
+            </div>
+            <strong>{observation.confidenceLevel} {observation.confidenceScore}%</strong>
+            <div className="observation-board-columns">
+              <div>
+                <p className="section-label">Collected</p>
+                <ul>
+                  {observation.completedEvidence.map((item) => <li key={item.id}>✓ {item.label}</li>)}
+                </ul>
+              </div>
+              <div>
+                <p className="section-label">Still Missing</p>
+                <ul>
+                  {observation.pendingEvidence.map((item) => <li key={item.id}>○ {item.label}</li>)}
+                </ul>
+              </div>
+            </div>
+            <p className="muted">{observation.assessment}</p>
+          </section>
+
+          <section className="journal-panel observation-evidence-board" aria-label="Evidence board">
+            <p className="section-label">Today's Evidence</p>
+            <h3>{observation.evidenceBoardTitle}</h3>
+            <dl>
+              {observation.evidenceRows.map((row) => (
+                <div key={row.label} className="observation-evidence-row">
+                  <dt>{row.label}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <section className="journal-panel observation-discipline" aria-label="Observation discipline score">
+            <p className="section-label">Observation Quality</p>
+            <h3>{observation.disciplineSummary}</h3>
+            <dl>
+              {observation.disciplineScores.map((score) => (
+                <div key={score.label} className="observation-score-row">
+                  <dt>{score.label}</dt>
+                  <dd>{'★'.repeat(score.value)}{'☆'.repeat(5 - score.value)}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+      )}
+      timelineLabel="Observation Log"
+      timeline={(
+        <section className="journal-panel observation-log" aria-label="Observation log">
+          <p className="section-label">Observation History</p>
+          <ol>
+            {observation.logEntries.map((entry) => (
+              <li key={`${entry.label}-${entry.value}`}>
+                <strong>{entry.label}</strong>
+                <span>{entry.value}</span>
+              </li>
+            ))}
+          </ol>
+          <MissionTimelineViewerPanel
+            activeMission={activeMission}
+            authorizationStatus={authorizationStatus}
+            missionDebrief={missionDebrief}
+            archiveSummary={archiveSummary}
+          />
+        </section>
+      )}
+      secondaryToolsLabel="Observation Aids"
       secondaryTools={(
         <>
           <section className="journal-panel" aria-label="Compass indicator">
-          <p className="section-label">Compass Indicator</p>
-          <h3>{nextAction.label}</h3>
-          <p className="muted">{nextAction.description}</p>
+          <p className="section-label">Market Clock</p>
+          <h3>{observation.sessionLabel}</h3>
+          <p className="muted">Use session context only as observation context, never as a signal.</p>
           </section>
           <section className="journal-panel" aria-label="Artificial horizon">
-            <p className="section-label">Artificial Horizon</p>
-            <h3>{currentState === 'observation' ? 'Level' : 'Calm'}</h3>
-            <p className="muted">Operator stability is represented as a quiet status, not a trading signal.</p>
+            <p className="section-label">Key Levels</p>
+            <h3>{observation.keyLevelSummary}</h3>
+            <p className="muted">Levels stay descriptive until evidence validates them.</p>
           </section>
           <section className="journal-panel" aria-label="Silence state display">
             <p className="section-label">Silence State</p>
@@ -2725,6 +2821,206 @@ export function ObservationRoom({
       )}
     />
   );
+}
+
+type ObservationEvidenceStatus = 'complete' | 'current' | 'pending';
+
+interface ObservationEvidenceItem {
+  readonly id: keyof MissionObservationContext;
+  readonly label: string;
+  readonly question: string;
+  readonly status: ObservationEvidenceStatus;
+  readonly value?: string;
+}
+
+interface ObservationRoomIntelligenceModel {
+  readonly primaryAction: string;
+  readonly primaryDetail: string;
+  readonly currentFocus: {
+    readonly question: string;
+    readonly guidance: string;
+  };
+  readonly completedEvidence: readonly ObservationEvidenceItem[];
+  readonly pendingEvidence: readonly ObservationEvidenceItem[];
+  readonly commanderCheckIn: {
+    readonly title: string;
+    readonly body: string;
+    readonly reminder: string;
+  };
+  readonly commanderCheckIns: number;
+  readonly confidenceScore: number;
+  readonly confidenceLevel: string;
+  readonly assessment: string;
+  readonly evidenceBoardTitle: string;
+  readonly evidenceRows: readonly { readonly label: string; readonly value: string }[];
+  readonly logEntries: readonly { readonly label: string; readonly value: string }[];
+  readonly disciplineSummary: string;
+  readonly disciplineScores: readonly { readonly label: string; readonly value: number }[];
+  readonly lastEvidence: string;
+  readonly sessionLabel: string;
+  readonly keyLevelSummary: string;
+}
+
+export function buildObservationRoomIntelligenceModel(
+  activeMission?: ActiveMission | undefined,
+  missionIntelligencePackage?: MissionIntelligencePackage | undefined,
+): ObservationRoomIntelligenceModel {
+  const context = activeMission?.observationContext;
+  const briefing = activeMission?.briefingContext;
+  const baseEvidence = [
+    { id: 'marketDirection', label: 'Direction', question: 'What direction is price currently moving?' },
+    { id: 'marketStructure', label: 'Structure', question: 'What market structure is currently present?' },
+    { id: 'volume', label: 'Volume', question: "Describe today's volume." },
+    { id: 'liquidity', label: 'Liquidity', question: 'Where is liquidity likely resting?' },
+    { id: 'keyLevels', label: 'Important Levels', question: 'What levels are most important today?' },
+    { id: 'bias', label: 'Directional Hypothesis', question: 'What is your current directional hypothesis?' },
+    { id: 'invalidationEvidence', label: 'Invalidation', question: 'What evidence would invalidate your current idea?' },
+    { id: 'emotionalCheck', label: 'Emotional Check', question: 'Has your emotional state changed since entering Observation?' },
+    { id: 'operationalPicture', label: 'Operational Picture', question: 'Summarize your complete operational picture.' },
+  ] as const satisfies readonly {
+    readonly id: keyof MissionObservationContext;
+    readonly label: string;
+    readonly question: string;
+  }[];
+  const firstPendingIndex = baseEvidence.findIndex((item) => !hasObservationEvidenceValue(context?.[item.id]));
+  const evidence = baseEvidence.map((item, index): ObservationEvidenceItem => {
+    const value = normalizeObservationEvidenceValue(context?.[item.id]);
+    const status: ObservationEvidenceStatus = value
+      ? 'complete'
+      : firstPendingIndex === index
+        ? 'current'
+        : 'pending';
+
+    return {
+      id: item.id,
+      label: item.label,
+      question: item.question,
+      status,
+      ...(value ? { value } : {}),
+    };
+  });
+  const completedEvidence = evidence.filter((item) => item.status === 'complete');
+  const pendingEvidence = evidence.filter((item) => item.status !== 'complete');
+  const currentEvidence = evidence.find((item) => item.status === 'current');
+  const confidenceScore = missionIntelligencePackage?.confidence.score ?? Math.round((completedEvidence.length / evidence.length) * 100);
+  const confidenceLevel = missionIntelligencePackage?.confidence.level ?? (confidenceScore >= 70 ? 'sufficient' : confidenceScore >= 35 ? 'forming' : 'incomplete');
+  const additionalObservationsCount = context?.additionalObservations?.length ?? 0;
+  const logEntries = buildObservationLogEntries(activeMission, evidence);
+
+  return {
+    primaryAction: currentEvidence === undefined ? 'Complete Observation' : 'Collect Visible Evidence',
+    primaryDetail: currentEvidence === undefined
+      ? 'Evidence appears sufficient. Commander may authorize War Room movement.'
+      : `Commander is waiting for ${currentEvidence.label}.`,
+    currentFocus: {
+      question: currentEvidence?.question ?? 'Summarize the complete operational picture.',
+      guidance: currentEvidence === undefined
+        ? 'Observation file is complete enough for review. Do not add a bias without new evidence.'
+        : 'Report only what is visible. Do not predict. Do not manufacture evidence.',
+    },
+    completedEvidence,
+    pendingEvidence,
+    commanderCheckIn: buildObservationCommanderCheckIn(currentEvidence, completedEvidence.length),
+    commanderCheckIns: completedEvidence.length + additionalObservationsCount,
+    confidenceScore,
+    confidenceLevel,
+    assessment: pendingEvidence.length > 0 ? 'Evidence remains insufficient.' : 'Core evidence has been collected. Review before authorization.',
+    evidenceBoardTitle: completedEvidence.length > 0 ? `${completedEvidence.length} evidence items recorded` : 'No visible evidence recorded yet',
+    evidenceRows: [
+      { label: 'Mission Objective', value: formatMissionDetailValue(briefing?.missionObjective ?? activeMission?.objective) },
+      { label: 'Market', value: formatMissionDetailValue(briefing?.market) },
+      { label: 'Environment', value: formatMissionDetailValue(briefing?.marketEnvironment) },
+      { label: 'Direction', value: formatMissionDetailValue(context?.marketDirection) },
+      { label: 'Structure', value: formatMissionDetailValue(context?.marketStructure) },
+      { label: 'Volume', value: formatMissionDetailValue(context?.volume) },
+      { label: 'Liquidity', value: formatMissionDetailValue(context?.liquidity) },
+      { label: 'Key Levels', value: formatMissionDetailValue(context?.keyLevels) },
+      { label: 'Hypothesis', value: formatMissionDetailValue(context?.bias) },
+      { label: 'Invalidation', value: formatMissionDetailValue(context?.invalidationEvidence) },
+    ],
+    logEntries,
+    disciplineSummary: formatObservationDisciplineSummary(completedEvidence.length, context?.readiness),
+    disciplineScores: buildObservationDisciplineScores(completedEvidence.length, context),
+    lastEvidence: completedEvidence.at(-1)?.label ?? 'None recorded',
+    sessionLabel: formatMissionDetailValue(briefing?.marketEnvironment ?? activeMission?.condition),
+    keyLevelSummary: formatMissionDetailValue(context?.keyLevels),
+  };
+}
+
+function buildObservationCommanderCheckIn(
+  currentEvidence: ObservationEvidenceItem | undefined,
+  completedCount: number,
+): ObservationRoomIntelligenceModel['commanderCheckIn'] {
+  if (currentEvidence === undefined) {
+    return {
+      title: 'Evidence file formed.',
+      body: 'Do not rush authorization. Review the complete operational picture once more.',
+      reminder: 'War Room requires responsibility, not excitement.',
+    };
+  }
+
+  if (completedCount === 0) {
+    return {
+      title: 'Remain silent.',
+      body: 'Price has not provided enough information. Begin with visible direction and structure.',
+      reminder: 'Do not form a bias yet.',
+    };
+  }
+
+  return {
+    title: `${currentEvidence.label} is next.`,
+    body: 'Headquarters is building the battlefield picture one evidence item at a time.',
+    reminder: 'Continue collecting observations before requesting authorization.',
+  };
+}
+
+function buildObservationLogEntries(
+  activeMission: ActiveMission | undefined,
+  evidence: readonly ObservationEvidenceItem[],
+): readonly { readonly label: string; readonly value: string }[] {
+  return [
+    ...(activeMission ? [{ label: 'Mission Created', value: activeMission.campaign }] : []),
+    ...evidence
+      .filter((item) => item.value !== undefined)
+      .map((item) => ({ label: item.label, value: item.value ?? '' })),
+  ];
+}
+
+function formatObservationDisciplineSummary(completedCount: number, readiness: 'yes' | 'no' | undefined): string {
+  if (readiness === 'yes') return 'Readiness declared. Confirm evidence before War Room.';
+  if (readiness === 'no') return 'Patience holding. Continue observation.';
+  if (completedCount >= 5) return 'Objectivity developing.';
+  return 'Patience is the work.';
+}
+
+function buildObservationDisciplineScores(
+  completedCount: number,
+  context: MissionObservationContext | undefined,
+): readonly { readonly label: string; readonly value: number }[] {
+  const hasBias = hasObservationEvidenceValue(context?.bias);
+  const hasInvalidation = hasObservationEvidenceValue(context?.invalidationEvidence);
+
+  return [
+    { label: 'Patience', value: context?.readiness === 'no' ? 5 : 4 },
+    { label: 'Objectivity', value: Math.min(5, 2 + Math.floor(completedCount / 2)) },
+    { label: 'Bias Control', value: hasBias && !hasInvalidation ? 3 : 5 },
+    { label: 'Evidence Quality', value: Math.min(5, 1 + Math.floor(completedCount / 2)) },
+  ];
+}
+
+function normalizeObservationEvidenceValue(value: string | readonly string[] | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+
+  const joined = value.map((item) => item.trim()).filter(Boolean).join('; ');
+  return joined.length > 0 ? joined : undefined;
+}
+
+function hasObservationEvidenceValue(value: string | readonly string[] | undefined): boolean {
+  return normalizeObservationEvidenceValue(value) !== undefined;
 }
 
 export function WarRoom({
