@@ -337,7 +337,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 34 Commander Ceremony Dialogue Expansion is implemented on the active feature branch.
+Current milestone gate: Sprint 35 Commander Ceremony Transmission Integration is implemented on the active feature branch.
 
 ## Post-Sprint UX Alignment
 
@@ -385,6 +385,11 @@ Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspec
 ## Sprint 34 - Commander Ceremony Dialogue Expansion
 
 - HQ-TASK-S34 - Commander Ceremony Dialogue Expansion
+- HQ-TASK-S35 - Commander Ceremony Transmission Integration
+
+## Sprint 35 - Commander Ceremony Transmission Integration
+
+- HQ-TASK-S35 - Commander Ceremony Transmission Integration
 
 
 

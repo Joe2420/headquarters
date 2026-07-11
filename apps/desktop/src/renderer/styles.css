@@ -462,11 +462,23 @@ dd {
   border-left: 3px solid #70ff9c;
 }
 
+.commander-transmission-ceremony {
+  border-color: rgba(195, 176, 119, 0.42);
+  border-left: 3px solid #c3b077;
+  background:
+    linear-gradient(90deg, rgba(195, 176, 119, 0.12), transparent 42%),
+    rgba(7, 18, 13, 0.9);
+}
+
 .commander-transmission span {
   color: #70ff9c;
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.commander-transmission-ceremony span {
+  color: #c3b077;
 }
 
 .commander-transmission p {

@@ -146,11 +146,66 @@ describe('CommanderExperience', () => {
     const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
 
     expect(source).toContain("readonly status: 'queued' | 'transmitting' | 'delivered'");
+    expect(source).toContain("readonly kind: 'current' | 'question' | 'operator' | 'response' | 'support' | 'ceremony'");
     expect(source).toContain("entry.speaker === 'Commander' && entry.status === 'transmitting'");
     expect(source).toContain("entry.speaker === 'Commander' && entry.status === 'queued'");
     expect(source).toContain("transmission.status !== 'queued'");
     expect(source).toContain("transmission.status === 'delivered'");
     expect(source).toContain('? transmission.text');
+  });
+
+  it('transmits mission ceremony dialogue through the Commander chat feed', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-ceremony',
+        campaign: 'Ceremony Test',
+        objective: 'Hold discipline',
+        currentState: 'deployed',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel state={state} />);
+
+    expect(state.ceremonyDialogue?.moment).toBe('authorization_granted');
+    expect(html).toContain('commander-transmission-ceremony');
+    expect(html).toContain('Authorization granted.');
+    expect(html).toContain('Decision authority transferred. Execute only the declared plan.');
+  });
+
+  it('keeps ceremony transmission stable while Ready Room questions advance', () => {
+    const firstQuestion = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'ready-room',
+      activeMission: {
+        id: 'mission-ready',
+        campaign: 'Ready Test',
+        objective: 'Hold discipline',
+        currentState: 'briefing',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const laterQuestion = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'ready-room',
+      activeMission: {
+        id: 'mission-ready',
+        campaign: 'Ready Test',
+        objective: 'Hold discipline',
+        currentState: 'briefing',
+        createdAt: '2026-07-02T00:00:00.000Z',
+        briefingContext: {
+          missionObjective: 'Trade only A+ setups.',
+          market: 'NQ futures.',
+        },
+      },
+    });
+
+    expect(firstQuestion.ceremonyDialogue?.moment).toBe('mission_created');
+    expect(laterQuestion.ceremonyDialogue?.moment).toBe('mission_created');
+    expect(firstQuestion.commanderQuestion).toContain("What is today's primary mission?");
+    expect(laterQuestion.commanderQuestion).toBe("Describe today's market environment.");
   });
 
   it('keeps each support room Commander chat tone distinct', () => {
