@@ -59,8 +59,11 @@ describe('CommanderExperience', () => {
 
     expect(observationState.roomPromptMode).toBe('ask');
     expect(observationState.commanderQuestion).toContain('Observation has begun.');
+    expect(observationState.dialogueProfile.cadence).toBe('slow');
     expect(observationHtml).toContain('Commander transmission channel');
     expect(observationHtml).toContain('data-room-prompt-mode="ask"');
+    expect(observationHtml).toContain('data-commander-cadence="slow"');
+    expect(observationHtml).toContain('data-commander-posture="evidence"');
     expect(observationHtml).toContain('commander-transmission-question');
   });
 

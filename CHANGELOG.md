@@ -1,3 +1,4 @@
+HQ-TASK-S33 - Added Adaptive Commander Personality and Dialogue Engine.
 # Changelog
 HQ-TASK-S32 - Added persistent mission context memory for reload-safe Mission Intelligence.
 

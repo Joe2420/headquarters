@@ -27,6 +27,11 @@ import {
   type CommanderMessagePurpose,
 } from './CommanderMessageOrchestrator';
 import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
+import {
+  getCommanderDialogueProfile,
+  type CommanderDialogueProfile,
+  type CommanderTransmissionTiming,
+} from './CommanderDialogueProfile';
 
 export type CommanderReportState = 'not-reported' | 'reported';
 
@@ -90,6 +95,7 @@ export interface CommanderExperienceState {
   readonly currentRoom: CommanderShellRoomId;
   readonly recommendedRoom: CommanderShellRoomId;
   readonly lifecycleStep: string;
+  readonly dialogueProfile: CommanderDialogueProfile;
   readonly commanderQuestion: string;
   readonly roomPromptMode: CommanderRoomPromptMode;
   readonly currentMessage: CommanderMessage;
@@ -144,6 +150,7 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
     currentRoom: input.activeRoom,
     recommendedRoom,
     lifecycleStep: formatCommanderLifecycleStep(input.reportState, missionState),
+    dialogueProfile: getCommanderDialogueProfile(input.activeRoom),
     commanderQuestion: roomBehavior.mode === 'ask' ? roomBehavior.prompt : roomBehavior.statement,
     roomPromptMode: roomBehavior.mode,
     currentMessage,
@@ -295,6 +302,8 @@ export function CommanderExperiencePanel({
       data-current-room={state.currentRoom}
       data-recommended-room={state.recommendedRoom}
       data-room-prompt-mode={state.roomPromptMode}
+      data-commander-cadence={state.dialogueProfile.cadence}
+      data-commander-posture={state.dialogueProfile.posture}
     >
       <div className="commander-shell-primary">
         <section className="commander-transmission-console" aria-label="Commander transmission channel">
@@ -316,7 +325,11 @@ export function CommanderExperiencePanel({
                 <p>{transmission.speaker === 'Commander'
                   ? transmission.status === 'delivered'
                     ? transmission.text
-                    : <TransmittedText text={transmission.text} onComplete={() => handleCommanderTransmissionComplete(transmission)} />
+                    : <TransmittedText
+                        text={transmission.text}
+                        timing={state.dialogueProfile.timing}
+                        onComplete={() => handleCommanderTransmissionComplete(transmission)}
+                      />
                   : transmission.text}</p>
               </li>
             ))}
@@ -417,16 +430,24 @@ function formatCommanderContinueLabel(action: CommanderNextAction): string {
 
 function TransmittedText({
   text,
-  startDelayMs = 240,
+  timing,
   onComplete,
 }: {
   readonly text: string;
-  readonly startDelayMs?: number;
+  readonly timing?: CommanderTransmissionTiming | undefined;
   readonly onComplete?: (() => void) | undefined;
 }) {
   const [visibleText, setVisibleText] = useState(() => (typeof window === 'undefined' ? text : ''));
   const completedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
+  const transmissionTiming = timing ?? {
+    startDelayMs: 240,
+    characterDelayMs: 36,
+    commaDelayMs: 140,
+    sentenceDelayMs: 260,
+    breathEveryCharacters: 17,
+    breathDelayMs: 180,
+  };
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
@@ -460,22 +481,30 @@ function TransmittedText({
 
       const previousCharacter = text[index - 1] ?? '';
       const delay = previousCharacter === '.' || previousCharacter === '?' || previousCharacter === '!'
-        ? 260
+        ? transmissionTiming.sentenceDelayMs
         : previousCharacter === ',' || previousCharacter === ';'
-          ? 140
-          : index % 17 === 0
-            ? 180
-            : 36;
+          ? transmissionTiming.commaDelayMs
+          : index % transmissionTiming.breathEveryCharacters === 0
+            ? transmissionTiming.breathDelayMs
+            : transmissionTiming.characterDelayMs;
 
       timeout = window.setTimeout(transmitNextCharacter, delay);
     };
 
-    timeout = window.setTimeout(transmitNextCharacter, startDelayMs);
+    timeout = window.setTimeout(transmitNextCharacter, transmissionTiming.startDelayMs);
 
     return () => {
       if (timeout !== undefined) window.clearTimeout(timeout);
     };
-  }, [startDelayMs, text]);
+  }, [
+    text,
+    transmissionTiming.breathDelayMs,
+    transmissionTiming.breathEveryCharacters,
+    transmissionTiming.characterDelayMs,
+    transmissionTiming.commaDelayMs,
+    transmissionTiming.sentenceDelayMs,
+    transmissionTiming.startDelayMs,
+  ]);
 
   return <>{visibleText}</>;
 }
