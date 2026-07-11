@@ -25,6 +25,7 @@ import {
   buildDesktopAcademyDashboard,
   buildDesktopDoctrineSuggestions,
   buildDesktopGuardianAlerts,
+  buildDoctrineChamberModel,
   buildDesktopGuardianLockoutState,
   buildDesktopGrowthAnalysis,
   buildDesktopIntelligenceDashboard,
@@ -159,7 +160,7 @@ describe('Desktop shell', () => {
     const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
 
     expect(source).toContain('aria-label="Doctrine candidate review"');
-    expect(source).toContain('Approve Doctrine');
+    expect(source).toContain('Promote Doctrine');
     expect(source).toContain('Reject Candidate');
     expect(source).toContain('Return for Revision');
     expect(source).toContain('recordDoctrineReviewDecision');
@@ -1432,12 +1433,52 @@ describe('Desktop shell', () => {
       onDoctrineReviewDecision={() => undefined}
     />);
 
-    expect(html).toContain('Doctrine Review');
+    expect(html).toContain('Book of Doctrine');
     expect(html).toContain('aria-label="Doctrine Commander prompt"');
     expect(html).toContain('Review the lesson before it becomes law.');
+    expect(html).toContain('aria-label="Doctrine candidate session"');
+    expect(html).toContain('No doctrine has become law yet. Wait for repeated evidence.');
+    expect(html).toContain('aria-label="Doctrine quality"');
     expect(html).toContain('aria-label="Doctrine candidate review"');
     expect(html).toContain('Candidate incomplete. More evidence or clarification is required.');
-    expect(html).toContain('Approve Doctrine');
+    expect(html).toContain('Promote Doctrine');
+  });
+
+  it('builds Doctrine chamber status from candidates, decisions, and records', () => {
+    const model = buildDoctrineChamberModel({
+      doctrineRecords: [{
+        id: 'doctrine-001',
+        title: 'Wait for confirmation',
+        summary: 'Patience before execution reduces early entries.',
+        confidence: 'validated',
+        source: {
+          sourceType: 'journal_entry',
+          sourceId: 'journal-001',
+          excerpt: 'Waited for confirmation.',
+        },
+        createdAt: '2026-07-11T00:00:00.000Z',
+        updatedAt: '2026-07-11T00:00:00.000Z',
+      }],
+      doctrineHistory: [],
+      doctrineSuggestions: [{
+        id: 'suggestion-001',
+        title: 'Never trade first candle',
+        rationale: 'Opening volatility caused early entries.',
+        evidenceRecordIds: ['journal-001', 'journal-002'],
+        evidenceSummaries: ['Opening volatility caused early entries.'],
+        requiresManualPromotion: true,
+      }],
+      doctrineReviewDecisions: [],
+    });
+
+    expect(model.candidateCount).toBe(1);
+    expect(model.waitingCount).toBe(1);
+    expect(model.acceptedCount).toBe(1);
+    expect(model.averageConfidence).toBe(100);
+    expect(model.heat).toBe('Stable');
+    expect(model.activeCandidateStatus).toBe('Strong');
+    expect(model.similaritySummary).toContain('similarity');
+    expect(model.affectedChapters.some((chapter) => chapter.name === 'Psychology' && chapter.affected)).toBe(true);
   });
 
   it('formats recent Headquarters highlights without exposing subsystem detail in Command', () => {

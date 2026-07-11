@@ -2249,6 +2249,138 @@ dd {
   box-shadow: inset 0 1px 0 rgba(217, 231, 255, 0.045);
 }
 
+.doctrine-chamber-layout {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.75fr) minmax(24rem, 1.25fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.doctrine-commander-panel,
+.doctrine-session-panel,
+.doctrine-book-panel,
+.doctrine-quality-panel {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgba(217, 231, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(124, 149, 132, 0.1), transparent 44%),
+    rgba(13, 17, 18, 0.96);
+  box-shadow: inset 0 1px 0 rgba(217, 231, 255, 0.05);
+}
+
+.doctrine-commander-panel,
+.doctrine-quality-panel {
+  grid-column: 1;
+}
+
+.doctrine-session-panel,
+.doctrine-book-panel {
+  grid-column: 2;
+}
+
+.doctrine-chamber-layout > .journal-panel {
+  grid-column: 1 / -1;
+}
+
+.doctrine-commander-panel h3,
+.doctrine-session-panel h3,
+.doctrine-book-panel h3,
+.doctrine-quality-panel h3 {
+  margin: 0;
+}
+
+.doctrine-candidate-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.doctrine-candidate-strip article {
+  display: grid;
+  gap: 0.3rem;
+  min-height: 6rem;
+  border: 1px solid rgba(217, 231, 255, 0.12);
+  background: rgba(5, 8, 10, 0.32);
+  padding: 0.75rem;
+}
+
+.doctrine-candidate-strip span,
+.doctrine-book-panel dt,
+.doctrine-quality-panel dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.doctrine-candidate-strip strong,
+.doctrine-book-panel dd,
+.doctrine-quality-panel dd {
+  margin: 0;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.doctrine-book-panel dl,
+.doctrine-quality-panel dl {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.3fr) minmax(0, 1fr);
+  gap: 0.55rem 1rem;
+  margin: 0;
+}
+
+.doctrine-confidence-bar {
+  height: 0.55rem;
+  overflow: hidden;
+  border: 1px solid rgba(217, 231, 255, 0.16);
+  background: rgba(5, 8, 10, 0.5);
+}
+
+.doctrine-confidence-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #7c9584, #d8b25c);
+}
+
+.doctrine-chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.doctrine-chapter-grid span {
+  border: 1px solid rgba(217, 231, 255, 0.12);
+  padding: 0.45rem 0.55rem;
+  color: var(--muted);
+}
+
+.doctrine-chapter-grid span[data-affected="true"] {
+  border-color: rgba(216, 178, 92, 0.32);
+  color: #d9e7ff;
+  background: rgba(216, 178, 92, 0.08);
+}
+
+.doctrine-promote-action,
+.doctrine-review-panel > button[type="submit"] {
+  border-color: rgba(216, 178, 92, 0.5);
+  background: #d8b25c;
+  color: #101418;
+}
+
+.doctrine-lifecycle-list,
+.doctrine-diff-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.doctrine-lifecycle-list .timeline-item,
+.doctrine-diff-list .timeline-item {
+  border-left: 3px solid rgba(216, 178, 92, 0.45);
+  background: rgba(216, 178, 92, 0.055);
+}
+
 .room-atmosphere--academy .room-atmosphere__field {
   background:
     radial-gradient(circle at 24% 22%, rgba(112, 255, 156, 0.12), transparent 22%),
