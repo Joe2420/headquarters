@@ -32,6 +32,7 @@ import {
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
   buildDesktopMissionIntelligencePackage,
+  buildObservationRoomIntelligenceModel,
   buildReadyRoomPreparationModel,
   buildDesktopRepeatedMistakes,
   buildDesktopRepeatedSuccesses,
@@ -1026,11 +1027,56 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ObservationRoom activeMission={{ ...mission, currentState: 'observation' }} />);
 
     expect(html).toContain('data-room-id="observation-room"');
-    expect(html).toContain('Observation Timer');
-    expect(html).toContain('Compass Indicator');
-    expect(html).toContain('Artificial Horizon');
+    expect(html).toContain('Current Observation');
+    expect(html).toContain('What direction is price currently moving?');
+    expect(html).toContain('Intelligence Board');
+    expect(html).toContain('Today&#x27;s Evidence');
+    expect(html).toContain('Observation Metrics');
+    expect(html).toContain('Observation Log');
+    expect(html).toContain('Observation Aids');
     expect(html).toContain('Silence State');
     expect(html).toContain('Headquarters observes and records');
+  });
+
+  it('links Observation Room focus and boards to captured Commander evidence', () => {
+    const mission = withObservationMissionContext(
+      withBriefingMissionContext({
+        id: 'mission-observation-001',
+        campaign: 'Evidence Patrol',
+        objective: 'Wait for confirmed continuation',
+        condition: 'Observation',
+        commandAuthority: 'Professional command',
+        currentState: 'observation',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      }, {
+        missionObjective: 'Wait for confirmed continuation',
+        market: 'NQ',
+        marketEnvironment: 'New York Open',
+        highImpactNews: 'None',
+        personalReadiness: 'focused',
+        riskParameters: '1%',
+        successCriteria: 'Do not force execution',
+      }),
+      {
+        marketDirection: 'Price is moving higher',
+        marketStructure: 'Higher highs and higher lows',
+        volume: 'Expansion above average',
+      },
+    );
+    const missionPackage = buildDesktopMissionIntelligencePackage(mission);
+    const model = buildObservationRoomIntelligenceModel(mission, missionPackage);
+    const html = renderToStaticMarkup(<ObservationRoom activeMission={mission} missionIntelligencePackage={missionPackage} />);
+
+    expect(model.completedEvidence.map((item) => item.label)).toEqual(['Direction', 'Structure', 'Volume']);
+    expect(model.currentFocus.question).toBe('Where is liquidity likely resting?');
+    expect(html).toContain('Where is liquidity likely resting?');
+    expect(html).toContain('Price is moving higher');
+    expect(html).toContain('Higher highs and higher lows');
+    expect(html).toContain('Expansion above average');
+    expect(html).toContain('Still Missing');
+    expect(html).toContain('Liquidity');
+    expect(html).toContain('Mission Confidence');
+    expect(html).toContain('Evidence remains insufficient.');
   });
 
   it('renders the War Room authorization boundary without broker control', () => {
