@@ -2357,9 +2357,9 @@ export function ReadyRoom({
   missionHistory: ActiveMission[];
   growthEvents: GrowthEvent[];
 }) {
-  const nextAction = getMissionNextAction(activeMission);
   const recentMission = missionHistory.at(-1);
-  const briefingItems = buildReadyRoomBriefingItems(activeMission, growthEvents);
+  const preparation = buildReadyRoomPreparationModel(activeMission);
+  const primaryAction = getReadyRoomPrimaryAction(preparation);
 
   return (
     <GuidedRoom
@@ -2367,44 +2367,89 @@ export function ReadyRoom({
       identity="preparation"
       atmosphere="ready"
       title="Ready Room"
-      useCase="Brief and prepare before observation."
-      objective={activeMission?.objective ?? 'Create a mission before entering preparation.'}
-      primaryAction={<strong>{nextAction.buttonLabel === 'Start Observation' ? 'Begin Observation' : nextAction.label}</strong>}
+      useCase="Mission preparation before Observation."
+      objective="Prepare the operator, confirm readiness, and establish mission conditions before Headquarters commits resources."
+      primaryAction={(
+        <div className="ready-primary-action">
+          <strong>{primaryAction.label}</strong>
+          <p className="muted">{primaryAction.detail}</p>
+        </div>
+      )}
       workspace={(
         <div className="ready-briefing-layout" aria-label="Ready Room briefing">
-          <section className="journal-panel">
-            <p className="section-label">Briefing</p>
-            <h3>{activeMission?.campaign ?? 'No mission file'}</h3>
-            <p className="muted">{activeMission?.objective ?? 'Create a mission before briefing.'}</p>
+          <section className="journal-panel ready-mission-file" aria-label="Mission file">
+            <p className="section-label">Mission File</p>
+            <h3>{preparation.missionFile.codename}</h3>
             <dl>
-              <dt>Authority</dt>
-              <dd>{activeMission?.commandAuthority ?? 'Awaiting command authority'}</dd>
-              <dt>State</dt>
-              <dd>{formatMissionDetailState(activeMission)}</dd>
+              {preparation.missionFile.rows.map((row) => (
+                <div key={row.label} className="ready-mission-file-row">
+                  <dt>{row.label}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
             </dl>
           </section>
-          <section className="journal-panel">
-            <p className="section-label">Readiness Checklist</p>
-            <h3>{nextAction.label}</h3>
+
+          <section className="journal-panel ready-current-preparation" aria-label="Current preparation item">
+            <p className="section-label">Current Preparation Item</p>
+            <h3>{preparation.currentItem.title}</h3>
+            <p>{preparation.currentItem.status}</p>
+            {preparation.currentItem.answer ? <strong>{preparation.currentItem.answer}</strong> : null}
+            <p className="muted">{preparation.currentItem.guidance}</p>
+          </section>
+
+          <section className="journal-panel ready-sequence-panel" aria-label="Preparation sequence">
+            <p className="section-label">Preparation Sequence</p>
+            <h3>{preparation.statusLabel}</h3>
+            <ol className="ready-preparation-sequence">
+              {preparation.steps.map((step, index) => (
+                <li key={step.id} data-step-status={step.status}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>
+                    {step.label}
+                    {step.answer ? <small>{step.answerLabel}: {step.answer}</small> : null}
+                  </strong>
+                  <em>{formatReadyRoomStepStatus(step.status)}</em>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className="journal-panel ready-checklist-panel" aria-label="Preparation checklist">
+            <p className="section-label">Preparation Checklist</p>
+            <h3>{preparation.completedCount} of {preparation.totalCount} briefing items complete</h3>
             <ol className="readiness-checklist">
-              {briefingItems.map((item) => <li key={item}>{item}</li>)}
+              {preparation.steps.map((step) => (
+                <li key={step.id} data-step-status={step.status}>
+                  <span aria-hidden="true">{step.status === 'complete' ? '✓' : '○'}</span>
+                  {step.label}
+                </li>
+              ))}
             </ol>
           </section>
         </div>
       )}
+      timelineLabel="Mission Record"
       timeline={(
-        <section className="journal-panel" aria-label="Daily orders card">
-          <p className="section-label">Daily Orders</p>
-          <h3>{activeMission?.campaign ?? 'No active orders'}</h3>
+        <section className="journal-panel" aria-label="Mission record">
+          <p className="section-label">Mission Record</p>
+          <h3>{activeMission?.campaign ?? 'No active mission record'}</h3>
           <p className="muted">{activeMission?.objective ?? 'Create a mission before moving into observation.'}</p>
+          <dl>
+            <dt>Lifecycle</dt>
+            <dd>{formatMissionDetailState(activeMission)}</dd>
+            <dt>Last mission</dt>
+            <dd>{recentMission?.campaign ?? 'No prior mission'}</dd>
+          </dl>
         </section>
       )}
+      secondaryToolsLabel="Preparation Context"
       secondaryTools={(
         <>
-          <section className="journal-panel" aria-label="Oath panel">
-          <p className="section-label">Command Oath</p>
-          <h3>Command Oath</h3>
-          <p className="muted">{activeMission?.commandAuthority ?? 'Command authority is assigned when a mission exists.'}</p>
+          <section className="journal-panel" aria-label="Command commitment">
+            <p className="section-label">Command Commitment</p>
+            <h3>Follow declared risk. Wait for evidence. Stop when invalidated.</h3>
+            <p className="muted">Status: {activeMission ? 'Confirmed for this mission file' : 'Available after mission creation'}</p>
           </section>
           <section className="journal-panel" aria-label="Locker panel">
             <p className="section-label">Operator Locker</p>
@@ -2414,6 +2459,8 @@ export function ReadyRoom({
               <dd>{missionHistory.length}</dd>
               <dt>Last Mission</dt>
               <dd>{recentMission?.campaign ?? 'No prior mission'}</dd>
+              <dt>Academy Reminder</dt>
+              <dd>{formatRecentGrowthHighlight(growthEvents)}</dd>
             </dl>
           </section>
         </>
@@ -2422,16 +2469,187 @@ export function ReadyRoom({
   );
 }
 
-function buildReadyRoomBriefingItems(
-  activeMission: ActiveMission | undefined,
-  growthEvents: readonly GrowthEvent[],
-): string[] {
-  return [
-    activeMission ? `Objective acknowledged: ${activeMission.objective}` : 'Mission objective pending.',
-    activeMission ? `Command authority: ${activeMission.commandAuthority}` : 'Command authority pending.',
-    `Growth reminder: ${formatRecentGrowthHighlight(growthEvents)}`,
-    'Observation rule: wait for evidence before authorization.',
-  ];
+type ReadyRoomPreparationState = 'not-started' | 'in-progress' | 'complete';
+type ReadyRoomPreparationStepStatus = 'complete' | 'current' | 'pending';
+
+interface ReadyRoomPreparationStep {
+  readonly id: keyof MissionBriefingContext;
+  readonly label: string;
+  readonly answerLabel: string;
+  readonly status: ReadyRoomPreparationStepStatus;
+  readonly answer?: string;
+}
+
+interface ReadyRoomPreparationModel {
+  readonly state: ReadyRoomPreparationState;
+  readonly statusLabel: string;
+  readonly completedCount: number;
+  readonly totalCount: number;
+  readonly missionFile: {
+    readonly codename: string;
+    readonly rows: readonly { readonly label: string; readonly value: string }[];
+  };
+  readonly currentItem: {
+    readonly title: string;
+    readonly status: string;
+    readonly guidance: string;
+    readonly answer?: string;
+  };
+  readonly steps: readonly ReadyRoomPreparationStep[];
+}
+
+export function buildReadyRoomPreparationModel(activeMission?: ActiveMission | undefined): ReadyRoomPreparationModel {
+  const context = activeMission?.briefingContext;
+  const briefingComplete = isReadyRoomBriefingComplete(context);
+  const baseSteps = [
+    { id: 'missionObjective', label: 'Mission Intent', answerLabel: 'Objective' },
+    { id: 'market', label: 'Market Context', answerLabel: 'Market' },
+    { id: 'marketEnvironment', label: 'Environment', answerLabel: 'Environment' },
+    { id: 'highImpactNews', label: 'Event Risk', answerLabel: 'Scheduled Events' },
+    { id: 'personalReadiness', label: 'Operator Condition', answerLabel: 'Condition' },
+    { id: 'riskParameters', label: 'Risk Ceiling', answerLabel: 'Maximum Risk' },
+    { id: 'successCriteria', label: 'Success Criteria', answerLabel: 'Success Criteria' },
+  ] as const satisfies readonly {
+    readonly id: keyof MissionBriefingContext;
+    readonly label: string;
+    readonly answerLabel: string;
+  }[];
+
+  const firstPendingIndex = baseSteps.findIndex((step) => !hasReadyRoomPreparationValue(context?.[step.id]));
+  const steps = baseSteps.map((step, index): ReadyRoomPreparationStep => {
+    const answer = normalizeReadyRoomPreparationValue(context?.[step.id]);
+    const status: ReadyRoomPreparationStepStatus = answer
+      ? 'complete'
+      : firstPendingIndex === index
+        ? 'current'
+        : 'pending';
+
+    return {
+      id: step.id,
+      label: step.label,
+      answerLabel: step.answerLabel,
+      status,
+      ...(answer ? { answer } : {}),
+    };
+  });
+  const completedCount = steps.filter((step) => step.status === 'complete').length;
+  const currentStep = steps.find((step) => step.status === 'current');
+  const currentMissionState = parseMissionState(activeMission?.currentState);
+  const state: ReadyRoomPreparationState = briefingComplete
+    || (currentMissionState === 'ready' && completedCount === steps.length)
+    ? 'complete'
+    : completedCount > 0
+      ? 'in-progress'
+      : 'not-started';
+
+  const currentItem = buildReadyRoomCurrentItem({
+    state,
+    completedCount,
+    totalCount: steps.length,
+    currentStep,
+  });
+
+  return {
+    state,
+    statusLabel: formatReadyRoomPreparationStatus(state, completedCount, steps.length),
+    completedCount,
+    totalCount: steps.length,
+    missionFile: {
+      codename: formatMissionDetailValue(activeMission?.campaign),
+      rows: [
+        { label: 'Codename', value: formatMissionDetailValue(activeMission?.campaign) },
+        { label: 'Objective', value: formatMissionDetailValue(context?.missionObjective ?? activeMission?.objective) },
+        { label: 'Market', value: formatMissionDetailValue(context?.market) },
+        { label: 'Environment', value: formatMissionDetailValue(context?.marketEnvironment) },
+        { label: 'State', value: formatMissionDetailState(activeMission) },
+        { label: 'Record', value: activeMission ? 'Saved' : 'Awaiting mission file' },
+      ],
+    },
+    currentItem,
+    steps,
+  };
+}
+
+function buildReadyRoomCurrentItem({
+  state,
+  completedCount,
+  totalCount,
+  currentStep,
+}: {
+  readonly state: ReadyRoomPreparationState;
+  readonly completedCount: number;
+  readonly totalCount: number;
+  readonly currentStep: ReadyRoomPreparationStep | undefined;
+}): ReadyRoomPreparationModel['currentItem'] {
+  if (state === 'complete') {
+    return {
+      title: 'Observation Clearance',
+      status: 'Preparation complete',
+      guidance: 'Observation clearance is available. Enter only when Commander directs movement.',
+    };
+  }
+
+  if (state === 'not-started') {
+    return {
+      title: 'Operational Briefing',
+      status: 'Not started',
+      guidance: 'Begin in Commander Chat. Headquarters needs mission conditions before Observation unlocks.',
+    };
+  }
+
+  return {
+    title: currentStep?.label ?? 'Operational Briefing',
+    status: `Step ${Math.min(completedCount + 1, totalCount)} of ${totalCount}`,
+    guidance: 'Awaiting operator response in Commander Chat.',
+    ...(currentStep?.answer ? { answer: currentStep.answer } : {}),
+  };
+}
+
+function getReadyRoomPrimaryAction(preparation: ReadyRoomPreparationModel): { readonly label: string; readonly detail: string } {
+  if (preparation.state === 'complete') {
+    return {
+      label: 'Enter Observation Room',
+      detail: 'Observation clearance available.',
+    };
+  }
+
+  if (preparation.state === 'in-progress') {
+    return {
+      label: 'Return to Commander Briefing',
+      detail: `${preparation.completedCount} of ${preparation.totalCount} briefing items complete.`,
+    };
+  }
+
+  return {
+    label: 'Begin Operational Briefing',
+    detail: 'Start the Commander briefing before Observation unlocks.',
+  };
+}
+
+function formatReadyRoomPreparationStatus(
+  state: ReadyRoomPreparationState,
+  completedCount: number,
+  totalCount: number,
+): string {
+  if (state === 'complete') return 'Preparation status: Complete';
+  if (state === 'in-progress') return `Preparation status: In progress (${completedCount} of ${totalCount})`;
+  return 'Preparation status: Not started';
+}
+
+function formatReadyRoomStepStatus(status: ReadyRoomPreparationStepStatus): string {
+  if (status === 'complete') return 'Complete';
+  if (status === 'current') return 'In progress';
+  return 'Pending';
+}
+
+function normalizeReadyRoomPreparationValue(value: string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function hasReadyRoomPreparationValue(value: string | undefined): boolean {
+  return normalizeReadyRoomPreparationValue(value) !== undefined;
 }
 
 export function ObservationRoom({

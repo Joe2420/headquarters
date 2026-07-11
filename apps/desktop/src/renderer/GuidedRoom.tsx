@@ -13,7 +13,9 @@ export interface GuidedRoomProps {
   readonly primaryAction: ReactNode;
   readonly workspace: ReactNode;
   readonly timeline?: ReactNode;
+  readonly timelineLabel?: string;
   readonly secondaryTools?: ReactNode;
+  readonly secondaryToolsLabel?: string;
 }
 
 export function GuidedRoom({
@@ -26,7 +28,9 @@ export function GuidedRoom({
   primaryAction,
   workspace,
   timeline,
+  timelineLabel = 'Timeline / History',
   secondaryTools,
+  secondaryToolsLabel = 'Secondary Tools',
 }: GuidedRoomProps) {
   const psychology = buildOperationalPsychologyProfile({ room: mapGuidedRoomIdToCommanderRoom(id) });
 
@@ -59,14 +63,14 @@ export function GuidedRoom({
 
       {timeline ? (
         <details className="guided-room-timeline">
-          <summary>Timeline / History</summary>
+          <summary>{timelineLabel}</summary>
           {timeline}
         </details>
       ) : null}
 
       {secondaryTools ? (
         <details className="guided-room-secondary-tools">
-          <summary>Secondary Tools</summary>
+          <summary>{secondaryToolsLabel}</summary>
           {secondaryTools}
         </details>
       ) : null}
