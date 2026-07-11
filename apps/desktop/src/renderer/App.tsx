@@ -2,6 +2,10 @@ import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { EventEnvelope, Mission, MissionState } from '@headquarters/shared';
 import {
+  getHeadquartersPriorities,
+  getHighestPriority,
+  getPriorityCountBySeverity,
+  type HeadquartersPriorityItem,
   getCompletedLifecycleStages as getProjectedCompletedLifecycleStages,
   getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
   getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
@@ -1513,6 +1517,7 @@ export function App() {
                     doctrineHistory,
                     doctrineSuggestions: desktopDoctrineSuggestions,
                     doctrineReviewDecisions,
+                    guardianAlerts,
                     onCreateMission: handleMissionCreated,
                     onMissionChanged: (mission) => {
                       setActiveMission(getActiveMissionAfterMissionChange(mission));
@@ -1937,6 +1942,7 @@ interface HeadquartersRoomContext {
   doctrineHistory: DoctrineHistoryEntry[];
   doctrineSuggestions: readonly DoctrineSuggestion[];
   doctrineReviewDecisions: readonly DoctrineReviewRecord[];
+  guardianAlerts: readonly GuardianAlert[];
   onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   onMissionChanged: (mission: ActiveMission) => void;
   onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
@@ -2099,6 +2105,8 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       missionHistory={context.missionHistory}
       growthEvents={context.growthEvents}
       doctrineRecords={context.doctrineRecords}
+      doctrineSuggestions={context.doctrineSuggestions}
+      guardianAlerts={context.guardianAlerts}
       journalEntries={context.journalEntries}
       archivedMissionSummaries={context.archivedMissionSummaries}
       archivedJournalEntries={context.archivedJournalEntries}
@@ -2129,6 +2137,8 @@ interface CommandOverviewProps {
   missionHistory: ActiveMission[];
   growthEvents?: GrowthEvent[] | undefined;
   doctrineRecords?: DoctrineRecord[] | undefined;
+  doctrineSuggestions?: readonly DoctrineSuggestion[] | undefined;
+  guardianAlerts?: readonly GuardianAlert[] | undefined;
   journalEntries?: JournalEntry[] | undefined;
   archivedMissionSummaries?: LocalMissionArchiveSummary[] | undefined;
   archivedJournalEntries?: ArchivedJournalEntry[] | undefined;
@@ -2140,6 +2150,8 @@ function CommandOverview({
   missionHistory,
   growthEvents = [],
   doctrineRecords = [],
+  doctrineSuggestions = [],
+  guardianAlerts = [],
   journalEntries = [],
   archivedMissionSummaries = [],
   archivedJournalEntries = [],
@@ -2150,6 +2162,8 @@ function CommandOverview({
     missionHistory,
     growthEvents,
     doctrineRecords,
+    doctrineSuggestions,
+    guardianAlerts,
     journalEntries,
     archivedMissionSummaries,
     archivedJournalEntries,
@@ -2238,6 +2252,15 @@ function CommandOverview({
           <h3>{briefing.situation.recommendedRoom}</h3>
           <p className="muted">{briefing.situation.reason}</p>
           <strong>{briefing.situation.blockedAction}</strong>
+          <small>{briefing.situation.severity}</small>
+          <ol className="commander-priority-list" aria-label="Headquarters priorities">
+            {briefing.priorities.slice(0, 3).map((priority) => (
+              <li key={priority.id} data-priority-severity={priority.severity}>
+                <span>{priority.source}</span>
+                <strong>{priority.title}</strong>
+              </li>
+            ))}
+          </ol>
         </section>
         <section className="commander-activity-log" aria-label="Operational Message History">
           <p className="section-label">Operational Message History</p>
@@ -2405,6 +2428,8 @@ export interface CommanderRoomBriefingInput {
   missionHistory: readonly ActiveMission[];
   growthEvents?: readonly GrowthEvent[] | undefined;
   doctrineRecords?: readonly DoctrineRecord[] | undefined;
+  doctrineSuggestions?: readonly DoctrineSuggestion[] | undefined;
+  guardianAlerts?: readonly GuardianAlert[] | undefined;
   journalEntries?: readonly JournalEntry[] | undefined;
   archivedMissionSummaries?: readonly LocalMissionArchiveSummary[] | undefined;
   archivedJournalEntries?: readonly ArchivedJournalEntry[] | undefined;
@@ -2431,7 +2456,10 @@ export interface CommanderRoomBriefing {
     readonly priority: string;
     readonly action: string;
     readonly blockedAction: string;
+    readonly severity: string;
   };
+  readonly priorities: readonly HeadquartersPriorityItem[];
+  readonly priorityCounts: ReturnType<typeof getPriorityCountBySeverity>;
   readonly activityLog: readonly {
     readonly id: string;
     readonly timestamp: string;
@@ -2469,6 +2497,8 @@ export function buildCommanderRoomBriefing({
   missionHistory,
   growthEvents = [],
   doctrineRecords = [],
+  doctrineSuggestions = [],
+  guardianAlerts = [],
   journalEntries = [],
   archivedMissionSummaries = [],
   archivedJournalEntries = [],
@@ -2476,11 +2506,28 @@ export function buildCommanderRoomBriefing({
   const nextAction = getMissionNextAction(activeMission);
   const missionState = formatMissionDetailState(activeMission);
   const archiveRecordCount = archivedMissionSummaries.length + archivedJournalEntries.length;
+  const lifecycle = projectDesktopMissionLifecycle(activeMission);
+  const priorityInput = {
+    lifecycle,
+    guardianAlerts,
+    doctrineCandidates: doctrineSuggestions.map((candidate) => ({
+      id: candidate.id,
+      title: candidate.title,
+      rationale: candidate.rationale,
+      evidenceRecordIds: candidate.evidenceRecordIds,
+    })),
+    archiveMilestoneCount: archiveRecordCount,
+    detectedAt: activeMission?.createdAt ?? '2026-07-02T00:00:00.000Z',
+  };
+  const priorities = getHeadquartersPriorities(priorityInput);
+  const highestPriority = getHighestPriority(priorityInput);
+  const priorityCounts = getPriorityCountBySeverity(priorityInput);
   const recommended = buildCommanderSituationRecommendation({
     activeMission,
     doctrineRecords,
     journalEntries,
     archiveRecordCount,
+    highestPriority,
   });
   const learningEvidenceCount = missionHistory.length + growthEvents.length + journalEntries.length;
   const lastMission = missionHistory.at(-1);
@@ -2496,8 +2543,8 @@ export function buildCommanderRoomBriefing({
     summary,
     headquartersState: startupSubsystemCount >= 4 ? 'Operational and standing by.' : 'Partially online. Review service health.',
     missionState,
-    highestPriority: recommended.priority,
-    recommendedAction: nextAction.disabled ? recommended.action : nextAction.label,
+    highestPriority: highestPriority.title,
+    recommendedAction: highestPriority.recommendedAction || (nextAction.disabled ? recommended.action : nextAction.label),
     morningBrief: {
       readiness: activeMission ? 'Mission readiness is active.' : 'Mission readiness is waiting for a mission file.',
       lines: [
@@ -2520,6 +2567,8 @@ export function buildCommanderRoomBriefing({
       ],
     },
     situation: recommended,
+    priorities,
+    priorityCounts,
     activityLog: buildCommanderActivityLog({ activeMission, missionHistory, journalEntries, doctrineRecords, archivedMissionSummaries }),
     learning: {
       summary: learningEvidenceCount > 0 ? 'Commander has enough evidence to begin profiling operator behavior.' : 'Commander learning begins after missions, journal entries, and growth evidence.',
@@ -2583,12 +2632,27 @@ function buildCommanderSituationRecommendation({
   doctrineRecords,
   journalEntries,
   archiveRecordCount,
+  highestPriority,
 }: {
   readonly activeMission?: ActiveMission | undefined;
   readonly doctrineRecords: readonly DoctrineRecord[];
   readonly journalEntries: readonly JournalEntry[];
   readonly archiveRecordCount: number;
+  readonly highestPriority: HeadquartersPriorityItem;
 }): CommanderRoomBriefing['situation'] {
+  const priorityRecommendation = {
+    recommendedRoom: formatPriorityRoomLabel(highestPriority.recommendedRoom),
+    reason: highestPriority.explanation,
+    priority: highestPriority.title,
+    action: highestPriority.recommendedAction,
+    blockedAction: highestPriority.blocking ? 'Blocking condition active.' : 'No blocking condition active.',
+    severity: highestPriority.severity,
+  };
+
+  if (highestPriority.source === 'guardian' || highestPriority.blocking) {
+    return priorityRecommendation;
+  }
+
   const state = parseMissionState(activeMission?.currentState);
 
   if (activeMission === undefined) {
@@ -2598,6 +2662,7 @@ function buildCommanderSituationRecommendation({
       priority: 'Create the operational file.',
       action: 'Create Mission',
       blockedAction: 'Observation, authorization, and debrief remain blocked.',
+      severity: highestPriority.severity,
     };
   }
 
@@ -2608,6 +2673,7 @@ function buildCommanderSituationRecommendation({
       priority: 'Collect visible evidence.',
       action: 'Continue Observation',
       blockedAction: 'War Room authorization remains blocked.',
+      severity: highestPriority.severity,
     };
   }
 
@@ -2618,6 +2684,7 @@ function buildCommanderSituationRecommendation({
       priority: 'Protect discipline before action.',
       action: 'Review Authorization',
       blockedAction: 'Deployment cannot exceed declared evidence.',
+      severity: highestPriority.severity,
     };
   }
 
@@ -2628,6 +2695,7 @@ function buildCommanderSituationRecommendation({
       priority: 'Capture behavior and lesson.',
       action: 'Complete Debrief',
       blockedAction: 'Archive waits for debrief evidence.',
+      severity: highestPriority.severity,
     };
   }
 
@@ -2638,6 +2706,7 @@ function buildCommanderSituationRecommendation({
       priority: 'Review doctrine candidates.',
       action: 'Open Doctrine',
       blockedAction: 'Doctrine promotion remains manual.',
+      severity: highestPriority.severity,
     };
   }
 
@@ -2648,7 +2717,12 @@ function buildCommanderSituationRecommendation({
       priority: 'Verify archive record.',
       action: 'Open Archive',
       blockedAction: 'Historical recall is incomplete.',
+      severity: highestPriority.severity,
     };
+  }
+
+  if (highestPriority.source !== 'mission') {
+    return priorityRecommendation;
   }
 
   return {
@@ -2657,7 +2731,18 @@ function buildCommanderSituationRecommendation({
     priority: 'Follow Commander lifecycle guidance.',
     action: getMissionNextAction(activeMission).label,
     blockedAction: 'Future rooms stay secondary until the active phase completes.',
+    severity: highestPriority.severity,
   };
+}
+
+function formatPriorityRoomLabel(room: HeadquartersPriorityItem['recommendedRoom']): string {
+  if (room === 'command-center') return 'Command Center';
+  if (room === 'mission-room') return 'Mission Room';
+  if (room === 'ready-room') return 'Ready Room';
+  if (room === 'observation-room') return 'Observation Room';
+  if (room === 'war-room') return 'War Room';
+  if (room === 'debrief-theater') return 'Debrief Theater';
+  return 'Archive';
 }
 
 function buildCommanderActivityLog({

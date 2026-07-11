@@ -332,7 +332,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 30 Persistent Mission Lifecycle Engine is implemented on the active feature branch.
+Current milestone gate: Sprint 31 Headquarters Priority Engine is implemented on the active feature branch.
 
 ## Post-Sprint UX Alignment
 
@@ -364,6 +364,10 @@ Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspec
 ## Sprint 30 - Persistent Mission Lifecycle Engine
 
 - HQ-TASK-S30 - Persistent Mission Lifecycle Engine
+
+## Sprint 31 - Headquarters Priority Engine
+
+- HQ-TASK-S31 - Headquarters Priority Engine
 
 
 
