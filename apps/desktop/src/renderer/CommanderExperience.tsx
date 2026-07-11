@@ -32,6 +32,10 @@ import {
   type CommanderDialogueProfile,
   type CommanderTransmissionTiming,
 } from './CommanderDialogueProfile';
+import {
+  buildCommanderCeremonyDialogueForMissionState,
+  type CommanderCeremonyDialogue,
+} from './CommanderCeremonyDialogue';
 
 export type CommanderReportState = 'not-reported' | 'reported';
 
@@ -96,6 +100,7 @@ export interface CommanderExperienceState {
   readonly recommendedRoom: CommanderShellRoomId;
   readonly lifecycleStep: string;
   readonly dialogueProfile: CommanderDialogueProfile;
+  readonly ceremonyDialogue?: CommanderCeremonyDialogue | undefined;
   readonly commanderQuestion: string;
   readonly roomPromptMode: CommanderRoomPromptMode;
   readonly currentMessage: CommanderMessage;
@@ -110,7 +115,7 @@ type CommanderTransmissionEntry = {
   readonly id: string;
   readonly speaker: 'Operator' | 'Commander';
   readonly text: string;
-  readonly kind: 'current' | 'question' | 'operator' | 'response' | 'support';
+  readonly kind: 'current' | 'question' | 'operator' | 'response' | 'support' | 'ceremony';
   readonly purpose?: CommanderMessagePurpose | undefined;
   readonly room?: CommanderShellRoomId | undefined;
   readonly lifecycleStep?: string | undefined;
@@ -151,6 +156,7 @@ export function buildCommanderExperienceState(input: CommanderExperienceInput): 
     recommendedRoom,
     lifecycleStep: formatCommanderLifecycleStep(input.reportState, missionState),
     dialogueProfile: getCommanderDialogueProfile(input.activeRoom),
+    ceremonyDialogue: buildCommanderCeremonyDialogueForMissionState(missionState),
     commanderQuestion: roomBehavior.mode === 'ask' ? roomBehavior.prompt : roomBehavior.statement,
     roomPromptMode: roomBehavior.mode,
     currentMessage,
@@ -203,9 +209,20 @@ export function CommanderExperiencePanel({
 
     activePromptKeyRef.current = currentPromptKey;
     setTransmissions((current) => {
-      return appendCommanderTransmission(current, buildCommanderPromptTransmission(state, currentPromptKey));
+      const ceremonyTransmission = buildCommanderCeremonyTransmission(state);
+      const withCeremony = ceremonyTransmission && !current.some((entry) => entry.id === ceremonyTransmission.id)
+        ? appendCommanderTransmission(current, ceremonyTransmission)
+        : current;
+
+      return appendCommanderTransmission(withCeremony, buildCommanderPromptTransmission(state, currentPromptKey));
     });
-  }, [currentPromptKey, state.commanderQuestion, state.currentMessage.text, state.roomPromptMode]);
+  }, [
+    currentPromptKey,
+    state.ceremonyDialogue?.moment,
+    state.commanderQuestion,
+    state.currentMessage.text,
+    state.roomPromptMode,
+  ]);
 
   useEffect(() => {
     setTransmissions((current) => {
@@ -319,7 +336,9 @@ export function CommanderExperiencePanel({
                   ? 'commander-transmission commander-transmission-outgoing'
                   : transmission.kind === 'question'
                     ? 'commander-transmission commander-transmission-incoming commander-transmission-question'
-                    : 'commander-transmission commander-transmission-incoming'}
+                    : transmission.kind === 'ceremony'
+                      ? 'commander-transmission commander-transmission-incoming commander-transmission-ceremony'
+                      : 'commander-transmission commander-transmission-incoming'}
               >
                 <span>{transmission.speaker}</span>
                 <p>{transmission.speaker === 'Commander'
@@ -512,8 +531,12 @@ function TransmittedText({
 function buildInitialCommanderTransmissions(state: CommanderExperienceState): CommanderTransmissionEntry[] {
   const promptKey = buildCommanderTransmissionPromptKey(state);
   const promptTransmission = buildCommanderPromptTransmission(state, promptKey);
+  const ceremonyTransmission = buildCommanderCeremonyTransmission(state);
 
-  return [{ ...promptTransmission, status: 'delivered' }];
+  return [
+    ...(ceremonyTransmission ? [{ ...ceremonyTransmission, status: 'delivered' as const }] : []),
+    { ...promptTransmission, status: 'delivered' },
+  ];
 }
 
 function appendCommanderTransmission(
@@ -579,6 +602,38 @@ function buildCommanderTransmissionPromptKey(state: CommanderExperienceState): s
   ].join('|');
 }
 
+function buildCommanderCeremonyTransmission(
+  state: CommanderExperienceState,
+): CommanderTransmissionEntry | undefined {
+  const ceremony = state.ceremonyDialogue;
+  if (!ceremony) return undefined;
+
+  return {
+    id: `commander:ceremony:${ceremony.moment}`,
+    speaker: 'Commander',
+    text: `${ceremony.commanderLine}\n\n${ceremony.supportingLine}`,
+    kind: 'ceremony',
+    purpose: inferCommanderCeremonyPurpose(ceremony),
+    room: ceremony.room,
+    lifecycleStep: state.lifecycleStep,
+    status: 'queued',
+  };
+}
+
+function inferCommanderCeremonyPurpose(ceremony: CommanderCeremonyDialogue): CommanderMessagePurpose {
+  if (ceremony.moment === 'authorization_granted') return 'authorization';
+  if (ceremony.moment === 'debrief_complete' || ceremony.moment === 'return_to_base') return 'debrief';
+  if (
+    ceremony.moment === 'briefing_complete'
+    || ceremony.moment === 'observation_complete'
+    || ceremony.moment === 'mission_archived'
+  ) {
+    return 'completion';
+  }
+
+  return 'transition';
+}
+
 function isCommanderQuestionPending(state: CommanderExperienceState): boolean {
   return state.roomPromptMode === 'ask'
     && (
@@ -641,6 +696,7 @@ function inferCommanderTransmissionPurpose(transmission: CommanderTransmissionEn
   if (transmission.kind === 'question') return 'question';
   if (transmission.kind === 'support') return 'passive';
   if (transmission.kind === 'response') return 'acknowledgement';
+  if (transmission.kind === 'ceremony') return 'transition';
   return 'summary';
 }
 
