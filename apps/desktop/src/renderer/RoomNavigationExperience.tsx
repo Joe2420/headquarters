@@ -3,6 +3,7 @@ import {
   TransitionOverlay,
   buildTransitionAudioEvents,
   createAuthorizationTransitionController,
+  createMissionAcceptedTransitionController,
   createTransitionController,
   getRoomArrival as getCinematicRoomArrival,
   getTransitionDurationMs,
@@ -134,6 +135,20 @@ export function createAuthorizationTransition(room: CommanderShellRoomId = 'war-
   };
 }
 
+export function createMissionAcceptedTransition(
+  fromRoom: CommanderShellRoomId = 'command',
+  toRoom: CommanderShellRoomId = 'ready-room',
+): RoomTransitionState {
+  const controller = createMissionAcceptedTransitionController(fromRoom, toRoom);
+
+  return {
+    fromRoom,
+    toRoom,
+    phase: 'commander',
+    controller,
+  };
+}
+
 export function advanceRoomTransition(transition: RoomTransitionState): RoomTransitionState {
   const nextPhase: Record<RoomTransitionPhase, RoomTransitionPhase> = {
     commander: 'closing',
@@ -147,7 +162,12 @@ export function advanceRoomTransition(transition: RoomTransitionState): RoomTran
   return {
     ...transition,
     phase: nextPhase[transition.phase],
-    controller: createTransitionController(transition.fromRoom, transition.toRoom, nextPhase[transition.phase]),
+    controller: createTransitionController(
+      transition.fromRoom,
+      transition.toRoom,
+      nextPhase[transition.phase],
+      transition.controller.variant,
+    ),
   };
 }
 

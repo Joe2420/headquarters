@@ -31,7 +31,16 @@ import {
   buildCommanderSessionDebrief,
   buildCommanderWeeklyReview,
 } from '@headquarters/commander';
-import { buildGuardianAlerts, evaluateGuardianLockout, type GuardianAlert, type GuardianLockoutState } from '@headquarters/guardian';
+import {
+  buildGuardianAlerts,
+  evaluateGuardianDailyLimits,
+  evaluateGuardianLockout,
+  evaluateGuardianRisk,
+  evaluateGuardianSessionLimits,
+  type GuardianAlert,
+  type GuardianAlertSource,
+  type GuardianLockoutState,
+} from '@headquarters/guardian';
 import {
   classifyJournalEntries,
   analyzeGrowth,
@@ -106,6 +115,7 @@ import {
   RoomTransitionLayer,
   buildMissionCompassSteps,
   createAuthorizationTransition,
+  createMissionAcceptedTransition,
   createRoomTransition,
   getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
@@ -152,6 +162,34 @@ import {
   buildCommanderPacingLine,
   buildOperationalPsychologyProfile,
 } from './OperationalPsychology';
+import {
+  createDeployedMissionCheckIn,
+  createDeployedMissionPresence,
+  type DeployedMissionCheckIn,
+} from './MissionDeployedCheckIns';
+import {
+  buildDoctrineReviewSummary,
+  formatDoctrineReviewAudit,
+  recordDoctrineReviewDecision,
+  type DoctrineReviewRecord,
+} from './DoctrineReview';
+import {
+  createMissionPersistenceStatus,
+  formatMissionPersistenceStatus,
+  markMissionSavePending,
+  markMissionSaveSucceeded,
+  recoverIncompleteMissionStatus,
+  type MissionPersistenceStatus,
+} from './MissionPersistenceGuarantee';
+import { buildCommanderDeadEndRecovery } from './CommanderDeadEndRecovery';
+import { listMissionArchiveDossiers, type MissionArchiveDossier } from './MissionArchiveDossier';
+import { buildCommanderLearningVisibility, type CommanderLearningVisibility } from './CommanderLearningVisibility';
+import {
+  buildCommanderGuardianAlertLines,
+  formatCommanderGuardianStatus,
+  type CommanderGuardianAlertLine,
+} from './CommanderGuardianAlerts';
+import { buildMissionJournalLink } from './MissionJournalIntegration';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -395,6 +433,8 @@ export function App() {
   const [archiveSummary, setArchiveSummary] = useState<LocalMissionArchiveSummary | undefined>();
   const [archivedMissionSummaries, setArchivedMissionSummaries] = useState<LocalMissionArchiveSummary[]>([]);
   const [missionHistory, setMissionHistory] = useState<ActiveMission[]>([]);
+  const [missionPersistenceStatus, setMissionPersistenceStatus] = useState<MissionPersistenceStatus>(() => createMissionPersistenceStatus());
+  const [deployedCheckIns, setDeployedCheckIns] = useState<DeployedMissionCheckIn[]>([]);
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [dailyReflections, setDailyReflections] = useState<DailyReflection[]>([]);
   const [tradeReviews, setTradeReviews] = useState<TradeReview[]>([]);
@@ -402,6 +442,7 @@ export function App() {
   const [archivedJournalEntries, setArchivedJournalEntries] = useState<ArchivedJournalEntry[]>([]);
   const [doctrineRecords, setDoctrineRecords] = useState<DoctrineRecord[]>([]);
   const [doctrineHistory, setDoctrineHistory] = useState<DoctrineHistoryEntry[]>([]);
+  const [doctrineReviewDecisions, setDoctrineReviewDecisions] = useState<DoctrineReviewRecord[]>([]);
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
   const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
@@ -485,6 +526,8 @@ export function App() {
           setMissionHistory(loadedMissions);
           setActiveMission(getLatestActiveMission(loadedMissions));
           setArchivedMissionSummaries(buildArchivedMissionSummariesFromMissions(loadedMissions));
+          const recovered = recoverIncompleteMissionStatus(loadedMissions);
+          if (recovered) setMissionPersistenceStatus(recovered);
         }
 
         if (journalResult) {
@@ -530,7 +573,14 @@ export function App() {
   const currentCommanderRoom = activeMission
     ? recommendRoomForMissionState(activeMissionState)
     : navigationCommanderRoom;
-  const guardianAlerts = buildDesktopGuardianAlerts();
+  const guardianAlerts = buildDesktopGuardianAlerts({
+    mission: activeMission,
+    currentRoom: currentCommanderRoom,
+    authorizationStatus,
+    operatorJustification: commanderOperatorJustification,
+    invalidation: commanderInvalidation,
+    protectiveRule: commanderProtectiveRule,
+  });
   const reportState = shellPhase === 'security-checkpoint' ? 'not-reported' : 'reported';
   const missionIntelligencePackage = activeMission
     ? buildDesktopMissionIntelligencePackage(activeMission, {
@@ -775,7 +825,11 @@ export function App() {
 
   function startDoorTransfer(
     room: HeadquartersRoomId,
-    options: { readonly openRoomAfter?: boolean; readonly fromRoom?: CommanderShellRoomId } = {},
+    options: {
+      readonly openRoomAfter?: boolean;
+      readonly fromRoom?: CommanderShellRoomId;
+      readonly transition?: RoomTransitionState;
+    } = {},
   ) {
     if (roomTransition !== undefined) return;
 
@@ -791,7 +845,7 @@ export function App() {
       window.clearTimeout(roomTransferTimeoutRef.current);
     }
 
-    const transition = createDoorOpeningTransition(fromRoom, targetRoom);
+    const transition = options.transition ?? createDoorOpeningTransition(fromRoom, targetRoom);
     setRoomTransition(transition);
 
     roomTransferTimeoutRef.current = window.setTimeout(() => {
@@ -812,19 +866,25 @@ export function App() {
 
   function startDoorTransferToMissionRoom(
     mission: ActiveMission,
-    options: { readonly fromRoom?: CommanderShellRoomId } = {},
+    options: { readonly fromRoom?: CommanderShellRoomId; readonly missionAccepted?: boolean } = {},
   ) {
     const nextRoom = recommendRoomForMissionState(parseMissionState(mission.currentState));
     const transferOptions = options.fromRoom ? { fromRoom: options.fromRoom } : {};
+    const transition = options.missionAccepted
+      ? createMissionAcceptedTransition(options.fromRoom ?? currentCommanderRoom, nextRoom)
+      : undefined;
 
     startDoorTransfer(mapCommanderRoomToNavigationTarget(nextRoom) as HeadquartersRoomId, {
       ...transferOptions,
+      ...(transition ? { transition } : {}),
     });
   }
 
   async function handleMissionCreated(mission: ActiveMission) {
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Mission creation persistence in progress.'));
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
     setArchiveWrite(createArchiveWritePlaceholder(mission));
     setAuthorizationStatus(undefined);
     setMissionDebrief(undefined);
@@ -832,22 +892,36 @@ export function App() {
     setCommanderMissionCodename('');
     setCommanderMissionObjective('');
     setCommanderWorkflowNotice('');
-    startDoorTransferToMissionRoom(mission, { fromRoom: 'command' });
+    startDoorTransferToMissionRoom(mission, { fromRoom: 'command', missionAccepted: true });
   }
 
   async function handleAbortMission() {
     if (activeMission === undefined) return;
 
     const abortedMission = await abortDesktopMission(activeMission);
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, activeMission.id, 'Abort persistence in progress.'));
     const archiveSummary = createAbortArchiveSummary(abortedMission);
     setArchiveSummary(archiveSummary);
     setArchivedMissionSummaries((summaries) => upsertArchiveSummaries(summaries, archiveSummary));
     setActiveMission(getActiveMissionAfterMissionChange(abortedMission));
     setMissionHistory((history) => upsertMissionHistory(history, abortedMission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(abortedMission.id));
     setMissionDebrief(undefined);
     setAuthorizationStatus(undefined);
     setCommanderWorkflowNotice('Mission aborted and closed. You can create a new mission when ready.');
     setActiveOperationsView('chat');
+  }
+
+  function handleResumeMissionRecovery() {
+    if (activeMission === undefined) {
+      setCommanderWorkflowNotice('No mission is available to resume.');
+      return;
+    }
+
+    setMissionPersistenceStatus(recoverIncompleteMissionStatus([activeMission])
+      ?? markMissionSavePending(missionPersistenceStatus, activeMission.id, 'Mission recovery check in progress.'));
+    setActiveOperationsView('chat');
+    setCommanderWorkflowNotice('Mission recovery reviewed. Commander remains on the active lifecycle step.');
   }
 
   async function handleRewindMission() {
@@ -866,8 +940,10 @@ export function App() {
   }
 
   async function completeReadyRoomBriefing(mission: ActiveMission, response: string): Promise<string> {
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Ready Room answer persistence in progress.'));
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
     setCommanderWorkflowNotice('Operational briefing complete. Continue is unlocked for Observation.');
     return response;
   }
@@ -885,10 +961,55 @@ export function App() {
   }
 
   async function completeObservationInterview(mission: ActiveMission, response: string): Promise<string> {
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Observation answer persistence in progress.'));
     setActiveMission(mission);
     setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
     setCommanderWorkflowNotice('Observation complete. Continue is unlocked for War Room authorization.');
     return response;
+  }
+
+  function handleDeployedCheckIn(visibleCondition: string): string {
+    if (activeMission === undefined || parseMissionState(activeMission.currentState) !== 'deployed') {
+      return 'No deployed mission is active.';
+    }
+
+    const lastCheckIn = [...deployedCheckIns]
+      .filter((checkIn) => checkIn.missionId === activeMission.id)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
+      .at(-1);
+    const now = new Date().toISOString();
+
+    const checkIn = createDeployedMissionCheckIn({
+      missionId: activeMission.id,
+      previous: deployedCheckIns,
+      createdAt: now,
+      draft: {
+        visibleCondition,
+        structureChanged: visibleCondition,
+        planValidity: visibleCondition,
+        continueOrReturn: visibleCondition,
+      },
+    });
+
+    if (checkIn === undefined) {
+      return 'No material change recorded. Continue executing the authorized plan.';
+    }
+
+    setMissionPersistenceStatus((status) => markMissionSavePending(status, activeMission.id, 'Deployment check-in persistence in progress.'));
+    setDeployedCheckIns((current) => [...current, checkIn]);
+    setMissionPersistenceStatus(markMissionSaveSucceeded(activeMission.id));
+    setCommanderWorkflowNotice(lastCheckIn ? 'Mission check-in updated.' : 'Mission check-in recorded.');
+
+    if (checkIn.status === 'return_requested' || checkIn.status === 'return_recommended') {
+      return 'Material change recorded. Return to Base is now the correct next action.';
+    }
+
+    if (checkIn.status === 'invalidation_near') {
+      return 'Invalidation proximity recorded. Reduce action to the declared plan only.';
+    }
+
+    return 'Material change recorded. State only new evidence if conditions shift again.';
   }
 
   async function handleCommanderTransmission(message: string): Promise<string> {
@@ -1067,16 +1188,17 @@ export function App() {
         setAuthorizationStatus(authorization);
         setCommanderWorkflowNotice(formatAuthorizationStatus(authorization));
 
-        if (authorization.decision === 'approved') {
-          const deployedMission = await declareDesktopDeployment(activeMission);
-          setActiveMission(deployedMission);
-          setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
-          setCommanderOperatorJustification('');
-          setCommanderInvalidation('');
-          setCommanderProtectiveRule('');
-        }
+      if (authorization.decision === 'approved') {
+        const deployedMission = await declareDesktopDeployment(activeMission);
+        setActiveMission(deployedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        setCommanderOperatorJustification('');
+        setCommanderInvalidation('');
+        setCommanderProtectiveRule('');
+        setRoomTransition(createAuthorizationTransition('war-room'));
+      }
 
-        return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
+      return `${formatAuthorizationStatus(authorization)}. ${authorization.reason}`;
       }
 
       const authorization = await requestDesktopAuthorization(activeMission, {
@@ -1100,6 +1222,7 @@ export function App() {
         setCommanderOperatorJustification('');
         setCommanderInvalidation('');
         setCommanderProtectiveRule('');
+        setRoomTransition(createAuthorizationTransition('war-room'));
         return 'Authorization accepted. Execute only within the declared plan.';
       }
 
@@ -1112,7 +1235,7 @@ export function App() {
         return 'Deployment closed. Return to Base is active; debrief before archive.';
       }
 
-      return 'War Room note received. Stay with the authorized plan until return to base is required.';
+      return handleDeployedCheckIn(message);
     }
 
     if (currentState === 'return_to_base') {
@@ -1166,7 +1289,11 @@ export function App() {
       return 'Continue order received. Advancing through the current lifecycle step.';
     }
 
-    return 'Transmission attached to Commander log. Use Continue when the current step is ready.';
+    return buildCommanderDeadEndRecovery({
+      room: currentCommanderRoom,
+      missionState: currentState,
+      transmission: message,
+    }).message;
   }
 
   return (
@@ -1287,6 +1414,10 @@ export function App() {
                     activeMission={activeMission}
                     missionIntelligencePackage={missionIntelligencePackage}
                     authorizationStatus={authorizationStatus}
+                    deployedCheckIns={deployedCheckIns}
+                    commanderLearning={buildCommanderLearningVisibility(commanderBehaviorProfile)}
+                    commanderGuardianAlerts={buildCommanderGuardianAlertLines(guardianAlerts, currentCommanderRoom)}
+                    missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
                     missionCodename={commanderMissionCodename}
@@ -1306,6 +1437,9 @@ export function App() {
                     onDisciplineNotesChange={setCommanderDisciplineNotes}
                     onLessonChange={setCommanderLesson}
                     onCreateMission={handleMissionCreated}
+                    onReportDeployedChange={handleDeployedCheckIn}
+                    onResumeMission={handleResumeMissionRecovery}
+                    onReviewMission={handleEnterCurrentRoom}
                     reportState={reportState}
                   />}
                   onContinue={handleCommanderContinue}
@@ -1360,6 +1494,8 @@ export function App() {
                     archivedJournalEntries,
                     doctrineRecords,
                     doctrineHistory,
+                    doctrineSuggestions: desktopDoctrineSuggestions,
+                    doctrineReviewDecisions,
                     onCreateMission: handleMissionCreated,
                     onMissionChanged: (mission) => {
                       setActiveMission(getActiveMissionAfterMissionChange(mission));
@@ -1383,6 +1519,9 @@ export function App() {
                     onPromoteDoctrineCandidate: (record, historyEntry) => {
                       setDoctrineRecords((records) => [...records, record]);
                       setDoctrineHistory((entries) => [...entries, historyEntry]);
+                    },
+                    onDoctrineReviewDecision: (decision) => {
+                      setDoctrineReviewDecisions((decisions) => [...decisions, decision]);
                     },
                   })
                 )}
@@ -1486,6 +1625,10 @@ function CommanderWorkflowSurface({
   missionIntelligencePackage,
   currentRoom,
   authorizationStatus,
+  deployedCheckIns,
+  commanderLearning,
+  commanderGuardianAlerts,
+  missionPersistenceStatus,
   missionDebrief,
   notice,
   missionCodename,
@@ -1505,12 +1648,19 @@ function CommanderWorkflowSurface({
   onDisciplineNotesChange,
   onLessonChange,
   onCreateMission,
+  onReportDeployedChange,
+  onResumeMission,
+  onReviewMission,
   reportState,
 }: {
   readonly currentRoom: string;
   readonly activeMission?: ActiveMission | undefined;
   readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly deployedCheckIns: readonly DeployedMissionCheckIn[];
+  readonly commanderLearning: CommanderLearningVisibility;
+  readonly commanderGuardianAlerts: readonly CommanderGuardianAlertLine[];
+  readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
   readonly missionCodename: string;
@@ -1530,12 +1680,85 @@ function CommanderWorkflowSurface({
   readonly onDisciplineNotesChange: (value: string) => void;
   readonly onLessonChange: (value: string) => void;
   readonly onCreateMission: (mission: ActiveMission) => void | Promise<void>;
+  readonly onReportDeployedChange: (visibleCondition: string) => string;
+  readonly onResumeMission: () => void;
+  readonly onReviewMission: () => void;
   readonly reportState: 'not-reported' | 'reported';
 }) {
   const currentState = parseMissionState(activeMission?.currentState);
+  const [deployedVisibleCondition, setDeployedVisibleCondition] = useState('');
+  const deployedPresence = activeMission && currentState === 'deployed'
+    ? createDeployedMissionPresence({
+      missionId: activeMission.id,
+      codename: activeMission.campaign,
+      objective: activeMission.objective,
+      authorizationReasoning: authorizationStatus?.reason,
+      activeInvalidation: missionIntelligencePackage?.invalidation,
+      riskLimit: activeMission.missionContext?.briefing.riskParameters,
+      currentVisibleCondition: activeMission.missionContext?.observation.operationalSummary,
+      createdAt: activeMission.createdAt,
+      checkIns: deployedCheckIns,
+    })
+    : undefined;
+
+  function handleDeployedReport(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    onReportDeployedChange(deployedVisibleCondition);
+    setDeployedVisibleCondition('');
+  }
 
   return (
     <>
+      <section
+        className="commander-workflow-card mission-persistence-indicator"
+        aria-label="Mission persistence status"
+        data-persistence-state={missionPersistenceStatus.state}
+      >
+        <p className="section-label">Mission Record</p>
+        <strong>{formatMissionPersistenceStatus(missionPersistenceStatus)}</strong>
+        {missionPersistenceStatus.state === 'save_failed' || missionPersistenceStatus.state === 'recovery_available' ? (
+          <div className="inline-actions">
+            <button type="button" className="secondary-action" onClick={onResumeMission}>Resume Mission</button>
+            <button type="button" className="secondary-action" onClick={onReviewMission}>Review Mission</button>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="commander-workflow-card commander-learning-panel" aria-label="Commander learning visibility">
+        <p className="section-label">Commander Learning</p>
+        <strong>{commanderLearning.headline}</strong>
+        <p className="muted">Coaching focus: {commanderLearning.coachingFocus}</p>
+        {commanderLearning.strengths.length > 0 ? (
+          <ul className="compact-list">
+            {commanderLearning.strengths.map((strength) => <li key={strength}>{strength}</li>)}
+          </ul>
+        ) : null}
+      </section>
+
+      <section
+        className="commander-workflow-card commander-guardian-alerts-panel"
+        aria-label="Guardian alerts below Commander chat"
+        data-chat-role="guardian"
+      >
+        <p className="section-label">Guardian</p>
+        <strong>{formatCommanderGuardianStatus(commanderGuardianAlerts)}</strong>
+        {commanderGuardianAlerts.length > 0 ? (
+          <ul className="compact-list guardian-chat-feed" aria-label="Guardian alert transmissions">
+            {commanderGuardianAlerts.map((alert) => (
+              <li
+                key={alert.id}
+                data-chat-speaker="guardian"
+                data-guardian-priority={alert.priority}
+                data-guardian-pacing={alert.pacing}
+              >
+                <span>Guardian</span>
+                <p>{alert.message}</p>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </section>
+
       {reportState === 'reported' && activeMission === undefined ? (
         <section className="commander-workflow-card commander-workflow-card-single" aria-label="Commander mission creation controls">
           <div>
@@ -1586,6 +1809,41 @@ function CommanderWorkflowSurface({
             <span>Protective Rule</span>
             <input value={protectiveRule} onChange={(event) => onProtectiveRuleChange(event.target.value)} />
           </label>
+        </section>
+      ) : null}
+
+      {deployedPresence && currentRoom === 'war-room' ? (
+        <section className="commander-workflow-card deployed-presence-card" aria-label="Active mission deployment">
+          <div>
+            <p className="section-label">Deployed Mission</p>
+            <h3>{deployedPresence.codename}</h3>
+            <p className="muted">{deployedPresence.objective}</p>
+          </div>
+          <dl>
+            <dt>Status</dt>
+            <dd>{deployedPresence.deploymentStatus.replaceAll('_', ' ')}</dd>
+            <dt>Authorization</dt>
+            <dd>{deployedPresence.authorizationReasoning}</dd>
+            <dt>Invalidation</dt>
+            <dd>{deployedPresence.activeInvalidation}</dd>
+            <dt>Risk</dt>
+            <dd>{deployedPresence.riskLimit}</dd>
+            <dt>Visible Condition</dt>
+            <dd>{deployedPresence.currentVisibleCondition}</dd>
+            <dt>Elapsed</dt>
+            <dd>{deployedPresence.elapsedLabel}</dd>
+          </dl>
+          <form className="deployed-check-in-form" aria-label="Report deployed mission change" onSubmit={handleDeployedReport}>
+            <label>
+              <span>Report Change</span>
+              <input
+                value={deployedVisibleCondition}
+                onChange={(event) => setDeployedVisibleCondition(event.target.value)}
+                placeholder="State only what changed."
+              />
+            </label>
+            <button type="submit" className="secondary-action">Record Change</button>
+          </form>
         </section>
       ) : null}
 
@@ -1660,6 +1918,8 @@ interface HeadquartersRoomContext {
   archivedJournalEntries: ArchivedJournalEntry[];
   doctrineRecords: DoctrineRecord[];
   doctrineHistory: DoctrineHistoryEntry[];
+  doctrineSuggestions: readonly DoctrineSuggestion[];
+  doctrineReviewDecisions: readonly DoctrineReviewRecord[];
   onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   onMissionChanged: (mission: ActiveMission) => void;
   onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
@@ -1671,6 +1931,7 @@ interface HeadquartersRoomContext {
   onCreateGrowthEvent: (event: GrowthEvent) => void;
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
   onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
+  onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
 }
 
 function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersRoomContext) {
@@ -1750,6 +2011,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   if (room === 'journal') {
     return (
       <JournalRoom
+        activeMission={context.activeMission}
         journalEntries={context.journalEntries}
         dailyReflections={context.dailyReflections}
         tradeReviews={context.tradeReviews}
@@ -1769,7 +2031,10 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       <DoctrineRoom
         doctrineRecords={context.doctrineRecords}
         doctrineHistory={context.doctrineHistory}
+        doctrineSuggestions={context.doctrineSuggestions}
+        doctrineReviewDecisions={context.doctrineReviewDecisions}
         onPromoteDoctrineCandidate={context.onPromoteDoctrineCandidate}
+        onDoctrineReviewDecision={context.onDoctrineReviewDecision}
       />
     );
   }
@@ -1791,6 +2056,8 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
       <ArchiveRoom
         missionIntelligencePackage={context.missionIntelligencePackage}
         archivedMissionSummaries={context.archivedMissionSummaries}
+        missionHistory={context.missionHistory}
+        missionDebrief={context.missionDebrief}
         archivedJournalEntries={context.archivedJournalEntries}
         doctrineRecords={context.doctrineRecords}
       />
@@ -3516,6 +3783,7 @@ function ArchiveWritePanel({ archiveWrite }: ArchiveWritePanelProps) {
 }
 
 interface JournalRoomProps {
+  activeMission?: ActiveMission | undefined;
   journalEntries: JournalEntry[];
   dailyReflections: DailyReflection[];
   tradeReviews: TradeReview[];
@@ -3529,6 +3797,7 @@ interface JournalRoomProps {
 }
 
 export function JournalRoom({
+  activeMission,
   journalEntries,
   dailyReflections,
   tradeReviews,
@@ -3560,6 +3829,7 @@ export function JournalRoom({
   });
   const searchResult = searchJournalEntries(journalEntries, { text: searchText });
   const activeStep = getJournalWorkflowSteps().find((step) => step.id === activeJournalStep);
+  const missionJournalLink = buildMissionJournalLink({ mission: activeMission, journalEntries });
 
   async function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -3647,6 +3917,15 @@ export function JournalRoom({
         <h2>Guided Journal</h2>
         <p className="muted">Commander-guided writing flow for entries, reflection, review, growth evidence, timeline, search, and archive.</p>
       </section>
+
+      {missionJournalLink ? (
+        <section className="journal-panel mission-journal-link-panel" aria-label="Mission journal integration">
+          <p className="section-label">Mission Link</p>
+          <h3>{missionJournalLink.codename}</h3>
+          <p className="muted">{missionJournalLink.prompt}</p>
+          <strong>{missionJournalLink.status}</strong>
+        </section>
+      ) : null}
 
       <section className="guided-workflow-layout" aria-label="Journal guided workflow">
         <section className="commander-briefing-panel" aria-label="Journal Commander prompt">
@@ -3873,36 +4152,213 @@ export function AcademyRoom({ growthEvents }: { growthEvents: GrowthEvent[] }) {
   );
 }
 
-export function buildDesktopGuardianAlerts(): readonly GuardianAlert[] {
-  return buildGuardianAlerts([
-    {
-      id: 'rule-monitoring',
-      title: 'Rule Monitoring',
-      detail: 'Guardian rules are explicit and deterministic.',
+export interface DesktopGuardianAlertInput {
+  readonly mission?: ActiveMission | undefined;
+  readonly currentRoom?: CommanderShellRoomId | undefined;
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly operatorJustification?: string | undefined;
+  readonly invalidation?: string | undefined;
+  readonly protectiveRule?: string | undefined;
+}
+
+export function buildDesktopGuardianAlerts(input: DesktopGuardianAlertInput = {}): readonly GuardianAlert[] {
+  const sources: GuardianAlertSource[] = [{
+    id: 'rule-monitoring',
+    title: 'Rule Monitoring',
+    detail: 'Guardian rules are active. Boundaries will be enforced from mission context, not mood.',
+    severity: 'notice',
+  }];
+  const missionState = parseMissionState(input.mission?.currentState);
+  const briefing = input.mission?.briefingContext;
+  const observation = input.mission?.observationContext;
+  const riskLimit = parseRiskLimitPercent(briefing?.riskParameters);
+  const declaredRiskLimit = hasMissionContextText(briefing?.riskParameters) ? briefing?.riskParameters.trim() : undefined;
+  const riskyReadiness = parseGuardianReadinessRisk(briefing?.personalReadiness);
+  const hasNews = hasGuardianHighImpactNews(briefing?.highImpactNews);
+  const missingRiskParameter = input.mission !== undefined
+    && missionState !== 'idle'
+    && !hasMissionContextText(briefing?.riskParameters);
+  const missingProtectiveRule = missionState === 'authorization' && !hasMissionContextText(input.protectiveRule);
+  const observationSaysNo = observation?.readiness === 'no';
+  const deniedAuthorization = input.authorizationStatus?.decision === 'denied';
+  const dailyLimits = evaluateGuardianDailyLimits(
+    { maxLossPercent: riskLimit ?? 1, warningPercent: 80, maxTrades: 3 },
+    { lossPercent: 0, tradesTaken: input.authorizationStatus ? 1 : 0 },
+  );
+  const sessionLimits = evaluateGuardianSessionLimits(
+    { maxMinutes: 180, warningPercent: 80, maxActions: 8 },
+    { elapsedMinutes: input.mission ? estimateMissionElapsedMinutes(input.mission) : 0, actionsTaken: estimateMissionActionCount(input) },
+  );
+  const risk = evaluateGuardianRisk({
+    dailyLossPercent: 0,
+    ruleViolationCount: missingProtectiveRule || deniedAuthorization ? 1 : 0,
+    revengeSignalCount: countPressureLanguage([
+      input.operatorJustification,
+      observation?.bias,
+      observation?.operationalPicture,
+    ]),
+    ...(riskyReadiness !== undefined ? { fatigueLevel: riskyReadiness } : {}),
+  });
+
+  if (declaredRiskLimit) {
+    sources.push({
+      id: 'declared-risk-boundary',
+      title: 'Declared Risk Boundary',
+      detail: `Risk boundary acknowledged: ${declaredRiskLimit}. Guardian will compare authorization against this limit.`,
       severity: 'notice',
+    });
+  }
+
+  if (missingRiskParameter) {
+    sources.push({
+      id: 'missing-risk-boundary',
+      title: 'Risk Boundary Missing',
+      detail: 'Risk boundary is not declared. Guardian will not clear aggressive authorization until risk is stated.',
+      severity: 'caution',
+    });
+  }
+
+  if (hasNews) {
+    sources.push({
+      id: 'high-impact-news',
+      title: 'High Impact News',
+      detail: `News risk declared: ${briefing?.highImpactNews?.trim()}. Reduce tempo and account for volatility before authorization.`,
+      severity: 'caution',
+    });
+  }
+
+  if (riskyReadiness !== undefined && riskyReadiness >= 7) {
+    sources.push({
+      id: 'operator-readiness',
+      title: 'Operator Readiness',
+      detail: `Readiness state reported as ${briefing?.personalReadiness?.trim()}. Guardian recommends slower pacing and stricter confirmation.`,
+      severity: 'caution',
+    });
+  }
+
+  if (observationSaysNo) {
+    sources.push({
+      id: 'insufficient-observation-evidence',
+      title: 'Observation Evidence',
+      detail: 'Operator reported insufficient evidence. Guardian keeps War Room pressure contained until observations improve.',
+      severity: 'caution',
+    });
+  }
+
+  if (missingProtectiveRule) {
+    sources.push({
+      id: 'missing-protective-rule',
+      title: 'Protective Rule Missing',
+      detail: 'Authorization is missing a protective rule. Guardian requires the rule before deployment authority is clean.',
+      severity: 'breach',
+    });
+  }
+
+  if (deniedAuthorization) {
+    sources.push({
+      id: 'authorization-denied',
+      title: 'Authorization Denied',
+      detail: input.authorizationStatus?.reason ?? 'Authorization was denied. Guardian keeps the mission inside War Room review.',
+      severity: 'breach',
+    });
+  }
+
+  for (const warning of [...dailyLimits.warnings, ...sessionLimits.warnings, ...risk.reasons]) {
+    if (warning === 'Risk assessment has missing inputs.') continue;
+    sources.push({
+      id: `risk-${slugifyGuardianId(warning)}`,
+      title: 'Risk Assessment',
+      detail: warning,
+      severity: risk.level === 'lock' ? 'lock' : risk.level === 'intervention' ? 'breach' : 'caution',
+    });
+  }
+
+  return dedupeGuardianAlerts(buildGuardianAlerts(sources));
+}
+
+export function buildDesktopGuardianLockoutState(input: DesktopGuardianAlertInput = {}): GuardianLockoutState {
+  const alerts = buildDesktopGuardianAlerts(input);
+  return evaluateGuardianLockout([
+    {
+      id: 'guardian-critical-alert',
+      reason: 'Critical Guardian alert is active.',
+      active: alerts.some((alert) => alert.priority === 'critical'),
     },
     {
-      id: 'risk-monitoring',
-      title: 'Risk Monitoring',
-      detail: 'Risk state is monitored from approved inputs only.',
-      severity: 'caution',
+      id: 'authorization-denied',
+      reason: input.authorizationStatus?.reason ?? 'Authorization denied by Guardian-compatible review.',
+      active: input.authorizationStatus?.decision === 'denied',
     },
   ]);
 }
 
-export function buildDesktopGuardianLockoutState(): GuardianLockoutState {
-  return evaluateGuardianLockout([
-    {
-      id: 'daily-limit',
-      reason: 'Daily limit breached.',
-      active: false,
-    },
-    {
-      id: 'repeated-override',
-      reason: 'Repeated override attempt.',
-      active: false,
-    },
-  ]);
+function parseRiskLimitPercent(value: string | undefined): number | undefined {
+  if (!hasMissionContextText(value)) return undefined;
+  const match = value.match(/(\d+(?:\.\d+)?)\s*%/);
+  if (match?.[1]) return Number.parseFloat(match[1]);
+  return undefined;
+}
+
+function parseGuardianReadinessRisk(value: string | undefined): number | undefined {
+  if (!hasMissionContextText(value)) return undefined;
+  const normalized = value.toLowerCase();
+  if (normalized.includes('tired') || normalized.includes('fatigue')) return 8;
+  if (normalized.includes('stressed') || normalized.includes('distracted')) return 7;
+  if (normalized.includes('angry') || normalized.includes('revenge')) return 9;
+  if (normalized.includes('focused') || normalized.includes('calm') || normalized.includes('confident')) return 2;
+  return undefined;
+}
+
+function hasGuardianHighImpactNews(value: string | undefined): boolean {
+  if (!hasMissionContextText(value)) return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized !== 'none' && normalized !== 'no' && normalized !== 'n/a';
+}
+
+function estimateMissionElapsedMinutes(mission: ActiveMission): number {
+  const createdAt = Date.parse(mission.createdAt);
+  if (Number.isNaN(createdAt)) return 0;
+  return Math.max(0, Math.round((Date.now() - createdAt) / 60000));
+}
+
+function estimateMissionActionCount(input: DesktopGuardianAlertInput): number {
+  return [
+    input.mission?.briefingContext?.missionObjective,
+    input.mission?.briefingContext?.riskParameters,
+    input.mission?.observationContext?.operationalPicture,
+    input.operatorJustification,
+    input.invalidation,
+    input.protectiveRule,
+  ].filter((value) => hasMissionContextText(value)).length;
+}
+
+function countPressureLanguage(values: readonly (string | undefined)[]): number {
+  return values.filter((value) => {
+    if (!hasMissionContextText(value)) return false;
+    const normalized = value.toLowerCase();
+    return normalized.includes('revenge')
+      || normalized.includes('fomo')
+      || normalized.includes('rush')
+      || normalized.includes('must trade')
+      || normalized.includes('need to win');
+  }).length;
+}
+
+function slugifyGuardianId(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 48);
+}
+
+function dedupeGuardianAlerts(alerts: readonly GuardianAlert[]): readonly GuardianAlert[] {
+  const seen = new Set<string>();
+  return alerts.filter((alert) => {
+    if (seen.has(alert.sourceId)) return false;
+    seen.add(alert.sourceId);
+    return true;
+  });
 }
 
 export function GuardianRoom() {
@@ -4297,11 +4753,15 @@ function JournalArchivePanel({
 export function ArchiveRoom({
   missionIntelligencePackage,
   archivedMissionSummaries,
+  missionHistory,
+  missionDebrief,
   archivedJournalEntries,
   doctrineRecords,
 }: {
   missionIntelligencePackage?: MissionIntelligencePackage | undefined;
   archivedMissionSummaries: LocalMissionArchiveSummary[];
+  missionHistory: ActiveMission[];
+  missionDebrief?: MissionDebrief | undefined;
   archivedJournalEntries: ArchivedJournalEntry[];
   doctrineRecords: DoctrineRecord[];
 }) {
@@ -4312,6 +4772,11 @@ export function ArchiveRoom({
   const records = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries);
   const searchResults = searchArchiveRecords(records, { text: archiveSearchText });
   const latestMissionSummary = archivedMissionSummaries[archivedMissionSummaries.length - 1];
+  const dossiers = listMissionArchiveDossiers({
+    summaries: archivedMissionSummaries,
+    missionHistory,
+    debrief: missionDebrief,
+  });
 
   return (
     <GuidedRoom
@@ -4337,6 +4802,7 @@ export function ArchiveRoom({
       timeline={(
         <>
           <MissionArchiveViewerPanel archiveSummaries={archivedMissionSummaries} />
+          <MissionArchiveDossierPanel dossiers={dossiers} />
           <ArchiveEventExplorerPanel eventInspections={eventInspections} />
           <ArchiveSessionExplorerPanel sessionInspections={sessionInspections} />
         </>
@@ -4359,6 +4825,32 @@ export function ArchiveRoom({
         </>
       )}
     />
+  );
+}
+
+function MissionArchiveDossierPanel({ dossiers }: { dossiers: readonly MissionArchiveDossier[] }) {
+  const latest = dossiers[dossiers.length - 1];
+
+  return (
+    <section className="journal-panel mission-archive-dossier-panel" aria-label="Mission archive dossier">
+      <p className="section-label">Mission Dossier</p>
+      <h3>{latest ? latest.codename : 'No dossier sealed'}</h3>
+      <p className="muted">{latest ? latest.commanderSummary : 'Archive dossier appears after mission archive.'}</p>
+      {latest ? (
+        <dl>
+          <dt>Archived</dt>
+          <dd>{latest.archivedAt}</dd>
+          <dt>State</dt>
+          <dd>{latest.state.replaceAll('_', ' ')}</dd>
+          <dt>Events</dt>
+          <dd>{latest.eventCount}</dd>
+          <dt>Debrief</dt>
+          <dd>{latest.debriefStatus}</dd>
+          <dt>Record</dt>
+          <dd>{latest.permanenceStatement}</dd>
+        </dl>
+      ) : null}
+    </section>
   );
 }
 
@@ -4583,11 +5075,17 @@ function ArchiveSessionExplorerPanel({ sessionInspections }: { sessionInspection
 export function DoctrineRoom({
   doctrineRecords,
   doctrineHistory,
+  doctrineSuggestions,
+  doctrineReviewDecisions,
   onPromoteDoctrineCandidate,
+  onDoctrineReviewDecision,
 }: {
   doctrineRecords: DoctrineRecord[];
   doctrineHistory: DoctrineHistoryEntry[];
+  doctrineSuggestions: readonly DoctrineSuggestion[];
+  doctrineReviewDecisions: readonly DoctrineReviewRecord[];
   onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
+  onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
 }) {
   return (
     <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
@@ -4604,6 +5102,13 @@ export function DoctrineRoom({
           <p className="muted">Doctrine updates only after explicit review. Candidate promotion remains manual and evidence-bound.</p>
         </section>
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
+        <DoctrineReviewPanel
+          doctrineSuggestions={doctrineSuggestions}
+          doctrineRecords={doctrineRecords}
+          doctrineReviewDecisions={doctrineReviewDecisions}
+          onPromoteDoctrineCandidate={onPromoteDoctrineCandidate}
+          onDoctrineReviewDecision={onDoctrineReviewDecision}
+        />
         <DoctrinePromotionPanel onPromoteDoctrineCandidate={onPromoteDoctrineCandidate} />
         <DoctrineDiffPanel diff={buildDoctrineDiffPreview(doctrineRecords)} />
         <TradingPlanDoctrinePanel references={buildDefaultTradingPlanDoctrineReferences(doctrineRecords)} />
@@ -4611,6 +5116,123 @@ export function DoctrineRoom({
       </section>
     </div>
   );
+}
+
+function DoctrineReviewPanel({
+  doctrineSuggestions,
+  doctrineRecords,
+  doctrineReviewDecisions,
+  onPromoteDoctrineCandidate,
+  onDoctrineReviewDecision,
+}: {
+  doctrineSuggestions: readonly DoctrineSuggestion[];
+  doctrineRecords: readonly DoctrineRecord[];
+  doctrineReviewDecisions: readonly DoctrineReviewRecord[];
+  onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
+  onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
+}) {
+  const [revisionNote, setRevisionNote] = useState('');
+  const suggestion = doctrineSuggestions.find((candidate) => (
+    !doctrineReviewDecisions.some((decision) => (
+      decision.candidateId === candidate.id
+      && (decision.decision === 'approved' || decision.decision === 'rejected')
+    ))
+  ));
+
+  if (suggestion === undefined) {
+    return (
+      <section className="journal-panel" aria-label="Doctrine candidate review">
+        <p className="section-label">Candidate Review</p>
+        <h3>No Doctrine Candidate Waiting</h3>
+        <p className="muted">Commander will surface candidates when evidence supports manual review.</p>
+      </section>
+    );
+  }
+  const activeSuggestion = suggestion;
+
+  const summary = buildDoctrineReviewSummary({
+    candidateId: activeSuggestion.id,
+    title: activeSuggestion.title,
+    statement: activeSuggestion.rationale,
+    sourceMissionOrJournal: formatDoctrineSuggestionSource(activeSuggestion),
+    sourceExcerpt: activeSuggestion.rationale,
+    behaviorEvidence: activeSuggestion.rationale,
+    similarDoctrineExists: doctrineRecords.some((record) => record.title.toLowerCase() === activeSuggestion.title.toLowerCase()),
+    conflictSummary: 'No direct conflict detected by deterministic review.',
+    proposedScope: 'Operator-approved doctrine candidate',
+    confidence: `${activeSuggestion.evidenceRecordIds.length} supporting ${activeSuggestion.evidenceRecordIds.length === 1 ? 'source' : 'sources'}`,
+  });
+
+  async function handleApprove() {
+    const decision = recordDoctrineReviewDecision({
+      candidateId: activeSuggestion.id,
+      decision: 'approved',
+      previous: doctrineReviewDecisions,
+    });
+    if (decision === undefined) return;
+
+    const result = await promoteDesktopDoctrineCandidate({
+      candidateId: activeSuggestion.id,
+      title: activeSuggestion.title,
+      summary: activeSuggestion.rationale,
+      sourceId: activeSuggestion.evidenceRecordIds[0] ?? activeSuggestion.id,
+      archiveId: activeSuggestion.evidenceRecordIds[0] ?? activeSuggestion.id,
+      excerpt: activeSuggestion.rationale,
+    });
+
+    if (result) onPromoteDoctrineCandidate(result.record, result.historyEntry);
+    onDoctrineReviewDecision(decision);
+  }
+
+  function handleReject() {
+    const decision = recordDoctrineReviewDecision({
+      candidateId: activeSuggestion.id,
+      decision: 'rejected',
+      reason: revisionNote || 'Evidence incomplete.',
+      previous: doctrineReviewDecisions,
+    });
+    if (decision) onDoctrineReviewDecision(decision);
+  }
+
+  function handleRevision() {
+    const decision = recordDoctrineReviewDecision({
+      candidateId: activeSuggestion.id,
+      decision: 'revision_requested',
+      reason: revisionNote || 'Needs operator revision.',
+      previous: doctrineReviewDecisions,
+    });
+    if (decision) onDoctrineReviewDecision(decision);
+  }
+
+  return (
+    <section className="journal-panel doctrine-review-panel" aria-label="Doctrine candidate review">
+      <p className="section-label">Candidate Review</p>
+      <h3>{summary.heading}</h3>
+      <ul>
+        {summary.lines.map((line) => <li key={line}>{line}</li>)}
+      </ul>
+      <p className="muted">{summary.question}</p>
+      <label>
+        <span>Review Note</span>
+        <input value={revisionNote} onChange={(event) => setRevisionNote(event.target.value)} />
+      </label>
+      <div className="inline-actions">
+        <button className="secondary-action" type="button" onClick={handleApprove}>Approve Doctrine</button>
+        <button className="secondary-action" type="button" onClick={handleReject}>Reject Candidate</button>
+        <button className="secondary-action" type="button" onClick={handleRevision}>Return for Revision</button>
+      </div>
+      {doctrineReviewDecisions.slice(-1).map((decision) => (
+        <p key={`${decision.candidateId}-${decision.decidedAt}`} className="muted">
+          {formatDoctrineReviewAudit(decision)}
+        </p>
+      ))}
+    </section>
+  );
+}
+
+function formatDoctrineSuggestionSource(suggestion: DoctrineSuggestion): string {
+  const sourceCount = suggestion.evidenceRecordIds.length;
+  return `${sourceCount} ${sourceCount === 1 ? 'journal evidence source' : 'journal evidence sources'} ready for operator review`;
 }
 
 function DoctrinePromotionPanel({
@@ -4786,15 +5408,25 @@ function DoctrineViewerPanel({ doctrineRecords }: { doctrineRecords: DoctrineRec
             <article className="timeline-item" key={record.id}>
               <strong>{record.title}</strong>
               <span>{record.summary}</span>
-              <span>
-                {record.confidence} from {record.source.sourceType}: {record.source.sourceId}
-              </span>
+              <span>{formatDoctrineRecordSource(record)}</span>
             </article>
           ))}
         </div>
       )}
     </section>
   );
+}
+
+function formatDoctrineRecordSource(record: DoctrineRecord): string {
+  const status = record.confidence === 'validated'
+    ? 'Validated Doctrine'
+    : `${record.confidence.charAt(0).toUpperCase()}${record.confidence.slice(1)} Doctrine`;
+  const source = record.source.sourceType === 'journal_entry'
+    ? 'Journal evidence'
+    : record.source.sourceType === 'trade_review'
+      ? 'Trade review evidence'
+      : 'Manual operator review';
+  return record.source.excerpt ? `${status} from ${source}: ${record.source.excerpt}` : `${status} from ${source}`;
 }
 
 function SettingsRoom() {
@@ -4975,7 +5607,12 @@ export function buildDesktopMissionIntelligencePackage(
       ...(hasMissionContextText(input.lesson) ? { lesson: input.lesson } : {}),
     },
     ...(input.archiveSummary ? { archiveReference: `archive:${input.archiveSummary.missionId}` } : {}),
-    guardianNotes: buildDesktopGuardianAlerts().map((alert) => alert.message),
+    guardianNotes: buildDesktopGuardianAlerts({
+      mission,
+      authorizationStatus: input.authorizationStatus,
+      operatorJustification: input.operatorJustification,
+      invalidation: input.invalidation,
+    }).map((alert) => alert.message),
     ...(mission.missionContext ? { missionContext: mission.missionContext } : {}),
   };
 
@@ -5413,19 +6050,72 @@ export function evaluateLocalMissionAuthorization(
 ): MissionAuthorizationStatus | undefined {
   if (mission === undefined) return undefined;
 
-  if (hasContent(draft.operatorJustification) && hasContent(draft.invalidation) && hasContent(draft.protectiveRule ?? '')) {
+  const missingAuthorizationRequirements = getMissingAuthorizationRequirements(mission, draft);
+
+  if (missingAuthorizationRequirements.length === 0) {
     return {
       missionId: mission.id,
       decision: 'approved',
-      reason: 'Manual authorization fields and protective rule are complete.',
+      reason: 'Operational briefing, observation evidence, invalidation, and protective rule are complete.',
     };
   }
 
   return {
     missionId: mission.id,
     decision: 'denied',
-    reason: 'Manual authorization requires operator justification, invalidation, and protective rule.',
+    reason: `Authorization blocked: ${missingAuthorizationRequirements.join('; ')}.`,
   };
+}
+
+function getMissingAuthorizationRequirements(
+  mission: ActiveMission,
+  draft: MissionAuthorizationDraft,
+): string[] {
+  const missionPackage = buildDesktopMissionIntelligencePackage(mission, {
+    operatorJustification: draft.operatorJustification,
+    invalidation: draft.invalidation,
+  });
+  const pressureTerms = ['fomo', 'revenge', 'rush', 'must trade', 'need to win', 'make it back'];
+  const justification = draft.operatorJustification.trim().toLowerCase();
+  const protectiveRule = draft.protectiveRule?.trim().toLowerCase() ?? '';
+  const missing: string[] = [];
+
+  if (!isReadyRoomBriefingComplete(mission.briefingContext)) {
+    missing.push('complete the Ready Room operational briefing');
+  }
+
+  if (!isObservationInterviewComplete(mission.observationContext)) {
+    missing.push('complete the Observation evidence interview');
+  }
+
+  if (!hasContent(draft.operatorJustification)) {
+    missing.push('state the authorization evidence');
+  }
+
+  if (!hasContent(draft.invalidation)) {
+    missing.push('state invalidation evidence');
+  }
+
+  if (!hasContent(draft.protectiveRule ?? '')) {
+    missing.push('state the protective rule');
+  }
+
+  if (hasContent(draft.operatorJustification) && pressureTerms.some((term) => justification.includes(term))) {
+    missing.push('remove pressure language from the authorization reasoning');
+  }
+
+  if (
+    hasContent(draft.protectiveRule ?? '')
+    && !['risk', 'stop', 'invalidation', 'loss', 'limit', 'rule', 'plan', 'doctrine', 'no trade'].some((term) => protectiveRule.includes(term))
+  ) {
+    missing.push('protective rule must name the risk, stop, invalidation, plan, doctrine, or no-trade boundary');
+  }
+
+  if (missionPackage.confidence.level === 'incomplete') {
+    missing.push('mission intelligence is still incomplete');
+  }
+
+  return missing;
 }
 
 function formatAuthorizationJustification(justification: string, protectiveRule: string): string {

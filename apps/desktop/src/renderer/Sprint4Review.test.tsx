@@ -12,6 +12,8 @@ import {
   listArchivedMissionSummaries,
   listMissionHistory,
   upsertMissionHistory,
+  withBriefingMissionContext,
+  withObservationMissionContext,
 } from './App';
 
 describe('Sprint 4 mission operations review', () => {
@@ -41,7 +43,31 @@ describe('Sprint 4 mission operations review', () => {
 
     if (!mission) throw new Error('Expected local mission to be created');
 
-    const authorization = evaluateLocalMissionAuthorization(mission, {
+    const missionWithContext = withObservationMissionContext(
+      withBriefingMissionContext(mission, {
+        missionObjective: 'Hold the line',
+        market: 'ES futures',
+        marketEnvironment: 'Range with clear boundaries',
+        highImpactNews: 'None',
+        personalReadiness: 'focused',
+        riskParameters: '1%',
+        successCriteria: 'No trade unless the plan confirms.',
+      }),
+      {
+        marketDirection: 'Sideways',
+        marketStructure: 'Range',
+        volume: 'Normal',
+        liquidity: 'Resting above prior high and below prior low',
+        keyLevels: 'Prior high and prior low',
+        bias: 'Neutral until range break',
+        invalidationEvidence: 'Exit if structure breaks.',
+        emotionalCheck: 'calm',
+        readiness: 'yes',
+        operationalPicture: 'Range structure, normal volume, and clear invalidation are present.',
+      },
+    );
+
+    const authorization = evaluateLocalMissionAuthorization(missionWithContext, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
       protectiveRule: 'No trade after failed acceptance.',

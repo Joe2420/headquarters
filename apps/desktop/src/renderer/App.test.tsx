@@ -139,6 +139,62 @@ describe('Desktop shell', () => {
     expect(source).toContain('renderHeadquartersRoom(currentRoomView, {');
   });
 
+  it('exposes deployed mission presence and Report Change check-ins through Commander workflow', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('deployedCheckIns');
+    expect(source).toContain('aria-label="Active mission deployment"');
+    expect(source).toContain('aria-label="Report deployed mission change"');
+    expect(source).toContain('State only what changed.');
+    expect(source).toContain('Return to Base is now the correct next action.');
+  });
+
+  it('exposes Doctrine candidate review decisions through the Doctrine room', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('aria-label="Doctrine candidate review"');
+    expect(source).toContain('Approve Doctrine');
+    expect(source).toContain('Reject Candidate');
+    expect(source).toContain('Return for Revision');
+    expect(source).toContain('recordDoctrineReviewDecision');
+    expect(source).toContain('formatDoctrineReviewAudit');
+  });
+
+  it('shows mission persistence and recovery status in Commander workflow', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('aria-label="Mission persistence status"');
+    expect(source).toContain('markMissionSavePending');
+    expect(source).toContain('markMissionSaveSucceeded');
+    expect(source).toContain('recoverIncompleteMissionStatus');
+    expect(source).toContain('Resume Mission');
+    expect(source).toContain('Review Mission');
+  });
+
+  it('routes Commander dead ends through deterministic recovery guidance', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('buildCommanderDeadEndRecovery');
+    expect(source).not.toContain('Transmission attached to Commander log. Use Continue when the current step is ready.');
+  });
+
+  it('shows Commander learning visibility inside the Commander workflow', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('buildCommanderLearningVisibility');
+    expect(source).toContain('aria-label="Commander learning visibility"');
+    expect(source).toContain('Coaching focus:');
+  });
+
+  it('surfaces Guardian alerts inside Commander chat', () => {
+    const source = readFileSync(new URL('./App.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('buildCommanderGuardianAlertLines');
+    expect(source).toContain('aria-label="Guardian alerts below Commander chat"');
+    expect(source).toContain('data-chat-role="guardian"');
+    expect(source).toContain('formatCommanderGuardianStatus');
+  });
+
   it('renders the security checkpoint startup surface', () => {
     const html = renderToStaticMarkup(<App />);
 
@@ -231,7 +287,7 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<ObservationRoom activeMission={mission} />)).toContain('data-room-identity="silence"');
     expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-identity="decision"');
     expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-identity="reflection"');
-    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
+    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} missionHistory={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-identity="historical"');
   });
 
   it('renders Sprint 17 guided room structure for mission path rooms', () => {
@@ -320,6 +376,7 @@ describe('Desktop shell', () => {
     const archiveHtml = renderToStaticMarkup(<ArchiveRoom
       missionIntelligencePackage={missionPackage}
       archivedMissionSummaries={[]}
+      missionHistory={[]}
       archivedJournalEntries={[]}
       doctrineRecords={[]}
     />);
@@ -341,6 +398,7 @@ describe('Desktop shell', () => {
         archivedAt: '2026-07-02T00:10:00.000Z',
         eventCount: 2,
       }]}
+      missionHistory={[]}
       archivedJournalEntries={[]}
       doctrineRecords={[]}
     />);
@@ -349,6 +407,8 @@ describe('Desktop shell', () => {
     expect(html).toContain('Foundation Patrol preserved as institutional memory.');
     expect(html).toContain('Timeline / History');
     expect(html).toContain('Mission Archive Viewer');
+    expect(html).toContain('Mission Dossier');
+    expect(html).toContain('Archive dossier is read-only historical intelligence.');
   });
 
   it('renders restrained atmosphere tokens for major rooms', () => {
@@ -367,7 +427,7 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<ObservationRoom activeMission={mission} />)).toContain('data-room-atmosphere="observation"');
     expect(renderToStaticMarkup(<WarRoom activeMission={mission} missionHistory={[mission]} />)).toContain('data-room-atmosphere="war"');
     expect(renderToStaticMarkup(<DebriefTheater activeMission={mission} />)).toContain('data-room-atmosphere="debrief"');
-    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-atmosphere="archive"');
+    expect(renderToStaticMarkup(<ArchiveRoom archivedMissionSummaries={[]} missionHistory={[]} archivedJournalEntries={[]} doctrineRecords={[]} />)).toContain('data-room-atmosphere="archive"');
     expect(renderToStaticMarkup(<JournalRoom
       journalEntries={[]}
       dailyReflections={[]}
@@ -383,7 +443,10 @@ describe('Desktop shell', () => {
     expect(renderToStaticMarkup(<DoctrineRoom
       doctrineRecords={[]}
       doctrineHistory={[]}
+      doctrineSuggestions={[]}
+      doctrineReviewDecisions={[]}
       onPromoteDoctrineCandidate={() => undefined}
+      onDoctrineReviewDecision={() => undefined}
     />)).toContain('data-room-atmosphere="doctrine"');
     expect(renderToStaticMarkup(<AcademyRoom growthEvents={[]} />)).toContain('data-room-atmosphere="academy"');
     expect(renderToStaticMarkup(<GuardianRoom />)).toContain('data-room-atmosphere="guardian"');
@@ -531,7 +594,7 @@ describe('Desktop shell', () => {
     const lockout = buildDesktopGuardianLockoutState();
     const html = renderToStaticMarkup(<GuardianRoom />);
 
-    expect(alerts.map((alert) => alert.priority)).toEqual(['low', 'medium']);
+    expect(alerts.map((alert) => alert.priority)).toEqual(['low']);
     expect(lockout.status).toBe('unlocked');
     expect(html).toContain('data-room-id="guardian-room"');
     expect(html).toContain('Guardian Alerts');
@@ -539,8 +602,43 @@ describe('Desktop shell', () => {
     expect(html).toContain('JudgmentReservePanel');
     expect(html).toContain('SuccessProtocolPanel');
     expect(html).toContain('Rule Monitoring');
-    expect(html).toContain('Risk Monitoring');
     expect(html).toContain('Lockout State');
+  });
+
+  it('derives Guardian alerts from mission context instead of static placeholder copy', () => {
+    const alerts = buildDesktopGuardianAlerts({
+      mission: {
+        id: 'mission-guardian',
+        campaign: 'Guardian Context Test',
+        objective: 'Protect capital',
+        condition: 'Authorization',
+        commandAuthority: 'Professional command',
+        currentState: 'authorization',
+        createdAt: new Date().toISOString(),
+        briefingContext: {
+          missionObjective: 'Observe NQ',
+          market: 'NQ',
+          marketEnvironment: 'High volatility',
+          highImpactNews: 'FOMC',
+          personalReadiness: 'tired',
+        },
+        observationContext: {
+          readiness: 'no',
+        },
+      },
+      currentRoom: 'war-room',
+      operatorJustification: 'I need to rush this trade',
+      protectiveRule: '',
+    });
+
+    expect(alerts.map((alert) => alert.message)).toContain('Risk boundary is not declared. Guardian will not clear aggressive authorization until risk is stated.');
+    expect(alerts.map((alert) => alert.message)).toContain('Authorization is missing a protective rule. Guardian requires the rule before deployment authority is clean.');
+    expect(alerts.map((alert) => alert.message).join('\n')).not.toContain('Risk state is monitored from approved inputs only.');
+    expect(buildDesktopGuardianLockoutState({ authorizationStatus: {
+      missionId: 'mission-guardian',
+      decision: 'denied',
+      reason: 'Invalidation missing.',
+    } }).status).toBe('locked');
   });
 
   it('renders Intelligence Center journal classifications without mutating raw evidence', () => {
@@ -700,8 +798,8 @@ describe('Desktop shell', () => {
 
     expect(suggestions).toEqual([{
       id: 'doctrine-suggestion:doctrine_candidate_source',
-      title: 'Review doctrine candidate source',
-      rationale: '1 evidence record support manual doctrine review.',
+      title: 'Doctrine candidate requires review',
+      rationale: '1 supporting source surfaced a possible operating rule. Review it before it becomes Doctrine.',
       evidenceRecordIds: ['journal-001'],
       requiresManualPromotion: true,
     }]);
@@ -798,6 +896,7 @@ describe('Desktop shell', () => {
         archivedAt: '2026-01-01T00:20:00.000Z',
         eventCount: 2,
       }]}
+      missionHistory={[]}
       archivedJournalEntries={[]}
       doctrineRecords={[]}
     />);
@@ -1058,11 +1157,40 @@ describe('Desktop shell', () => {
     expect(html).not.toContain('aria-label="Journal archive"');
   });
 
+  it('renders active mission journal integration when a mission is open', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const html = renderToStaticMarkup(<JournalRoom
+      activeMission={mission}
+      journalEntries={[]}
+      dailyReflections={[]}
+      tradeReviews={[]}
+      growthEvents={[]}
+      archivedJournalEntries={[]}
+      onCreateJournalEntry={() => undefined}
+      onCreateDailyReflection={() => undefined}
+      onCreateTradeReview={() => undefined}
+      onCreateGrowthEvent={() => undefined}
+      onArchiveJournalEntry={() => undefined}
+    />);
+
+    expect(html).toContain('aria-label="Mission journal integration"');
+    expect(html).toContain('Write the next command log entry for Foundation Patrol.');
+  });
+
   it('renders Doctrine as a review chamber with manual candidate promotion visible', () => {
     const html = renderToStaticMarkup(<DoctrineRoom
       doctrineRecords={[]}
       doctrineHistory={[]}
+      doctrineSuggestions={[]}
+      doctrineReviewDecisions={[]}
       onPromoteDoctrineCandidate={() => undefined}
+      onDoctrineReviewDecision={() => undefined}
     />);
 
     expect(html).toContain('Doctrine Review');
@@ -1722,7 +1850,36 @@ describe('Desktop shell', () => {
 
     if (!mission) throw new Error('Expected local mission to be created');
 
-    const approved = evaluateLocalMissionAuthorization(mission, {
+    const missionWithContext = withObservationMissionContext(
+      withBriefingMissionContext(mission, {
+        missionObjective: 'Hold the line',
+        market: 'ES futures',
+        marketEnvironment: 'Range with clear boundaries',
+        highImpactNews: 'None',
+        personalReadiness: 'focused',
+        riskParameters: '1%',
+        successCriteria: 'No trade unless the plan confirms.',
+      }),
+      {
+        marketDirection: 'Sideways',
+        marketStructure: 'Range',
+        volume: 'Normal',
+        liquidity: 'Resting above prior high and below prior low',
+        keyLevels: 'Prior high and prior low',
+        bias: 'Neutral until range break',
+        invalidationEvidence: 'Exit if structure breaks.',
+        emotionalCheck: 'calm',
+        readiness: 'yes',
+        operationalPicture: 'Range structure, normal volume, and clear invalidation are present.',
+      },
+    );
+
+    const approved = evaluateLocalMissionAuthorization(missionWithContext, {
+      operatorJustification: 'Setup matches the plan.',
+      invalidation: 'Exit if structure breaks.',
+      protectiveRule: 'No trade after failed acceptance.',
+    });
+    const deniedWithoutContext = evaluateLocalMissionAuthorization(mission, {
       operatorJustification: 'Setup matches the plan.',
       invalidation: 'Exit if structure breaks.',
       protectiveRule: 'No trade after failed acceptance.',
@@ -1740,14 +1897,19 @@ describe('Desktop shell', () => {
     expect(approved).toEqual({
       missionId: 'mission-001',
       decision: 'approved',
-      reason: 'Manual authorization fields and protective rule are complete.',
+      reason: 'Operational briefing, observation evidence, invalidation, and protective rule are complete.',
     });
     expect(formatAuthorizationStatus(approved)).toBe('Authorization approved');
 
+    expect(deniedWithoutContext).toEqual({
+      missionId: 'mission-001',
+      decision: 'denied',
+      reason: 'Authorization blocked: complete the Ready Room operational briefing; complete the Observation evidence interview; mission intelligence is still incomplete.',
+    });
     expect(denied).toEqual({
       missionId: 'mission-001',
       decision: 'denied',
-      reason: 'Manual authorization requires operator justification, invalidation, and protective rule.',
+      reason: 'Authorization blocked: complete the Ready Room operational briefing; complete the Observation evidence interview; state invalidation evidence; mission intelligence is still incomplete.',
     });
     expect(deniedWithoutRule?.decision).toBe('denied');
     expect(formatAuthorizationStatus(denied)).toBe('Authorization denied');

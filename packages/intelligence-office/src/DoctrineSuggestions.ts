@@ -40,9 +40,18 @@ function buildSuggestionForSignal(
 
   return {
     id: `doctrine-suggestion:${signal}`,
-    title: signal === 'doctrine_candidate_source' ? 'Review doctrine candidate source' : 'Review repeated lesson',
-    rationale: `${evidenceRecordIds.length} evidence record${evidenceRecordIds.length === 1 ? '' : 's'} support manual doctrine review.`,
+    title: signal === 'doctrine_candidate_source' ? 'Doctrine candidate requires review' : 'Repeated lesson requires review',
+    rationale: formatDoctrineSuggestionRationale(signal, evidenceRecordIds.length),
     evidenceRecordIds,
     requiresManualPromotion: true,
   };
+}
+
+function formatDoctrineSuggestionRationale(signal: string, evidenceCount: number): string {
+  const evidenceText = `${evidenceCount} supporting ${evidenceCount === 1 ? 'source' : 'sources'}`;
+  if (signal === 'doctrine_candidate_source') {
+    return `${evidenceText} surfaced a possible operating rule. Review it before it becomes Doctrine.`;
+  }
+
+  return `${evidenceText} repeated the same lesson. Decide whether it belongs in Doctrine.`;
 }

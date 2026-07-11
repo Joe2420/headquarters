@@ -387,6 +387,24 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Observation completed. Authorization now requires discipline.');
   });
 
+  it('renders return-to-base as a red eject action', () => {
+    const state = buildCommanderExperienceState({
+      reportState: 'reported',
+      activeRoom: 'war-room',
+      activeMission: {
+        id: 'mission-eject',
+        campaign: 'Eject Test',
+        objective: 'Hold discipline',
+        currentState: 'deployed',
+        createdAt: '2026-07-02T00:00:00.000Z',
+      },
+    });
+    const html = renderToStaticMarkup(<CommanderExperiencePanel state={state} onContinue={() => undefined} />);
+
+    expect(html).toContain('commander-eject-action');
+    expect(html).toContain('Return To Base');
+  });
+
   it('hides acknowledged interruptions from priority rendering', () => {
     const state = buildCommanderExperienceState({
       reportState: 'reported',

@@ -13,15 +13,15 @@ describe('suggestDoctrineCandidates', () => {
     expect(suggestDoctrineCandidates(evidenceRecords)).toEqual([
       {
         id: 'doctrine-suggestion:doctrine_candidate_source',
-        title: 'Review doctrine candidate source',
-        rationale: '1 evidence record support manual doctrine review.',
+        title: 'Doctrine candidate requires review',
+        rationale: '1 supporting source surfaced a possible operating rule. Review it before it becomes Doctrine.',
         evidenceRecordIds: ['journal-001'],
         requiresManualPromotion: true,
       },
       {
         id: 'doctrine-suggestion:lesson',
-        title: 'Review repeated lesson',
-        rationale: '2 evidence records support manual doctrine review.',
+        title: 'Repeated lesson requires review',
+        rationale: '2 supporting sources repeated the same lesson. Decide whether it belongs in Doctrine.',
         evidenceRecordIds: ['journal-002', 'mission-001'],
         requiresManualPromotion: true,
       },

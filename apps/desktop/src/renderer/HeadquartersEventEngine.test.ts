@@ -110,4 +110,30 @@ describe('HeadquartersEventEngine', () => {
     });
     expect(missionPackage.missingEvidence).toHaveLength(1);
   });
+
+  it('turns incomplete intelligence into an actionable Commander message', () => {
+    const incompletePackage: MissionIntelligencePackage = {
+      ...missionPackage,
+      confidence: {
+        score: 20,
+        level: 'incomplete',
+        reasons: ['Risk limit is not clear'],
+      },
+    };
+    const events = buildHeadquartersEvents({
+      reportState: 'reported',
+      currentRoom: 'observation',
+      recommendedRoom: 'observation',
+      missionId: 'mission-026',
+      missionPhase: 'Current station: Observation Room',
+      missionIntelligence: incompletePackage,
+      guardianAlerts: [],
+      growthEvents: [],
+      doctrineCandidateCount: 0,
+      archiveRecordCount: 0,
+      currentObjective: 'Continue collecting evidence.',
+    });
+
+    expect(selectPassiveCommanderMessage(events)).toBe('Mission intelligence incomplete. Confidence incomplete at 20%. Next evidence required: Invalidation evidence.');
+  });
 });

@@ -28,6 +28,7 @@ export interface TransitionVariant {
   readonly videoStartSeconds?: number;
   readonly durationMs?: number;
   readonly reducedMotionDurationMs?: number;
+  readonly fallbackLines?: readonly string[] | undefined;
 }
 
 export interface RoomArrival {
@@ -234,9 +235,31 @@ export function createAuthorizationTransitionController(
 ): TransitionController {
   return createTransitionController(room, room, phase, {
     ...getTransitionVariant('war-room'),
-    videoSrc: '/transitions/war-room.mp4',
+    title: 'Authorization Accepted',
+    standby: 'DEPLOYMENT ACTIVE',
+    commanderDeparture: 'Authorization accepted.',
+    commanderArrival: 'Mission deployment active.',
+    videoSrc: '/transitions/authorization-ceremony.mp4',
     soundEvents: cockpitSoundEvents,
-    durationMs: 4600,
+    durationMs: 3200,
+    fallbackLines: ['Authorization accepted.', 'Mission deployment active.'],
+  });
+}
+
+export function createMissionAcceptedTransitionController(
+  fromRoom: CommanderShellRoomId = 'command',
+  toRoom: CommanderShellRoomId = 'ready-room',
+  phase: TransitionPhase = 'commander',
+): TransitionController {
+  return createTransitionController(fromRoom, toRoom, phase, {
+    ...getTransitionVariant('ready-room'),
+    title: 'Mission Accepted',
+    standby: 'READY ROOM',
+    commanderDeparture: 'Mission accepted.',
+    commanderArrival: 'Ready Room entered. Prepare before moving further.',
+    videoSrc: '/transitions/authorization-ceremony.mp4',
+    durationMs: 3200,
+    fallbackLines: ['Mission accepted.', 'Ready Room entered.'],
   });
 }
 
@@ -396,9 +419,20 @@ export function TransitionSceneView({ controller }: { readonly controller: Trans
 
 function TransitionVideo({ variant }: { readonly variant: TransitionVariant }) {
   const [hasEnded, setHasEnded] = useState(false);
+  const [hasFailed, setHasFailed] = useState(false);
   const videoSrc = variant.videoStartSeconds !== undefined
     ? `${variant.videoSrc}#t=${variant.videoStartSeconds}`
     : variant.videoSrc;
+
+  if (hasFailed) {
+    return (
+      <div className="transition-video-fallback" role="status" data-transition-fallback="video-unavailable">
+        {(variant.fallbackLines ?? [variant.commanderArrival]).map((line) => (
+          <span key={line}>{line}</span>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <video
@@ -409,6 +443,7 @@ function TransitionVideo({ variant }: { readonly variant: TransitionVariant }) {
       playsInline
       preload="auto"
       onEnded={() => setHasEnded(true)}
+      onError={() => setHasFailed(true)}
     />
   );
 }

@@ -1,4 +1,23 @@
 # Changelog
+HQ-TASK-0280 - Added Sprint 29 Mission Continuity, Doctrine, Guardian, and Archive review documentation.
+
+HQ-TASK-0279 - Linked the Journal room to the active mission context.
+
+HQ-TASK-0278 - Surfaced Guardian alerts inside Commander Chat.
+
+HQ-TASK-0277 - Added Commander learning visibility.
+
+HQ-TASK-0276 - Added archive mission dossier surface.
+
+HQ-TASK-0275 - Added Commander chat dead-end recovery guidance.
+
+HQ-TASK-0274 - Added mission persistence status and recovery visibility.
+
+HQ-TASK-0273 - Added Commander-led Doctrine review and decision handling.
+
+HQ-TASK-0272 - Added active deployed mission presence and check-ins.
+
+HQ-TASK-0271 - Added dedicated mission authorization ceremony transition.
 HQ-TASK-0270 - Added Sprint 28 Living Headquarters OS review documentation.
 
 HQ-TASK-0269 - Added Living Headquarters OS integration coverage.

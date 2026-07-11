@@ -330,12 +330,17 @@ export function CommanderExperiencePanel({
             {onContinue && !isCommanderQuestionPending(state) ? (
               <button
                 type="button"
-                className="primary-action commander-continue"
+                className={[
+                  'primary-action',
+                  'commander-continue',
+                  state.nextAction.id === 'commander-action:return-to-base' ? 'commander-eject-action' : '',
+                ].filter(Boolean).join(' ')}
+                data-action-id={state.nextAction.id}
                 aria-label={`Continue to ${formatCommanderRoomLabel(state.recommendedRoom)}`}
                 disabled={state.nextAction.disabled}
                 onClick={onContinue}
               >
-                Continue
+                {formatCommanderContinueLabel(state.nextAction)}
               </button>
             ) : null}
           </div>
@@ -403,6 +408,11 @@ export function CommanderExperiencePanel({
       </details>
     </section>
   );
+}
+
+function formatCommanderContinueLabel(action: CommanderNextAction): string {
+  if (action.id === 'commander-action:war-room-authorization') return 'Request Authorization';
+  return action.label;
 }
 
 function TransmittedText({
