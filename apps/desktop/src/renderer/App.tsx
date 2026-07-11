@@ -1,7 +1,14 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { MissionBoard } from '@headquarters/ui';
 import type { EventEnvelope, Mission, MissionState } from '@headquarters/shared';
-import type { MissionTimelineExportEntryDTO } from '@headquarters/hqos';
+import {
+  getCompletedLifecycleStages as getProjectedCompletedLifecycleStages,
+  getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
+  getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
+  projectMissionLifecycle,
+  type MissionLifecycleProjection,
+  type MissionTimelineExportEntryDTO,
+} from '@headquarters/hqos';
 import {
   buildArchiveDashboard,
   detectArchivePatterns,
@@ -577,10 +584,11 @@ export function App() {
     };
   }, []);
 
-  const activeMissionState = parseMissionState(activeMission?.currentState);
+  const lifecycleProjection = projectDesktopMissionLifecycle(activeMission);
+  const activeMissionState = lifecycleProjection.currentMissionState;
   const navigationCommanderRoom = mapNavigationRoomToCommanderRoom(activeRoom);
   const currentCommanderRoom = activeMission
-    ? recommendRoomForMissionState(activeMissionState)
+    ? mapLifecycleProjectionRoomToCommanderRoom(lifecycleProjection.recommendedRoom)
     : navigationCommanderRoom;
   const guardianAlerts = buildDesktopGuardianAlerts({
     mission: activeMission,
@@ -7717,6 +7725,34 @@ export function mapMissionRecordToActiveMission(mission: Mission, previousMissio
   };
 }
 
+function mapActiveMissionToLifecycleMission(mission?: ActiveMission): Mission | undefined {
+  const state = parseMissionState(mission?.currentState);
+  if (mission === undefined || state === undefined) return undefined;
+
+  return {
+    id: mission.id,
+    codename: mission.campaign,
+    state,
+    objective: mission.objective,
+    createdAt: mission.createdAt,
+    updatedAt: mission.createdAt,
+  };
+}
+
+function projectDesktopMissionLifecycle(mission?: ActiveMission): MissionLifecycleProjection {
+  return projectMissionLifecycle(mapActiveMissionToLifecycleMission(mission));
+}
+
+function mapLifecycleProjectionRoomToCommanderRoom(room: MissionLifecycleProjection['recommendedRoom']): CommanderShellRoomId {
+  if (room === 'command-center') return 'command';
+  if (room === 'mission-room') return 'command';
+  if (room === 'ready-room') return 'ready-room';
+  if (room === 'observation-room') return 'observation';
+  if (room === 'war-room') return 'war-room';
+  if (room === 'debrief-theater') return 'debrief';
+  return 'archive';
+}
+
 export function withBriefingMissionContext(
   mission: ActiveMission,
   briefingContext: MissionBriefingContext,
@@ -7860,21 +7896,24 @@ export function formatMissionStateForDisplay(state: Mission['state']): string {
 }
 
 export function buildMissionLifecycleSteps(mission?: ActiveMission): MissionLifecycleStep[] {
-  const currentState = parseMissionState(mission?.currentState);
+  const lifecycleMission = mapActiveMissionToLifecycleMission(mission);
+  const currentState = lifecycleMission?.state;
   const currentIndex = currentState ? missionLifecyclePath.indexOf(currentState) : -1;
+  const completedStages = getProjectedCompletedLifecycleStages(lifecycleMission);
+  const projectedStage = getProjectedCurrentLifecycleStage(lifecycleMission);
 
   return missionLifecyclePath.map((state, index) => ({
     state,
     label: formatMissionStateForDisplay(state),
-    status: getMissionLifecycleStepStatus(index, currentIndex),
+    status: getProjectedMissionLifecycleStepStatus(state, index, currentIndex, projectedStage, completedStages),
   }));
 }
 
 export function formatMissionLifecycleSummary(mission?: ActiveMission): string {
-  const currentState = parseMissionState(mission?.currentState);
+  const projection = projectDesktopMissionLifecycle(mission);
 
-  if (currentState === undefined) return 'Mission route standing by';
-  return `Current station: ${getMissionLifecycleStation(currentState)}`;
+  if (mission === undefined) return 'Mission route standing by';
+  return `Current station: ${getMissionLifecycleStation(projection.currentMissionState ?? 'idle')}`;
 }
 
 export function formatMissionLifecycleStepStatus(status: MissionLifecycleStepStatus): string {
@@ -7928,6 +7967,61 @@ function getMissionLifecycleStepStatus(index: number, currentIndex: number): Mis
   if (index < currentIndex) return 'completed';
   if (index === currentIndex) return 'current';
   return 'pending';
+}
+
+function getProjectedMissionLifecycleStepStatus(
+  state: MissionState,
+  index: number,
+  currentIndex: number,
+  projectedStage: ReturnType<typeof getProjectedCurrentLifecycleStage>,
+  completedStages: ReturnType<typeof getProjectedCompletedLifecycleStages>,
+): MissionLifecycleStepStatus {
+  if (state === 'idle') {
+    if (projectedStage === 'missionCreation') return 'current';
+    return completedStages.includes('missionCreation') ? 'completed' : 'pending';
+  }
+
+  if (state === 'briefing') {
+    if (projectedStage === 'briefing') return 'current';
+    return completedStages.includes('briefing') ? 'completed' : 'pending';
+  }
+
+  if (state === 'ready') {
+    if (projectedStage === 'observation' && currentIndex === missionLifecyclePath.indexOf('ready')) return 'current';
+    return completedStages.includes('briefing') ? 'completed' : 'pending';
+  }
+
+  if (state === 'observation') {
+    if (projectedStage === 'observation' && currentIndex !== missionLifecyclePath.indexOf('ready')) return 'current';
+    return completedStages.includes('observation') ? 'completed' : 'pending';
+  }
+
+  if (state === 'authorization') {
+    if (projectedStage === 'authorization') return 'current';
+    return completedStages.includes('authorization') ? 'completed' : 'pending';
+  }
+
+  if (state === 'deployed') {
+    if (projectedStage === 'deployed') return 'current';
+    return completedStages.includes('deployed') ? 'completed' : 'pending';
+  }
+
+  if (state === 'return_to_base') {
+    if (projectedStage === 'returnToBase') return 'current';
+    return completedStages.includes('returnToBase') ? 'completed' : 'pending';
+  }
+
+  if (state === 'debrief') {
+    if (projectedStage === 'debrief') return 'current';
+    return completedStages.includes('debrief') ? 'completed' : 'pending';
+  }
+
+  if (state === 'archived') {
+    if (projectedStage === 'archived') return 'current';
+    return completedStages.includes('archived') ? 'completed' : 'pending';
+  }
+
+  return getMissionLifecycleStepStatus(index, currentIndex);
 }
 
 export interface MissionNextAction {
@@ -8059,14 +8153,16 @@ export function formatRecentDoctrineHighlight(doctrineRecords: readonly Doctrine
 }
 
 export function getMissionNextAction(mission?: ActiveMission): MissionNextAction {
-  const currentState = parseMissionState(mission?.currentState);
+  const lifecycleMission = mapActiveMissionToLifecycleMission(mission);
+  const projectedAction = getProjectedPrimaryLifecycleAction(lifecycleMission);
+  const currentState = lifecycleMission?.state;
 
   if (currentState === undefined) {
     return {
-      label: 'No Active Mission',
-      description: 'Create a mission before lifecycle actions are available.',
-      buttonLabel: 'Awaiting Mission',
-      disabled: true,
+      label: projectedAction.label,
+      description: projectedAction.explanation,
+      buttonLabel: projectedAction.label,
+      disabled: projectedAction.disabled,
     };
   }
 

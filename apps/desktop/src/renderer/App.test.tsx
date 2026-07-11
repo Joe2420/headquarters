@@ -1553,7 +1553,10 @@ describe('Desktop shell', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
     });
 
-    expect(getMissionNextAction().disabled).toBe(true);
+    expect(getMissionNextAction()).toMatchObject({
+      buttonLabel: 'Create Mission',
+      disabled: false,
+    });
 
     expect(getMissionNextAction(missionWithState('idle'))).toMatchObject({
       buttonLabel: 'Start Briefing',
@@ -2434,7 +2437,7 @@ describe('Desktop shell', () => {
     if (!mission) throw new Error('Expected local mission to be created');
 
     expect(buildMissionLifecycleSteps(undefined).map((step) => step.status)).toEqual([
-      'pending',
+      'current',
       'pending',
       'pending',
       'pending',
