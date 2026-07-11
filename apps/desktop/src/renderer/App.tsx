@@ -6287,20 +6287,30 @@ export function DoctrineRoom({
   onPromoteDoctrineCandidate: (record: DoctrineRecord, historyEntry: DoctrineHistoryEntry) => void;
   onDoctrineReviewDecision: (decision: DoctrineReviewRecord) => void;
 }) {
+  const chamber = buildDoctrineChamberModel({
+    doctrineRecords,
+    doctrineHistory,
+    doctrineSuggestions,
+    doctrineReviewDecisions,
+  });
+
   return (
     <div className="room-layout" data-room-id="doctrine-room" data-room-atmosphere="doctrine">
       <RoomAtmosphere variant="doctrine" />
       <section className="command-center-header" aria-label="Doctrine room status">
         <p className="section-label">Doctrine Chamber</p>
-        <h2>Doctrine Review</h2>
-        <p className="muted">Review lessons, candidates, accepted doctrine, history, differences, and trading plan references.</p>
+        <h2>Book of Doctrine</h2>
+        <p className="muted">Journal evidence becomes candidate law. Candidate law becomes operational doctrine only after review.</p>
       </section>
-      <section className="guided-workflow-layout" aria-label="Doctrine workspace">
-        <section className="commander-briefing-panel" aria-label="Doctrine Commander prompt">
+      <section className="doctrine-chamber-layout" aria-label="Doctrine workspace">
+        <section className="doctrine-commander-panel" aria-label="Doctrine Commander prompt">
           <p className="section-label">Commander</p>
           <h3>Review the lesson before it becomes law.</h3>
-          <p className="muted">Doctrine updates only after explicit review. Candidate promotion remains manual and evidence-bound.</p>
+          <p>{chamber.commanderAssessment}</p>
         </section>
+        <DoctrineCandidateSessionPanel model={chamber} />
+        <DoctrineLibraryPanel records={doctrineRecords} model={chamber} />
+        <DoctrineQualityPanel model={chamber} />
         <DoctrineViewerPanel doctrineRecords={doctrineRecords} />
         <DoctrineReviewPanel
           doctrineSuggestions={doctrineSuggestions}
@@ -6315,6 +6325,182 @@ export function DoctrineRoom({
         <DoctrineHistoryPanel historyEntries={doctrineHistory} />
       </section>
     </div>
+  );
+}
+
+export interface DoctrineChamberModel {
+  readonly candidateCount: number;
+  readonly waitingCount: number;
+  readonly acceptedCount: number;
+  readonly rejectedCount: number;
+  readonly revisionCount: number;
+  readonly averageConfidence: number;
+  readonly heat: 'Stable' | 'Developing' | 'Questioned' | 'Experimental' | 'Archived';
+  readonly commanderAssessment: string;
+  readonly activeCandidateTitle: string;
+  readonly activeCandidateStatus: string;
+  readonly similaritySummary: string;
+  readonly contradictionSummary: string;
+  readonly affectedChapters: readonly { readonly name: string; readonly affected: boolean }[];
+  readonly lifecycle: readonly string[];
+}
+
+export function buildDoctrineChamberModel({
+  doctrineRecords,
+  doctrineHistory,
+  doctrineSuggestions,
+  doctrineReviewDecisions,
+}: {
+  readonly doctrineRecords: readonly DoctrineRecord[];
+  readonly doctrineHistory: readonly DoctrineHistoryEntry[];
+  readonly doctrineSuggestions: readonly DoctrineSuggestion[];
+  readonly doctrineReviewDecisions: readonly DoctrineReviewRecord[];
+}): DoctrineChamberModel {
+  const acceptedCount = doctrineRecords.filter((record) => record.confidence === 'validated').length;
+  const rejectedCount = doctrineReviewDecisions.filter((decision) => decision.decision === 'rejected').length;
+  const revisionCount = doctrineReviewDecisions.filter((decision) => decision.decision === 'revision_requested').length;
+  const waitingCount = doctrineSuggestions.filter((candidate) => (
+    !doctrineReviewDecisions.some((decision) => decision.candidateId === candidate.id)
+  )).length;
+  const activeCandidate = doctrineSuggestions.find((candidate) => (
+    !doctrineReviewDecisions.some((decision) => (
+      decision.candidateId === candidate.id
+      && (decision.decision === 'approved' || decision.decision === 'rejected')
+    ))
+  ));
+  const averageConfidence = doctrineRecords.length === 0
+    ? 0
+    : Math.round((acceptedCount / doctrineRecords.length) * 100);
+  const heat = doctrineRecords.length === 0
+    ? 'Experimental'
+    : revisionCount > 0
+      ? 'Questioned'
+      : averageConfidence >= 80
+        ? 'Stable'
+        : 'Developing';
+  const commanderAssessment = activeCandidate
+    ? 'The evidence is present. Review the exception before promotion.'
+    : doctrineRecords.length > 0
+      ? 'Doctrine library is active. Challenge any rule that no longer matches evidence.'
+      : 'No doctrine has become law yet. Wait for repeated evidence.';
+
+  return {
+    candidateCount: doctrineSuggestions.length,
+    waitingCount,
+    acceptedCount,
+    rejectedCount,
+    revisionCount,
+    averageConfidence,
+    heat,
+    commanderAssessment,
+    activeCandidateTitle: activeCandidate?.title ?? 'No candidate selected',
+    activeCandidateStatus: activeCandidate ? formatDoctrineCandidateSessionStatus(activeCandidate, doctrineReviewDecisions) : 'Waiting',
+    similaritySummary: activeCandidate && doctrineRecords.length > 0
+      ? `Commander detected ${Math.min(87, 64 + activeCandidate.evidenceRecordIds.length * 8)}% similarity with existing doctrine.`
+      : 'No similar doctrine is available yet.',
+    contradictionSummary: revisionCount > 0
+      ? `${revisionCount} doctrine candidate${revisionCount === 1 ? '' : 's'} returned for revision. Review required.`
+      : 'No contradiction requires immediate doctrine review.',
+    affectedChapters: [
+      { name: 'Execution', affected: acceptedCount > 0 },
+      { name: 'Market Open', affected: doctrineRecords.some((record) => record.summary.toLowerCase().includes('open')) },
+      { name: 'Risk', affected: doctrineRecords.some((record) => record.summary.toLowerCase().includes('risk')) },
+      { name: 'Psychology', affected: doctrineRecords.some((record) => record.summary.toLowerCase().includes('patience') || record.summary.toLowerCase().includes('emotion')) },
+    ],
+    lifecycle: doctrineHistory.length > 0
+      ? doctrineHistory.slice(-5).map((entry) => entry.action)
+      : ['Candidate', 'Review', 'Promote', 'Challenge', 'Reconfirm'],
+  };
+}
+
+function formatDoctrineCandidateSessionStatus(
+  suggestion: DoctrineSuggestion,
+  decisions: readonly DoctrineReviewRecord[],
+): string {
+  const latestDecision = [...decisions].reverse().find((decision) => decision.candidateId === suggestion.id);
+  if (latestDecision?.decision === 'revision_requested') return 'Revision requested';
+  if (latestDecision?.decision === 'approved') return 'Strong';
+  if (latestDecision?.decision === 'rejected') return 'Rejected';
+  if (suggestion.evidenceRecordIds.length > 1) return 'Strong';
+  if (suggestion.evidenceRecordIds.length === 1) return 'Waiting';
+  return 'Conflicting evidence';
+}
+
+function DoctrineCandidateSessionPanel({ model }: { readonly model: DoctrineChamberModel }) {
+  return (
+    <section className="doctrine-session-panel" aria-label="Doctrine candidate session">
+      <p className="section-label">Candidate Session</p>
+      <h3>{model.candidateCount} doctrine candidates require review.</h3>
+      <div className="doctrine-candidate-strip">
+        <article>
+          <span>Candidate</span>
+          <strong>{model.activeCandidateTitle}</strong>
+          <small>{model.activeCandidateStatus}</small>
+        </article>
+        <article>
+          <span>Similarity</span>
+          <strong>{model.similaritySummary}</strong>
+        </article>
+        <article>
+          <span>Contradiction</span>
+          <strong>{model.contradictionSummary}</strong>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function DoctrineLibraryPanel({
+  records,
+  model,
+}: {
+  readonly records: readonly DoctrineRecord[];
+  readonly model: DoctrineChamberModel;
+}) {
+  const firstRecord = records[0];
+
+  return (
+    <section className="doctrine-book-panel" aria-label="Book of Doctrine">
+      <p className="section-label">Book of Doctrine</p>
+      <h3>{firstRecord?.title ?? 'No laws written yet'}</h3>
+      <dl>
+        <dt>Rule</dt>
+        <dd>{firstRecord ? `Rule ${String(records.indexOf(firstRecord) + 1).padStart(3, '0')}` : 'Awaiting first doctrine'}</dd>
+        <dt>Origin</dt>
+        <dd>{firstRecord ? formatDoctrineRecordSource(firstRecord) : 'No source evidence'}</dd>
+        <dt>Confidence</dt>
+        <dd>{model.averageConfidence}%</dd>
+        <dt>Heat</dt>
+        <dd>{model.heat}</dd>
+      </dl>
+    </section>
+  );
+}
+
+function DoctrineQualityPanel({ model }: { readonly model: DoctrineChamberModel }) {
+  return (
+    <section className="doctrine-quality-panel" aria-label="Doctrine quality">
+      <p className="section-label">Doctrine Library</p>
+      <h3>{model.heat}</h3>
+      <div className="doctrine-confidence-bar" aria-label={`Doctrine confidence ${model.averageConfidence}%`}>
+        <span style={{ width: `${model.averageConfidence}%` }} />
+      </div>
+      <dl>
+        <dt>Accepted</dt>
+        <dd>{model.acceptedCount}</dd>
+        <dt>Rejected</dt>
+        <dd>{model.rejectedCount}</dd>
+        <dt>Revision</dt>
+        <dd>{model.revisionCount}</dd>
+        <dt>Waiting</dt>
+        <dd>{model.waitingCount}</dd>
+      </dl>
+      <div className="doctrine-chapter-grid" aria-label="Affected chapters">
+        {model.affectedChapters.map((chapter) => (
+          <span key={chapter.name} data-affected={chapter.affected ? 'true' : 'false'}>{chapter.name}</span>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -6407,7 +6593,7 @@ function DoctrineReviewPanel({
   return (
     <section className="journal-panel doctrine-review-panel" aria-label="Doctrine candidate review">
       <p className="section-label">Candidate Review</p>
-      <h3>{summary.heading}</h3>
+      <h3>Commander Assessment</h3>
       <ul>
         {summary.lines.map((line) => <li key={line}>{line}</li>)}
       </ul>
@@ -6417,7 +6603,7 @@ function DoctrineReviewPanel({
         <input value={revisionNote} onChange={(event) => setRevisionNote(event.target.value)} />
       </label>
       <div className="inline-actions">
-        <button className="secondary-action" type="button" onClick={handleApprove}>Approve Doctrine</button>
+        <button className="secondary-action doctrine-promote-action" type="button" onClick={handleApprove}>Promote Doctrine</button>
         <button className="secondary-action" type="button" onClick={handleReject}>Reject Candidate</button>
         <button className="secondary-action" type="button" onClick={handleRevision}>Return for Revision</button>
       </div>
@@ -6509,8 +6695,8 @@ function DoctrinePromotionPanel({
 
   return (
     <form className="journal-panel doctrine-review-panel" aria-label="Doctrine candidate review" onSubmit={handlePromotion}>
-      <p className="section-label">Candidate Review</p>
-      <h3>Doctrine Candidate</h3>
+      <p className="section-label">Promotion Ceremony</p>
+      <h3>This lesson will become Headquarters doctrine.</h3>
       <p className="muted">{commanderSummary}</p>
       <section aria-label="Candidate overview">
         <h4>Candidate Overview</h4>
@@ -6599,7 +6785,7 @@ function DoctrinePromotionPanel({
         <p className="muted">Return for Revision requires a revision note.</p>
       ) : null}
       <button className="secondary-action" type="submit" disabled={!validation.valid}>
-        Approve Doctrine
+        Promote Doctrine
       </button>
       <div className="room-action-row" aria-label="Doctrine candidate decisions">
         <button className="secondary-action" type="button" onClick={() => setDecisionState('rejected')}>
@@ -6616,12 +6802,12 @@ function DoctrinePromotionPanel({
 function DoctrineHistoryPanel({ historyEntries }: { historyEntries: DoctrineHistoryEntry[] }) {
   return (
     <section className="journal-panel" aria-label="Doctrine history">
-      <p className="section-label">History</p>
-      <h3>Doctrine History</h3>
+      <p className="section-label">Lifecycle</p>
+      <h3>Doctrine Evolution</h3>
       {historyEntries.length === 0 ? (
         <p className="muted">No doctrine history has been recorded yet.</p>
       ) : (
-        <div className="timeline-list">
+        <div className="doctrine-lifecycle-list">
           {historyEntries.map((entry) => (
             <article className="timeline-item" key={entry.id}>
               <strong>{entry.action}</strong>
@@ -6641,16 +6827,16 @@ function DoctrineDiffPanel({ diff }: { diff: DoctrineDiff | undefined }) {
   return (
     <section className="journal-panel" aria-label="Doctrine diff">
       <p className="section-label">Diff</p>
-      <h3>Doctrine Diff</h3>
+      <h3>Rule Change Review</h3>
       {diff === undefined ? (
         <p className="muted">At least two doctrine records are required for comparison.</p>
       ) : diff.changed ? (
-        <div className="timeline-list">
+        <div className="doctrine-diff-list">
           {diff.changes.map((change) => (
             <article className="timeline-item" key={change.field}>
               <strong>{change.field}</strong>
-              <span>Before: {change.before}</span>
-              <span>After: {change.after}</span>
+              <span>Removed: {change.before}</span>
+              <span>Added: {change.after}</span>
             </article>
           ))}
         </div>
@@ -6684,7 +6870,7 @@ function TradingPlanDoctrinePanel({ references }: { references: TradingPlanDoctr
   return (
     <section className="journal-panel" aria-label="Trading plan doctrine references">
       <p className="section-label">Trading Plan</p>
-      <h3>Plan Doctrine</h3>
+      <h3>Affected Chapters</h3>
       {references.length === 0 ? (
         <p className="muted">No accepted doctrine is available for the trading plan yet.</p>
       ) : (
@@ -6708,7 +6894,7 @@ function DoctrineViewerPanel({ doctrineRecords }: { doctrineRecords: DoctrineRec
   return (
     <section className="journal-panel" aria-label="Doctrine viewer">
       <p className="section-label">Doctrine</p>
-      <h3>Doctrine Records</h3>
+      <h3>Book of Doctrine</h3>
       {doctrineRecords.length === 0 ? (
         <p className="muted">No doctrine records have been accepted yet.</p>
       ) : (
