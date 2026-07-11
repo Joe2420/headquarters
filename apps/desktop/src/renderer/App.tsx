@@ -148,6 +148,8 @@ import {
   getRoomAtmosphereToken,
 } from './HeadquartersAtmosphere';
 import { AudioQASurface } from './AudioQASurface';
+import type { AudioEvent } from './AudioEvents';
+import { buildCommanderCeremonyAudioEvent } from './MissionCeremonyAudio';
 import { GuidedRoom } from './GuidedRoom';
 import { RoomAtmosphere } from './RoomAtmosphere';
 import { recommendRoomForMissionState } from './RoomStateMachine';
@@ -721,6 +723,10 @@ export function App() {
       ? undefined
       : selectPassiveCommanderMessage(headquartersEvents) ?? buildCommanderPacingLine(operationalPsychology),
   });
+  const commanderCeremonyAudioEvent = commanderState.ceremonyDialogue
+    ? buildCommanderCeremonyAudioEvent(commanderState.ceremonyDialogue)
+    : undefined;
+  const audioQaEvents = commanderCeremonyAudioEvent ? [commanderCeremonyAudioEvent] : [];
   const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
   const missionCompassSteps = activeMission
     ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
@@ -1541,6 +1547,7 @@ export function App() {
                     doctrineSuggestions: desktopDoctrineSuggestions,
                     doctrineReviewDecisions,
                     guardianAlerts,
+                    audioQaEvents,
                     onCreateMission: handleMissionCreated,
                     onMissionChanged: (mission) => {
                       setActiveMission(getActiveMissionAfterMissionChange(mission));
@@ -1966,6 +1973,7 @@ interface HeadquartersRoomContext {
   doctrineSuggestions: readonly DoctrineSuggestion[];
   doctrineReviewDecisions: readonly DoctrineReviewRecord[];
   guardianAlerts: readonly GuardianAlert[];
+  audioQaEvents: readonly AudioEvent[];
   onCreateMission: (mission: ActiveMission) => void | Promise<void>;
   onMissionChanged: (mission: ActiveMission) => void;
   onRequestAuthorization: (authorization: MissionAuthorizationStatus) => void;
@@ -2118,7 +2126,7 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   }
 
   if (room === 'settings') {
-    return <SettingsRoom />;
+    return <SettingsRoom audioEvents={context.audioQaEvents} />;
   }
 
   return (
@@ -7761,13 +7769,13 @@ function formatDoctrineRecordSource(record: DoctrineRecord): string {
   return record.source.excerpt ? `${status} from ${source}: ${record.source.excerpt}` : `${status} from ${source}`;
 }
 
-function SettingsRoom() {
+function SettingsRoom({ audioEvents }: { readonly audioEvents: readonly AudioEvent[] }) {
   return (
     <section className="room-layout" data-room-id="settings-room" aria-label="Settings room">
       <p className="section-label">Settings</p>
       <h2>Settings</h2>
       <p className="muted">No completed settings workflow is available yet.</p>
-      <AudioQASurface events={[]} />
+      <AudioQASurface events={audioEvents} />
     </section>
   );
 }
