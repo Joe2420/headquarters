@@ -1998,6 +1998,144 @@ dd {
     #101418;
 }
 
+.debrief-mission-recap,
+.debrief-comparison-panel,
+.debrief-interview-panel,
+.debrief-learning-panel,
+.debrief-guardian-panel,
+.debrief-archive-preview,
+.debrief-future-you-panel {
+  border: 1px solid rgba(216, 178, 92, 0.18);
+  background:
+    linear-gradient(135deg, rgba(216, 178, 92, 0.075), transparent 42%),
+    rgba(14, 17, 20, 0.94);
+  box-shadow: inset 0 1px 0 rgba(217, 231, 255, 0.05);
+}
+
+.debrief-mission-recap h3,
+.debrief-comparison-panel h3,
+.debrief-interview-panel h3,
+.debrief-learning-panel h3,
+.debrief-guardian-panel h3,
+.debrief-archive-preview h3,
+.debrief-future-you-panel h3 {
+  margin: 0 0 0.8rem;
+}
+
+.debrief-mission-recap dl,
+.debrief-comparison-grid,
+.debrief-learning-panel dl,
+.debrief-guardian-panel dl,
+.debrief-archive-preview dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+}
+
+.debrief-mission-recap dl > div,
+.debrief-comparison-grid > div {
+  min-height: 4.6rem;
+  border: 1px solid rgba(217, 231, 255, 0.1);
+  background: rgba(5, 8, 11, 0.32);
+  padding: 0.75rem;
+}
+
+.debrief-mission-recap dt,
+.debrief-comparison-grid span,
+.debrief-learning-panel dt,
+.debrief-guardian-panel dt,
+.debrief-archive-preview dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.debrief-mission-recap dd,
+.debrief-comparison-grid strong,
+.debrief-learning-panel dd,
+.debrief-guardian-panel dd,
+.debrief-archive-preview dd {
+  display: block;
+  margin: 0.25rem 0 0;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.debrief-comparison-panel blockquote {
+  margin: 1rem 0 0;
+  border-left: 3px solid #d8b25c;
+  padding: 0.7rem 0 0.7rem 1rem;
+  color: #d9e7ff;
+  background: rgba(216, 178, 92, 0.055);
+}
+
+.debrief-contradiction-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+  padding-left: 1.2rem;
+  color: #d9e7ff;
+}
+
+.debrief-interview-panel ol {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.debrief-interview-panel li {
+  border-left: 3px solid rgba(124, 149, 132, 0.72);
+  background: rgba(124, 149, 132, 0.08);
+  padding: 0.75rem 0.85rem;
+}
+
+.debrief-interview-panel span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.debrief-interview-panel strong {
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.debrief-learning-panel > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.debrief-learning-panel h3 {
+  color: #d8b25c;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.debrief-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.debrief-rewards span,
+.debrief-rewards strong {
+  border: 1px solid rgba(216, 178, 92, 0.18);
+  background: rgba(216, 178, 92, 0.08);
+  padding: 0.45rem 0.6rem;
+}
+
+.debrief-future-you-panel p {
+  margin-bottom: 0;
+  color: #d9e7ff;
+  font-weight: 700;
+}
+
 .room-atmosphere--archive .room-atmosphere__field {
   background:
     radial-gradient(circle at 50% 18%, rgba(216, 178, 92, 0.14), transparent 24%),

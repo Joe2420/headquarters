@@ -3455,15 +3455,15 @@ export function DebriefTheater({
 }: MissionTimelineViewerPanelProps & Pick<CommandCenterProps,
   'onMissionChanged' | 'onRequestAuthorization' | 'onSaveDebrief' | 'onArchiveMission'
 >) {
-  const entries = buildDesktopMissionTimelineEntries({
-    activeMission,
-    authorizationStatus,
-    missionDebrief,
-    archiveSummary,
-  });
   const contradictions = activeMission?.missionContext
     ? detectCommanderContradictions(activeMission.missionContext)
     : [];
+  const debriefModel = buildDebriefTheaterReflectionModel({
+    activeMission,
+    missionDebrief,
+    authorizationStatus,
+    archiveSummary,
+  });
 
   return (
     <GuidedRoom
@@ -3472,28 +3472,14 @@ export function DebriefTheater({
       atmosphere="debrief"
       title="Debrief Theater"
       useCase="Debrief behavior before archive."
-      objective="Capture behavior summary, discipline notes, and one lesson before closing the mission."
+      objective="Turn the completed operation into behavior memory before the archive closes."
       primaryAction={<strong>{missionDebrief ? 'Archive Mission' : 'Complete Debrief'}</strong>}
       workspace={(
         <>
-          <DebriefContextRecall
-            activeMission={activeMission}
-            missionIntelligencePackage={missionIntelligencePackage}
-            contradictions={contradictions}
-          />
-          <section className="journal-panel" aria-label="Black box viewer">
-            <p className="section-label">Black Box Viewer</p>
-            <h3>Behavior Sequence</h3>
-            <p className="muted">{formatTimelineViewerStatus(entries)}</p>
-            <dl>
-              <dt>Behavior Summary</dt>
-              <dd>{missionDebrief?.behaviorSummary ?? 'Awaiting Commander debrief input'}</dd>
-              <dt>Reflection</dt>
-              <dd>{missionDebrief?.disciplineNotes ?? 'Discipline notes come second'}</dd>
-              <dt>Lessons</dt>
-              <dd>{missionDebrief?.lesson ?? 'Lesson comes before archive'}</dd>
-            </dl>
-          </section>
+          <DebriefMissionRecap model={debriefModel} />
+          <DebriefPlanRealityComparison model={debriefModel} contradictions={contradictions} />
+          <DebriefCommanderInterview missionDebrief={missionDebrief} />
+          <DebriefLearningEngine model={debriefModel} />
           {parseMissionState(activeMission?.currentState) === 'return_to_base' || parseMissionState(activeMission?.currentState) === 'debrief' ? (
             <MissionNextActionPanel
               activeMission={activeMission}
@@ -3513,17 +3499,323 @@ export function DebriefTheater({
         missionDebrief={missionDebrief}
         archiveSummary={archiveSummary}
       />}
+      timelineLabel="Mission Replay"
+      secondaryToolsLabel="Closing Record"
       secondaryTools={(
         <>
-          <section className="journal-panel" aria-label="Decision report">
-            <p className="section-label">Decision Report</p>
-            <h3>{authorizationStatus?.decision === 'approved' ? 'Authorized' : 'Decision Pending'}</h3>
-            <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
-          </section>
-          <DebriefPanel activeMission={activeMission} missionDebrief={missionDebrief} />
+          <DebriefGuardianReview model={debriefModel} />
+          <DebriefArchivePreview model={debriefModel} />
+          <DebriefFutureYouNote missionDebrief={missionDebrief} />
+          {missionIntelligencePackage ? (
+            <DebriefContextRecall
+              activeMission={activeMission}
+              missionIntelligencePackage={missionIntelligencePackage}
+              contradictions={contradictions}
+            />
+          ) : null}
         </>
       )}
     />
+  );
+}
+
+interface DebriefTheaterReflectionInput {
+  activeMission?: ActiveMission | undefined;
+  missionDebrief?: MissionDebrief | undefined;
+  authorizationStatus?: MissionAuthorizationStatus | undefined;
+  archiveSummary?: LocalMissionArchiveSummary | undefined;
+}
+
+interface DebriefTheaterReflectionModel {
+  readonly missionName: string;
+  readonly operation: string;
+  readonly result: string;
+  readonly risk: string;
+  readonly ruleBroken: string;
+  readonly emotion: string;
+  readonly guardianVerdict: string;
+  readonly commanderAssessment: string;
+  readonly duration: string;
+  readonly plan: string;
+  readonly reality: string;
+  readonly hypothesis: string;
+  readonly invalidation: string;
+  readonly difference: string;
+  readonly reason: string;
+  readonly lesson: string;
+  readonly behaviorScore: number;
+  readonly behaviorDelta: string;
+  readonly planningScore: number;
+  readonly patienceScore: number;
+  readonly ruleAdherenceScore: number;
+  readonly executionScore: number;
+  readonly reviewScore: number;
+  readonly xp: number;
+  readonly patienceGrowth: number;
+  readonly ruleAdherenceGrowth: number;
+  readonly reviewQualityGrowth: number;
+  readonly commanderConfidence: string;
+  readonly doctrineCandidate: string;
+  readonly archiveReady: boolean;
+}
+
+export function buildDebriefTheaterReflectionModel({
+  activeMission,
+  missionDebrief,
+  authorizationStatus,
+  archiveSummary,
+}: DebriefTheaterReflectionInput): DebriefTheaterReflectionModel {
+  const briefing = activeMission?.missionContext?.briefing;
+  const observation = activeMission?.missionContext?.observation;
+  const authorized = authorizationStatus?.decision === 'approved';
+  const debriefSaved = missionDebrief !== undefined;
+  const risk = formatMissionContextDisplay(briefing?.riskParameters);
+  const hasContradictions = activeMission?.missionContext
+    ? detectCommanderContradictions(activeMission.missionContext).length > 0
+    : false;
+  const ruleBroken = hasContradictions ? 'Review required' : 'None';
+  const ruleScore = hasContradictions ? 7 : 10;
+  const reviewScore = debriefSaved ? 9 : 6;
+  const patienceScore = observation?.evidenceReadiness === 'yes' ? 8 : 6;
+  const planningScore = briefing ? 9 : 6;
+  const executionScore = authorized ? 8 : 6;
+  const behaviorScore = Math.round(((planningScore + patienceScore + ruleScore + executionScore + reviewScore) / 50) * 100);
+
+  return {
+    missionName: activeMission?.campaign ?? 'No mission loaded',
+    operation: formatMissionContextDisplay(briefing?.missionObjective ?? activeMission?.objective),
+    result: archiveSummary ? 'Archived' : debriefSaved ? 'Debriefed' : authorized ? 'Executed' : 'Returned',
+    risk,
+    ruleBroken,
+    emotion: formatMissionContextDisplay(observation?.emotionalCheck ?? briefing?.personalReadiness),
+    guardianVerdict: hasContradictions ? 'Review' : 'Satisfied',
+    commanderAssessment: debriefSaved ? 'Lesson captured' : 'Awaiting reflection',
+    duration: formatDebriefMissionDuration(activeMission),
+    plan: formatMissionContextDisplay(briefing?.successCriteria ?? briefing?.missionObjective ?? activeMission?.objective),
+    reality: missionDebrief?.behaviorSummary ?? formatMissionContextDisplay(observation?.operationalSummary ?? observation?.marketStructure),
+    hypothesis: formatMissionContextDisplay(observation?.directionalHypothesis),
+    invalidation: formatMissionContextDisplay(observation?.invalidationEvidence),
+    difference: hasContradictions ? 'Plan and observation need explanation' : 'No major contradiction recorded',
+    reason: missionDebrief?.disciplineNotes ?? 'Commander interview pending',
+    lesson: missionDebrief?.lesson ?? 'Future You lesson not captured',
+    behaviorScore,
+    behaviorDelta: debriefSaved ? '+5' : '+0 pending review',
+    planningScore,
+    patienceScore,
+    ruleAdherenceScore: ruleScore,
+    executionScore,
+    reviewScore,
+    xp: debriefSaved ? 35 : 12,
+    patienceGrowth: debriefSaved ? 4 : 1,
+    ruleAdherenceGrowth: hasContradictions ? 2 : 6,
+    reviewQualityGrowth: debriefSaved ? 3 : 0,
+    commanderConfidence: debriefSaved ? '+2%' : '+0%',
+    doctrineCandidate: missionDebrief?.lesson ?? 'Waiting after displacement reduced mistakes.',
+    archiveReady: debriefSaved,
+  };
+}
+
+function DebriefMissionRecap({ model }: { readonly model: DebriefTheaterReflectionModel }) {
+  return (
+    <section className="debrief-mission-recap" aria-label="Mission recap">
+      <p className="section-label">Mission Recap</p>
+      <h3>Mission Complete</h3>
+      <dl>
+        <div>
+          <dt>Operation</dt>
+          <dd>{model.operation}</dd>
+        </div>
+        <div>
+          <dt>Result</dt>
+          <dd>{model.result}</dd>
+        </div>
+        <div>
+          <dt>Risk</dt>
+          <dd>{model.risk}</dd>
+        </div>
+        <div>
+          <dt>Rule Broken</dt>
+          <dd>{model.ruleBroken}</dd>
+        </div>
+        <div>
+          <dt>Emotion</dt>
+          <dd>{model.emotion}</dd>
+        </div>
+        <div>
+          <dt>Guardian</dt>
+          <dd>{model.guardianVerdict}</dd>
+        </div>
+        <div>
+          <dt>Duration</dt>
+          <dd>{model.duration}</dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
+function DebriefPlanRealityComparison({
+  model,
+  contradictions,
+}: {
+  readonly model: DebriefTheaterReflectionModel;
+  readonly contradictions: readonly MissionContextContradictionFlag[];
+}) {
+  return (
+    <section className="debrief-comparison-panel" aria-label="Mission comparison">
+      <p className="section-label">Mission Comparison</p>
+      <h3>Plan vs Reality</h3>
+      <div className="debrief-comparison-grid">
+        <div>
+          <span>Plan</span>
+          <strong>{model.plan}</strong>
+        </div>
+        <div>
+          <span>Reality</span>
+          <strong>{model.reality}</strong>
+        </div>
+        <div>
+          <span>Hypothesis</span>
+          <strong>{model.hypothesis}</strong>
+        </div>
+        <div>
+          <span>Invalidation</span>
+          <strong>{model.invalidation}</strong>
+        </div>
+        <div>
+          <span>Difference</span>
+          <strong>{model.difference}</strong>
+        </div>
+        <div>
+          <span>Reason</span>
+          <strong>{model.reason}</strong>
+        </div>
+      </div>
+      {contradictions.length > 0 ? (
+        <>
+          <blockquote>Commander: Observation expected patience. Execution requires explanation.</blockquote>
+          <ul className="debrief-contradiction-list" aria-label="Debrief contradiction review">
+            {contradictions.map((contradiction) => (
+              <li key={contradiction.id}>{contradiction.message}</li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <blockquote>Commander: Risk respected. Discipline held.</blockquote>
+      )}
+    </section>
+  );
+}
+
+function DebriefCommanderInterview({ missionDebrief }: { readonly missionDebrief?: MissionDebrief | undefined }) {
+  const prompts = missionDebrief
+    ? [
+      { question: 'Did you follow the original plan?', answer: missionDebrief.behaviorSummary },
+      { question: 'Where did you deviate?', answer: missionDebrief.disciplineNotes },
+      { question: "What should tomorrow's version of you remember?", answer: missionDebrief.lesson },
+    ]
+    : [
+      { question: 'Did you follow the original plan?', answer: 'Awaiting operator answer.' },
+      { question: 'Where did discipline save you?', answer: 'Awaiting operator answer.' },
+      { question: 'What nearly made you break?', answer: 'Awaiting operator answer.' },
+    ];
+
+  return (
+    <section className="debrief-interview-panel" aria-label="Commander debrief interview">
+      <p className="section-label">Commander Debrief</p>
+      <h3>We have returned.</h3>
+      <ol>
+        {prompts.map((prompt) => (
+          <li key={prompt.question}>
+            <span>{prompt.question}</span>
+            <strong>{prompt.answer}</strong>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function DebriefLearningEngine({ model }: { readonly model: DebriefTheaterReflectionModel }) {
+  return (
+    <section className="debrief-learning-panel" aria-label="Behavior report">
+      <div>
+        <p className="section-label">Behavior Report</p>
+        <h3>{model.behaviorScore}</h3>
+        <span>Compared to previous mission {model.behaviorDelta}</span>
+      </div>
+      <dl>
+        <dt>Planning</dt>
+        <dd>{model.planningScore}/10</dd>
+        <dt>Patience</dt>
+        <dd>{model.patienceScore}/10</dd>
+        <dt>Rule Adherence</dt>
+        <dd>{model.ruleAdherenceScore}/10</dd>
+        <dt>Execution</dt>
+        <dd>{model.executionScore}/10</dd>
+        <dt>Review</dt>
+        <dd>{model.reviewScore}/10</dd>
+      </dl>
+      <div className="debrief-rewards" aria-label="Mission rewards">
+        <strong>Mission Rewards</strong>
+        <span>XP +{model.xp}</span>
+        <span>Patience +{model.patienceGrowth}</span>
+        <span>Rule Adherence +{model.ruleAdherenceGrowth}</span>
+        <span>Review Quality +{model.reviewQualityGrowth}</span>
+        <span>Commander Confidence {model.commanderConfidence}</span>
+      </div>
+    </section>
+  );
+}
+
+function DebriefGuardianReview({ model }: { readonly model: DebriefTheaterReflectionModel }) {
+  const pass = model.guardianVerdict === 'Satisfied';
+
+  return (
+    <section className="debrief-guardian-panel" aria-label="Guardian review">
+      <p className="section-label">Guardian Review</p>
+      <h3>{pass ? 'Excellent' : 'Review Required'}</h3>
+      <dl>
+        <dt>Risk</dt>
+        <dd>{pass ? 'PASS' : 'REVIEW'}</dd>
+        <dt>Emotion</dt>
+        <dd>{model.emotion === 'Not available' ? 'UNKNOWN' : 'PASS'}</dd>
+        <dt>Revenge</dt>
+        <dd>NONE</dd>
+        <dt>Rule Violations</dt>
+        <dd>{pass ? '0' : '1 review flag'}</dd>
+      </dl>
+    </section>
+  );
+}
+
+function DebriefArchivePreview({ model }: { readonly model: DebriefTheaterReflectionModel }) {
+  return (
+    <section className="debrief-archive-preview" aria-label="Mission archive preview">
+      <p className="section-label">Archive Report</p>
+      <h3>Mission Report</h3>
+      <dl>
+        <dt>Objective</dt>
+        <dd>{model.operation}</dd>
+        <dt>Behavior</dt>
+        <dd>{model.behaviorScore >= 80 ? 'Excellent' : 'Developing'}</dd>
+        <dt>Doctrine Learned</dt>
+        <dd>{model.doctrineCandidate}</dd>
+        <dt>Archive</dt>
+        <dd>{model.archiveReady ? 'READY' : 'Awaiting debrief'}</dd>
+      </dl>
+      <p className="muted">Commander: Mission archived. Behavior remembered. Outcome forgotten.</p>
+    </section>
+  );
+}
+
+function DebriefFutureYouNote({ missionDebrief }: { readonly missionDebrief?: MissionDebrief | undefined }) {
+  return (
+    <section className="debrief-future-you-panel" aria-label="Future You journal note">
+      <p className="section-label">Journal Integration</p>
+      <h3>Message for Future You</h3>
+      <p>{missionDebrief?.lesson ?? 'Before Headquarters archives this mission, leave one message for Future You.'}</p>
+    </section>
   );
 }
 
@@ -4138,15 +4430,15 @@ function MissionNextActionPanel({
       {currentState === 'return_to_base' ? (
         <>
           <label>
-            <span>Behavior Summary</span>
+            <span>Did you follow the original plan?</span>
             <input value={behaviorSummary} onChange={(event) => setBehaviorSummary(event.target.value)} />
           </label>
           <label>
-            <span>Discipline Notes</span>
+            <span>Where did discipline save you, or where did you deviate?</span>
             <input value={disciplineNotes} onChange={(event) => setDisciplineNotes(event.target.value)} />
           </label>
           <label>
-            <span>Lesson</span>
+            <span>What should tomorrow's version of you remember?</span>
             <input value={lesson} onChange={(event) => setLesson(event.target.value)} />
           </label>
         </>
@@ -6619,6 +6911,22 @@ export function formatMissionDetailState(mission?: ActiveMission): string {
 
   if (currentState === undefined) return 'No mission loaded';
   return formatMissionStateForDisplay(currentState);
+}
+
+export function formatDebriefMissionDuration(mission?: ActiveMission): string {
+  if (mission === undefined) return 'Not available';
+
+  const createdAt = Date.parse(mission.createdAt);
+  if (Number.isNaN(createdAt)) return 'Not available';
+
+  const elapsedMs = Math.max(0, Date.now() - createdAt);
+  const elapsedMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
+
+  if (hours <= 0) return `${minutes}m`;
+  if (minutes === 0) return `${hours}h`;
+  return `${hours}h ${minutes}m`;
 }
 
 function getMissionLifecycleStepStatus(index: number, currentIndex: number): MissionLifecycleStepStatus {
