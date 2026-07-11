@@ -5,6 +5,7 @@ import type { CommanderShellRoomId } from './CommanderShell';
 import type { HeadquartersEvent, HeadquartersOperationalAwareness } from './HeadquartersEventEngine';
 import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
 import type { OperationalPsychologyProfile } from './OperationalPsychology';
+import { buildCommanderCeremonyDialogueForMissionState } from './CommanderCeremonyDialogue';
 
 export interface HeadquartersAtmosphereMission {
   readonly campaign: string;
@@ -38,6 +39,9 @@ export interface MissionCeremony {
   readonly id: string;
   readonly label: string;
   readonly message: string;
+  readonly supportingLine?: string | undefined;
+  readonly room?: CommanderShellRoomId | undefined;
+  readonly tone?: string | undefined;
 }
 
 const roomLabels: Record<string, string> = {
@@ -91,22 +95,31 @@ export function getRoomAtmosphereToken(room: string): string {
 }
 
 export function buildMissionCeremony(state?: MissionState | undefined): MissionCeremony | undefined {
-  if (state === undefined) {
-    return {
-      id: 'ceremony:report-accepted',
-      label: 'Report Accepted',
-      message: 'Headquarters is seated. Await mission creation.',
-    };
-  }
+  const dialogue = buildCommanderCeremonyDialogueForMissionState(state);
+  if (!dialogue) return undefined;
 
-  if (state === 'briefing') return { id: 'ceremony:mission-created', label: 'Mission Created', message: 'Mission file opened. Prepare before motion.' };
-  if (state === 'ready') return { id: 'ceremony:briefing-complete', label: 'Briefing Complete', message: 'Observation is authorized to begin.' };
-  if (state === 'observation') return { id: 'ceremony:observation-begins', label: 'Observation Begins', message: 'Silence and evidence now take priority.' };
-  if (state === 'authorization') return { id: 'ceremony:authorization-requested', label: 'Authorization Requested', message: 'War Room authority is active.' };
-  if (state === 'return_to_base') return { id: 'ceremony:return-to-base', label: 'Return To Base', message: 'Operation closed. Debrief before archive.' };
-  if (state === 'debrief') return { id: 'ceremony:debrief-complete', label: 'Debrief Complete', message: 'Record the mission into institutional memory.' };
-  if (state === 'archived') return { id: 'ceremony:mission-archived', label: 'Mission Archived', message: 'Mission record preserved.' };
-  return undefined;
+  return {
+    id: getMissionCeremonyId(dialogue.moment),
+    label: dialogue.label,
+    message: dialogue.commanderLine,
+    supportingLine: dialogue.supportingLine,
+    room: dialogue.room,
+    tone: dialogue.tone,
+  };
+}
+
+function getMissionCeremonyId(moment: string): string {
+  if (moment === 'report_accepted') return 'ceremony:report-accepted';
+  if (moment === 'mission_created') return 'ceremony:mission-created';
+  if (moment === 'briefing_complete') return 'ceremony:briefing-complete';
+  if (moment === 'observation_started') return 'ceremony:observation-begins';
+  if (moment === 'observation_complete') return 'ceremony:observation-complete';
+  if (moment === 'authorization_requested') return 'ceremony:authorization-requested';
+  if (moment === 'authorization_granted') return 'ceremony:authorization-granted';
+  if (moment === 'return_to_base') return 'ceremony:return-to-base';
+  if (moment === 'debrief_complete') return 'ceremony:debrief-complete';
+  if (moment === 'mission_archived') return 'ceremony:mission-archived';
+  return `ceremony:${moment.replace(/_/g, '-')}`;
 }
 
 export function OperationalCommandChair({
@@ -204,10 +217,17 @@ export function MissionCeremonyMoment({
   if (!ceremony && !psychology?.ceremony) return null;
 
   return (
-    <section className="mission-ceremony" aria-label="Mission ceremony" data-ceremony-id={ceremony?.id ?? 'ceremony:psychology'}>
+    <section
+      className="mission-ceremony"
+      aria-label="Mission ceremony"
+      data-ceremony-id={ceremony?.id ?? 'ceremony:psychology'}
+      data-ceremony-room={ceremony?.room}
+      data-ceremony-tone={ceremony?.tone}
+    >
       <p className="section-label">{ceremony?.label ?? 'Operational Ceremony'}</p>
       <strong>{psychology?.ceremony ?? ceremony?.message}</strong>
       {ceremony && psychology?.ceremony ? <p>{ceremony.message}</p> : null}
+      {ceremony?.supportingLine ? <p>{ceremony.supportingLine}</p> : null}
     </section>
   );
 }

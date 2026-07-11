@@ -79,7 +79,9 @@ export function mapMissionCeremonyToAudioMoment(ceremony?: MissionCeremony | und
   if (ceremony.id === 'ceremony:mission-created') return 'mission_created';
   if (ceremony.id === 'ceremony:briefing-complete') return 'briefing_complete';
   if (ceremony.id === 'ceremony:observation-begins') return 'observation_started';
+  if (ceremony.id === 'ceremony:observation-complete') return 'observation_complete';
   if (ceremony.id === 'ceremony:authorization-requested') return 'authorization_requested';
+  if (ceremony.id === 'ceremony:authorization-granted') return 'authorization_granted';
   if (ceremony.id === 'ceremony:return-to-base') return 'return_to_base';
   if (ceremony.id === 'ceremony:debrief-complete') return 'debrief_complete';
   if (ceremony.id === 'ceremony:mission-archived') return 'mission_archived';

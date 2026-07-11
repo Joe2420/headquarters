@@ -1,3 +1,4 @@
+HQ-TASK-S34 - Expanded Commander ceremony dialogue for mission progression.
 HQ-TASK-S33 - Added Adaptive Commander Personality and Dialogue Engine.
 # Changelog
 HQ-TASK-S32 - Added persistent mission context memory for reload-safe Mission Intelligence.
