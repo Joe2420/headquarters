@@ -120,6 +120,7 @@ type CommanderTransmissionEntry = {
   readonly room?: CommanderShellRoomId | undefined;
   readonly lifecycleStep?: string | undefined;
   readonly promptKey?: string | undefined;
+  readonly timing?: CommanderTransmissionTiming | undefined;
   readonly status: 'queued' | 'transmitting' | 'delivered';
 };
 
@@ -346,7 +347,7 @@ export function CommanderExperiencePanel({
                     ? transmission.text
                     : <TransmittedText
                         text={transmission.text}
-                        timing={state.dialogueProfile.timing}
+                        timing={transmission.timing ?? state.dialogueProfile.timing}
                         onComplete={() => handleCommanderTransmissionComplete(transmission)}
                       />
                   : transmission.text}</p>
@@ -616,8 +617,46 @@ function buildCommanderCeremonyTransmission(
     purpose: inferCommanderCeremonyPurpose(ceremony),
     room: ceremony.room,
     lifecycleStep: state.lifecycleStep,
+    timing: getCommanderCeremonyTransmissionTiming(ceremony),
     status: 'queued',
   };
+}
+
+function getCommanderCeremonyTransmissionTiming(
+  ceremony: CommanderCeremonyDialogue,
+): CommanderTransmissionTiming {
+  const baseTiming: CommanderTransmissionTiming = {
+    startDelayMs: 420,
+    characterDelayMs: 42,
+    commaDelayMs: 190,
+    sentenceDelayMs: 520,
+    breathEveryCharacters: 18,
+    breathDelayMs: 260,
+  };
+
+  if (ceremony.tone === 'direct') {
+    return {
+      ...baseTiming,
+      startDelayMs: 260,
+      characterDelayMs: 34,
+      commaDelayMs: 140,
+      sentenceDelayMs: 360,
+      breathDelayMs: 180,
+    };
+  }
+
+  if (ceremony.tone === 'reflective') {
+    return {
+      ...baseTiming,
+      startDelayMs: 520,
+      characterDelayMs: 48,
+      sentenceDelayMs: 680,
+      breathEveryCharacters: 16,
+      breathDelayMs: 340,
+    };
+  }
+
+  return baseTiming;
 }
 
 function inferCommanderCeremonyPurpose(ceremony: CommanderCeremonyDialogue): CommanderMessagePurpose {

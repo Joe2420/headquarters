@@ -174,6 +174,16 @@ describe('CommanderExperience', () => {
     expect(html).toContain('Decision authority transferred. Execute only the declared plan.');
   });
 
+  it('uses dedicated ceremony cadence without changing normal room dialogue timing', () => {
+    const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
+
+    expect(source).toContain('readonly timing?: CommanderTransmissionTiming | undefined');
+    expect(source).toContain('timing: getCommanderCeremonyTransmissionTiming(ceremony)');
+    expect(source).toContain('timing={transmission.timing ?? state.dialogueProfile.timing}');
+    expect(source).toContain("if (ceremony.tone === 'direct')");
+    expect(source).toContain("if (ceremony.tone === 'reflective')");
+  });
+
   it('keeps ceremony transmission stable while Ready Room questions advance', () => {
     const firstQuestion = buildCommanderExperienceState({
       reportState: 'reported',

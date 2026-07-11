@@ -1,3 +1,4 @@
+HQ-TASK-S36 - Refined Commander ceremony transmission cadence and timing.
 HQ-TASK-S35 - Integrated Commander ceremony dialogue into the persistent chat transmission queue.
 HQ-TASK-S34 - Expanded Commander ceremony dialogue for mission progression.
 HQ-TASK-S33 - Added Adaptive Commander Personality and Dialogue Engine.
