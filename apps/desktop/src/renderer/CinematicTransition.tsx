@@ -257,7 +257,7 @@ export function createMissionAcceptedTransitionController(
     standby: 'READY ROOM',
     commanderDeparture: 'Mission accepted.',
     commanderArrival: 'Ready Room entered. Prepare before moving further.',
-    videoSrc: '/transitions/authorization-ceremony.mp4',
+    videoSrc: '/transitions/ready-room.mp4',
     durationMs: 3200,
     fallbackLines: ['Mission accepted.', 'Ready Room entered.'],
   });

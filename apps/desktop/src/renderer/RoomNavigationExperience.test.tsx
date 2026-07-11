@@ -178,14 +178,14 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionDurationMs(false, createMissionAcceptedTransition('command', 'ready-room').controller)).toBe(3200);
   });
 
-  it('renders mission acceptance with the accepted mission transition video', () => {
+  it('renders mission acceptance with the Ready Room transition video', () => {
     const transitionHtml = renderToStaticMarkup(
       <RoomTransitionLayer transition={createMissionAcceptedTransition('command', 'ready-room')} />,
     );
 
     expect(transitionHtml).toContain('data-transition-from="command"');
     expect(transitionHtml).toContain('data-transition-to="ready-room"');
-    expect(transitionHtml).toContain('src="/transitions/authorization-ceremony.mp4"');
+    expect(transitionHtml).toContain('src="/transitions/ready-room.mp4"');
     expect(transitionHtml).toContain('transition-scene-video-only');
     expect(transitionHtml).not.toContain('class="transition-door transition-door-left"');
   });
