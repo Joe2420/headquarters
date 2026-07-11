@@ -2053,7 +2053,14 @@ function renderHeadquartersRoom(room: HeadquartersRoomId, context: HeadquartersR
   }
 
   if (room === 'guardian') {
-    return <GuardianRoom />;
+    return (
+      <GuardianRoom
+        mission={context.activeMission}
+        authorizationStatus={context.authorizationStatus}
+        journalEntries={context.journalEntries}
+        growthEvents={context.growthEvents}
+      />
+    );
   }
 
   if (room === 'intelligence') {
@@ -5910,6 +5917,217 @@ export function buildDesktopGuardianLockoutState(input: DesktopGuardianAlertInpu
   ]);
 }
 
+type GuardianOperationalLevel = 'normal' | 'warning' | 'intervention' | 'lockdown' | 'recovery';
+
+interface GuardianRoomModelInput extends DesktopGuardianAlertInput {
+  readonly journalEntries?: readonly JournalEntry[] | undefined;
+  readonly growthEvents?: readonly GrowthEvent[] | undefined;
+}
+
+export interface GuardianRoomModel {
+  readonly level: GuardianOperationalLevel;
+  readonly headline: string;
+  readonly transmission: string;
+  readonly vault: {
+    readonly allocation: string;
+    readonly consumed: string;
+    readonly remaining: string;
+    readonly status: string;
+    readonly reason: string;
+  };
+  readonly judgmentReserve: {
+    readonly available: string;
+    readonly fatigue: string;
+    readonly confidence: string;
+    readonly emotion: string;
+    readonly recommendation: string;
+  };
+  readonly successProtocol: {
+    readonly status: string;
+    readonly guidance: readonly string[];
+  };
+  readonly rules: readonly {
+    readonly id: string;
+    readonly title: string;
+    readonly state: 'active' | 'warning' | 'locked';
+    readonly detail: string;
+  }[];
+  readonly timeline: readonly {
+    readonly time: string;
+    readonly event: string;
+    readonly detail: string;
+  }[];
+  readonly memory: readonly string[];
+}
+
+export function buildGuardianRoomModel(input: GuardianRoomModelInput = {}): GuardianRoomModel {
+  const alerts = buildDesktopGuardianAlerts(input);
+  const lockout = buildDesktopGuardianLockoutState(input);
+  const level = resolveGuardianOperationalLevel(alerts, lockout);
+  const briefing = input.mission?.briefingContext;
+  const riskBoundary = hasMissionContextText(briefing?.riskParameters) ? briefing?.riskParameters.trim() : 'not declared';
+  const readiness = briefing?.personalReadiness?.trim().toLowerCase();
+  const riskyReadiness = parseGuardianReadinessRisk(readiness);
+  const reservePercent = lockout.status === 'locked'
+    ? 12
+    : riskyReadiness === undefined
+      ? 82
+      : Math.max(20, 100 - riskyReadiness * 9);
+  const hasWarning = alerts.some((alert) => alert.priority === 'medium' || alert.priority === 'high' || alert.priority === 'critical');
+  const highestAlert = alerts.find((alert) => alert.priority === 'critical')
+    ?? alerts.find((alert) => alert.priority === 'high')
+    ?? alerts.find((alert) => alert.priority === 'medium')
+    ?? alerts[0];
+
+  return {
+    level,
+    headline: formatGuardianHeadline(level),
+    transmission: formatGuardianTransmission(level, highestAlert, lockout),
+    vault: {
+      allocation: riskBoundary,
+      consumed: lockout.status === 'locked' ? 'frozen' : '0R recorded',
+      remaining: lockout.status === 'locked' ? 'suspended' : riskBoundary,
+      status: lockout.status === 'locked' ? 'Allocation frozen' : 'Protected',
+      reason: lockout.status === 'locked' ? lockout.explanation : 'No intervention required. Operator behavior remains within doctrine.',
+    },
+    judgmentReserve: {
+      available: `${reservePercent}%`,
+      fatigue: riskyReadiness !== undefined && riskyReadiness >= 7 ? 'Elevated' : 'Low',
+      confidence: hasWarning ? 'Constrained' : 'Normal',
+      emotion: riskyReadiness !== undefined && riskyReadiness >= 7 ? 'Compromised' : 'Stable',
+      recommendation: reservePercent < 40
+        ? 'Decision quality compromised. Commander recommends ending operations or journaling before authorization.'
+        : 'Judgment reserve is sufficient. Monitoring continues.',
+    },
+    successProtocol: {
+      status: hasWarning ? 'Guardian Warning' : 'Success Protocol Armed',
+      guidance: hasWarning
+        ? ['Reduce size.', 'Follow confirmation.', 'No revenge entries.', 'Do not let urgency replace evidence.']
+        : ['Protect against euphoria after wins.', 'Respect the declared risk boundary.', 'Keep confirmation slow.', 'Journal before memory changes.'],
+    },
+    rules: [
+      {
+        id: 'no-averaging-down',
+        title: 'No averaging down',
+        state: 'active',
+        detail: 'Active until doctrine explicitly permits a recovery protocol.',
+      },
+      {
+        id: 'daily-risk-boundary',
+        title: `Maximum daily risk: ${riskBoundary}`,
+        state: riskBoundary === 'not declared' ? 'warning' : 'active',
+        detail: riskBoundary === 'not declared' ? 'Risk must be declared before clean authorization.' : 'Guardian compares War Room requests against this boundary.',
+      },
+      {
+        id: 'news-protection',
+        title: 'News protection',
+        state: hasGuardianHighImpactNews(briefing?.highImpactNews) ? 'warning' : 'active',
+        detail: hasGuardianHighImpactNews(briefing?.highImpactNews) ? 'High impact news declared. Volatility protocol active.' : 'No scheduled shock declared.',
+      },
+      {
+        id: 'lockout-rule',
+        title: 'Emergency lockout',
+        state: lockout.status === 'locked' ? 'locked' : 'active',
+        detail: lockout.status === 'locked' ? lockout.explanation : 'No active lockout rule.',
+      },
+    ],
+    timeline: buildGuardianTimeline({ alerts, lockout, mission: input.mission, journalEntries: input.journalEntries ?? [] }),
+    memory: buildGuardianMemory({ alerts, journalEntries: input.journalEntries ?? [], growthEvents: input.growthEvents ?? [] }),
+  };
+}
+
+function resolveGuardianOperationalLevel(
+  alerts: readonly GuardianAlert[],
+  lockout: GuardianLockoutState,
+): GuardianOperationalLevel {
+  if (lockout.status === 'locked') return 'lockdown';
+  if (alerts.some((alert) => alert.priority === 'critical')) return 'lockdown';
+  if (alerts.some((alert) => alert.priority === 'high')) return 'intervention';
+  if (alerts.some((alert) => alert.priority === 'medium')) return 'warning';
+  return 'normal';
+}
+
+function formatGuardianHeadline(level: GuardianOperationalLevel): string {
+  if (level === 'lockdown') return 'Guardian has control.';
+  if (level === 'intervention') return 'Guardian intervention active.';
+  if (level === 'warning') return 'Guardian warning active.';
+  if (level === 'recovery') return 'Guardian recovery protocol active.';
+  return 'No intervention required.';
+}
+
+function formatGuardianTransmission(
+  level: GuardianOperationalLevel,
+  alert: GuardianAlert | undefined,
+  lockout: GuardianLockoutState,
+): string {
+  if (lockout.status === 'locked') {
+    return `Trading authorization suspended. ${lockout.explanation}`;
+  }
+
+  if (level === 'intervention' || level === 'warning') {
+    return alert?.message ?? 'Operator behavior requires slower confirmation.';
+  }
+
+  return 'Operator behavior remains within doctrine. Monitoring continues.';
+}
+
+function buildGuardianTimeline({
+  alerts,
+  lockout,
+  mission,
+  journalEntries,
+}: {
+  readonly alerts: readonly GuardianAlert[];
+  readonly lockout: GuardianLockoutState;
+  readonly mission?: ActiveMission | undefined;
+  readonly journalEntries: readonly JournalEntry[];
+}): GuardianRoomModel['timeline'] {
+  const missionTime = mission?.createdAt ?? 'standby';
+  const entries: GuardianRoomModel['timeline'] = [
+    {
+      time: missionTime,
+      event: mission ? 'Mission monitored' : 'Guardian online',
+      detail: mission ? `${mission.campaign} is under Guardian review.` : 'No issues. Monitoring continues.',
+    },
+    ...alerts.map((alert) => ({
+      time: missionTime,
+      event: alert.priority === 'critical' ? 'Lockdown signal' : alert.priority === 'high' ? 'Intervention signal' : alert.priority === 'medium' ? 'Warning signal' : 'No issues',
+      detail: alert.message,
+    })),
+    ...journalEntries.slice(0, 1).map((entry) => ({
+      time: entry.createdAt,
+      event: 'Journal evidence received',
+      detail: 'Guardian memory updated from approved operator evidence.',
+    })),
+    {
+      time: missionTime,
+      event: lockout.status === 'locked' ? 'Lockdown activated' : 'Lockout clear',
+      detail: lockout.explanation,
+    },
+  ];
+
+  return entries;
+}
+
+function buildGuardianMemory({
+  alerts,
+  journalEntries,
+  growthEvents,
+}: {
+  readonly alerts: readonly GuardianAlert[];
+  readonly journalEntries: readonly JournalEntry[];
+  readonly growthEvents: readonly GrowthEvent[];
+}): readonly string[] {
+  const memory = [
+    ...(alerts.some((alert) => alert.message.toLowerCase().includes('rush')) ? ['Rushing after pressure language'] : []),
+    ...(alerts.some((alert) => alert.message.toLowerCase().includes('readiness')) ? ['Compromised readiness requires slower pacing'] : []),
+    ...(journalEntries.length > 0 ? ['Journal evidence available for behavior review'] : []),
+    ...(growthEvents.length > 0 ? ['Growth evidence can confirm disciplined recovery'] : []),
+  ];
+
+  return memory.length > 0 ? memory : ['No recurring behavior pattern confirmed yet.'];
+}
+
 function parseRiskLimitPercent(value: string | undefined): number | undefined {
   if (!hasMissionContextText(value)) return undefined;
   const match = value.match(/(\d+(?:\.\d+)?)\s*%/);
@@ -5979,54 +6197,121 @@ function dedupeGuardianAlerts(alerts: readonly GuardianAlert[]): readonly Guardi
   });
 }
 
-export function GuardianRoom() {
-  const alerts = buildDesktopGuardianAlerts();
-  const lockout = buildDesktopGuardianLockoutState();
+export function GuardianRoom({
+  mission,
+  authorizationStatus,
+  journalEntries = [],
+  growthEvents = [],
+}: {
+  readonly mission?: ActiveMission | undefined;
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly journalEntries?: readonly JournalEntry[] | undefined;
+  readonly growthEvents?: readonly GrowthEvent[] | undefined;
+} = {}) {
+  const alerts = buildDesktopGuardianAlerts({ mission, authorizationStatus });
+  const model = buildGuardianRoomModel({ mission, authorizationStatus, journalEntries, growthEvents });
 
   return (
-    <div className="room-layout" data-room-id="guardian-room" data-room-atmosphere="guardian">
+    <div
+      className="room-layout guardian-control-room"
+      data-room-id="guardian-room"
+      data-room-atmosphere="guardian"
+      data-guardian-level={model.level}
+    >
       <RoomAtmosphere variant="guardian" />
       <section className="command-center-header" aria-label="Guardian room status">
         <p className="section-label">Guardian Wing</p>
-        <h2>Guardian Alerts</h2>
-        <p className="muted">Protective alerts are typed, traceable, and not connected to notification systems yet.</p>
+        <h2>{model.headline}</h2>
+        <p className="muted">This room exists because the operator cannot always trust impulse under pressure.</p>
       </section>
 
-      <section className="command-center-panels" aria-label="Guardian alerts">
-        <section className="journal-panel" aria-label="Capital vault panel">
-          <p className="section-label">CapitalVaultPanel</p>
-          <h3>{lockout.status === 'locked' ? 'Vault Locked' : 'Vault Secure'}</h3>
-          <p className="muted">{lockout.explanation}</p>
+      <section className="guardian-command-surface" aria-label="Guardian operational surface">
+        <section className="guardian-transmission" aria-label="Guardian transmission">
+          <p className="section-label">Guardian</p>
+          <h3>{model.transmission}</h3>
+          <span>{model.level}</span>
         </section>
-        <section className="journal-panel" aria-label="Judgment reserve panel">
-          <p className="section-label">JudgmentReservePanel</p>
-          <h3>Judgment Reserve</h3>
-          <p className="muted">Reserve state is represented by explicit Guardian alerts, not discretionary advice.</p>
-        </section>
-        <section className="journal-panel" aria-label="Success protocol panel">
-          <p className="section-label">SuccessProtocolPanel</p>
-          <h3>Success Protocol</h3>
-          <p className="muted">Success protocols remain calm and protective until future workflows are approved.</p>
-        </section>
-        {alerts.map((alert) => (
-          <section className="journal-panel" aria-label={alert.title} key={alert.id}>
-            <p className="section-label">{alert.priority}</p>
-            <h3>{alert.title}</h3>
-            <p className="muted">{alert.message}</p>
-            <dl>
-              <dt>Source</dt>
-              <dd>{alert.sourceId}</dd>
-            </dl>
-          </section>
-        ))}
-        <section className="journal-panel" aria-label="Guardian lockout">
-          <p className="section-label">{lockout.status}</p>
-          <h3>Lockout State</h3>
-          <p className="muted">{lockout.explanation}</p>
+
+        <section className="guardian-vault-panel" aria-label="Capital Vault">
+          <p className="section-label">Capital Vault</p>
+          <h3>{model.vault.status}</h3>
           <dl>
-            <dt>Active Rules</dt>
-            <dd>{lockout.activeRuleIds.length}</dd>
+            <div><dt>Today's allocation</dt><dd>{model.vault.allocation}</dd></div>
+            <div><dt>Consumed</dt><dd>{model.vault.consumed}</dd></div>
+            <div><dt>Remaining</dt><dd>{model.vault.remaining}</dd></div>
           </dl>
+          <p className="muted">{model.vault.reason}</p>
+        </section>
+
+        <section className="guardian-reserve-panel" aria-label="Judgment Reserve">
+          <p className="section-label">Judgment Reserve</p>
+          <h3>Judgment Reserve</h3>
+          <dl>
+            <div><dt>Available</dt><dd>{model.judgmentReserve.available}</dd></div>
+            <div><dt>Fatigue</dt><dd>{model.judgmentReserve.fatigue}</dd></div>
+            <div><dt>Confidence</dt><dd>{model.judgmentReserve.confidence}</dd></div>
+            <div><dt>Emotion</dt><dd>{model.judgmentReserve.emotion}</dd></div>
+          </dl>
+          <p className="muted">{model.judgmentReserve.recommendation}</p>
+        </section>
+
+        <section className="guardian-protocol-panel" aria-label="Success Protocol">
+          <p className="section-label">{model.successProtocol.status}</p>
+          <h3>Protect success before it becomes euphoria.</h3>
+          <ul>
+            {model.successProtocol.guidance.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        </section>
+
+        <section className="guardian-rules-panel" aria-label="Guardian Rules">
+          <p className="section-label">Guardian Rules</p>
+          <h3>Living boundaries</h3>
+          <ul>
+            {model.rules.map((rule) => (
+              <li key={rule.id} data-guardian-rule-state={rule.state}>
+                <strong>{rule.title}</strong>
+                <span>{rule.state}</span>
+                <p>{rule.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="guardian-timeline-panel" aria-label="Guardian Timeline">
+          <p className="section-label">Guardian Timeline</p>
+          <h3>Intervention record</h3>
+          <ol>
+            {model.timeline.map((entry) => (
+              <li key={`${entry.time}-${entry.event}-${entry.detail}`}>
+                <time>{entry.time}</time>
+                <strong>{entry.event}</strong>
+                <p>{entry.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="guardian-memory-panel" aria-label="Guardian Memory">
+          <p className="section-label">Guardian Memory</p>
+          <h3>Known recurring behaviors</h3>
+          <ul>
+            {model.memory.map((memory) => <li key={memory}>{memory}</li>)}
+          </ul>
+        </section>
+
+        <section className="guardian-alert-panel" aria-label="Guardian Alerts">
+          <p className="section-label">Active Alert Feed</p>
+          <h3>{alerts.length === 0 ? 'No Guardian alerts active.' : `${formatJournalCount(alerts.length, 'Guardian alert', 'Guardian alerts')} active`}</h3>
+          <ul>
+            {alerts.map((alert) => (
+              <li key={alert.id} data-guardian-priority={alert.priority}>
+                <strong>{alert.title}</strong>
+                <span>{alert.priority}</span>
+                <p>{alert.message}</p>
+                <small>{alert.sourceId}</small>
+              </li>
+            ))}
+          </ul>
         </section>
       </section>
     </div>

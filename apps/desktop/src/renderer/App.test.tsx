@@ -25,6 +25,7 @@ import {
   buildDesktopAcademyDashboard,
   buildDesktopDoctrineSuggestions,
   buildDesktopGuardianAlerts,
+  buildGuardianRoomModel,
   buildDoctrineChamberModel,
   buildDesktopGuardianLockoutState,
   buildDesktopGrowthAnalysis,
@@ -684,50 +685,67 @@ describe('Desktop shell', () => {
     expect(html).toContain('No Academy growth evidence yet');
   });
 
-  it('derives and renders Guardian alerts in the Guardian room', () => {
+  it('derives and renders Guardian as an active protection room', () => {
     const alerts = buildDesktopGuardianAlerts();
     const lockout = buildDesktopGuardianLockoutState();
+    const model = buildGuardianRoomModel();
     const html = renderToStaticMarkup(<GuardianRoom />);
 
     expect(alerts.map((alert) => alert.priority)).toEqual(['low']);
     expect(lockout.status).toBe('unlocked');
+    expect(model.level).toBe('normal');
+    expect(model.transmission).toBe('Operator behavior remains within doctrine. Monitoring continues.');
     expect(html).toContain('data-room-id="guardian-room"');
-    expect(html).toContain('Guardian Alerts');
-    expect(html).toContain('CapitalVaultPanel');
-    expect(html).toContain('JudgmentReservePanel');
-    expect(html).toContain('SuccessProtocolPanel');
-    expect(html).toContain('Rule Monitoring');
-    expect(html).toContain('Lockout State');
+    expect(html).toContain('No intervention required.');
+    expect(html).toContain('Capital Vault');
+    expect(html).toContain('Judgment Reserve');
+    expect(html).toContain('Success Protocol Armed');
+    expect(html).toContain('Guardian Timeline');
+    expect(html).toContain('Guardian Memory');
+    expect(html).toContain('Living boundaries');
   });
 
   it('derives Guardian alerts from mission context instead of static placeholder copy', () => {
-    const alerts = buildDesktopGuardianAlerts({
-      mission: {
-        id: 'mission-guardian',
-        campaign: 'Guardian Context Test',
-        objective: 'Protect capital',
-        condition: 'Authorization',
-        commandAuthority: 'Professional command',
-        currentState: 'authorization',
-        createdAt: new Date().toISOString(),
-        briefingContext: {
-          missionObjective: 'Observe NQ',
-          market: 'NQ',
-          marketEnvironment: 'High volatility',
-          highImpactNews: 'FOMC',
-          personalReadiness: 'tired',
-        },
-        observationContext: {
-          readiness: 'no',
-        },
+    const mission: ActiveMission = {
+      id: 'mission-guardian',
+      campaign: 'Guardian Context Test',
+      objective: 'Protect capital',
+      condition: 'Authorization',
+      commandAuthority: 'Professional command',
+      currentState: 'authorization',
+      createdAt: new Date().toISOString(),
+      briefingContext: {
+        missionObjective: 'Observe NQ',
+        market: 'NQ',
+        marketEnvironment: 'High volatility',
+        highImpactNews: 'FOMC',
+        personalReadiness: 'tired',
       },
+      observationContext: {
+        readiness: 'no',
+      },
+    };
+    const alerts = buildDesktopGuardianAlerts({
+      mission,
       currentRoom: 'war-room',
       operatorJustification: 'I need to rush this trade',
       protectiveRule: '',
     });
+    const model = buildGuardianRoomModel({
+      mission,
+      operatorJustification: 'I need to rush this trade',
+      protectiveRule: '',
+    });
+    const html = renderToStaticMarkup(<GuardianRoom mission={mission} />);
 
     expect(alerts.map((alert) => alert.message)).toContain('Risk boundary is not declared. Guardian will not clear aggressive authorization until risk is stated.');
     expect(alerts.map((alert) => alert.message)).toContain('Authorization is missing a protective rule. Guardian requires the rule before deployment authority is clean.');
+    expect(model.level).toBe('intervention');
+    expect(model.vault.allocation).toBe('not declared');
+    expect(model.judgmentReserve.fatigue).toBe('Elevated');
+    expect(model.rules.some((rule) => rule.title === 'Maximum daily risk: not declared' && rule.state === 'warning')).toBe(true);
+    expect(html).toContain('Guardian Warning');
+    expect(html).toContain('Risk must be declared before clean authorization.');
     expect(alerts.map((alert) => alert.message).join('\n')).not.toContain('Risk state is monitored from approved inputs only.');
     expect(buildDesktopGuardianLockoutState({ authorizationStatus: {
       missionId: 'mission-guardian',
