@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { archiveJournalEntry, createJournalEntry } from '@headquarters/journal';
 import {
   extractDoctrineCandidatesFromApprovedJournalEvidence,
+  getDoctrineEvidenceStrength,
   isApprovedDoctrineEvidence,
+  validateDoctrineCandidateForReview,
 } from './DoctrineCandidate';
 
 describe('Doctrine candidate extraction', () => {
@@ -57,26 +59,50 @@ describe('Doctrine candidate extraction', () => {
       {
         id: 'candidate-1',
         title: 'Wait for confirmation before entry',
-        summary: 'Wait for confirmation before entry',
-        status: 'candidate',
+        summary: 'Wait for confirmation before entry.',
+        status: 'pending_review',
+        proposedTitle: 'Wait for confirmation before entry',
+        proposedRule: 'Wait for confirmation before entry.',
+        rationale: 'The source journal entry from 2026-01-01 recorded an operating lesson: "Wait for confirmation before entry".',
+        evidenceSummary: 'Journal entry journal-001 preserved this evidence: "Wait for confirmation before entry".',
+        triggerCondition: 'Entry consideration before confirmation is visible.',
+        expectedBehavior: 'Wait and collect evidence before authorization.',
+        exceptionOrBoundary: 'This rule does not replace operator judgment when new evidence invalidates the original condition.',
+        proposedScope: 'Entries requiring confirmation before authorization.',
+        similarDoctrineIds: [],
+        conflictSummary: 'No accepted Doctrine comparison has been performed yet.',
+        supportingEvidenceCount: 1,
         source: {
           sourceType: 'journal_entry',
           sourceId: 'journal-001',
           archiveId: 'archive-001',
           excerpt: 'Wait for confirmation before entry',
+          sourceDate: '2026-01-01',
         },
         createdAt: '2026-01-03T00:00:00.000Z',
       },
       {
         id: 'candidate-2',
         title: 'Do not chase evening moves',
-        summary: 'Do not chase evening moves',
-        status: 'candidate',
+        summary: 'Do not chase evening moves.',
+        status: 'pending_review',
+        proposedTitle: 'Do not chase evening moves',
+        proposedRule: 'Do not chase evening moves.',
+        rationale: 'The source journal entry from 2026-01-01 recorded an operating lesson: "Do not chase evening moves".',
+        evidenceSummary: 'Journal entry journal-001 preserved this evidence: "Do not chase evening moves".',
+        triggerCondition: 'Price has already moved and the operator feels pressure to chase.',
+        expectedBehavior: 'Stand down from the prohibited behavior and remain inside the approved plan.',
+        exceptionOrBoundary: 'This rule does not replace operator judgment when new evidence invalidates the original condition.',
+        proposedScope: 'Operator-reviewed trading missions matching the source condition.',
+        similarDoctrineIds: [],
+        conflictSummary: 'No accepted Doctrine comparison has been performed yet.',
+        supportingEvidenceCount: 1,
         source: {
           sourceType: 'journal_entry',
           sourceId: 'journal-001',
           archiveId: 'archive-001',
           excerpt: 'Do not chase evening moves',
+          sourceDate: '2026-01-01',
         },
         createdAt: '2026-01-03T00:00:00.000Z',
       },
@@ -106,7 +132,50 @@ describe('Doctrine candidate extraction', () => {
       createId: () => 'candidate-001',
     });
 
-    expect(candidate?.status).toBe('candidate');
+    expect(candidate?.status).toBe('pending_review');
     expect(candidate).not.toHaveProperty('confidence');
+  });
+
+  it('blocks placeholder candidates from review and derives evidence strength wording', () => {
+    const candidate = {
+      id: 'candidate-placeholder',
+      title: 'Doctrine candidate requires review',
+      summary: '1 supporting source surfaced a possible operating rule',
+      status: 'draft' as const,
+      proposedTitle: 'Doctrine candidate requires review',
+      proposedRule: 'Possible operating rule',
+      rationale: '',
+      evidenceSummary: '',
+      triggerCondition: '',
+      expectedBehavior: '',
+      exceptionOrBoundary: '',
+      proposedScope: 'Operator-approved doctrine candidate',
+      similarDoctrineIds: [],
+      conflictSummary: '',
+      supportingEvidenceCount: 1,
+      source: {
+        sourceType: 'journal_entry' as const,
+        sourceId: 'journal-001',
+        archiveId: 'archive-001',
+        excerpt: '',
+      },
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    expect(validateDoctrineCandidateForReview(candidate).issues.map((issue) => issue.code)).toEqual([
+      'placeholder_title',
+      'placeholder_rule',
+      'missing_rationale',
+      'missing_excerpt',
+      'missing_trigger',
+      'missing_expected_behavior',
+    ]);
+    expect(getDoctrineEvidenceStrength(1)).toEqual({
+      level: 'limited',
+      label: 'Limited',
+      description: 'one supporting source',
+    });
+    expect(getDoctrineEvidenceStrength(2).label).toBe('Moderate');
+    expect(getDoctrineEvidenceStrength(3).label).toBe('Strong');
   });
 });

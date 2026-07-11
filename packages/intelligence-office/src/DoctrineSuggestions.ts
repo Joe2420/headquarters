@@ -5,6 +5,7 @@ export interface DoctrineSuggestion {
   readonly title: string;
   readonly rationale: string;
   readonly evidenceRecordIds: readonly string[];
+  readonly evidenceSummaries: readonly string[];
   readonly requiresManualPromotion: true;
 }
 
@@ -35,14 +36,27 @@ function buildSuggestionForSignal(
   const evidenceRecordIds = evidenceRecords
     .filter((record) => record.signals.includes(signal))
     .map((record) => record.id);
+  const evidenceSummaries = evidenceRecords
+    .filter((record) => record.signals.includes(signal))
+    .map((record) => record.summary);
 
   if (evidenceRecordIds.length < minimumEvidenceCount) return undefined;
 
   return {
     id: `doctrine-suggestion:${signal}`,
-    title: signal === 'doctrine_candidate_source' ? 'Review doctrine candidate source' : 'Review repeated lesson',
-    rationale: `${evidenceRecordIds.length} evidence record${evidenceRecordIds.length === 1 ? '' : 's'} support manual doctrine review.`,
+    title: signal === 'doctrine_candidate_source' ? 'Review evidence-backed doctrine source' : 'Review repeated lesson for Doctrine',
+    rationale: buildDoctrineSuggestionRationale(evidenceSummaries),
     evidenceRecordIds,
+    evidenceSummaries,
     requiresManualPromotion: true,
   };
+}
+
+function buildDoctrineSuggestionRationale(evidenceSummaries: readonly string[]): string {
+  const [firstSummary] = evidenceSummaries;
+  if (firstSummary === undefined) return 'Manual doctrine review requires source evidence.';
+
+  return evidenceSummaries.length === 1
+    ? `Source evidence requires manual doctrine review: ${firstSummary}`
+    : `${evidenceSummaries.length} source records require manual doctrine review. First evidence: ${firstSummary}`;
 }

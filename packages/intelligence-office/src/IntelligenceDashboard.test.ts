@@ -29,6 +29,7 @@ describe('buildIntelligenceDashboard', () => {
       title: 'Review doctrine candidate source',
       rationale: 'Evidence supports manual review.',
       evidenceRecordIds: ['journal-005'],
+      evidenceSummaries: ['Evidence supports manual review.'],
       requiresManualPromotion: true as const,
     }];
 
