@@ -32,6 +32,7 @@ import {
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
   buildDesktopMissionIntelligencePackage,
+  buildJournalCommanderIntelligence,
   buildObservationRoomIntelligenceModel,
   buildReadyRoomPreparationModel,
   buildDesktopRepeatedMistakes,
@@ -1322,7 +1323,9 @@ describe('Desktop shell', () => {
   });
 
   it('defines a deterministic guided Journal workflow sequence', () => {
-    expect(getJournalWorkflowSteps().map((step) => step.id)).toEqual([
+    const steps = getJournalWorkflowSteps();
+
+    expect(steps.map((step) => step.id)).toEqual([
       'entry',
       'reflection',
       'trade-review',
@@ -1331,11 +1334,12 @@ describe('Desktop shell', () => {
       'search',
       'archive',
     ]);
-    expect(getJournalCommanderPrompt('entry')).toBe('Start with the record. Capture what happened before judging it.');
-    expect(getJournalCommanderPrompt('archive')).toBe('Archive only completed evidence. Keep raw journal history intact.');
+    expect(steps.map((step) => step.label)).toEqual(['Write', 'Reflect', 'Review', 'Learn', 'Story', 'Memory', 'Archive Link']);
+    expect(getJournalCommanderPrompt('entry')).toBe('Write first. Do not classify the day before the truth is on record.');
+    expect(getJournalCommanderPrompt('archive')).toBe('Journal writes. Archive stores. Send only completed evidence forward.');
   });
 
-  it('renders Journal as a guided writing flow with one active workspace', () => {
+  it('renders Journal as a Commander Log instead of separate form modules', () => {
     const html = renderToStaticMarkup(<JournalRoom
       journalEntries={[]}
       dailyReflections={[]}
@@ -1349,12 +1353,47 @@ describe('Desktop shell', () => {
       onArchiveJournalEntry={() => undefined}
     />);
 
-    expect(html).toContain('Guided Journal');
+    expect(html).toContain('Commander Log');
     expect(html).toContain('aria-label="Journal Commander prompt"');
+    expect(html).toContain('Good. Tell me everything.');
+    expect(html).toContain('What almost made you abandon your plan?');
+    expect(html).toContain('aria-label="Commander log"');
+    expect(html).toContain('Transmit Log');
+    expect(html).toContain('aria-label="Commander journal intelligence"');
+    expect(html).toContain('Journal Analysis');
     expect(html).toContain('aria-current="step"');
-    expect(html).toContain('aria-label="Journal entry"');
+    expect(html).not.toContain('Save Journal Entry');
     expect(html).not.toContain('aria-label="Daily reflection"');
     expect(html).not.toContain('aria-label="Journal archive"');
+  });
+
+  it('derives Commander journal intelligence from existing journal evidence', () => {
+    const model = buildJournalCommanderIntelligence({
+      journalEntries: [{
+        id: 'journal-001',
+        entryDate: '2026-07-11',
+        rawContent: 'I waited with patience and followed the plan.',
+        rawMood: 'calm',
+        rawMarketConditions: 'slow session',
+        source: 'manual',
+        attachmentReferences: [],
+        classificationStatus: 'unclassified',
+        createdAt: '2026-07-11T00:00:00.000Z',
+        updatedAt: '2026-07-11T00:00:00.000Z',
+      }],
+      dailyReflections: [],
+      tradeReviews: [],
+      growthEvents: [],
+      searchText: 'patience',
+      searchResultCount: 1,
+    });
+
+    expect(model.dailyQuestion).toBe('Where did discipline save you today?');
+    expect(model.detectedThemes).toContain('Patience');
+    expect(model.detectedThemes).toContain('Plan discipline');
+    expect(model.memorySummary).toContain('Commander Memory found 1 similar record');
+    expect(model.growthRecommendationTitle).toBe('Patience improved');
+    expect(model.doctrineCandidate).toBe('Patience appears often enough to monitor for future Doctrine.');
   });
 
   it('renders active mission journal integration when a mission is open', () => {

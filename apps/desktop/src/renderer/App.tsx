@@ -336,38 +336,38 @@ const primaryNavigation: Array<Omit<PrimaryNavigationItem, 'active'>> = [
 const journalWorkflowSteps: readonly JournalWorkflowStep[] = [
   {
     id: 'entry',
-    label: 'Journal Entry',
-    description: 'Capture the raw observation before interpretation.',
+    label: 'Write',
+    description: 'Tell Commander what happened.',
   },
   {
     id: 'reflection',
-    label: 'Daily Reflection',
-    description: 'Name the behavior and emotional state.',
+    label: 'Reflect',
+    description: 'Let Commander ask the next question.',
   },
   {
     id: 'trade-review',
-    label: 'Trade Review',
-    description: 'Review the trade as evidence, not prediction.',
+    label: 'Review',
+    description: 'Compare plan, reality, why, and lesson.',
   },
   {
     id: 'growth',
-    label: 'Growth Events',
-    description: 'Promote journal evidence into growth evidence.',
+    label: 'Learn',
+    description: 'Surface growth from repeated behavior.',
   },
   {
     id: 'timeline',
-    label: 'Timeline',
-    description: 'Read the journal record in chronological order.',
+    label: 'Story',
+    description: 'Read the record as a sequence.',
   },
   {
     id: 'search',
-    label: 'Search',
-    description: 'Find prior journal evidence deterministically.',
+    label: 'Memory',
+    description: 'Ask the record for similar evidence.',
   },
   {
     id: 'archive',
-    label: 'Archive',
-    description: 'Move completed evidence into the local archive view.',
+    label: 'Archive Link',
+    description: 'Send completed records to Archive when ready.',
   },
 ];
 
@@ -4923,8 +4923,15 @@ export function JournalRoom({
     growthEvents,
   });
   const searchResult = searchJournalEntries(journalEntries, { text: searchText });
-  const activeStep = getJournalWorkflowSteps().find((step) => step.id === activeJournalStep);
   const missionJournalLink = buildMissionJournalLink({ mission: activeMission, journalEntries });
+  const journalIntelligence = buildJournalCommanderIntelligence({
+    journalEntries,
+    dailyReflections,
+    tradeReviews,
+    growthEvents,
+    searchText,
+    searchResultCount: searchResult.total,
+  });
 
   async function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -4988,8 +4995,8 @@ export function JournalRoom({
 
     const growthEvent = createGrowthEvent({
       eventDate: getTodayDate(),
-      title: growthTitle,
-      description: growthDescription,
+      title: growthTitle || journalIntelligence.growthRecommendationTitle,
+      description: growthDescription || journalIntelligence.growthRecommendation,
       category: 'process_improvement',
       evidence: {
         sourceType: 'journal_entry',
@@ -5007,10 +5014,10 @@ export function JournalRoom({
   return (
     <div className="room-layout" data-room-id="journal-room" data-room-atmosphere="journal">
       <RoomAtmosphere variant="journal" />
-      <section className="command-center-header" aria-label="Journal room status">
+      <section className="command-center-header journal-command-log-header" aria-label="Journal room status">
         <p className="section-label">Journal Room</p>
-        <h2>Guided Journal</h2>
-        <p className="muted">Commander-guided writing flow for entries, reflection, review, growth evidence, timeline, search, and archive.</p>
+        <h2>Commander Log</h2>
+        <p className="muted">Tell Commander what happened. Headquarters extracts reflection, review, memory, growth, and doctrine signals after the record exists.</p>
       </section>
 
       {missionJournalLink ? (
@@ -5022,13 +5029,36 @@ export function JournalRoom({
         </section>
       ) : null}
 
-      <section className="guided-workflow-layout" aria-label="Journal guided workflow">
-        <section className="commander-briefing-panel" aria-label="Journal Commander prompt">
+      <section className="journal-command-log-layout" aria-label="Journal Commander office">
+        <section className="journal-commander-office" aria-label="Journal Commander prompt">
           <p className="section-label">Commander</p>
-          <h3>{activeStep?.label ?? 'Journal Entry'}</h3>
-          <p className="muted">{getJournalCommanderPrompt(activeJournalStep)}</p>
+          <h3>Good. Tell me everything.</h3>
+          <p>{getJournalCommanderPrompt(activeJournalStep)}</p>
+          <blockquote>{journalIntelligence.dailyQuestion}</blockquote>
         </section>
-        <nav className="workflow-step-list" aria-label="Journal workflow steps">
+
+        <form className="journal-command-log-form" aria-label="Commander log" onSubmit={handleJournalEntrySubmit}>
+          <p className="section-label">Write</p>
+          <h3>What happened today?</h3>
+          <label>
+            <span>Commander Log</span>
+            <textarea value={entryContent} onChange={(event) => setEntryContent(event.target.value)} />
+          </label>
+          <div className="journal-log-context-grid">
+            <label>
+              <span>Emotion</span>
+              <input value={entryMood} onChange={(event) => setEntryMood(event.target.value)} />
+            </label>
+            <label>
+              <span>Conditions</span>
+              <input value={entryMarketConditions} onChange={(event) => setEntryMarketConditions(event.target.value)} />
+            </label>
+          </div>
+          <button className="secondary-action" type="submit">Transmit Log</button>
+          <p className="muted">{formatJournalCount(journalEntries.length, 'journal entry', 'journal entries')}</p>
+        </form>
+
+        <nav className="journal-flow-rail" aria-label="Journal intelligence flow">
           {getJournalWorkflowSteps().map((step) => (
             <button
               key={step.id}
@@ -5043,75 +5073,47 @@ export function JournalRoom({
           ))}
         </nav>
 
-        {activeJournalStep === 'entry' ? (
-          <form className="journal-panel" aria-label="Journal entry" onSubmit={handleJournalEntrySubmit}>
-          <p className="section-label">Journal Entry</p>
-          <h3>Commander's Log</h3>
-          <label>
-            <span>Raw Content</span>
-            <input value={entryContent} onChange={(event) => setEntryContent(event.target.value)} />
-          </label>
-          <label>
-            <span>Mood</span>
-            <input value={entryMood} onChange={(event) => setEntryMood(event.target.value)} />
-          </label>
-          <label>
-            <span>Market Conditions</span>
-            <input value={entryMarketConditions} onChange={(event) => setEntryMarketConditions(event.target.value)} />
-          </label>
-          <button className="secondary-action" type="submit">Save Journal Entry</button>
-          <p className="muted">{formatJournalCount(journalEntries.length, 'journal entry', 'journal entries')}</p>
-          </form>
-        ) : null}
-
         {activeJournalStep === 'reflection' ? (
-          <form className="journal-panel" aria-label="Daily reflection" onSubmit={handleReflectionSubmit}>
-          <p className="section-label">Daily Reflection</p>
-          <h3>Daily Reflection</h3>
+          <form className="journal-panel journal-reflection-interview" aria-label="Commander reflection interview" onSubmit={handleReflectionSubmit}>
+          <p className="section-label">Reflect</p>
+          <h3>Commander Reflection</h3>
           <label>
-            <span>Behavior Summary</span>
+            <span>What emotion influenced your decision most today?</span>
             <input value={reflectionSummary} onChange={(event) => setReflectionSummary(event.target.value)} />
           </label>
           <label>
-            <span>Emotional State</span>
+            <span>What evidence supports that?</span>
             <input value={reflectionEmotion} onChange={(event) => setReflectionEmotion(event.target.value)} />
           </label>
-          <button className="secondary-action" type="submit">Save Reflection</button>
+          <button className="secondary-action" type="submit">Record Reflection</button>
           <p className="muted">{formatJournalCount(dailyReflections.length, 'reflection', 'reflections')}</p>
           </form>
         ) : null}
 
         {activeJournalStep === 'trade-review' ? (
-          <form className="journal-panel" aria-label="Trade review" onSubmit={handleTradeReviewSubmit}>
-          <p className="section-label">Trade Review</p>
-          <h3>Trade Review</h3>
+          <form className="journal-panel journal-trade-review-interview" aria-label="Commander trade review" onSubmit={handleTradeReviewSubmit}>
+          <p className="section-label">Review</p>
+          <h3>Today's Trade</h3>
           <label>
-            <span>Trade ID</span>
+            <span>What was the original plan?</span>
             <input value={tradeId} onChange={(event) => setTradeId(event.target.value)} />
           </label>
           <label>
-            <span>Lesson</span>
+            <span>What actually happened, and why?</span>
             <input value={tradeLesson} onChange={(event) => setTradeLesson(event.target.value)} />
           </label>
-          <button className="secondary-action" type="submit">Save Trade Review</button>
+          <button className="secondary-action" type="submit">Record Review</button>
           <p className="muted">{formatJournalCount(tradeReviews.length, 'trade review', 'trade reviews')}</p>
           </form>
         ) : null}
 
         {activeJournalStep === 'growth' ? (
-          <form className="journal-panel" aria-label="Growth events" onSubmit={handleGrowthEventSubmit}>
-          <p className="section-label">Growth Events</p>
-          <h3>Growth Events</h3>
-          <label>
-            <span>Title</span>
-            <input value={growthTitle} onChange={(event) => setGrowthTitle(event.target.value)} />
-          </label>
-          <label>
-            <span>Description</span>
-            <input value={growthDescription} onChange={(event) => setGrowthDescription(event.target.value)} />
-          </label>
+          <form className="journal-panel journal-growth-recommendation" aria-label="Commander growth recommendation" onSubmit={handleGrowthEventSubmit}>
+          <p className="section-label">Learn</p>
+          <h3>{journalIntelligence.growthRecommendationTitle}</h3>
+          <p className="muted">{journalIntelligence.growthRecommendation}</p>
           <button className="secondary-action" type="submit" disabled={journalEntries.length === 0}>
-            Save Growth Event
+            Accept Growth Event
           </button>
           <p className="muted">{formatJournalCount(growthEvents.length, 'growth event', 'growth events')}</p>
           </form>
@@ -5132,8 +5134,110 @@ export function JournalRoom({
           onArchiveJournalEntry={onArchiveJournalEntry}
           />
         ) : null}
+        <JournalIntelligencePanel model={journalIntelligence} timeline={timeline} />
       </section>
     </div>
+  );
+}
+
+export interface JournalCommanderIntelligenceModel {
+  readonly dailyQuestion: string;
+  readonly detectedThemes: readonly string[];
+  readonly memorySummary: string;
+  readonly growthRecommendationTitle: string;
+  readonly growthRecommendation: string;
+  readonly doctrineCandidate: string;
+  readonly weeklyReview: string;
+}
+
+export function buildJournalCommanderIntelligence({
+  journalEntries,
+  dailyReflections,
+  tradeReviews,
+  growthEvents,
+  searchText,
+  searchResultCount,
+}: {
+  readonly journalEntries: readonly JournalEntry[];
+  readonly dailyReflections: readonly DailyReflection[];
+  readonly tradeReviews: readonly TradeReview[];
+  readonly growthEvents: readonly GrowthEvent[];
+  readonly searchText: string;
+  readonly searchResultCount: number;
+}): JournalCommanderIntelligenceModel {
+  const latestEntry = journalEntries[0];
+  const text = [
+    latestEntry?.rawContent,
+    latestEntry?.rawMood,
+    latestEntry?.rawMarketConditions,
+    dailyReflections[0]?.behaviorSummary,
+    tradeReviews[0]?.lessonsLearned,
+  ].filter((value): value is string => value !== undefined && value.trim().length > 0).join(' ').toLowerCase();
+  const detectedThemes = [
+    text.includes('patience') || text.includes('wait') ? 'Patience' : undefined,
+    text.includes('revenge') || text.includes('frustrated') ? 'Revenge pressure' : undefined,
+    text.includes('risk') || text.includes('stop') ? 'Risk control' : undefined,
+    text.includes('plan') || text.includes('discipline') ? 'Plan discipline' : undefined,
+  ].filter((value): value is string => value !== undefined);
+  const primaryTheme = detectedThemes[0] ?? 'Discipline';
+  const dailyQuestion = journalEntries.length === 0
+    ? 'What almost made you abandon your plan?'
+    : 'Where did discipline save you today?';
+
+  return {
+    dailyQuestion,
+    detectedThemes,
+    memorySummary: searchText.trim()
+      ? `Commander Memory found ${formatJournalCount(searchResultCount, 'similar record', 'similar records')} for "${searchText.trim()}".`
+      : `Commander Memory is tracking ${formatJournalCount(journalEntries.length, 'journal record', 'journal records')}.`,
+    growthRecommendationTitle: `${primaryTheme} improved`,
+    growthRecommendation: journalEntries.length > 0
+      ? `Commander detected ${primaryTheme.toLowerCase()} evidence in the latest log. Accept only if the operator agrees.`
+      : 'Write one Commander Log before Headquarters can recommend growth.',
+    doctrineCandidate: detectedThemes.length > 0
+      ? `${primaryTheme} appears often enough to monitor for future Doctrine.`
+      : 'Doctrine candidate waits until a repeated lesson appears.',
+    weeklyReview: `${formatJournalCount(journalEntries.length, 'mission log', 'mission logs')}; ${formatJournalCount(dailyReflections.length, 'reflection', 'reflections')}; ${formatJournalCount(growthEvents.length, 'growth signal', 'growth signals')}.`,
+  };
+}
+
+function JournalIntelligencePanel({
+  model,
+  timeline,
+}: {
+  readonly model: JournalCommanderIntelligenceModel;
+  readonly timeline: JournalTimeline;
+}) {
+  return (
+    <section className="journal-intelligence-panel" aria-label="Commander journal intelligence">
+      <div>
+        <p className="section-label">Insights</p>
+        <h3>Journal Analysis</h3>
+      </div>
+      <dl>
+        <dt>Detected</dt>
+        <dd>{model.detectedThemes.length > 0 ? model.detectedThemes.join(', ') : 'Awaiting journal evidence'}</dd>
+        <dt>Memory</dt>
+        <dd>{model.memorySummary}</dd>
+        <dt>Doctrine</dt>
+        <dd>{model.doctrineCandidate}</dd>
+        <dt>This Week</dt>
+        <dd>{model.weeklyReview}</dd>
+      </dl>
+      <div className="journal-story-preview" aria-label="Journal story preview">
+        <p className="section-label">Story</p>
+        <ol className="mission-timeline-list">
+          {timeline.entries.slice(0, 4).map((entry) => (
+            <li key={entry.id}>
+              <span>{entry.title}</span>
+              <time dateTime={entry.occurredAt}>{entry.occurredAt}</time>
+              <strong>{entry.type}</strong>
+            </li>
+          ))}
+          {timeline.entries.length === 0 ? <li><span>No story recorded yet</span><strong>Write first</strong></li> : null}
+        </ol>
+      </div>
+    </section>
   );
 }
 
@@ -5803,11 +5907,11 @@ function JournalSearchPanel({
   resultCount: number;
 }) {
   return (
-    <section className="journal-panel" aria-label="Journal search">
-      <p className="section-label">Search</p>
-      <h3>Journal Search</h3>
+    <section className="journal-panel" aria-label="Commander memory">
+      <p className="section-label">Memory</p>
+      <h3>Commander Memory</h3>
       <label>
-        <span>Search Text</span>
+        <span>What should Commander search for?</span>
         <input value={searchText} onChange={(event) => onSearchTextChange(event.target.value)} />
       </label>
       <p className="muted">{formatJournalCount(resultCount, 'search result', 'search results')}</p>
@@ -5835,11 +5939,11 @@ function JournalArchivePanel({
   }
 
   return (
-    <section className="journal-panel" aria-label="Journal archive">
-      <p className="section-label">Archive</p>
-      <h3>Journal Archive</h3>
+    <section className="journal-panel" aria-label="Journal archive link">
+      <p className="section-label">Archive Link</p>
+      <h3>Send completed evidence to Archive</h3>
       <button className="secondary-action" type="button" onClick={handleArchiveFirstEntry} disabled={journalEntries.length === 0}>
-        Archive First Entry
+        Send First Entry To Archive
       </button>
       <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
     </section>
@@ -6673,13 +6777,13 @@ export function getJournalWorkflowSteps(): JournalWorkflowStep[] {
 }
 
 export function getJournalCommanderPrompt(step: JournalWorkflowStepId): string {
-  if (step === 'entry') return 'Start with the record. Capture what happened before judging it.';
-  if (step === 'reflection') return 'Now name the behavior. Headquarters records discipline before outcome.';
-  if (step === 'trade-review') return 'Review the trade as evidence. No prediction, no scoreboard.';
-  if (step === 'growth') return 'Convert proven journal evidence into a growth event when the evidence is ready.';
-  if (step === 'timeline') return 'Read the sequence. The archive speaks in order.';
-  if (step === 'search') return 'Search the record when you need evidence, not memory.';
-  return 'Archive only completed evidence. Keep raw journal history intact.';
+  if (step === 'entry') return 'Write first. Do not classify the day before the truth is on record.';
+  if (step === 'reflection') return 'Commander will ask one reflection at a time. Name the emotion and the evidence.';
+  if (step === 'trade-review') return 'Review the trade inside the story: original plan, reality, why, lesson.';
+  if (step === 'growth') return 'Growth is recommended from evidence. Accept it only when it is true.';
+  if (step === 'timeline') return 'Read the journal as a story, not a table.';
+  if (step === 'search') return 'Commander Memory finds similar records when memory is unreliable.';
+  return 'Journal writes. Archive stores. Send only completed evidence forward.';
 }
 
 export function createLocalMission(

@@ -2696,6 +2696,140 @@ dd {
   outline-offset: 2px;
 }
 
+.journal-command-log-header {
+  border-bottom-color: rgba(216, 178, 92, 0.18);
+}
+
+.journal-command-log-layout {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.85fr) minmax(24rem, 1.35fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.journal-commander-office,
+.journal-command-log-form,
+.journal-intelligence-panel {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgba(216, 178, 92, 0.18);
+  background:
+    linear-gradient(135deg, rgba(216, 178, 92, 0.08), transparent 44%),
+    rgba(13, 16, 18, 0.96);
+  box-shadow: inset 0 1px 0 rgba(217, 231, 255, 0.05);
+}
+
+.journal-commander-office {
+  position: sticky;
+  top: 1rem;
+}
+
+.journal-commander-office h3,
+.journal-command-log-form h3,
+.journal-intelligence-panel h3 {
+  margin: 0;
+}
+
+.journal-commander-office blockquote {
+  margin: 0;
+  border-left: 3px solid #7c9584;
+  padding: 0.75rem 0 0.75rem 1rem;
+  color: #d9e7ff;
+  background: rgba(124, 149, 132, 0.08);
+}
+
+.journal-command-log-form {
+  min-height: 24rem;
+}
+
+.journal-command-log-form label,
+.journal-reflection-interview label,
+.journal-trade-review-interview label {
+  display: grid;
+  gap: 0.35rem;
+  color: #aab7c1;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.journal-command-log-form textarea {
+  min-height: 14rem;
+  resize: vertical;
+  box-sizing: border-box;
+  border: 1px solid rgba(216, 178, 92, 0.22);
+  background:
+    linear-gradient(180deg, rgba(216, 178, 92, 0.035), transparent),
+    #090c0d;
+  color: #eef3f6;
+  font: inherit;
+  line-height: 1.55;
+  padding: 0.85rem;
+}
+
+.journal-command-log-form textarea:focus-visible {
+  outline: 2px solid #d8b25c;
+  outline-offset: 2px;
+}
+
+.journal-log-context-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.journal-flow-rail {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.journal-flow-rail .workflow-step {
+  min-height: 76px;
+  border-color: rgba(216, 178, 92, 0.12);
+  border-left-color: rgba(124, 149, 132, 0.48);
+  background: rgba(15, 18, 21, 0.84);
+}
+
+.journal-flow-rail .workflow-step.active {
+  border-left-color: #d8b25c;
+  background:
+    linear-gradient(135deg, rgba(216, 178, 92, 0.12), rgba(15, 18, 21, 0.94)),
+    #111417;
+}
+
+.journal-reflection-interview,
+.journal-trade-review-interview,
+.journal-growth-recommendation,
+.journal-intelligence-panel {
+  grid-column: 1 / -1;
+}
+
+.journal-intelligence-panel dl {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.28fr) minmax(0, 1fr);
+  gap: 0.55rem 1rem;
+  margin: 0;
+}
+
+.journal-intelligence-panel dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.journal-intelligence-panel dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.journal-story-preview {
+  border-top: 1px solid rgba(216, 178, 92, 0.14);
+  padding-top: 0.75rem;
+}
+
 .mission-closing-panel dl,
 .mission-details-panel dl,
 .mission-intelligence-panel dl,
