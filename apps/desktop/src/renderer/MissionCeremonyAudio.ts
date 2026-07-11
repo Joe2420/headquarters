@@ -1,6 +1,7 @@
 import type { AudioCueId, AudioEvent, AudioPriority } from './AudioEvents';
 import { createAudioEvent } from './AudioEvents';
 import type { CommanderShellRoomId } from './CommanderShell';
+import type { CommanderCeremonyDialogue, CommanderCeremonyMoment } from './CommanderCeremonyDialogue';
 import type { MissionCeremony } from './HeadquartersAtmosphere';
 
 export type MissionCeremonyAudioMoment =
@@ -85,6 +86,37 @@ export function mapMissionCeremonyToAudioMoment(ceremony?: MissionCeremony | und
   if (ceremony.id === 'ceremony:return-to-base') return 'return_to_base';
   if (ceremony.id === 'ceremony:debrief-complete') return 'debrief_complete';
   if (ceremony.id === 'ceremony:mission-archived') return 'mission_archived';
+  return undefined;
+}
+
+export function mapCommanderCeremonyDialogueToAudioMoment(
+  dialogue?: CommanderCeremonyDialogue | undefined,
+): MissionCeremonyAudioMoment | undefined {
+  if (dialogue === undefined) return undefined;
+  return mapCommanderCeremonyMomentToAudioMoment(dialogue.moment);
+}
+
+export function buildCommanderCeremonyAudioEvent(
+  dialogue: CommanderCeremonyDialogue,
+  createdAt = '2026-07-04T00:00:00.000Z',
+): AudioEvent | undefined {
+  const moment = mapCommanderCeremonyDialogueToAudioMoment(dialogue);
+  return moment ? buildMissionCeremonyAudioEvent(moment, createdAt) : undefined;
+}
+
+function mapCommanderCeremonyMomentToAudioMoment(
+  moment: CommanderCeremonyMoment,
+): MissionCeremonyAudioMoment | undefined {
+  if (moment === 'report_accepted') return 'report_for_duty_accepted';
+  if (moment === 'mission_created') return 'mission_created';
+  if (moment === 'briefing_complete') return 'briefing_complete';
+  if (moment === 'observation_started') return 'observation_started';
+  if (moment === 'observation_complete') return 'observation_complete';
+  if (moment === 'authorization_requested') return 'authorization_requested';
+  if (moment === 'authorization_granted') return 'authorization_granted';
+  if (moment === 'return_to_base') return 'return_to_base';
+  if (moment === 'debrief_complete') return 'debrief_complete';
+  if (moment === 'mission_archived') return 'mission_archived';
   return undefined;
 }
 
