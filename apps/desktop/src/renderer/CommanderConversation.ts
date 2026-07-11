@@ -65,7 +65,6 @@ interface CommanderConversationContext {
 }
 
 const readyRoomFieldToIntelligenceField: Record<ReadyRoomBriefingField, MissionIntelligenceField> = {
-  missionObjective: 'missionObjective',
   market: 'market',
   marketEnvironment: 'marketEnvironment',
   highImpactNews: 'economicEvents',
@@ -106,11 +105,6 @@ const requiredIntelligenceFields: readonly MissionIntelligenceField[] = [
 ];
 
 const readyAcknowledgements: Record<ReadyRoomBriefingField, readonly string[]> = {
-  missionObjective: [
-    'Mission objective received.',
-    'Objective accepted into the mission profile.',
-    'Headquarters has the purpose of the operation.',
-  ],
   market: [
     'Market theater recorded.',
     'Operating market logged.',
@@ -369,7 +363,7 @@ function joinCommanderLines(lines: readonly string[]): string {
 }
 
 function hasMeaningfulNews(value: string): boolean {
-  return hasText(value) && !/^(none|no|nothing|n\/a)$/i.test(value.trim());
+  return hasText(value) && !/^(none|no|nope|no news|nothing|n\/a|negative)$/i.test(value.trim());
 }
 
 function isHighRisk(value: string): boolean {

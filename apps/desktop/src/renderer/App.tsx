@@ -1123,7 +1123,7 @@ export function App() {
         const mission = await createDesktopMission(nextDraft);
         if (mission) {
           await handleMissionCreated(mission);
-          return `Mission file opened: ${mission.campaign}. Briefing phase is active.`;
+          return `Mission file opened: ${mission.campaign}.\n\nProceed to the Ready Room for briefing.`;
         }
       }
 
@@ -1138,7 +1138,7 @@ export function App() {
 
         if (mission) {
           await handleMissionCreated(mission);
-          return `Mission file opened: ${mission.campaign}. Briefing phase is active.`;
+          return `Mission file opened: ${mission.campaign}.\n\nProceed to the Ready Room for briefing.`;
         }
       }
 
@@ -1280,12 +1280,20 @@ export function App() {
     }
 
     if (currentCommanderRoom === 'war-room' && currentState === 'deployed') {
-      if (shouldContinue) {
+      if (isPlanConcludedTransmission(message) || shouldContinue) {
         await handleCommanderContinue();
-        return 'Deployment closed. Return to Base is active; debrief before archive.';
+        return 'Plan concluded. Return to base is active; debrief before archive.';
       }
 
-      return handleDeployedCheckIn(message);
+      if (isMaterialChangeTransmission(message)) {
+        return handleDeployedCheckIn(stripDeployedIntentPrefix(message));
+      }
+
+      if (isReviewAuthorizationTransmission(message)) {
+        return formatDeployedAuthorizationReview(activeMission, authorizationStatus);
+      }
+
+      return 'Mission remains deployed. Choose one action: Report Material Change, Plan Concluded, or Review Authorization.';
     }
 
     if (currentState === 'return_to_base') {
@@ -6289,7 +6297,13 @@ function parseGuardianReadinessRisk(value: string | undefined): number | undefin
 function hasGuardianHighImpactNews(value: string | undefined): boolean {
   if (!hasMissionContextText(value)) return false;
   const normalized = value.trim().toLowerCase();
-  return normalized !== 'none' && normalized !== 'no' && normalized !== 'n/a';
+  return normalized !== 'none'
+    && normalized !== 'no'
+    && normalized !== 'nope'
+    && normalized !== 'no news'
+    && normalized !== 'negative'
+    && normalized !== 'nothing'
+    && normalized !== 'n/a';
 }
 
 function estimateMissionElapsedMinutes(mission: ActiveMission): number {
@@ -7839,7 +7853,12 @@ export function createLocalMission(
     commandAuthority: 'Professional command',
     currentState: 'briefing',
     createdAt,
-    missionContext: createEmptyMissionContext(id, { createdAt }),
+    briefingContext: { missionObjective: objective },
+    missionContext: updateMissionContextBriefing(
+      createEmptyMissionContext(id, { createdAt }),
+      { missionObjective: objective },
+      { updatedAt: createdAt },
+    ),
   };
 }
 
@@ -8415,9 +8434,9 @@ export function getMissionNextAction(mission?: ActiveMission): MissionNextAction
 
   if (currentState === 'deployed') {
     return {
-      label: 'Return To Base',
-      description: 'Close active deployment and return to base.',
-      buttonLabel: 'Return To Base',
+      label: 'Plan Concluded',
+      description: 'Mission is deployed. Return is available only after the plan is explicitly concluded.',
+      buttonLabel: 'Plan Concluded',
       disabled: false,
     };
   }
@@ -8591,14 +8610,36 @@ function getMissingAuthorizationRequirements(
   const pressureTerms = ['fomo', 'revenge', 'rush', 'must trade', 'need to win', 'make it back'];
   const justification = draft.operatorJustification.trim().toLowerCase();
   const protectiveRule = draft.protectiveRule?.trim().toLowerCase() ?? '';
+  const guardianLockout = buildDesktopGuardianLockoutState({
+    mission,
+    operatorJustification: draft.operatorJustification,
+    invalidation: draft.invalidation,
+    protectiveRule: draft.protectiveRule,
+  });
   const missing: string[] = [];
+
+  if (!hasMissionContextText(mission.objective) && !hasMissionContextText(mission.briefingContext?.missionObjective)) {
+    missing.push('declare the mission objective');
+  }
 
   if (!isReadyRoomBriefingComplete(mission.briefingContext)) {
     missing.push('complete the Ready Room operational briefing');
   }
 
+  if (!hasMissionContextText(mission.briefingContext?.market)) {
+    missing.push('state the operating market');
+  }
+
+  if (!hasMissionContextText(mission.briefingContext?.riskParameters)) {
+    missing.push('state the risk ceiling');
+  }
+
   if (!isObservationInterviewComplete(mission.observationContext)) {
     missing.push('complete the Observation evidence interview');
+  }
+
+  if (!hasMissionContextText(mission.observationContext?.operationalPicture)) {
+    missing.push('summarize the Observation evidence package');
   }
 
   if (!hasContent(draft.operatorJustification)) {
@@ -8626,6 +8667,14 @@ function getMissingAuthorizationRequirements(
 
   if (missionPackage.confidence.level === 'incomplete') {
     missing.push('mission intelligence is still incomplete');
+  }
+
+  if (guardianLockout.status === 'locked') {
+    missing.push(`resolve Guardian lockout: ${guardianLockout.explanation}`);
+  }
+
+  if ((mission.missionContext?.contradictionFlags ?? []).length > 0) {
+    missing.push('resolve critical mission context contradictions');
   }
 
   return missing;
@@ -8950,6 +8999,50 @@ export function isAbortMissionTransmission(message: string): boolean {
     || normalized === 'cancel mission'
     || normalized === 'scrub mission'
     || normalized === 'terminate mission';
+}
+
+function isPlanConcludedTransmission(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized === 'plan concluded'
+    || normalized === 'plan complete'
+    || normalized === 'mission concluded'
+    || normalized === 'trade concluded'
+    || normalized === 'return to base'
+    || normalized.includes('plan has concluded')
+    || normalized.includes('plan is concluded');
+}
+
+function isMaterialChangeTransmission(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized.startsWith('material change')
+    || normalized.startsWith('report material change')
+    || normalized.startsWith('change report')
+    || normalized.startsWith('conditions changed');
+}
+
+function isReviewAuthorizationTransmission(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+  return normalized === 'review authorization'
+    || normalized === 'authorization review'
+    || normalized.includes('review the authorization');
+}
+
+function stripDeployedIntentPrefix(message: string): string {
+  return message
+    .replace(/^(report\s+)?material\s+change\s*[:,-]?\s*/i, '')
+    .replace(/^change\s+report\s*[:,-]?\s*/i, '')
+    .replace(/^conditions\s+changed\s*[:,-]?\s*/i, '')
+    .trim();
+}
+
+function formatDeployedAuthorizationReview(
+  mission: ActiveMission,
+  authorizationStatus: MissionAuthorizationStatus | undefined,
+): string {
+  const invalidation = getRecordedObservationInvalidation(mission) || 'No invalidation recorded.';
+  const risk = mission.briefingContext?.riskParameters ?? 'No risk ceiling recorded.';
+  const reason = authorizationStatus?.reason ?? 'Authorization reason is not available.';
+  return `Authorization review.\n\nRisk ceiling: ${risk}\n\nInvalidation: ${invalidation}\n\nDecision: ${formatAuthorizationStatus(authorizationStatus)}. ${reason}`;
 }
 
 function parseAuthorizationTransmission(message: string): MissionAuthorizationDraft {

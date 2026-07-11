@@ -2,6 +2,7 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-STABILIZATION - Commander Conversation and Lifecycle Consistency Stabilization
 - HQ-TASK-S38 - Commander Ceremony Audio QA Visibility
 - HQ-TASK-S34 - Commander Ceremony Dialogue Expansion
 - HQ-TASK-S37 - Commander Ceremony Audio Candidate Alignment
@@ -341,7 +342,7 @@
 - HQ-TASK-0139 — Release Candidate
 - HQ-TASK-0140 — Headquarters v1.0 Beta
 
-Current milestone gate: Sprint 38 Commander Ceremony Audio QA Visibility is implemented on the active feature branch.
+Current milestone gate: Commander Conversation and Lifecycle Consistency Stabilization is implemented on the active feature branch.
 
 ## Post-Sprint UX Alignment
 
@@ -405,6 +406,10 @@ Post-Sprint UX alignment is complete through HQ-TASK-0096 pending Founder inspec
 ## Sprint 38 - Commander Ceremony Audio QA Visibility
 
 - HQ-TASK-S38 - Commander Ceremony Audio QA Visibility
+
+## Commander Conversation and Lifecycle Consistency Stabilization
+
+- HQ-TASK-STABILIZATION - Commander Conversation and Lifecycle Consistency Stabilization
 
 
 
