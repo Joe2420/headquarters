@@ -32,6 +32,7 @@ import {
   buildDesktopIntelligencePatterns,
   buildDesktopJournalClassifications,
   buildDesktopMissionIntelligencePackage,
+  buildReadyRoomPreparationModel,
   buildDesktopRepeatedMistakes,
   buildDesktopRepeatedSuccesses,
   createDesktopDoctrineCandidateFromDraft,
@@ -310,7 +311,7 @@ describe('Desktop shell', () => {
     expect(readyHtml).toContain('class="guided-room room-layout"');
     expect(readyHtml).toContain('operational mindset');
     expect(readyHtml).toContain('Plan calmly before Headquarters commits resources.');
-    expect(readyHtml).toContain('Begin Observation');
+    expect(readyHtml).toContain('Begin Operational Briefing');
     expect(observationHtml).toContain('Observe quietly and collect evidence.');
     expect(observationHtml).toContain('Report only visible evidence. Prediction stays silent.');
     expect(observationHtml).not.toContain('Evaluate Authorization');
@@ -318,6 +319,91 @@ describe('Desktop shell', () => {
     expect(warHtml).toContain('Mission next action');
     expect(debriefHtml).toContain('Behavior Sequence');
     expect(debriefHtml).toContain('Mission next action');
+  });
+
+  it('renders Ready Room as a mission preparation room instead of a static dashboard', () => {
+    const mission: ActiveMission = {
+      id: 'mission-ready-001',
+      campaign: 'Weekend Test',
+      objective: 'Avoid FOMO entries',
+      condition: 'Briefing',
+      commandAuthority: 'Professional command',
+      currentState: 'briefing',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    };
+
+    const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
+
+    expect(html).toContain('Begin Operational Briefing');
+    expect(html).toContain('Preparation status: Not started');
+    expect(html).toContain('Mission File');
+    expect(html).toContain('Codename');
+    expect(html).toContain('Weekend Test');
+    expect(html).toContain('Objective');
+    expect(html).toContain('Avoid FOMO entries');
+    expect(html).toContain('Market');
+    expect(html).toContain('Not available');
+    expect(html).toContain('Preparation Sequence');
+    expect(html).toContain('Mission Record');
+    expect(html).toContain('Preparation Context');
+    expect(html).not.toContain('Growth reminder');
+    expect(html).not.toContain('Daily Orders');
+  });
+
+  it('links Ready Room preparation progress to captured Commander briefing data', () => {
+    const mission = withBriefingMissionContext({
+      id: 'mission-ready-002',
+      campaign: 'London Open',
+      objective: 'Wait for clean continuation',
+      condition: 'Briefing',
+      commandAuthority: 'Professional command',
+      currentState: 'briefing',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    }, {
+      missionObjective: 'Wait for clean continuation',
+      market: 'NQ',
+      marketEnvironment: 'Range',
+      highImpactNews: 'CPI later',
+    });
+
+    const model = buildReadyRoomPreparationModel(mission);
+    const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
+
+    expect(model.completedCount).toBe(4);
+    expect(model.currentItem.title).toBe('Operator Condition');
+    expect(html).toContain('4 of 7 briefing items complete');
+    expect(html).toContain('Operator Condition');
+    expect(html).toContain('Awaiting operator response in Commander Chat.');
+    expect(html).toContain('Return to Commander Briefing');
+    expect(html).toContain('CPI later');
+  });
+
+  it('shows Observation clearance after the Ready Room briefing is complete', () => {
+    const mission = withBriefingMissionContext({
+      id: 'mission-ready-003',
+      campaign: 'New York Session',
+      objective: 'Trade only confirmed evidence',
+      condition: 'Ready',
+      commandAuthority: 'Professional command',
+      currentState: 'ready',
+      createdAt: '2026-07-02T00:00:00.000Z',
+    }, {
+      missionObjective: 'Trade only confirmed evidence',
+      market: 'BTC',
+      marketEnvironment: 'Trending',
+      highImpactNews: 'None',
+      personalReadiness: 'focused',
+      riskParameters: '1%',
+      successCriteria: 'Follow plan without forcing execution',
+    });
+
+    const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
+
+    expect(html).toContain('Preparation status: Complete');
+    expect(html).toContain('7 of 7 briefing items complete');
+    expect(html).toContain('Observation Clearance');
+    expect(html).toContain('Enter Observation Room');
+    expect(html).toContain('Observation clearance available');
   });
 
   it('surfaces Sprint 24 mission intelligence in War Room, Debrief, and Archive without changing lifecycle state', () => {
@@ -922,9 +1008,9 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<ReadyRoom activeMission={mission} missionHistory={[mission]} growthEvents={[]} />);
 
     expect(html).toContain('data-room-id="ready-room"');
-    expect(html).toContain('Readiness Checklist');
-    expect(html).toContain('Daily Orders');
-    expect(html).toContain('Command Oath');
+    expect(html).toContain('Preparation Checklist');
+    expect(html).toContain('Mission Record');
+    expect(html).toContain('Command Commitment');
     expect(html).toContain('Operator Locker');
     expect(html).toContain('Foundation Patrol');
   });
