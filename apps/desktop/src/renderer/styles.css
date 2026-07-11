@@ -2580,6 +2580,124 @@ dd {
   background: #121820;
 }
 
+.commander-bridge-layout {
+  display: grid;
+  grid-template-columns: minmax(24rem, 1.25fr) minmax(18rem, 0.75fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.commander-primary-briefing,
+.commander-morning-brief,
+.commander-mission-record,
+.commander-situation-board,
+.commander-activity-log,
+.commander-learning-profile,
+.commander-broadcast-feed,
+.commander-services-health,
+.commander-operational-timeline {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgba(217, 231, 255, 0.15);
+  background:
+    linear-gradient(135deg, rgba(143, 184, 255, 0.07), transparent 44%),
+    #0f1215;
+  overflow-wrap: anywhere;
+}
+
+.commander-primary-briefing {
+  grid-column: 1 / -1;
+  min-height: 14rem;
+  border-left: 4px solid #70ff9c;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(112, 255, 156, 0.08), transparent 26%),
+    linear-gradient(135deg, rgba(112, 255, 156, 0.08), transparent 44%),
+    #101820;
+}
+
+.commander-primary-briefing h3 {
+  max-width: 60rem;
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 3rem);
+}
+
+.commander-primary-briefing p {
+  max-width: 70rem;
+  margin: 0;
+  color: #d9e7ff;
+  font-size: 1.05rem;
+}
+
+.commander-primary-briefing dl,
+.commander-mission-record dl,
+.commander-services-health dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.commander-primary-briefing dl div,
+.commander-mission-record dl div,
+.commander-services-health dl div {
+  border: 1px solid rgba(217, 231, 255, 0.1);
+  background: rgba(5, 8, 10, 0.28);
+  padding: 0.7rem;
+}
+
+.commander-primary-briefing dt,
+.commander-mission-record dt,
+.commander-services-health dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.commander-primary-briefing dd,
+.commander-mission-record dd,
+.commander-services-health dd {
+  margin: 0.25rem 0 0;
+  font-weight: 800;
+}
+
+.commander-morning-brief ul,
+.commander-broadcast-feed ol,
+.commander-operational-timeline ol,
+.commander-activity-log ol {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.commander-situation-board {
+  border-left: 3px solid #d8b25c;
+}
+
+.commander-situation-board strong,
+.commander-learning-profile strong {
+  color: #d9e7ff;
+}
+
+.commander-activity-log li {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.35fr) minmax(0, 1fr) minmax(8rem, 0.32fr);
+  gap: 0.55rem;
+  align-items: baseline;
+}
+
+.commander-activity-log small {
+  grid-column: 2 / -1;
+  color: var(--muted);
+}
+
+.commander-learning-profile div {
+  display: grid;
+  gap: 0.25rem;
+}
+
 .commander-briefing-archive {
   display: grid;
   gap: 0.75rem;
