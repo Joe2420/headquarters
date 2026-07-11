@@ -36,6 +36,7 @@ import {
   buildReadyRoomPreparationModel,
   buildDesktopRepeatedMistakes,
   buildDesktopRepeatedSuccesses,
+  buildDebriefTheaterReflectionModel,
   createDesktopDoctrineCandidateFromDraft,
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
@@ -58,6 +59,7 @@ import {
   formatAuthorizationStatus,
   formatDatabaseStatus,
   formatDebriefStatus,
+  formatDebriefMissionDuration,
   formatHqosStatus,
   formatJournalClassificationStatus,
   formatMigrationStatus,
@@ -318,7 +320,8 @@ describe('Desktop shell', () => {
     expect(observationHtml).not.toContain('Evaluate Authorization');
     expect(warHtml).toContain('Request Authorization');
     expect(warHtml).toContain('Mission next action');
-    expect(debriefHtml).toContain('Behavior Sequence');
+    expect(debriefHtml).toContain('Mission Recap');
+    expect(debriefHtml).toContain('Plan vs Reality');
     expect(debriefHtml).toContain('Mission next action');
   });
 
@@ -1147,7 +1150,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Which protective rule keeps this decision disciplined?');
   });
 
-  it('renders the Debrief Theater with timeline, black box, decision report, and debrief form boundary', () => {
+  it('renders the Debrief Theater as a Commander-led reflection room', () => {
     const mission = createLocalMission(
       { codename: 'Foundation Patrol', objective: 'Hold the line' },
       { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
@@ -1164,14 +1167,18 @@ describe('Desktop shell', () => {
     />);
 
     expect(html).toContain('data-room-id="debrief-theater"');
-    expect(html).toContain('Context Recall');
-    expect(html).toContain('Context incomplete');
-    expect(html).toContain('What did you execute well?');
-    expect(html).toContain('Did you respect the risk parameter?');
+    expect(html).toContain('Mission Recap');
+    expect(html).toContain('Mission Complete');
+    expect(html).toContain('Mission Comparison');
+    expect(html).toContain('Plan vs Reality');
+    expect(html).toContain('Commander Debrief');
+    expect(html).toContain('Did you follow the original plan?');
+    expect(html).toContain('Behavior Report');
+    expect(html).toContain('Mission Rewards');
+    expect(html).toContain('Guardian Review');
+    expect(html).toContain('Archive Report');
+    expect(html).toContain('Message for Future You');
     expect(html).toContain('Mission timeline viewer');
-    expect(html).toContain('Black Box Viewer');
-    expect(html).toContain('Decision Report');
-    expect(html).toContain('Behavior Summary');
   });
 
   it('renders Debrief context recall from mission context memory', () => {
@@ -1218,7 +1225,64 @@ describe('Desktop shell', () => {
     expect(html).toContain('Long continuation.');
     expect(html).toContain('Break below VWAP.');
     expect(html).toContain('This conflicts with your earlier briefing.');
-    expect(html).toContain('What should future Joe see first?');
+    expect(html).toContain('Plan and observation need explanation');
+    expect(html).toContain('version of you remember?');
+  });
+
+  it('builds deterministic Debrief reflection model from mission context and saved debrief', () => {
+    const mission = createLocalMission(
+      { codename: 'Foundation Patrol', objective: 'Hold the line' },
+      { createdAt: '2026-01-01T00:00:00.000Z', id: 'mission-001' },
+    );
+
+    if (!mission) throw new Error('Expected local mission fixture');
+
+    const missionWithBriefing = withBriefingMissionContext(mission, {
+      missionObjective: 'Trade the morning breakout.',
+      market: 'ES futures.',
+      marketEnvironment: 'Low volatility range.',
+      highImpactNews: 'None.',
+      personalReadiness: 'Focused.',
+      riskParameters: '1%.',
+      successCriteria: 'Follow plan and stop after two attempts.',
+    });
+    const missionWithObservation = withObservationMissionContext(missionWithBriefing, {
+      marketDirection: 'Up.',
+      marketStructure: 'Higher highs.',
+      volume: 'Rising.',
+      liquidity: 'Above prior high.',
+      keyLevels: 'VWAP.',
+      bias: 'Long continuation.',
+      invalidationEvidence: 'Break below VWAP.',
+      emotionalCheck: 'Calm.',
+      readiness: 'yes',
+      operationalPicture: 'Entered after confirmation.',
+    });
+    const debrief = createLocalDebrief(missionWithObservation, {
+      behaviorSummary: 'Executed the plan without revenge.',
+      disciplineNotes: 'Waited for confirmation.',
+      lesson: 'Let confirmation arrive before committing capital.',
+    }, { id: 'debrief-001', createdAt: '2026-01-01T01:00:00.000Z' });
+
+    const model = buildDebriefTheaterReflectionModel({
+      activeMission: missionWithObservation,
+      missionDebrief: debrief,
+      authorizationStatus: {
+        missionId: missionWithObservation.id,
+        decision: 'approved',
+        reason: 'Evidence sufficient.',
+      },
+    });
+
+    expect(model.operation).toBe('Trade the morning breakout.');
+    expect(model.result).toBe('Debriefed');
+    expect(model.risk).toBe('1%.');
+    expect(model.guardianVerdict).toBe('Review');
+    expect(model.reality).toBe('Executed the plan without revenge.');
+    expect(model.lesson).toBe('Let confirmation arrive before committing capital.');
+    expect(model.behaviorScore).toBe(82);
+    expect(model.archiveReady).toBe(true);
+    expect(formatDebriefMissionDuration({ ...missionWithObservation, createdAt: 'invalid-date' })).toBe('Not available');
   });
 
   it('keeps Headquarters overview focused on Commander guidance instead of dense subsystem panels', () => {
