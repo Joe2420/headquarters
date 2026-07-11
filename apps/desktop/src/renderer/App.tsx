@@ -3051,6 +3051,15 @@ export function WarRoom({
   const contradictions = activeMission?.missionContext
     ? detectCommanderContradictions(activeMission.missionContext)
     : [];
+  const decision = buildWarRoomDecisionModel({
+    activeMission,
+    missionIntelligencePackage,
+    authorizationStatus,
+    alerts,
+    lockout,
+    contradictions,
+    comparisonMission,
+  });
 
   return (
     <GuidedRoom
@@ -3059,47 +3068,63 @@ export function WarRoom({
       atmosphere="war"
       title="War Room"
       useCase={authorizationDenied ? 'Repair missing authorization evidence.' : 'Decide from authorized evidence only.'}
-      objective="Evaluate authorization without exposing unrelated workflows. Headquarters never places trades."
-      primaryAction={<strong>{authorizationDenied ? authorizationStatus.reason : 'Evaluate Authorization'}</strong>}
+      objective="Ask Headquarters for permission to risk capital. Evidence is tested before deployment is authorized."
+      primaryAction={(
+        <div className="war-room-primary-action">
+          <strong>{decision.deploymentStatus}</strong>
+          <p className="muted">{decision.primaryDetail}</p>
+        </div>
+      )}
       workspace={(
-        <>
-          <WarRoomContextSummary
-            activeMission={activeMission}
-            missionIntelligencePackage={missionIntelligencePackage}
-            contradictions={contradictions}
-          />
-          <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} />
+        <div className="war-room-decision-layout" aria-label="War Room authorization workspace">
+          <WarRoomMissionBrief decision={decision} />
+          <WarRoomEvidenceBoard decision={decision} />
+          <WarRoomGuardianReview decision={decision} />
+          <WarRoomCommanderInterrogation decision={decision} />
+          <MissionAuthorizationPanel activeMission={activeMission} authorizationStatus={authorizationStatus} decision={decision} />
           {parseMissionState(activeMission?.currentState) === 'authorization' ? (
-            <MissionNextActionPanel
-              activeMission={activeMission}
-              authorizationStatus={authorizationStatus}
-              missionDebrief={missionDebrief}
-              onMissionChanged={onMissionChanged}
-              onRequestAuthorization={onRequestAuthorization}
-              onSaveDebrief={onSaveDebrief}
-              onArchiveMission={onArchiveMission}
-            />
+            <section className="journal-panel war-room-authorization-console" aria-label="Authorization console">
+              <p className="section-label">Authorization Console</p>
+              <h3>Should Headquarters authorize deployment?</h3>
+              <p className="muted">Final review requires reasoning, invalidation, and a protective rule.</p>
+              <MissionNextActionPanel
+                activeMission={activeMission}
+                authorizationStatus={authorizationStatus}
+                missionDebrief={missionDebrief}
+                onMissionChanged={onMissionChanged}
+                onRequestAuthorization={onRequestAuthorization}
+                onSaveDebrief={onSaveDebrief}
+                onArchiveMission={onArchiveMission}
+              />
+            </section>
           ) : null}
-        </>
+        </div>
       )}
+      timelineLabel="Authorization Log"
       timeline={(
-        <section className="journal-panel" aria-label="War table projection">
-            <p className="section-label">War Table Projection</p>
-            <h3>{activeMission?.campaign ?? 'No active mission'}</h3>
-            <p className="muted">{activeMission?.objective ?? 'Create and prepare a mission before authorization.'}</p>
-          </section>
+        <section className="journal-panel war-room-authorization-log" aria-label="Authorization log">
+          <p className="section-label">Authorization Log</p>
+          <ol>
+            {decision.authorizationLog.map((item) => (
+              <li key={item}>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
       )}
+      secondaryToolsLabel="Decision Support"
       secondaryTools={(
         <>
-          <section className="journal-panel" aria-label="Guardian status panel">
-            <p className="section-label">Guardian Status</p>
-            <h3>{lockout.status === 'locked' ? 'Intervention Required' : 'Guardian Standing By'}</h3>
-            <p className="muted">{formatJournalCount(alerts.length, 'Guardian alert', 'Guardian alerts')}</p>
-          </section>
           <section className="journal-panel" aria-label="Ghost comparison panel">
-            <p className="section-label">Ghost Comparison</p>
-            <h3>{comparisonMission?.campaign ?? 'No comparison mission'}</h3>
-            <p className="muted">Comparison remains read-only until replay and ghost workflows are approved.</p>
+            <p className="section-label">Similar Missions</p>
+            <h3>{decision.similarMissionTitle}</h3>
+            <p className="muted">{decision.similarMissionDetail}</p>
+          </section>
+          <section className="journal-panel" aria-label="Doctrine decision support">
+            <p className="section-label">Doctrine</p>
+            <h3>{decision.doctrineStatus}</h3>
+            <p className="muted">Doctrine remains a constraint on capital deployment.</p>
           </section>
         </>
       )}
@@ -3107,64 +3132,246 @@ export function WarRoom({
   );
 }
 
-function WarRoomContextSummary({
+interface WarRoomDecisionModel {
+  readonly missionName: string;
+  readonly objective: string;
+  readonly market: string;
+  readonly environment: string;
+  readonly bias: string;
+  readonly risk: string;
+  readonly confidenceScore: number;
+  readonly confidenceLevel: string;
+  readonly guardianVerdict: string;
+  readonly guardianItems: readonly { readonly label: string; readonly status: 'clear' | 'warning' | 'blocked' }[];
+  readonly doctrineStatus: string;
+  readonly deploymentStatus: string;
+  readonly primaryDetail: string;
+  readonly evidenceItems: readonly { readonly label: string; readonly status: 'clear' | 'warning' | 'missing'; readonly detail: string }[];
+  readonly confidenceReasons: readonly string[];
+  readonly commanderChallenge: string;
+  readonly authorizationLog: readonly string[];
+  readonly similarMissionTitle: string;
+  readonly similarMissionDetail: string;
+}
+
+function buildWarRoomDecisionModel({
   activeMission,
   missionIntelligencePackage,
+  authorizationStatus,
+  alerts,
+  lockout,
   contradictions,
+  comparisonMission,
 }: {
   readonly activeMission?: ActiveMission | undefined;
   readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+  readonly alerts: readonly GuardianAlert[];
+  readonly lockout: GuardianLockoutState;
   readonly contradictions: readonly MissionContextContradictionFlag[];
-}) {
-  const missionContext = activeMission?.missionContext;
+  readonly comparisonMission?: ActiveMission | undefined;
+}): WarRoomDecisionModel {
+  const briefing = activeMission?.missionContext?.briefing;
+  const observation = activeMission?.missionContext?.observation;
+  const score = missionIntelligencePackage?.confidence.score ?? 0;
+  const level = missionIntelligencePackage?.confidence.level ?? 'incomplete';
+  const guardianBlocked = lockout.status === 'locked' || alerts.some((alert) => alert.priority === 'critical');
+  const guardianWarnings = alerts.filter((alert) => alert.priority === 'high' || alert.priority === 'medium');
+  const authorizationApproved = authorizationStatus?.decision === 'approved';
 
+  return {
+    missionName: activeMission?.campaign ?? 'No active mission',
+    objective: formatMissionContextDisplay(briefing?.missionObjective ?? activeMission?.objective),
+    market: formatMissionContextDisplay(briefing?.market),
+    environment: formatMissionContextDisplay(briefing?.marketEnvironment),
+    bias: formatMissionContextDisplay(observation?.directionalHypothesis),
+    risk: formatMissionContextDisplay(briefing?.riskParameters),
+    confidenceScore: score,
+    confidenceLevel: level,
+    guardianVerdict: guardianBlocked ? 'Deployment denied.' : guardianWarnings.length > 0 ? 'Proceed only with restrictions.' : 'No restriction. Proceed.',
+    guardianItems: [
+      { label: hasContent(briefing?.riskParameters ?? '') ? 'Risk inside declared limit' : 'Risk boundary missing', status: hasContent(briefing?.riskParameters ?? '') ? 'clear' : 'blocked' },
+      { label: formatGuardianSessionReview(briefing?.marketEnvironment), status: guardianWarnings.length > 0 ? 'warning' : 'clear' },
+      { label: hasContent(briefing?.personalReadiness ?? '') ? 'Emotional state declared' : 'Readiness not declared', status: hasContent(briefing?.personalReadiness ?? '') ? 'clear' : 'warning' },
+      { label: guardianBlocked ? 'Guardian lockout active' : 'Guardian monitoring active', status: guardianBlocked ? 'blocked' : 'clear' },
+    ],
+    doctrineStatus: missionIntelligencePackage?.missingEvidence.length ? 'Review required' : 'Ready',
+    deploymentStatus: authorizationApproved ? 'Deployment Authorized' : 'Deployment NOT AUTHORIZED',
+    primaryDetail: authorizationApproved
+      ? 'Headquarters authorizes this operation. Trade the plan, not the emotion.'
+      : `Mission confidence ${score}%. Headquarters is testing evidence before capital is deployed.`,
+    evidenceItems: [
+      buildWarRoomEvidenceItem('Structure', observation?.marketStructure),
+      buildWarRoomEvidenceItem('Liquidity', observation?.liquidityNotes),
+      buildWarRoomEvidenceItem('Volume', observation?.volume),
+      buildWarRoomEvidenceItem('Levels', observation?.keyLevels),
+      buildWarRoomEvidenceItem('Risk', briefing?.riskParameters),
+      buildWarRoomEvidenceItem('Invalidation', observation?.invalidationEvidence),
+      buildWarRoomEvidenceItem('Emotion', briefing?.personalReadiness),
+      { label: 'Guardian', detail: guardianBlocked ? 'Blocked' : guardianWarnings.length > 0 ? 'Warnings present' : 'Clear', status: guardianBlocked ? 'warning' : guardianWarnings.length > 0 ? 'warning' : 'clear' },
+      ...contradictions.map((contradiction) => ({ label: 'Contradiction', detail: contradiction.message, status: 'warning' as const })),
+    ],
+    confidenceReasons: buildWarRoomConfidenceReasons(missionIntelligencePackage, guardianWarnings.length),
+    commanderChallenge: buildWarRoomCommanderChallenge(score, missionIntelligencePackage),
+    authorizationLog: buildWarRoomAuthorizationLog({ activeMission, missionIntelligencePackage, alerts, authorizationStatus }),
+    similarMissionTitle: comparisonMission?.campaign ?? 'No comparison mission',
+    similarMissionDetail: comparisonMission
+      ? `${comparisonMission.objective} | ${formatMissionDetailState(comparisonMission)}`
+      : 'Similar mission comparison remains read-only until replay workflows are expanded.',
+  };
+}
+
+function WarRoomMissionBrief({ decision }: { readonly decision: WarRoomDecisionModel }) {
   return (
-    <section className="journal-panel" aria-label="War Room mission context summary">
-      <p className="section-label">Mission Context</p>
-      <h3>{activeMission?.campaign ?? 'Mission context incomplete'}</h3>
-      {missionIntelligencePackage ? (
-        <MissionIntelligencePanel
-          missionPackage={missionIntelligencePackage}
-          mode="authorization"
-          title="Mission Intelligence Summary"
-        />
-      ) : null}
+    <section className="journal-panel war-room-mission-brief" aria-label="Mission brief">
+      <p className="section-label">Mission Brief</p>
+      <h3>{decision.missionName}</h3>
       <dl>
-        <dt>Mission Objective</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.briefing.missionObjective ?? activeMission?.objective)}</dd>
-        <dt>Market Environment</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.briefing.marketEnvironment)}</dd>
-        <dt>High-Impact News</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.briefing.highImpactNews)}</dd>
-        <dt>Risk Limit</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.briefing.riskParameters)}</dd>
-        <dt>Observation Summary</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.observation.operationalSummary)}</dd>
-        <dt>Directional Hypothesis</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.observation.directionalHypothesis)}</dd>
-        <dt>Invalidation Criteria</dt>
-        <dd>{formatMissionContextDisplay(missionContext?.observation.invalidationEvidence)}</dd>
+        <div><dt>Objective</dt><dd>{decision.objective}</dd></div>
+        <div><dt>Market</dt><dd>{decision.market}</dd></div>
+        <div><dt>Environment</dt><dd>{decision.environment}</dd></div>
+        <div><dt>Bias</dt><dd>{decision.bias}</dd></div>
+        <div><dt>Risk</dt><dd>{decision.risk}</dd></div>
+        <div><dt>Guardian</dt><dd>{decision.guardianVerdict}</dd></div>
+        <div><dt>Doctrine</dt><dd>{decision.doctrineStatus}</dd></div>
       </dl>
-      {contradictions.length > 0 ? (
-        <div aria-label="Commander contradiction challenges">
-          <p className="section-label">Commander Challenge</p>
-          <ul>
-            {contradictions.map((contradiction) => (
-              <li key={contradiction.id}>{contradiction.message}</li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p className="muted">No context contradictions detected.</p>
-      )}
-      <div aria-label="Commander authorization questions">
-        <p>{missionIntelligencePackage
-          ? buildAuthorizationIntelligenceQuestion(missionIntelligencePackage)
-          : 'Is this authorization based on your plan or on pressure?'}</p>
-        <p>Which rule protects this decision?</p>
+      <WarRoomConfidenceMeter decision={decision} />
+    </section>
+  );
+}
+
+function WarRoomConfidenceMeter({ decision }: { readonly decision: WarRoomDecisionModel }) {
+  return (
+    <div className="war-room-confidence" aria-label={`Mission confidence ${decision.confidenceScore}%`}>
+      <p className="section-label">Mission Confidence</p>
+      <div><span style={{ width: `${decision.confidenceScore}%` }} /></div>
+      <strong>{decision.confidenceLevel} / {decision.confidenceScore}%</strong>
+    </div>
+  );
+}
+
+function WarRoomEvidenceBoard({ decision }: { readonly decision: WarRoomDecisionModel }) {
+  return (
+    <section className="journal-panel war-room-evidence-board" aria-label="Evidence board">
+      <p className="section-label">Evidence Board</p>
+      <h3>Evidence must earn authorization.</h3>
+      <ul>
+        {decision.evidenceItems.map((item) => (
+          <li key={`${item.label}-${item.detail}`} data-evidence-status={item.status}>
+            <strong>{formatWarRoomEvidenceStatus(item.status)} {item.label}</strong>
+            <span>{item.detail}</span>
+          </li>
+        ))}
+      </ul>
+      <div aria-label="Mission confidence reasons">
+        <p className="section-label">Confidence Reason</p>
+        <ul>
+          {decision.confidenceReasons.map((reason) => <li key={reason}>{reason}</li>)}
+        </ul>
       </div>
     </section>
   );
+}
+
+function WarRoomGuardianReview({ decision }: { readonly decision: WarRoomDecisionModel }) {
+  return (
+    <section className="journal-panel war-room-guardian-review" aria-label="Guardian review">
+      <p className="section-label">Guardian Review</p>
+      <h3>{decision.guardianVerdict}</h3>
+      <ul>
+        {decision.guardianItems.map((item) => (
+          <li key={item.label} data-guardian-status={item.status}>
+            {formatWarRoomGuardianStatus(item.status)} {item.label}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function WarRoomCommanderInterrogation({ decision }: { readonly decision: WarRoomDecisionModel }) {
+  return (
+    <section className="journal-panel war-room-commander-interrogation" aria-label="Commander interrogation">
+      <p className="section-label">Commander Interrogation</p>
+      <h3>Final question.</h3>
+      <p>{decision.commanderChallenge}</p>
+      <p className="muted">Confirm that discipline, not excitement, is driving this decision.</p>
+    </section>
+  );
+}
+
+function buildWarRoomEvidenceItem(label: string, value: string | undefined): WarRoomDecisionModel['evidenceItems'][number] {
+  const detail = formatMissionContextDisplay(value);
+
+  return {
+    label,
+    detail,
+    status: detail === 'Context incomplete' ? 'missing' : 'clear',
+  };
+}
+
+function buildWarRoomConfidenceReasons(
+  missionIntelligencePackage: MissionIntelligencePackage | undefined,
+  guardianWarningCount: number,
+): readonly string[] {
+  if (missionIntelligencePackage === undefined) return ['- Intelligence package is not available.'];
+
+  return [
+    ...missionIntelligencePackage.confidence.reasons.map((reason) => `+ ${reason}`),
+    ...(guardianWarningCount > 0 ? [`- ${guardianWarningCount} Guardian restriction signal${guardianWarningCount === 1 ? '' : 's'} present`] : []),
+    ...(missionIntelligencePackage.missingEvidence.length > 0
+      ? [`- Missing: ${missionIntelligencePackage.missingEvidence.slice(0, 3).map((item) => item.label).join(', ')}`]
+      : ['+ Required evidence is present']),
+  ];
+}
+
+function buildWarRoomCommanderChallenge(
+  score: number,
+  missionIntelligencePackage: MissionIntelligencePackage | undefined,
+): string {
+  if (score < 50) return `Your confidence is only ${score}%. Why should Headquarters deploy capital?`;
+  if (missionIntelligencePackage?.missingEvidence.length) {
+    return buildAuthorizationIntelligenceQuestion(missionIntelligencePackage);
+  }
+
+  return 'Evidence is aligning. Why does this setup deserve capital?';
+}
+
+function buildWarRoomAuthorizationLog({
+  activeMission,
+  missionIntelligencePackage,
+  alerts,
+  authorizationStatus,
+}: {
+  readonly activeMission?: ActiveMission | undefined;
+  readonly missionIntelligencePackage?: MissionIntelligencePackage | undefined;
+  readonly alerts: readonly GuardianAlert[];
+  readonly authorizationStatus?: MissionAuthorizationStatus | undefined;
+}): readonly string[] {
+  return [
+    activeMission ? `Mission opened: ${activeMission.campaign}` : 'Mission file pending',
+    missionIntelligencePackage ? `Evidence reviewed: ${missionIntelligencePackage.confidence.score}% confidence` : 'Evidence review pending',
+    `Guardian reviewed: ${formatJournalCount(alerts.length, 'alert', 'alerts')}`,
+    authorizationStatus ? `Authorization ${authorizationStatus.decision}: ${authorizationStatus.reason}` : 'Authorization not yet requested',
+  ];
+}
+
+function formatGuardianSessionReview(environment: string | undefined): string {
+  if (!hasContent(environment ?? '')) return 'Trading session not declared';
+  if (/weekend|low volume|low activity/i.test(environment ?? '')) return 'Weekend or low-liquidity conditions';
+  return 'Trading session acceptable';
+}
+
+function formatWarRoomEvidenceStatus(status: WarRoomDecisionModel['evidenceItems'][number]['status']): string {
+  if (status === 'clear') return '✓';
+  if (status === 'warning') return '⚠';
+  return '○';
+}
+
+function formatWarRoomGuardianStatus(status: WarRoomDecisionModel['guardianItems'][number]['status']): string {
+  if (status === 'clear') return '✓';
+  if (status === 'warning') return '⚠';
+  return '!';
 }
 
 function formatMissionContextDisplay(value: string | undefined): string {
@@ -3894,30 +4101,36 @@ function MissionNextActionPanel({
   const nextAction = getMissionNextAction(activeMission);
   const currentState = parseMissionState(activeMission?.currentState);
   const recordedInvalidation = getRecordedObservationInvalidation(activeMission);
+  const actionLabel = currentState === 'authorization' ? 'Authorization Request' : 'Next Action';
+  const actionTitle = currentState === 'authorization' ? 'Request Authorization' : nextAction.label;
+  const actionDescription = currentState === 'authorization'
+    ? 'Headquarters will review evidence, Guardian status, invalidation, and protective rule.'
+    : nextAction.description;
+  const buttonLabel = currentState === 'authorization' ? 'Request Authorization' : nextAction.buttonLabel;
 
   return (
     <form className="mission-next-action-panel" aria-label="Mission next action" onSubmit={handleNextAction}>
       <div>
-        <p className="section-label">Next Action</p>
-        <h3>{nextAction.label}</h3>
+        <p className="section-label">{actionLabel}</p>
+        <h3>{actionTitle}</h3>
       </div>
-      <p className="muted">{nextAction.description}</p>
+      <p className="muted">{actionDescription}</p>
       {currentState === 'authorization' ? (
         <>
           <label>
-            <span>Operator Justification</span>
+            <span>Why does this setup deserve capital?</span>
             <input value={operatorJustification} onChange={(event) => setOperatorJustification(event.target.value)} />
           </label>
           {recordedInvalidation ? (
             <p className="muted">Observation invalidation recorded: {recordedInvalidation}</p>
           ) : (
             <label>
-              <span>Invalidation</span>
+              <span>What is the strongest argument against this trade?</span>
               <input value={invalidation} onChange={(event) => setInvalidation(event.target.value)} />
             </label>
           )}
           <label>
-            <span>Protective Rule</span>
+            <span>Which protective rule keeps this decision disciplined?</span>
             <input value={protectiveRule} onChange={(event) => setProtectiveRule(event.target.value)} />
           </label>
         </>
@@ -3939,7 +4152,7 @@ function MissionNextActionPanel({
         </>
       ) : null}
       <button className="secondary-action" type="submit" disabled={nextAction.disabled}>
-        {nextAction.buttonLabel}
+        {buttonLabel}
       </button>
       <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
     </form>
@@ -3949,18 +4162,32 @@ function MissionNextActionPanel({
 interface MissionAuthorizationPanelProps {
   activeMission?: ActiveMission | undefined;
   authorizationStatus?: MissionAuthorizationStatus | undefined;
+  decision?: WarRoomDecisionModel | undefined;
 }
 
 function MissionAuthorizationPanel({
   activeMission,
   authorizationStatus,
+  decision,
 }: MissionAuthorizationPanelProps) {
   return (
     <section className="mission-authorization-panel" aria-label="Mission authorization">
       <div>
         <p className="section-label">Authorization</p>
-        <h3>Mission Authorization</h3>
+        <h3>Authorization Request</h3>
       </div>
+      {decision ? (
+        <dl className="war-room-authorization-summary">
+          <dt>Mission</dt>
+          <dd>{decision.missionName}</dd>
+          <dt>Operation</dt>
+          <dd>{decision.bias}</dd>
+          <dt>Risk</dt>
+          <dd>{decision.risk}</dd>
+          <dt>Confidence</dt>
+          <dd>{decision.confidenceScore}%</dd>
+        </dl>
+      ) : null}
       <p className="muted">{formatMissionAuthorizationAvailability(activeMission)}</p>
       <p className="muted">{formatAuthorizationStatus(authorizationStatus)}</p>
     </section>

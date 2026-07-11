@@ -21,7 +21,7 @@ describe('Sprint 4 mission operations review', () => {
     const html = renderToStaticMarkup(<CommandCenter />);
 
     expect(html).toContain('Create Mission');
-    expect(html).toContain('Mission Authorization');
+    expect(html).toContain('Authorization Request');
     expect(html).toContain('Operational Sequence');
     expect(html).toContain('Mission Details');
     expect(html).toContain('Mission Archive Viewer');

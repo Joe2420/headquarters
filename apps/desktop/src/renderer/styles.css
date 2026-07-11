@@ -1586,6 +1586,108 @@ dd {
   padding-left: 0.85rem;
 }
 
+.war-room-primary-action,
+.war-room-decision-layout {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.war-room-decision-layout {
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+}
+
+.war-room-authorization-console,
+.war-room-evidence-board {
+  grid-column: 1 / -1;
+}
+
+.war-room-mission-brief,
+.war-room-authorization-console {
+  border-color: rgba(216, 178, 92, 0.42);
+  background:
+    linear-gradient(135deg, rgba(216, 178, 92, 0.12), transparent 46%),
+    #101114;
+}
+
+.war-room-mission-brief dl,
+.war-room-authorization-summary {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.war-room-mission-brief dl div,
+.war-room-authorization-summary {
+  grid-template-columns: minmax(110px, 0.48fr) minmax(0, 1fr);
+}
+
+.war-room-mission-brief dl div,
+.war-room-authorization-summary,
+.war-room-evidence-board li,
+.war-room-guardian-review li,
+.war-room-authorization-log li {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(216, 178, 92, 0.12);
+}
+
+.war-room-mission-brief dt,
+.war-room-authorization-summary dt {
+  color: #d8b25c;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.war-room-confidence {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.war-room-confidence div {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(216, 178, 92, 0.32);
+  background: rgba(7, 10, 13, 0.8);
+}
+
+.war-room-confidence span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #d84f4f, #d8b25c, #70ff9c);
+}
+
+.war-room-evidence-board ul,
+.war-room-guardian-review ul,
+.war-room-authorization-log ol {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.war-room-evidence-board li {
+  grid-template-columns: minmax(170px, 0.5fr) minmax(0, 1fr);
+}
+
+.war-room-evidence-board li[data-evidence-status="missing"],
+.war-room-guardian-review li[data-guardian-status="blocked"] {
+  color: #ff8a8a;
+}
+
+.war-room-evidence-board li[data-evidence-status="warning"],
+.war-room-guardian-review li[data-guardian-status="warning"] {
+  color: #d8b25c;
+}
+
+.war-room-commander-interrogation {
+  border-left: 3px solid #d84f4f;
+  background:
+    linear-gradient(135deg, rgba(216, 79, 79, 0.1), transparent 44%),
+    #101114;
+}
+
 .room-layout[data-room-identity="reflection"] .guided-workflow-layout {
   max-width: 780px;
 }

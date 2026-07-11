@@ -316,7 +316,7 @@ describe('Desktop shell', () => {
     expect(observationHtml).toContain('Observe quietly and collect evidence.');
     expect(observationHtml).toContain('Report only visible evidence. Prediction stays silent.');
     expect(observationHtml).not.toContain('Evaluate Authorization');
-    expect(warHtml).toContain('Evaluate Authorization');
+    expect(warHtml).toContain('Request Authorization');
     expect(warHtml).toContain('Mission next action');
     expect(debriefHtml).toContain('Behavior Sequence');
     expect(debriefHtml).toContain('Mission next action');
@@ -470,8 +470,9 @@ describe('Desktop shell', () => {
     />);
 
     expect(mission.currentState).toBe('authorization');
-    expect(warHtml).toContain('Mission Intelligence Summary');
-    expect(warHtml).toContain('Based on this intelligence, why should Headquarters authorize execution?');
+    expect(warHtml).toContain('Mission Brief');
+    expect(warHtml).toContain('Evidence Board');
+    expect(warHtml).toContain('Evidence is aligning. Why does this setup deserve capital?');
     expect(debriefHtml).toContain('Debrief Intelligence Comparison');
     expect(debriefHtml).toContain('Original plan: Trade only if evidence confirms continuation');
     expect(archiveHtml).toContain('Preserved Mission Intelligence');
@@ -1090,14 +1091,16 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<WarRoom activeMission={{ ...mission, currentState: 'authorization' }} missionHistory={[mission]} />);
 
     expect(html).toContain('data-room-id="war-room"');
-    expect(html).toContain('Mission Authorization');
-    expect(html).toContain('War Table Projection');
-    expect(html).toContain('Guardian Status');
-    expect(html).toContain('Ghost Comparison');
-    expect(html).toContain('Headquarters never places trades');
-    expect(html).toContain('Mission Context');
+    expect(html).toContain('Mission Brief');
+    expect(html).toContain('Evidence Board');
+    expect(html).toContain('Guardian Review');
+    expect(html).toContain('Commander Interrogation');
+    expect(html).toContain('Authorization Console');
+    expect(html).toContain('Authorization Log');
+    expect(html).toContain('Similar Missions');
+    expect(html).toContain('Deployment NOT AUTHORIZED');
     expect(html).toContain('Context incomplete');
-    expect(html).toContain('Is this authorization based on your plan or on pressure?');
+    expect(html).toContain('Why should Headquarters deploy capital?');
   });
 
   it('renders War Room mission context summary with contradictions when available', () => {
@@ -1137,12 +1140,11 @@ describe('Desktop shell', () => {
 
     expect(html).toContain('Trade the morning breakout.');
     expect(html).toContain('Low volatility range.');
-    expect(html).toContain('High volatility expansion above VWAP.');
     expect(html).toContain('Long continuation.');
     expect(html).toContain('Break below VWAP.');
-    expect(html).toContain('Commander Challenge');
+    expect(html).toContain('Commander Interrogation');
     expect(html).toContain('This conflicts with your earlier briefing.');
-    expect(html).toContain('Which rule protects this decision?');
+    expect(html).toContain('Which protective rule keeps this decision disciplined?');
   });
 
   it('renders the Debrief Theater with timeline, black box, decision report, and debrief form boundary', () => {
