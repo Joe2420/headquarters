@@ -3918,6 +3918,46 @@ dd {
   white-space: nowrap;
 }
 
+.headquarters-context-surface {
+  display: grid;
+  gap: 0.75rem;
+  color: #d8ffe2;
+}
+
+.headquarters-context-surface details {
+  border: 1px solid rgba(123, 255, 164, 0.14);
+  background: rgba(2, 14, 8, 0.62);
+  padding: 0.75rem;
+}
+
+.headquarters-context-surface summary {
+  cursor: pointer;
+  color: #9effb7;
+  font-weight: 800;
+}
+
+.headquarters-context-surface ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.headquarters-context-surface li {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.headquarters-context-surface span,
+.headquarters-context-surface__empty {
+  color: #8fac99;
+}
+
+.headquarters-context-surface p {
+  margin: 0;
+}
+
 @media (max-width: 1100px) {
   .commander-workspace {
     grid-template-columns: 1fr;
