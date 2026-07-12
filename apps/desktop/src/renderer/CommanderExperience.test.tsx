@@ -151,7 +151,22 @@ describe('CommanderExperience', () => {
     expect(source).toContain("entry.speaker === 'Commander' && entry.status === 'queued'");
     expect(source).toContain("transmission.status !== 'queued'");
     expect(source).toContain("transmission.status === 'delivered'");
-    expect(source).toContain('? transmission.text');
+    expect(source).toContain('? <span className="commander-transmitted-text"');
+  });
+
+  it('keeps the Commander chat terminal pinned to the newest transmission', () => {
+    const source = readFileSync(new URL('./CommanderExperience.tsx', import.meta.url), 'utf8');
+    const styles = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
+
+    expect(source).toContain('feed.scrollTop = feed.scrollHeight');
+    expect(source).toContain('window.requestAnimationFrame(scrollToBottom)');
+    expect(source).toContain('commander-transmitted-text');
+    expect(source).toContain('? <span className="commander-transmitted-text"');
+    expect(source).toContain('commander-transmitted-text commander-transmitted-text-active');
+    expect(styles).toContain('height: clamp(760px, 84vh, 1040px)');
+    expect(styles).toContain('grid-template-rows: auto minmax(0, 1fr) auto auto auto');
+    expect(styles).toContain('.commander-transmitted-text-active::after');
+    expect(styles).toContain('content: "_"');
   });
 
   it('keeps ceremony dialogue available without replaying it into the Commander chat feed', () => {

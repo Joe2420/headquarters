@@ -204,7 +204,18 @@ export function CommanderExperiencePanel({
     const feed = feedRef.current;
     if (!feed) return;
 
-    feed.scrollTop = feed.scrollHeight;
+    const scrollToBottom = () => {
+      feed.scrollTop = feed.scrollHeight;
+    };
+
+    scrollToBottom();
+    const animationFrame = window.requestAnimationFrame(scrollToBottom);
+    const timeout = window.setTimeout(scrollToBottom, 80);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.clearTimeout(timeout);
+    };
   }, [transmissions]);
 
   useEffect(() => {
@@ -347,9 +358,9 @@ export function CommanderExperiencePanel({
                       : 'commander-transmission commander-transmission-incoming'}
               >
                 <span>{transmission.speaker}</span>
-                <p>{transmission.speaker === 'Commander'
+                <p className="commander-transmission-text">{transmission.speaker === 'Commander'
                   ? transmission.status === 'delivered'
-                    ? transmission.text
+                    ? <span className="commander-transmitted-text">{transmission.text}</span>
                     : <TransmittedText
                         text={transmission.text}
                         timing={transmission.timing ?? state.dialogueProfile.timing}
@@ -541,7 +552,11 @@ function TransmittedText({
     transmissionTiming.startDelayMs,
   ]);
 
-  return <>{visibleText}</>;
+  return (
+    <span className="commander-transmitted-text commander-transmitted-text-active">
+      {visibleText}
+    </span>
+  );
 }
 
 function buildInitialCommanderTransmissions(state: CommanderExperienceState): CommanderTransmissionEntry[] {
