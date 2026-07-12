@@ -11,7 +11,8 @@ describe('Sprint 3 desktop experience review', () => {
     expect(firstLaunchHtml).toContain('Commander Chat');
     expect(firstLaunchHtml).toContain('Current Room');
     expect(firstLaunchHtml).toContain('Report for Duty');
-    expect(firstLaunchHtml).toContain('HQOS Status');
+    expect(firstLaunchHtml).toContain('Mission Command');
+    expect(firstLaunchHtml).toContain('Technical diagnostics');
     expect(firstLaunchHtml).toContain('aria-label="Primary"');
     expect(reportForDuty('security-checkpoint')).toEqual({
       from: 'security-checkpoint',
