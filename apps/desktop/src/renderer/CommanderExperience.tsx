@@ -11,8 +11,6 @@ import {
   type MissionBriefingContext,
   type MissionObservationContext,
 } from './CommanderMissionBriefing';
-import type { MissionCompassStep } from './MissionCompass';
-import { MissionCompassPanel } from './RoomNavigationExperience';
 import { recommendRoomForMissionState } from './RoomStateMachine';
 import {
   adaptCommanderQuestion,
@@ -173,7 +171,6 @@ export function CommanderExperiencePanel({
   state,
   onAcknowledgeInterruption,
   onContinue,
-  compassSteps,
   commandChair,
   situationBoard,
   workflowSurface,
@@ -182,7 +179,6 @@ export function CommanderExperiencePanel({
   readonly state: CommanderExperienceState;
   readonly onAcknowledgeInterruption?: ((id: string) => void) | undefined;
   readonly onContinue?: (() => void) | undefined;
-  readonly compassSteps?: readonly MissionCompassStep[] | undefined;
   readonly commandChair?: ReactNode;
   readonly situationBoard?: ReactNode;
   readonly workflowSurface?: ReactNode;
@@ -343,7 +339,7 @@ export function CommanderExperiencePanel({
         <section className="commander-transmission-console" aria-label="Commander transmission channel">
           <div className="commander-transmission-header">
             <p className="section-label">Commander</p>
-            <span>{state.lifecycleStep}</span>
+            <span>{formatCommanderRoomLabel(state.currentRoom)}</span>
           </div>
           <ol ref={feedRef} className="commander-transmission-feed" aria-label="Commander briefing feed" aria-live="polite">
             {transmissions.filter((transmission) => transmission.status !== 'queued').map((transmission) => (
@@ -372,8 +368,8 @@ export function CommanderExperiencePanel({
           </ol>
           <div className="commander-next-action" aria-label="Commander next action">
             <div className="commander-lifecycle-status">
-              <p className="section-label">Lifecycle</p>
-              <strong>{state.lifecycleStep}</strong>
+              <p className="section-label">Next Action</p>
+              <strong>{state.nextAction.label}</strong>
               <span>{state.nextAction.description}</span>
             </div>
             {onContinue && !isCommanderQuestionPending(state) ? (
@@ -419,13 +415,12 @@ export function CommanderExperiencePanel({
         </section>
       </div>
 
-      {commandChair || situationBoard || compassSteps ? (
+      {commandChair || situationBoard ? (
         <div
-          className={compassSteps ? 'commander-instrument-strip' : 'commander-instrument-strip commander-instrument-strip-compact'}
+          className="commander-instrument-strip commander-instrument-strip-compact"
           aria-label="Commander instruments"
         >
           {commandChair}
-          {compassSteps ? <MissionCompassPanel steps={compassSteps} /> : null}
           {situationBoard}
         </div>
       ) : null}

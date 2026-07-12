@@ -47,6 +47,7 @@ import {
   buildMissionContextLookup,
   buildInstitutionalHealthModel,
   buildMissionCommandSidebarModel,
+  buildMissionFinalEvaluation,
   buildOperationalConsequences,
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
@@ -128,9 +129,9 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.room-transition-layer::before');
     expect(styles).toContain('contain: layout paint');
     expect(styles).toContain('.operations-viewport > .room-transition-layer');
-    expect(styles).toContain('min-height: min(820px, calc(100vh - 4rem))');
+    expect(styles).toContain('min-height: min(920px, calc(100vh - 2rem))');
     expect(styles).toContain('.commander-chat-stage .commander-shell');
-    expect(styles).toContain('min-height: min(760px, calc(100vh - 6rem))');
+    expect(styles).toContain('height: clamp(920px, calc(100vh - 2.5rem), 1240px)');
     expect(styles).toContain('.skip-link:focus-visible');
   });
 
@@ -283,6 +284,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Institutional Health');
     expect(html).toContain('Operational Consequences');
     expect(html).toContain('Outcome State');
+    expect(html).toContain('Final Evaluation');
     expect(html).toContain('Technical diagnostics');
     expect(html).toContain('Database');
   });
@@ -563,6 +565,126 @@ describe('Desktop shell', () => {
     expect(new Set(consequences.map((consequence) => consequence.id)).size).toBe(consequences.length);
   });
 
+  it('evaluates archived missions by process rather than profit or loss', () => {
+    const missionIntelligence = buildDesktopMissionIntelligencePackage({
+      id: 'mission-evaluation-001',
+      campaign: 'Disciplined No Trade',
+      objective: 'Do not deploy unless evidence confirms',
+      condition: 'Archived',
+      commandAuthority: 'Professional command',
+      currentState: 'archived',
+      createdAt: '2026-07-04T10:00:00.000Z',
+      missionContext: {
+        missionId: 'mission-evaluation-001',
+        briefing: {
+          missionObjective: 'Do not deploy unless evidence confirms',
+          market: 'NQ',
+          marketEnvironment: 'compression',
+          highImpactNews: 'none',
+          personalReadiness: 'focused',
+          riskParameters: '0.5%',
+          successCriteria: 'avoid forced entry',
+        },
+        observation: {
+          observedDirection: 'sideways',
+          marketStructure: 'compression',
+          volume: 'light',
+          liquidityNotes: 'resting above prior high',
+          keyLevels: '18600 and 18520',
+          directionalHypothesis: 'wait for expansion',
+          invalidationEvidence: 'no expansion before end of plan',
+          operationalSummary: 'conditions never authorized deployment',
+        },
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: true,
+          observationComplete: true,
+          warRoomReady: true,
+          debriefReady: true,
+        },
+      },
+    }, {
+      operatorJustification: 'No deployment because authorization conditions never formed.',
+      invalidation: 'No expansion before the end of plan.',
+      behaviorSummary: 'Stayed out when conditions failed to appear.',
+      disciplineNotes: 'Risk boundary held.',
+      lesson: 'No trade was the correct mission outcome.',
+    });
+    const evaluation = buildMissionFinalEvaluation({
+      missionState: 'archived',
+      missionIntelligence,
+      guardian: {
+        state: 'secure',
+        highestAlert: 'Guardian secure. No active restriction.',
+      },
+      doctrine: {
+        activeProtectiveRule: 'No authorization without invalidation.',
+        pendingCandidateCount: 0,
+        relevance: 'Protective rule was available for this operation.',
+      },
+    });
+
+    expect(evaluation.classification).toBe('Exceptional Process');
+    expect(evaluation.recognitionEligible).toBe(true);
+    expect(evaluation.doctrineCandidateEligible).toBe(true);
+    expect(evaluation.archiveClassification).toBe('archive:Exceptional Process');
+    expect(JSON.stringify(evaluation)).not.toMatch(/profit|loss|pnl/i);
+  });
+
+  it('classifies process failure when Guardian restriction or missing doctrine boundary exists', () => {
+    const missionIntelligence = buildDesktopMissionIntelligencePackage({
+      id: 'mission-evaluation-002',
+      campaign: 'Unprotected Authorization',
+      objective: 'Deploy only with rule',
+      condition: 'Archived',
+      commandAuthority: 'Professional command',
+      currentState: 'archived',
+      createdAt: '2026-07-04T10:00:00.000Z',
+    }, {
+      behaviorSummary: 'Deployment occurred without protection.',
+      disciplineNotes: 'Boundary was not stated.',
+      lesson: 'State the rule before authorization.',
+    });
+    const evaluation = buildMissionFinalEvaluation({
+      missionState: 'archived',
+      missionIntelligence,
+      guardian: {
+        state: 'restriction',
+        highestAlert: 'Authorization occurred without protective rule.',
+      },
+      doctrine: {
+        activeProtectiveRule: 'No protective rule declared for current authorization.',
+        pendingCandidateCount: 0,
+        relevance: 'No current doctrine review is blocking mission flow.',
+      },
+    });
+
+    expect(evaluation.classification).toBe('Process Failure');
+    expect(evaluation.recognitionEligible).toBe(false);
+    expect(evaluation.failures).toContain('Protective doctrine rule was not declared.');
+    expect(evaluation.guardianHistoryUpdate).toBe('Authorization occurred without protective rule.');
+  });
+
+  it('keeps non-archived missions incomplete until lifecycle evidence is finished', () => {
+    const evaluation = buildMissionFinalEvaluation({
+      missionState: 'debrief',
+      guardian: {
+        state: 'secure',
+        highestAlert: 'Guardian secure. No active restriction.',
+      },
+      doctrine: {
+        activeProtectiveRule: 'No authorization without invalidation.',
+        pendingCandidateCount: 0,
+        relevance: 'No current doctrine review is blocking mission flow.',
+      },
+    });
+
+    expect(evaluation.classification).toBe('Incomplete');
+    expect(evaluation.commanderVerdict).toContain('Finish lifecycle evidence');
+    expect(evaluation.archiveClassification).toBe('archive:pending');
+  });
+
   it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {
     const html = renderToStaticMarkup(<App />);
 
@@ -584,7 +706,8 @@ describe('Desktop shell', () => {
     const html = renderToStaticMarkup(<App />);
 
     expect(html).toContain('Commander transmission channel');
-    expect(html).toContain('Lifecycle: Security Checkpoint');
+    expect(html).toContain('Lifecycle Progress');
+    expect(html).toContain('Selected View');
     expect(html).toContain('Report for Duty');
     expect(html).not.toContain('Commander mission creation controls');
   });

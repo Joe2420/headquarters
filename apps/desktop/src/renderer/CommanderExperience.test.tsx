@@ -25,7 +25,8 @@ describe('CommanderExperience', () => {
     expect(html).toContain('data-current-room="journal"');
     expect(html).toContain('Commander transmission channel');
     expect(html).toContain('Transmit to Commander');
-    expect(html).toContain('Lifecycle: Mission Creation');
+    expect(html).not.toContain('Lifecycle: Mission Creation');
+    expect(html).toContain('Journal');
     expect(html).toContain('Journal is the command log. Record first; interpret second.');
     expect(html).toContain('What happened, before judgment?');
     expect(html).toContain('Commander message thread');
@@ -163,7 +164,7 @@ describe('CommanderExperience', () => {
     expect(source).toContain('commander-transmitted-text');
     expect(source).toContain('? <span className="commander-transmitted-text"');
     expect(source).toContain('commander-transmitted-text commander-transmitted-text-active');
-    expect(styles).toContain('height: clamp(760px, 84vh, 1040px)');
+    expect(styles).toContain('height: clamp(920px, calc(100vh - 2.5rem), 1240px)');
     expect(styles).toContain('grid-template-rows: auto minmax(0, 1fr) auto auto auto');
     expect(styles).toContain('.commander-transmitted-text-active::after');
     expect(styles).toContain('content: "_"');
@@ -251,7 +252,7 @@ describe('CommanderExperience', () => {
     }
   });
 
-  it('renders Commander-led Continue and mission compass context when provided', () => {
+  it('renders Commander-led Continue without duplicating lifecycle compass context', () => {
     const state = buildCommanderExperienceState({
       reportState: 'reported',
       activeRoom: 'ready-room',
@@ -266,19 +267,13 @@ describe('CommanderExperience', () => {
     const html = renderToStaticMarkup(<CommanderExperiencePanel
       state={state}
       onContinue={() => undefined}
-      compassSteps={[
-        { id: 'ready-room', label: 'Ready Room', state: 'active' },
-        { id: 'observation', label: 'Observation', state: 'available' },
-        { id: 'war-room', label: 'War Room', state: 'locked' },
-        { id: 'debrief', label: 'Debrief Theater', state: 'locked' },
-        { id: 'archive', label: 'Archive', state: 'locked' },
-      ]}
     />);
 
     expect(html).not.toContain('aria-label="Continue to Ready Room"');
-    expect(html).toContain('Commander mission compass');
-    expect(html).toContain('Mission compass');
-    expect(html).toContain('Ready Room active. 3 future rooms locked.');
+    expect(html).toContain('Next Action');
+    expect(html).toContain('Complete Briefing');
+    expect(html).not.toContain('Commander mission compass');
+    expect(html).not.toContain('Mission compass');
   });
 
   it('renders top-level Commander workflow controls above room content', () => {

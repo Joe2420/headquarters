@@ -9,7 +9,10 @@ import {
   getCompletedLifecycleStages as getProjectedCompletedLifecycleStages,
   getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
   getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
+  buildMissionEvaluation,
   projectMissionLifecycle,
+  type MissionEvaluation,
+  type MissionEvaluationVerdict,
   type MissionLifecycleProjection,
   type MissionTimelineExportEntryDTO,
 } from '@headquarters/hqos';
@@ -132,7 +135,6 @@ import {
 import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
-  buildMissionCompassSteps,
   completeRoomTransferPlan,
   createAuthorizationTransition,
   createMissionAcceptedTransition,
@@ -140,10 +142,8 @@ import {
   createRoomTransition,
   getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
-  parseMissionNavigationState,
   resolveRoomTransferDestinationView,
   shouldCollapseRoomTransfer,
-  shouldReplayRoomTransfer,
   type TransitionController,
   type RoomTransferPlan,
   type RoomTransitionState,
@@ -303,6 +303,7 @@ export interface LocalMissionArchiveSummary {
   codename: string;
   archivedAt: string;
   eventCount: number;
+  evaluation?: MissionEvaluation | undefined;
 }
 
 export interface ReportForDutyTransition {
@@ -497,7 +498,6 @@ export function App() {
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
   const [activeRoomTransfer, setActiveRoomTransfer] = useState<RoomTransferPlan | undefined>();
-  const [completedRoomTransferKeys, setCompletedRoomTransferKeys] = useState<string[]>([]);
   const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
   const [commanderInvalidation, setCommanderInvalidation] = useState('');
   const [commanderProtectiveRule, setCommanderProtectiveRule] = useState('');
@@ -742,9 +742,6 @@ export function App() {
     : undefined;
   const audioQaEvents = commanderCeremonyAudioEvent ? [commanderCeremonyAudioEvent] : [];
   const recommendedNavigationTarget = mapCommanderRoomToNavigationTarget(commanderState.recommendedRoom) as HeadquartersRoomId;
-  const missionCompassSteps = activeMission
-    ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
-    : undefined;
   const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
   const missionCommandSidebar = buildMissionCommandSidebarModel({
     mission: activeMission,
@@ -829,6 +826,7 @@ export function App() {
         setActiveMission(deployedMission);
         setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
         await saveDesktopMissionContext(deployedMission);
+        setActiveOperationsView('chat');
         setRoomTransition(createAuthorizationTransition('war-room'));
       }
       return;
@@ -859,7 +857,19 @@ export function App() {
     }
 
     if (currentState === 'debrief') {
-      const archiveSummary = createLocalMissionArchiveSummary(mission, missionDebrief, undefined);
+      const archivedAt = new Date().toISOString();
+      const missionEvaluation = buildMissionFinalEvaluation({
+        missionId: mission.id,
+        missionState: 'archived',
+        missionIntelligence: missionIntelligencePackage,
+        guardian: missionCommandSidebar.guardian,
+        doctrine: missionCommandSidebar.doctrine,
+        evaluatedAt: archivedAt,
+      });
+      const archiveSummary = createLocalMissionArchiveSummary(mission, missionDebrief, undefined, {
+        archivedAt,
+        evaluation: missionEvaluation,
+      });
       const archivedMission = await archiveDesktopMission(mission);
 
       setArchiveSummary(archiveSummary);
@@ -868,6 +878,7 @@ export function App() {
       setMissionHistory((history) => upsertMissionHistory(history, archivedMission));
       await saveDesktopMissionContext(archivedMission);
       setCommanderWorkflowNotice('Mission archived.');
+      startDoorTransferForMissionRoomChange(mission, archivedMission);
       return;
     }
 
@@ -887,7 +898,7 @@ export function App() {
   }
 
   function handleEnterCurrentRoom() {
-    setActiveOperationsView('room');
+    startDoorTransfer(recommendedNavigationTarget, { openRoomAfter: true });
   }
 
   function handleEnterCommanderChat() {
@@ -908,6 +919,7 @@ export function App() {
     const transition = options.transition ?? createDoorOpeningTransition(fromRoom, targetRoom);
     const destinationSelectedView = resolveRoomTransferDestinationView({
       currentView: activeOperationsView,
+      operatorPreferredView: options.openRoomAfter ? undefined : 'chat',
       requiresRoomInteraction: options.openRoomAfter,
     });
     const transferPlan = createRoomTransferPlan({
@@ -922,13 +934,7 @@ export function App() {
     if (shouldCollapseRoomTransfer(activeRoomTransfer, transferPlan)) return;
 
     if (fromRoom === targetRoom && room === activeRoom) {
-      if (options.openRoomAfter) setActiveOperationsView('room');
-      return;
-    }
-
-    if (!shouldReplayRoomTransfer(transferPlan, completedRoomTransferKeys)) {
-      setActiveRoom(room);
-      setActiveOperationsView(destinationSelectedView);
+      setActiveOperationsView(options.openRoomAfter ? 'room' : 'chat');
       return;
     }
 
@@ -942,9 +948,6 @@ export function App() {
     roomTransferTimeoutRef.current = window.setTimeout(() => {
       setActiveRoom(room);
       setActiveOperationsView(transferPlan.destinationSelectedView);
-      setCompletedRoomTransferKeys((keys) => (
-        keys.includes(transferPlan.replayKey) ? keys : [...keys, transferPlan.replayKey]
-      ));
       setActiveRoomTransfer(completeRoomTransferPlan(transferPlan));
       roomTransferTimeoutRef.current = undefined;
     }, getTransitionRoomLoadDelayMs(isReducedMotionPreferred(), transition.controller));
@@ -1004,7 +1007,19 @@ export function App() {
 
     const abortedMission = await abortDesktopMission(activeMission);
     setMissionPersistenceStatus((status) => markMissionSavePending(status, activeMission.id, 'Abort persistence in progress.'));
-    const archiveSummary = createAbortArchiveSummary(abortedMission);
+    const archivedAt = new Date().toISOString();
+    const missionEvaluation = buildMissionFinalEvaluation({
+      missionId: abortedMission.id,
+      missionState: 'aborted',
+      missionIntelligence: missionIntelligencePackage,
+      guardian: missionCommandSidebar.guardian,
+      doctrine: missionCommandSidebar.doctrine,
+      evaluatedAt: archivedAt,
+    });
+    const archiveSummary = createAbortArchiveSummary(abortedMission, {
+      archivedAt,
+      evaluation: missionEvaluation,
+    });
     setArchiveSummary(archiveSummary);
     setArchivedMissionSummaries((summaries) => upsertArchiveSummaries(summaries, archiveSummary));
     setActiveMission(getActiveMissionAfterMissionChange(abortedMission));
@@ -1327,6 +1342,7 @@ export function App() {
         setCommanderOperatorJustification('');
         setCommanderInvalidation('');
         setCommanderProtectiveRule('');
+        setActiveOperationsView('chat');
         setRoomTransition(createAuthorizationTransition('war-room'));
       }
 
@@ -1355,6 +1371,7 @@ export function App() {
         setCommanderOperatorJustification('');
         setCommanderInvalidation('');
         setCommanderProtectiveRule('');
+        setActiveOperationsView('chat');
         setRoomTransition(createAuthorizationTransition('war-room'));
         return 'Authorization accepted. Execute only within the declared plan.';
       }
@@ -1560,7 +1577,6 @@ export function App() {
               >
                 <CommanderExperiencePanel
                   state={commanderState}
-                  compassSteps={missionCompassSteps}
                   commandChair={<OperationalCommandChair
                     reportState={reportState}
                     currentRoom={currentCommanderRoom}
@@ -1864,6 +1880,65 @@ function MissionCommandSidebar({
       <section className="mission-command-section" aria-label="Mission outcome state">
         <h3>Outcome State</h3>
         <strong>{model.outcomeState}</strong>
+      </section>
+
+      <section className="mission-command-section mission-final-evaluation" aria-label="Mission final evaluation">
+        <h3>Final Evaluation</h3>
+        <strong>{model.finalEvaluation.classification}</strong>
+        <p>{model.finalEvaluation.commanderVerdict}</p>
+        <p>{model.finalEvaluation.commanderReview}</p>
+        <dl className="mission-command-summary">
+          <div>
+            <dt>Recognition</dt>
+            <dd>{model.finalEvaluation.recognitionEligible ? 'eligible' : 'not eligible'}</dd>
+          </div>
+          <div>
+            <dt>Doctrine Candidate</dt>
+            <dd>{model.finalEvaluation.doctrineCandidateEligible ? 'eligible' : 'not eligible'}</dd>
+          </div>
+          <div>
+            <dt>Guardian History</dt>
+            <dd>{model.finalEvaluation.guardianHistoryUpdate}</dd>
+          </div>
+          <div>
+            <dt>Academy Growth</dt>
+            <dd>{model.finalEvaluation.academyGrowth}</dd>
+          </div>
+          <div>
+            <dt>Doctrine Contribution</dt>
+            <dd>{model.finalEvaluation.doctrineContribution}</dd>
+          </div>
+          <div>
+            <dt>Archive Classification</dt>
+            <dd>{model.finalEvaluation.archiveClassification}</dd>
+          </div>
+        </dl>
+        <details>
+          <summary>Mission scorecard</summary>
+          <ul>
+            {model.finalEvaluation.dimensions.map((dimension) => (
+              <li key={dimension.id}>
+                <strong>{dimension.label}</strong>: {dimension.rating}. {dimension.recommendation}
+              </li>
+            ))}
+          </ul>
+        </details>
+        <details>
+          <summary>Evaluation reasons</summary>
+          <ul>
+            {model.finalEvaluation.supportingReasons.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </details>
+        <details>
+          <summary>Recommendations</summary>
+          <ul>
+            {model.finalEvaluation.recommendations.map((recommendation) => (
+              <li key={recommendation}>{recommendation}</li>
+            ))}
+          </ul>
+        </details>
       </section>
 
       <details className="technical-diagnostics">
@@ -5722,7 +5797,22 @@ function MissionArchiveSummaryPanel({
         <dd>{archiveSummary?.codename ?? 'Awaiting archived mission'}</dd>
         <dt>Events</dt>
         <dd>{archiveSummary?.eventCount ?? 0}</dd>
+        <dt>Evaluation</dt>
+        <dd>{archiveSummary?.evaluation?.classification ?? 'Awaiting mission evaluation'}</dd>
+        <dt>Commander Verdict</dt>
+        <dd>{archiveSummary?.evaluation?.commanderVerdict ?? 'No evaluation attached yet'}</dd>
       </dl>
+      {archiveSummary?.evaluation ? (
+        <details>
+          <summary>Archived evaluation record</summary>
+          <p>{archiveSummary.evaluation.commanderReview}</p>
+          <ul>
+            {archiveSummary.evaluation.strengths.slice(0, 3).map((strength) => (
+              <li key={strength}>{strength}</li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
     </section>
   );
 }
@@ -8562,6 +8652,7 @@ export type InstitutionalHealthState = 'stable' | 'forming' | 'degraded' | 'crit
 export type OperationalConsequenceCategory = 'process' | 'guardian' | 'intelligence' | 'doctrine' | 'academy' | 'commander';
 export type OperationalConsequenceSeverity = 'notice' | 'caution' | 'restriction' | 'lockout';
 export type OperationalConsequenceDuration = 'temporary' | 'session' | 'historical';
+export type MissionFinalClassification = MissionEvaluationVerdict;
 
 export interface InstitutionalHealthDimension {
   readonly id: string;
@@ -8587,6 +8678,8 @@ export interface OperationalConsequence {
   readonly duration: OperationalConsequenceDuration;
   readonly recoveryCondition: string;
 }
+
+export type MissionFinalEvaluation = MissionEvaluation;
 
 export interface MissionCommandSidebarStage {
   readonly id: string;
@@ -8631,6 +8724,7 @@ export interface MissionCommandSidebarModel {
   };
   readonly institutionalHealth: InstitutionalHealthModel;
   readonly consequences: readonly OperationalConsequence[];
+  readonly finalEvaluation: MissionFinalEvaluation;
   readonly outcomeState: MissionCommandOutcomeState;
 }
 
@@ -8912,9 +9006,17 @@ export function buildMissionCommandSidebarModel(input: {
       doctrine,
       nextAction: input.nextAction,
     }),
+    finalEvaluation: buildMissionFinalEvaluation({
+      missionState,
+      missionIntelligence: input.missionIntelligence,
+      guardian,
+      doctrine,
+    }),
     outcomeState: buildMissionCommandOutcomeState(missionState, input.missionIntelligence, guardian.state),
   };
 }
+
+export const buildMissionFinalEvaluation = buildMissionEvaluation;
 
 export function buildOperationalConsequences(input: {
   readonly missionState: MissionState | undefined;
@@ -9624,7 +9726,7 @@ export function createLocalMissionArchiveSummary(
   mission: ActiveMission | undefined,
   debrief: MissionDebrief | undefined,
   archiveWrite: ArchiveWritePlaceholder | undefined,
-  options: { archivedAt?: string } = {},
+  options: { archivedAt?: string; evaluation?: MissionEvaluation } = {},
 ): LocalMissionArchiveSummary | undefined {
   if (mission === undefined || debrief === undefined) {
     return undefined;
@@ -9635,18 +9737,20 @@ export function createLocalMissionArchiveSummary(
     codename: mission.campaign,
     archivedAt: options.archivedAt ?? new Date().toISOString(),
     eventCount: archiveWrite ? 2 : 1,
+    ...(options.evaluation ? { evaluation: options.evaluation } : {}),
   };
 }
 
 export function createAbortArchiveSummary(
   mission: ActiveMission,
-  options: { archivedAt?: string } = {},
+  options: { archivedAt?: string; evaluation?: MissionEvaluation } = {},
 ): LocalMissionArchiveSummary {
   return {
     missionId: mission.id,
     codename: mission.campaign,
     archivedAt: options.archivedAt ?? new Date().toISOString(),
     eventCount: 1,
+    ...(options.evaluation ? { evaluation: options.evaluation } : {}),
   };
 }
 

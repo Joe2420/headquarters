@@ -199,7 +199,7 @@ dd {
 .shell-main {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, 1fr) clamp(400px, 27vw, 520px);
   align-items: start;
 }
 
@@ -209,7 +209,7 @@ dd {
   display: grid;
   align-content: start;
   gap: 0;
-  min-height: min(820px, calc(100vh - 4rem));
+  min-height: min(920px, calc(100vh - 2rem));
   overflow: hidden;
 }
 
@@ -282,7 +282,7 @@ dd {
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: min(760px, calc(100vh - 6rem));
+  min-height: min(920px, calc(100vh - 2rem));
   align-content: start;
   background:
     radial-gradient(circle at 18% 0%, rgba(109, 236, 149, 0.08), transparent 34%),
@@ -352,7 +352,7 @@ dd {
 }
 
 .commander-chat-stage .commander-shell {
-  min-height: min(760px, calc(100vh - 6rem));
+  min-height: min(920px, calc(100vh - 2rem));
 }
 
 .commander-shell-interrupted {
@@ -390,7 +390,7 @@ dd {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto auto;
   gap: 0.75rem;
-  height: clamp(760px, 84vh, 1040px);
+  height: clamp(920px, calc(100vh - 2.5rem), 1240px);
   min-width: 0;
   padding: 0.85rem;
   border: 1px solid #315743;
@@ -446,8 +446,8 @@ dd {
   position: relative;
   display: grid;
   gap: 0.25rem;
-  width: min(760px, 100%);
-  max-width: min(760px, 100%);
+  width: min(920px, 100%);
+  max-width: min(920px, 100%);
   min-width: 0;
   padding: 0.75rem;
   border: 1px solid rgba(52, 255, 105, 0.22);
@@ -505,7 +505,7 @@ dd {
 
 .commander-transmission-outgoing {
   justify-self: end;
-  width: min(92%, 620px);
+  width: min(92%, 760px);
   border-color: rgba(52, 255, 105, 0.16);
   background: rgba(3, 10, 7, 0.72);
   color: #b9ffc5;
@@ -3887,6 +3887,31 @@ dd {
 .operational-consequence-list dl div {
   display: grid;
   gap: 0.12rem;
+}
+
+.mission-final-evaluation details {
+  border: 1px solid rgba(130, 175, 165, 0.18);
+  background: rgba(4, 10, 11, 0.32);
+  padding: 0.5rem 0.6rem;
+}
+
+.mission-final-evaluation summary {
+  cursor: pointer;
+  color: #bfe7d7;
+  font-size: 0.78rem;
+}
+
+.mission-final-evaluation ul {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.45rem 0 0;
+  padding-left: 1rem;
+}
+
+.mission-final-evaluation li {
+  color: #aab7c1;
+  font-size: 0.76rem;
+  line-height: 1.4;
 }
 
 .technical-diagnostics {
