@@ -199,10 +199,10 @@ export function getPrimaryLifecycleAction(mission?: Mission): MissionLifecycleAc
       };
     case 'deployed':
       return {
-        id: 'return-to-base',
-        label: 'Return To Base',
+        id: 'plan-concluded',
+        label: 'Plan Concluded',
         room: 'war-room',
-        explanation: 'Deployment is active. Return to base before debrief.',
+        explanation: 'Deployment is active. Report material change, review authorization, or conclude the plan deliberately.',
         disabled: false,
       };
     case 'return_to_base':

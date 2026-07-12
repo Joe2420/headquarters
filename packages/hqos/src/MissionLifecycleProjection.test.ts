@@ -57,7 +57,8 @@ describe('MissionLifecycleProjection', () => {
 
   it('keeps deployed missions in the War Room and return-to-base missions in Debrief Theater', () => {
     expect(getPrimaryLifecycleAction(mission('deployed'))).toMatchObject({
-      id: 'return-to-base',
+      id: 'plan-concluded',
+      label: 'Plan Concluded',
       room: 'war-room',
     });
     expect(getPrimaryLifecycleAction(mission('return_to_base'))).toMatchObject({
