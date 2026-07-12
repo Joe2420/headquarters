@@ -32,6 +32,7 @@ export * from './MissionTimelineSnapshotBuilder';
 export * from './MissionArchiveSummary';
 export * from './MissionReplay';
 export * from './MissionReplayEngine';
+export * from './MissionReplayComparisonEngine';
 export * from './MissionEvaluationEngine';
 export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
