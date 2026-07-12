@@ -746,6 +746,16 @@ export function App() {
     ? buildMissionCompassSteps(parseMissionNavigationState(activeMission.currentState), currentCommanderRoom)
     : undefined;
   const currentRoomView = activeMission ? recommendedNavigationTarget : activeRoom;
+  const missionCommandSidebar = buildMissionCommandSidebarModel({
+    mission: activeMission,
+    currentRoom: currentCommanderRoom,
+    selectedView: activeOperationsView,
+    nextAction: getMissionNextAction(activeMission),
+    missionIntelligence: missionIntelligencePackage,
+    guardianAlerts,
+    doctrineCandidateCount: desktopDoctrineSuggestions.length,
+    protectiveRule: commanderProtectiveRule,
+  });
 
   async function handleCommanderContinue() {
     if (shellPhase === 'security-checkpoint') {
@@ -1694,33 +1704,139 @@ export function App() {
             </div>
           </section>
 
-          <aside className="status-panel" aria-label="Status area" aria-live="polite">
-            <p className="section-label">Status</p>
-            <h2>HQOS Status</h2>
-            <dl className="status-list">
-              <div>
-                <dt>HQOS</dt>
-                <dd>{formatHqosStatus(startupStatus)}</dd>
-              </div>
-              <div>
-                <dt>Database</dt>
-                <dd>{formatDatabaseStatus(startupStatus)}</dd>
-              </div>
-              <div>
-                <dt>Migrations</dt>
-                <dd>{formatMigrationStatus(startupStatus)}</dd>
-              </div>
-              <div>
-                <dt>Startup</dt>
-                <dd>{formatStartupPerformanceStatus(startupStatus)}</dd>
-              </div>
-            </dl>
-            {startupStatus.error ? <p className="status-error">{formatStartupError(startupStatus)}</p> : null}
-            <p className="status-recovery">{formatStartupRecoveryGuidance(startupStatus)}</p>
-          </aside>
+          <MissionCommandSidebar model={missionCommandSidebar} startupStatus={startupStatus} />
         </main>
       </div>
     </div>
+  );
+}
+
+function MissionCommandSidebar({
+  model,
+  startupStatus,
+}: {
+  readonly model: MissionCommandSidebarModel;
+  readonly startupStatus: StartupStatus;
+}) {
+  return (
+    <aside className="status-panel mission-command-sidebar" aria-label="Live mission command sidebar" aria-live="polite">
+      <p className="section-label">Mission Command</p>
+      <h2>{model.missionIdentity.codename}</h2>
+      <p className="mission-command-objective">{model.missionIdentity.objective}</p>
+
+      <dl className="mission-command-summary">
+        <div>
+          <dt>Mission State</dt>
+          <dd>{model.missionIdentity.state}</dd>
+        </div>
+        <div>
+          <dt>Mission Start</dt>
+          <dd>{model.missionIdentity.startedAt}</dd>
+        </div>
+        <div>
+          <dt>Current Station</dt>
+          <dd>{model.currentStation.room}</dd>
+        </div>
+        <div>
+          <dt>Selected View</dt>
+          <dd>{model.currentStation.selectedView}</dd>
+        </div>
+      </dl>
+
+      <section className="mission-command-section" aria-label="Lifecycle progress">
+        <h3>Lifecycle Progress</h3>
+        <ol className="mission-command-rail">
+          {model.lifecycleProgress.map((stage) => (
+            <li key={stage.id} data-stage-state={stage.state}>
+              <span>{stage.label}</span>
+              <small>{stage.state}</small>
+              <p>{stage.explanation}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mission-command-section mission-command-next-action" aria-label="Next action">
+        <h3>Next Action</h3>
+        <strong>{model.nextAction.label}</strong>
+        <span>{model.nextAction.destinationRoom}</span>
+        <p>{model.nextAction.explanation}</p>
+      </section>
+
+      <section className="mission-command-section" aria-label="Mission intelligence status">
+        <h3>Intelligence</h3>
+        <dl className="mission-command-summary">
+          <div>
+            <dt>Context</dt>
+            <dd>{model.intelligence.contextCompleteness}</dd>
+          </div>
+          <div>
+            <dt>Evidence</dt>
+            <dd>{model.intelligence.evidenceQuality}</dd>
+          </div>
+          <div>
+            <dt>Missing Fields</dt>
+            <dd>{model.intelligence.missingRequiredFieldCount}</dd>
+          </div>
+          <div>
+            <dt>Contradictions</dt>
+            <dd>{model.intelligence.contradictionState}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="mission-command-section" aria-label="Guardian and doctrine status">
+        <h3>Guardian / Doctrine</h3>
+        <dl className="mission-command-summary">
+          <div>
+            <dt>Guardian</dt>
+            <dd data-guardian-state={model.guardian.state}>{model.guardian.state}</dd>
+          </div>
+          <div>
+            <dt>Highest Alert</dt>
+            <dd>{model.guardian.highestAlert}</dd>
+          </div>
+          <div>
+            <dt>Protective Rule</dt>
+            <dd>{model.doctrine.activeProtectiveRule}</dd>
+          </div>
+          <div>
+            <dt>Doctrine Candidates</dt>
+            <dd>{model.doctrine.pendingCandidateCount}</dd>
+          </div>
+        </dl>
+        <p>{model.doctrine.relevance}</p>
+      </section>
+
+      <section className="mission-command-section" aria-label="Mission outcome state">
+        <h3>Outcome State</h3>
+        <strong>{model.outcomeState}</strong>
+      </section>
+
+      <details className="technical-diagnostics">
+        <summary>Technical diagnostics</summary>
+        <dl className="status-list">
+          <div>
+            <dt>HQOS</dt>
+            <dd>{formatHqosStatus(startupStatus)}</dd>
+          </div>
+          <div>
+            <dt>Database</dt>
+            <dd>{formatDatabaseStatus(startupStatus)}</dd>
+          </div>
+          <div>
+            <dt>Migrations</dt>
+            <dd>{formatMigrationStatus(startupStatus)}</dd>
+          </div>
+          <div>
+            <dt>Startup</dt>
+            <dd>{formatStartupPerformanceStatus(startupStatus)}</dd>
+          </div>
+        </dl>
+        {startupStatus.error ? <p className="status-error">{formatStartupError(startupStatus)}</p> : null}
+        <p className="status-recovery">{formatStartupRecoveryGuidance(startupStatus)}</p>
+      </details>
+    </aside>
   );
 }
 
@@ -8386,6 +8502,54 @@ export interface MissionNextAction {
   readonly disabled: boolean;
 }
 
+export type MissionCommandSidebarStageState = 'completed' | 'active' | 'available' | 'locked' | 'blocked';
+export type MissionCommandGuardianState = 'secure' | 'warning' | 'restriction' | 'lockout';
+export type MissionCommandOutcomeState = 'not evaluated' | 'on course' | 'at risk' | 'completed';
+
+export interface MissionCommandSidebarStage {
+  readonly id: string;
+  readonly label: string;
+  readonly state: MissionCommandSidebarStageState;
+  readonly explanation: string;
+}
+
+export interface MissionCommandSidebarModel {
+  readonly missionIdentity: {
+    readonly codename: string;
+    readonly objective: string;
+    readonly state: string;
+    readonly startedAt: string;
+  };
+  readonly lifecycleProgress: readonly MissionCommandSidebarStage[];
+  readonly currentStation: {
+    readonly room: string;
+    readonly lifecycleStage: string;
+    readonly selectedView: string;
+  };
+  readonly nextAction: {
+    readonly label: string;
+    readonly destinationRoom: string;
+    readonly explanation: string;
+    readonly blocked: boolean;
+  };
+  readonly intelligence: {
+    readonly contextCompleteness: string;
+    readonly evidenceQuality: string;
+    readonly missingRequiredFieldCount: number;
+    readonly contradictionState: string;
+  };
+  readonly guardian: {
+    readonly state: MissionCommandGuardianState;
+    readonly highestAlert: string;
+  };
+  readonly doctrine: {
+    readonly activeProtectiveRule: string;
+    readonly pendingCandidateCount: number;
+    readonly relevance: string;
+  };
+  readonly outcomeState: MissionCommandOutcomeState;
+}
+
 export interface CommanderMessage {
   readonly title: string;
   readonly body: string;
@@ -8599,6 +8763,177 @@ export function getMissionNextAction(mission?: ActiveMission): MissionNextAction
     buttonLabel: 'Archived',
     disabled: true,
   };
+}
+
+export function buildMissionCommandSidebarModel(input: {
+  readonly mission?: ActiveMission | undefined;
+  readonly currentRoom: CommanderShellRoomId;
+  readonly selectedView: 'chat' | 'room';
+  readonly nextAction: MissionNextAction;
+  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
+  readonly guardianAlerts: readonly GuardianAlert[];
+  readonly doctrineCandidateCount: number;
+  readonly protectiveRule?: string | undefined;
+}): MissionCommandSidebarModel {
+  const missionState = parseMissionState(input.mission?.currentState);
+  const guardian = buildMissionCommandGuardianState(input.guardianAlerts);
+
+  return {
+    missionIdentity: {
+      codename: input.mission?.campaign ?? 'No active mission',
+      objective: input.mission?.objective ?? 'Create a mission to activate Headquarters.',
+      state: missionState ? formatMissionStateForDisplay(missionState) : 'Standby',
+      startedAt: input.mission?.createdAt ? formatDateTime(input.mission.createdAt) : 'Not started',
+    },
+    lifecycleProgress: buildMissionCommandLifecycleProgress(missionState, guardian.state),
+    currentStation: {
+      room: formatRoomLabel(input.currentRoom),
+      lifecycleStage: missionState ? formatMissionStateForDisplay(missionState) : 'Mission Creation',
+      selectedView: input.selectedView === 'chat' ? 'Commander Chat' : 'Current Room',
+    },
+    nextAction: {
+      label: guardian.state === 'lockout' ? 'Resolve Guardian lockout' : input.nextAction.label,
+      destinationRoom: formatRoomLabel(input.currentRoom),
+      explanation: guardian.state === 'lockout' ? guardian.highestAlert : input.nextAction.description,
+      blocked: input.nextAction.disabled || guardian.state === 'lockout',
+    },
+    intelligence: {
+      contextCompleteness: formatMissionCommandContextCompleteness(input.missionIntelligence),
+      evidenceQuality: formatMissionCommandEvidenceQuality(input.missionIntelligence),
+      missingRequiredFieldCount: input.missionIntelligence?.missingEvidence.length ?? 0,
+      contradictionState: formatMissionCommandContradictionState(input.missionIntelligence),
+    },
+    guardian,
+    doctrine: {
+      activeProtectiveRule: input.protectiveRule?.trim() || 'No protective rule declared for current authorization.',
+      pendingCandidateCount: input.doctrineCandidateCount,
+      relevance: input.doctrineCandidateCount > 0
+        ? 'Doctrine review is available for this operation.'
+        : 'No current doctrine review is blocking mission flow.',
+    },
+    outcomeState: buildMissionCommandOutcomeState(missionState, input.missionIntelligence, guardian.state),
+  };
+}
+
+function buildMissionCommandLifecycleProgress(
+  missionState: MissionState | undefined,
+  guardianState: MissionCommandGuardianState,
+): MissionCommandSidebarStage[] {
+  const activeIndex = getMissionCommandLifecycleIndex(missionState);
+  const blockedIndex = guardianState === 'lockout' ? activeIndex : -1;
+  const labels = [
+    ['mission-creation', 'Mission Creation'],
+    ['ready-room', 'Ready Room'],
+    ['observation', 'Observation'],
+    ['war-room', 'War Room'],
+    ['deployed', 'Deployed'],
+    ['debrief', 'Debrief'],
+    ['archive', 'Archive'],
+  ] as const;
+
+  return labels.map(([id, label], index) => {
+    const state = getMissionCommandStageState(index, activeIndex, blockedIndex);
+    return {
+      id,
+      label,
+      state,
+      explanation: getMissionCommandStageExplanation(label, state),
+    };
+  });
+}
+
+function getMissionCommandLifecycleIndex(missionState: MissionState | undefined): number {
+  if (missionState === undefined || missionState === 'idle' || missionState === 'briefing') return 0;
+  if (missionState === 'ready') return 1;
+  if (missionState === 'observation') return 2;
+  if (missionState === 'authorization') return 3;
+  if (missionState === 'deployed') return 4;
+  if (missionState === 'return_to_base' || missionState === 'debrief') return 5;
+  return 6;
+}
+
+function getMissionCommandStageState(
+  index: number,
+  activeIndex: number,
+  blockedIndex: number,
+): MissionCommandSidebarStageState {
+  if (index === blockedIndex) return 'blocked';
+  if (index < activeIndex) return 'completed';
+  if (index === activeIndex) return 'active';
+  if (index === activeIndex + 1) return 'available';
+  return 'locked';
+}
+
+function getMissionCommandStageExplanation(label: string, state: MissionCommandSidebarStageState): string {
+  if (state === 'completed') return `${label} complete.`;
+  if (state === 'active') return `${label} is the current station.`;
+  if (state === 'available') return `${label} is available when Commander authorizes movement.`;
+  if (state === 'blocked') return `${label} is blocked by Guardian restriction.`;
+  return `${label} remains locked until prior lifecycle evidence is complete.`;
+}
+
+function buildMissionCommandGuardianState(alerts: readonly GuardianAlert[]): MissionCommandSidebarModel['guardian'] {
+  const highestAlert = alerts.find((alert) => alert.priority === 'critical')
+    ?? alerts.find((alert) => alert.priority === 'high')
+    ?? alerts.find((alert) => alert.priority === 'medium')
+    ?? alerts[0];
+
+  if (!highestAlert) {
+    return {
+      state: 'secure',
+      highestAlert: 'Guardian secure. No active restriction.',
+    };
+  }
+
+  if (highestAlert.priority === 'critical') return { state: 'lockout', highestAlert: highestAlert.message };
+  if (highestAlert.priority === 'high') return { state: 'restriction', highestAlert: highestAlert.message };
+  return { state: 'warning', highestAlert: highestAlert.message };
+}
+
+function formatMissionCommandContextCompleteness(missionPackage?: MissionIntelligencePackage): string {
+  if (!missionPackage) return 'No mission intelligence package yet.';
+  if (missionPackage.missingEvidence.length === 0) return 'Context package complete.';
+  return `${missionPackage.missingEvidence.length} required field${missionPackage.missingEvidence.length === 1 ? '' : 's'} missing.`;
+}
+
+function formatMissionCommandEvidenceQuality(missionPackage?: MissionIntelligencePackage): string {
+  if (!missionPackage) return 'Evidence not assembled.';
+  if (missionPackage.confidence.level === 'complete' || missionPackage.confidence.level === 'sufficient') {
+    return 'Evidence package is specific and traceable.';
+  }
+  if (missionPackage.confidence.level === 'forming') return 'Evidence package is forming.';
+  return 'Evidence package is incomplete.';
+}
+
+function formatMissionCommandContradictionState(missionPackage?: MissionIntelligencePackage): string {
+  if (!missionPackage) return 'No contradiction scan yet.';
+  return missionPackage.contradictions.length === 0
+    ? 'No unresolved contradictions.'
+    : `${missionPackage.contradictions.length} contradiction${missionPackage.contradictions.length === 1 ? '' : 's'} unresolved.`;
+}
+
+function buildMissionCommandOutcomeState(
+  missionState: MissionState | undefined,
+  missionPackage: MissionIntelligencePackage | undefined,
+  guardianState: MissionCommandGuardianState,
+): MissionCommandOutcomeState {
+  if (missionState === 'archived') return 'completed';
+  if (missionState === undefined || missionState === 'idle' || missionState === 'briefing') return 'not evaluated';
+  if (guardianState === 'lockout' || guardianState === 'restriction') return 'at risk';
+  if (missionPackage && (missionPackage.missingEvidence.length > 0 || missionPackage.contradictions.length > 0)) return 'at risk';
+  return 'on course';
+}
+
+function formatDateTime(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 function parseMissionState(state?: string): MissionState | undefined {

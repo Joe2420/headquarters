@@ -45,6 +45,7 @@ import {
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildMissionContextLookup,
+  buildMissionCommandSidebarModel,
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
@@ -260,10 +261,105 @@ describe('Desktop shell', () => {
     expect(html).toContain('Current Room');
     expect(html).toContain('Report for Duty');
     expect(html).toContain('Status');
-    expect(html).toContain('HQOS Status');
+    expect(html).toContain('Mission Command');
     expect(html).toContain('Database');
     expect(html).toContain('Startup');
     expect(html).toContain('Recovery standby while Headquarters checks local infrastructure.');
+  });
+
+  it('renders mission command sidebar before technical diagnostics', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('aria-label="Live mission command sidebar"');
+    expect(html).toContain('Mission Command');
+    expect(html).toContain('Lifecycle Progress');
+    expect(html).toContain('Mission Creation');
+    expect(html).toContain('Current Station');
+    expect(html).toContain('Next Action');
+    expect(html).toContain('Intelligence');
+    expect(html).toContain('Guardian / Doctrine');
+    expect(html).toContain('Outcome State');
+    expect(html).toContain('Technical diagnostics');
+    expect(html).toContain('Database');
+  });
+
+  it('builds live mission command sidebar state from lifecycle, intelligence, and Guardian evidence', () => {
+    const mission: ActiveMission = {
+      id: 'mission-sidebar-001',
+      campaign: 'London Discipline',
+      objective: 'Wait for clean authorization',
+      condition: 'Observation',
+      commandAuthority: 'Professional command',
+      currentState: 'observation',
+      createdAt: '2026-07-04T10:00:00.000Z',
+    };
+    const missionIntelligence = buildDesktopMissionIntelligencePackage(mission);
+    const model = buildMissionCommandSidebarModel({
+      mission,
+      currentRoom: 'observation',
+      selectedView: 'chat',
+      nextAction: getMissionNextAction(mission),
+      missionIntelligence,
+      guardianAlerts: [],
+      doctrineCandidateCount: 0,
+      protectiveRule: '',
+    });
+
+    expect(model.missionIdentity.codename).toBe('London Discipline');
+    expect(model.currentStation).toMatchObject({
+      room: 'Observation Room',
+      lifecycleStage: 'Observation',
+      selectedView: 'Commander Chat',
+    });
+    expect(model.lifecycleProgress.map((stage) => [stage.id, stage.state])).toEqual([
+      ['mission-creation', 'completed'],
+      ['ready-room', 'completed'],
+      ['observation', 'active'],
+      ['war-room', 'available'],
+      ['deployed', 'locked'],
+      ['debrief', 'locked'],
+      ['archive', 'locked'],
+    ]);
+    expect(model.guardian.state).toBe('secure');
+    expect(model.nextAction.label).toBe('Complete Observation');
+    expect(model.intelligence.missingRequiredFieldCount).toBe(missionIntelligence.missingEvidence.length);
+  });
+
+  it('lets Guardian lockout override the mission command sidebar next action', () => {
+    const mission: ActiveMission = {
+      id: 'mission-sidebar-002',
+      campaign: 'Risk Boundary',
+      objective: 'Respect daily loss limit',
+      condition: 'Authorization',
+      commandAuthority: 'Professional command',
+      currentState: 'authorization',
+      createdAt: '2026-07-04T10:00:00.000Z',
+    };
+    const model = buildMissionCommandSidebarModel({
+      mission,
+      currentRoom: 'war-room',
+      selectedView: 'room',
+      nextAction: getMissionNextAction(mission),
+      guardianAlerts: [{
+        id: 'guardian-alert-lockout',
+        title: 'Daily limit lockout',
+        message: 'Trading authorization suspended until recovery conditions are met.',
+        priority: 'critical',
+        sourceId: 'daily-limit',
+      }],
+      doctrineCandidateCount: 2,
+      protectiveRule: 'No authorization without invalidation.',
+    });
+
+    expect(model.guardian.state).toBe('lockout');
+    expect(model.nextAction).toMatchObject({
+      label: 'Resolve Guardian lockout',
+      blocked: true,
+      explanation: 'Trading authorization suspended until recovery conditions are met.',
+    });
+    expect(model.lifecycleProgress.find((stage) => stage.state === 'blocked')?.id).toBe('war-room');
+    expect(model.doctrine.pendingCandidateCount).toBe(2);
+    expect(model.outcomeState).toBe('at risk');
   });
 
   it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {
