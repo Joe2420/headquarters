@@ -2,6 +2,7 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-S45 - Sprint 45 Operational Consequences and Recovery
 - HQ-TASK-STABILIZATION - Commander Conversation and Lifecycle Consistency Stabilization
 - HQ-TASK-S38 - Commander Ceremony Audio QA Visibility
 - HQ-TASK-S34 - Commander Ceremony Dialogue Expansion

@@ -1,3 +1,5 @@
+HQ-TASK-S45 - Added Sprint 45 operational consequences and recovery foundation.
+
 HQ-TASK-STABILIZATION - Stabilized Commander conversation ownership and mission lifecycle consistency.
 
 HQ-TASK-S38 - Exposed Commander ceremony audio candidates in the Audio QA surface.

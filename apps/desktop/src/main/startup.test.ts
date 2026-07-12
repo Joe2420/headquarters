@@ -49,11 +49,12 @@ describe('App startup wiring', () => {
         '007_doctrine_history',
         '008_journal_entries',
         '009_mission_context_records',
+        '010_operational_consequences',
       ]);
       expect(firstStartup.status.migrations.skipped).toEqual([]);
       expect(firstStartup.status.performance).toEqual({
         durationMs: 125,
-        migrationCount: 9,
+        migrationCount: 10,
         budgetMs: 3000,
         status: 'within-budget',
       });
@@ -76,6 +77,7 @@ describe('App startup wiring', () => {
         '007_doctrine_history',
         '008_journal_entries',
         '009_mission_context_records',
+        '010_operational_consequences',
       ]);
     } finally {
       secondStartup.close();
