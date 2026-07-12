@@ -229,6 +229,8 @@ import {
   type CommanderGuardianAlertLine,
 } from './CommanderGuardianAlerts';
 import { buildMissionJournalLink } from './MissionJournalIntegration';
+import { buildCommanderWorkspaceSnapshot, type CommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
+import { LiveMissionCommandRail } from './LiveMissionCommandRail';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -698,6 +700,22 @@ export function App() {
   const desktopIntelligenceEvidenceRecords = buildDesktopIntelligenceEvidenceRecords(desktopJournalClassifications);
   const desktopDoctrineSuggestions = buildDesktopDoctrineSuggestions(desktopIntelligenceEvidenceRecords);
   const desktopArchiveRecordCount = buildDesktopArchiveRecords(archivedMissionSummaries, archivedJournalEntries).length;
+  const workspacePriorityInput = {
+    lifecycle: lifecycleProjection,
+    guardianAlerts,
+    doctrineCandidates: desktopDoctrineSuggestions.map((candidate) => ({
+      id: candidate.id,
+      title: candidate.title,
+      rationale: candidate.rationale,
+      evidenceRecordIds: candidate.evidenceRecordIds,
+    })),
+    archiveMilestoneCount: desktopArchiveRecordCount,
+    detectedAt: activeMission?.createdAt ?? '2026-07-13T00:00:00.000Z',
+  };
+  const commanderWorkspaceSnapshot = buildCommanderWorkspaceSnapshot({
+    lifecycle: lifecycleProjection,
+    highestPriority: getHighestPriority(workspacePriorityInput),
+  });
   const headquartersEvents = buildHeadquartersEvents({
     reportState,
     currentRoom: currentCommanderRoom,
@@ -1731,7 +1749,11 @@ export function App() {
             </div>
           </section>
 
-          <MissionCommandSidebar model={missionCommandSidebar} startupStatus={startupStatus} />
+          <MissionCommandSidebar
+            model={missionCommandSidebar}
+            startupStatus={startupStatus}
+            workspaceSnapshot={commanderWorkspaceSnapshot}
+          />
         </main>
       </div>
     </div>
@@ -1741,12 +1763,15 @@ export function App() {
 function MissionCommandSidebar({
   model,
   startupStatus,
+  workspaceSnapshot,
 }: {
   readonly model: MissionCommandSidebarModel;
   readonly startupStatus: StartupStatus;
+  readonly workspaceSnapshot: CommanderWorkspaceSnapshot;
 }) {
   return (
     <aside className="status-panel mission-command-sidebar" aria-label="Live mission command sidebar" aria-live="polite">
+      <LiveMissionCommandRail snapshot={workspaceSnapshot} />
       <p className="section-label">Mission Command</p>
       <h2>{model.missionIdentity.codename}</h2>
       <p className="mission-command-objective">{model.missionIdentity.objective}</p>
