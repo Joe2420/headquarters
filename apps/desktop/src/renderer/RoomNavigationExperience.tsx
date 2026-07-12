@@ -43,6 +43,26 @@ export interface RoomTransitionState {
   readonly controller: TransitionController;
 }
 
+export type RoomTransferDestinationView = 'chat' | 'room';
+export type RoomTransferCancellationState = 'none' | 'cancelled' | 'failed';
+export type RoomTransferCompletionState = 'pending' | 'completed';
+
+export interface RoomTransferPlan {
+  readonly id: string;
+  readonly fromRoom: CommanderShellRoomId;
+  readonly toRoom: CommanderShellRoomId;
+  readonly lifecycleStage: MissionState | undefined;
+  readonly reason: string;
+  readonly commanderDepartureMessage: string;
+  readonly transitionAnimationId: string;
+  readonly durationMs: number;
+  readonly destinationSelectedView: RoomTransferDestinationView;
+  readonly arrivalMessage: string;
+  readonly cancellationState: RoomTransferCancellationState;
+  readonly completionState: RoomTransferCompletionState;
+  readonly replayKey: string;
+}
+
 export type { RoomArrival, TransitionController, TransitionQueue, TransitionVariant };
 export { buildTransitionAudioEvents, createTransitionQueue, getTransitionDurationMs, getTransitionVariant };
 
@@ -147,6 +167,69 @@ export function createMissionAcceptedTransition(
     phase: 'commander',
     controller,
   };
+}
+
+export function createRoomTransferPlan(input: {
+  readonly fromRoom: CommanderShellRoomId;
+  readonly toRoom: CommanderShellRoomId;
+  readonly lifecycleStage?: MissionState | undefined;
+  readonly reason: string;
+  readonly destinationSelectedView: RoomTransferDestinationView;
+  readonly transition?: RoomTransitionState | undefined;
+}): RoomTransferPlan {
+  const transition = input.transition ?? createRoomTransition(input.fromRoom, input.toRoom);
+  const variant = transition.controller.variant;
+  const lifecycleSegment = input.lifecycleStage ?? 'standby';
+  const replayKey = `${input.fromRoom}->${input.toRoom}:${lifecycleSegment}:${input.reason}`;
+
+  return {
+    id: `transfer:${replayKey}`,
+    fromRoom: input.fromRoom,
+    toRoom: input.toRoom,
+    lifecycleStage: input.lifecycleStage,
+    reason: input.reason,
+    commanderDepartureMessage: variant.commanderDeparture,
+    transitionAnimationId: `${variant.room}:${variant.scene}:${variant.theme}`,
+    durationMs: transition.controller.durationMs,
+    destinationSelectedView: input.destinationSelectedView,
+    arrivalMessage: getRoomArrival(input.toRoom).message,
+    cancellationState: 'none',
+    completionState: 'pending',
+    replayKey,
+  };
+}
+
+export function completeRoomTransferPlan(plan: RoomTransferPlan): RoomTransferPlan {
+  return {
+    ...plan,
+    completionState: 'completed',
+  };
+}
+
+export function shouldCollapseRoomTransfer(
+  activePlan: RoomTransferPlan | undefined,
+  requestedPlan: RoomTransferPlan,
+): boolean {
+  if (activePlan === undefined) return false;
+  if (activePlan.completionState !== 'pending') return false;
+  if (activePlan.cancellationState !== 'none') return false;
+  return activePlan.fromRoom === requestedPlan.fromRoom && activePlan.toRoom === requestedPlan.toRoom;
+}
+
+export function shouldReplayRoomTransfer(
+  plan: RoomTransferPlan,
+  completedReplayKeys: readonly string[],
+): boolean {
+  return !completedReplayKeys.includes(plan.replayKey);
+}
+
+export function resolveRoomTransferDestinationView(input: {
+  readonly currentView: RoomTransferDestinationView;
+  readonly operatorPreferredView?: RoomTransferDestinationView | undefined;
+  readonly requiresRoomInteraction?: boolean | undefined;
+}): RoomTransferDestinationView {
+  if (input.requiresRoomInteraction) return 'room';
+  return input.operatorPreferredView ?? input.currentView;
 }
 
 export function advanceRoomTransition(transition: RoomTransitionState): RoomTransitionState {

@@ -6,8 +6,10 @@ import {
   RoomTransitionLayer,
   advanceRoomTransition,
   buildMissionCompassSteps,
+  completeRoomTransferPlan,
   createAuthorizationTransition,
   createMissionAcceptedTransition,
+  createRoomTransferPlan,
   createRoomTransition,
   createTransitionQueue,
   buildTransitionAudioEvents,
@@ -20,6 +22,9 @@ import {
   mapCommanderRoomToNavigationTarget,
   parseMissionNavigationState,
   recoverInterruptedTransition,
+  resolveRoomTransferDestinationView,
+  shouldCollapseRoomTransfer,
+  shouldReplayRoomTransfer,
 } from './RoomNavigationExperience';
 
 describe('RoomNavigationExperience', () => {
@@ -300,6 +305,66 @@ describe('RoomNavigationExperience', () => {
     expect(queue.locked).toBe(true);
     expect(queue.active?.toRoom).toBe('journal');
     expect(queue.pending).toEqual([]);
+  });
+
+  it('creates a Commander-led transfer plan with view policy and no-replay identity', () => {
+    const transition = createRoomTransition('ready-room', 'observation');
+    const plan = createRoomTransferPlan({
+      fromRoom: 'ready-room',
+      toRoom: 'observation',
+      lifecycleStage: 'observation',
+      reason: 'Briefing complete. Observation is required.',
+      destinationSelectedView: 'chat',
+      transition,
+    });
+
+    expect(plan).toMatchObject({
+      fromRoom: 'ready-room',
+      toRoom: 'observation',
+      lifecycleStage: 'observation',
+      reason: 'Briefing complete. Observation is required.',
+      commanderDepartureMessage: 'Proceeding to Observation Room.',
+      transitionAnimationId: 'observation:standard:focus',
+      durationMs: 4400,
+      destinationSelectedView: 'chat',
+      arrivalMessage: 'Observe. Do not interfere.',
+      cancellationState: 'none',
+      completionState: 'pending',
+    });
+    expect(shouldReplayRoomTransfer(plan, [])).toBe(true);
+    expect(shouldReplayRoomTransfer(plan, [plan.replayKey])).toBe(false);
+    expect(completeRoomTransferPlan(plan).completionState).toBe('completed');
+  });
+
+  it('collapses duplicate active transfer requests and preserves selected destination view rules', () => {
+    const active = createRoomTransferPlan({
+      fromRoom: 'observation',
+      toRoom: 'war-room',
+      lifecycleStage: 'authorization',
+      reason: 'Evidence package is sufficient for authorization.',
+      destinationSelectedView: 'chat',
+    });
+    const duplicate = createRoomTransferPlan({
+      fromRoom: 'observation',
+      toRoom: 'war-room',
+      lifecycleStage: 'authorization',
+      reason: 'Operator double-clicked transfer.',
+      destinationSelectedView: 'room',
+    });
+    const distinct = createRoomTransferPlan({
+      fromRoom: 'war-room',
+      toRoom: 'debrief',
+      lifecycleStage: 'return_to_base',
+      reason: 'Plan concluded.',
+      destinationSelectedView: 'room',
+    });
+
+    expect(shouldCollapseRoomTransfer(active, duplicate)).toBe(true);
+    expect(shouldCollapseRoomTransfer(active, distinct)).toBe(false);
+    expect(shouldCollapseRoomTransfer(completeRoomTransferPlan(active), duplicate)).toBe(false);
+    expect(resolveRoomTransferDestinationView({ currentView: 'chat' })).toBe('chat');
+    expect(resolveRoomTransferDestinationView({ currentView: 'chat', requiresRoomInteraction: true })).toBe('room');
+    expect(resolveRoomTransferDestinationView({ currentView: 'room', operatorPreferredView: 'chat' })).toBe('chat');
   });
 
   it('defines room identity contracts for the five mission rooms', () => {
