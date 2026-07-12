@@ -28,5 +28,6 @@ export * from './MissionArchiveSummary';
 export * from './MissionEvaluationEngine';
 export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
+export * from './OperationalConsequenceRepository';
 export * from './HQOS';
 export * from './events';
