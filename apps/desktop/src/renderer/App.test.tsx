@@ -157,6 +157,50 @@ describe('Desktop shell', () => {
     expect(source).toContain('aria-label="Report deployed mission change"');
     expect(source).toContain('State only what changed.');
     expect(source).toContain('Return to Base is now the correct next action.');
+    expect(source).toContain('canRecordDeployedCheckIn');
+    expect(source).toContain('markDeployedPlanConcluded');
+    expect(source).toContain('Timing State');
+    expect(source).toContain('checkInGuidance');
+  });
+
+  it('hydrates persisted lifecycle timing for reload-safe deployed missions', () => {
+    const contextByMissionId = buildMissionContextLookup([{
+      missionId: 'mission-001',
+      contextJson: JSON.stringify({
+        missionId: 'mission-001',
+        briefing: {},
+        observation: {},
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: true,
+          observationComplete: true,
+          warRoomReady: true,
+          debriefReady: false,
+        },
+        timing: {
+          lifecycleStageEntries: [
+            { stage: 'idle', enteredAt: '2026-07-10T09:00:00.000Z' },
+            { stage: 'deployed', enteredAt: '2026-07-10T09:45:00.000Z' },
+          ],
+          operationalState: 'active',
+          deployedAt: '2026-07-10T09:45:00.000Z',
+        },
+      }),
+      createdAt: '2026-07-10T09:00:00.000Z',
+      updatedAt: '2026-07-10T09:45:00.000Z',
+    }]);
+    const mission = mapMissionRecordToActiveMission({
+      id: 'mission-001',
+      codename: 'Reload Patrol',
+      objective: 'Keep deployed timing stable.',
+      state: 'deployed',
+      createdAt: '2026-07-10T09:00:00.000Z',
+      updatedAt: '2026-07-10T09:45:00.000Z',
+    }, undefined, contextByMissionId.get('mission-001'));
+
+    expect(mission.missionContext?.timing?.deployedAt).toBe('2026-07-10T09:45:00.000Z');
+    expect(mission.missionContext?.timing?.lifecycleStageEntries).toHaveLength(2);
   });
 
   it('exposes Doctrine candidate review decisions through the Doctrine room', () => {
@@ -2070,6 +2114,12 @@ describe('Desktop shell', () => {
           observationComplete: false,
           warRoomReady: false,
         },
+        timing: {
+          lifecycleStageEntries: [
+            { stage: 'idle', enteredAt: '2026-01-01T00:00:00.000Z' },
+          ],
+          operationalState: 'idle',
+        },
         createdAt: '2026-01-01T00:00:00.000Z',
         updatedAt: '2026-01-01T00:00:00.000Z',
       },
@@ -2262,6 +2312,12 @@ describe('Desktop shell', () => {
             debriefReady: false,
             observationComplete: false,
             warRoomReady: false,
+          },
+          timing: {
+            lifecycleStageEntries: [
+              { stage: 'idle', enteredAt: '2026-01-01T00:00:00.000Z' },
+            ],
+            operationalState: 'idle',
           },
           createdAt: '2026-01-01T00:00:00.000Z',
           updatedAt: '2026-01-01T00:00:00.000Z',

@@ -42,6 +42,43 @@ export interface MissionContextReadinessFlags {
   readonly debriefReady: boolean;
 }
 
+export type MissionLifecycleTimingStage =
+  | 'idle'
+  | 'briefing'
+  | 'ready'
+  | 'observation'
+  | 'authorization'
+  | 'deployed'
+  | 'return_to_base'
+  | 'debrief'
+  | 'archived';
+
+export type MissionOperationalTimingState =
+  | 'idle'
+  | 'waiting'
+  | 'quiet'
+  | 'active'
+  | 'paused'
+  | 'blocked'
+  | 'abandoned';
+
+export interface MissionLifecycleStageEntry {
+  readonly stage: MissionLifecycleTimingStage;
+  readonly enteredAt: string;
+}
+
+export interface MissionOperationalTiming {
+  readonly lifecycleStageEntries: readonly MissionLifecycleStageEntry[];
+  readonly operationalState: MissionOperationalTimingState;
+  readonly deployedAt?: string;
+  readonly planConcludedAt?: string;
+  readonly lastCheckInAt?: string;
+  readonly quietSince?: string;
+  readonly blockedSince?: string;
+  readonly pausedAt?: string;
+  readonly abandonedAt?: string;
+}
+
 export interface MissionContext {
   readonly missionId: string;
   readonly briefing: MissionContextBriefingAnswers;
@@ -49,6 +86,7 @@ export interface MissionContext {
   readonly commanderNotes: readonly CommanderContextNote[];
   readonly contradictionFlags: readonly MissionContextContradictionFlag[];
   readonly readiness: MissionContextReadinessFlags;
+  readonly timing?: MissionOperationalTiming;
   readonly createdAt?: string;
   readonly updatedAt?: string;
 }
@@ -60,6 +98,7 @@ export interface MissionContextSnapshot {
   readonly commanderNotes: readonly CommanderContextNote[];
   readonly contradictionFlags: readonly MissionContextContradictionFlag[];
   readonly readiness: MissionContextReadinessFlags;
+  readonly timing?: MissionOperationalTiming;
   readonly createdAt?: string;
   readonly updatedAt?: string;
 }
@@ -170,13 +209,91 @@ export function snapshotMissionContext(context: MissionContext): MissionContextS
     commanderNotes: context.commanderNotes.map((note) => ({ ...note })),
     contradictionFlags: context.contradictionFlags.map((flag) => ({ ...flag })),
     readiness: { ...context.readiness },
+    ...(context.timing ? { timing: cloneMissionOperationalTiming(context.timing) } : {}),
     ...timestampFields,
+  };
+}
+
+export function recordMissionLifecycleStageEntry(
+  context: MissionContext,
+  stage: MissionLifecycleTimingStage,
+  options: { readonly enteredAt?: string; readonly operationalState?: MissionOperationalTimingState } = {},
+): MissionContext {
+  const enteredAt = options.enteredAt ?? new Date().toISOString();
+  const currentTiming = context.timing ?? createInitialMissionOperationalTiming(context.createdAt ?? enteredAt);
+  const latestEntry = currentTiming.lifecycleStageEntries.at(-1);
+
+  if (latestEntry?.stage === stage) {
+    return updateMissionOperationalTiming(context, {
+      operationalState: options.operationalState ?? currentTiming.operationalState,
+    }, { updatedAt: enteredAt });
+  }
+
+  return updateMissionOperationalTiming(context, {
+    lifecycleStageEntries: [
+      ...currentTiming.lifecycleStageEntries,
+      { stage, enteredAt },
+    ],
+    operationalState: options.operationalState ?? deriveOperationalStateForStage(stage),
+    ...(stage === 'deployed' && currentTiming.deployedAt === undefined ? { deployedAt: enteredAt } : {}),
+    ...(stage === 'return_to_base' && currentTiming.planConcludedAt === undefined ? { planConcludedAt: enteredAt } : {}),
+    ...(stage === 'observation' && currentTiming.quietSince === undefined ? { quietSince: enteredAt } : {}),
+  }, { updatedAt: enteredAt });
+}
+
+export function updateMissionOperationalTiming(
+  context: MissionContext,
+  timingPatch: Partial<MissionOperationalTiming>,
+  options: { readonly updatedAt?: string } = {},
+): MissionContext {
+  const fallbackTimestamp = options.updatedAt ?? context.updatedAt ?? context.createdAt ?? new Date().toISOString();
+  const currentTiming = context.timing ?? createInitialMissionOperationalTiming(context.createdAt ?? fallbackTimestamp);
+
+  return withContextUpdate(context, {
+    timing: {
+      ...currentTiming,
+      ...timingPatch,
+      lifecycleStageEntries: timingPatch.lifecycleStageEntries ?? currentTiming.lifecycleStageEntries,
+    },
+  }, options);
+}
+
+export function getMissionLifecycleStageEnteredAt(
+  context: MissionContext | undefined,
+  stage: MissionLifecycleTimingStage,
+): string | undefined {
+  return context?.timing?.lifecycleStageEntries
+    .filter((entry) => entry.stage === stage)
+    .at(-1)?.enteredAt;
+}
+
+export function normalizeMissionOperationalTiming(input: unknown): MissionOperationalTiming | undefined {
+  if (input === null || typeof input !== 'object') return undefined;
+  const candidate = input as Partial<MissionOperationalTiming>;
+  const lifecycleStageEntries = Array.isArray(candidate.lifecycleStageEntries)
+    ? candidate.lifecycleStageEntries.filter(isMissionLifecycleStageEntry)
+    : [];
+
+  if (lifecycleStageEntries.length === 0) return undefined;
+
+  return {
+    lifecycleStageEntries,
+    operationalState: isMissionOperationalTimingState(candidate.operationalState)
+      ? candidate.operationalState
+      : deriveOperationalStateForStage(lifecycleStageEntries.at(-1)?.stage ?? 'idle'),
+    ...(typeof candidate.deployedAt === 'string' ? { deployedAt: candidate.deployedAt } : {}),
+    ...(typeof candidate.planConcludedAt === 'string' ? { planConcludedAt: candidate.planConcludedAt } : {}),
+    ...(typeof candidate.lastCheckInAt === 'string' ? { lastCheckInAt: candidate.lastCheckInAt } : {}),
+    ...(typeof candidate.quietSince === 'string' ? { quietSince: candidate.quietSince } : {}),
+    ...(typeof candidate.blockedSince === 'string' ? { blockedSince: candidate.blockedSince } : {}),
+    ...(typeof candidate.pausedAt === 'string' ? { pausedAt: candidate.pausedAt } : {}),
+    ...(typeof candidate.abandonedAt === 'string' ? { abandonedAt: candidate.abandonedAt } : {}),
   };
 }
 
 function withContextUpdate(
   context: MissionContext,
-  patch: Partial<Pick<MissionContext, 'briefing' | 'observation' | 'commanderNotes' | 'contradictionFlags' | 'readiness'>>,
+  patch: Partial<Pick<MissionContext, 'briefing' | 'observation' | 'commanderNotes' | 'contradictionFlags' | 'readiness' | 'timing'>>,
   options: { readonly updatedAt?: string },
 ): MissionContext {
   const updatedAt = options.updatedAt ?? context.updatedAt;
@@ -187,6 +304,64 @@ function withContextUpdate(
     ...patch,
     ...timestampField,
   };
+}
+
+function createInitialMissionOperationalTiming(createdAt: string): MissionOperationalTiming {
+  return {
+    lifecycleStageEntries: [{ stage: 'idle', enteredAt: createdAt }],
+    operationalState: 'idle',
+  };
+}
+
+function cloneMissionOperationalTiming(timing: MissionOperationalTiming): MissionOperationalTiming {
+  return {
+    lifecycleStageEntries: timing.lifecycleStageEntries.map((entry) => ({ ...entry })),
+    operationalState: timing.operationalState,
+    ...(timing.deployedAt ? { deployedAt: timing.deployedAt } : {}),
+    ...(timing.planConcludedAt ? { planConcludedAt: timing.planConcludedAt } : {}),
+    ...(timing.lastCheckInAt ? { lastCheckInAt: timing.lastCheckInAt } : {}),
+    ...(timing.quietSince ? { quietSince: timing.quietSince } : {}),
+    ...(timing.blockedSince ? { blockedSince: timing.blockedSince } : {}),
+    ...(timing.pausedAt ? { pausedAt: timing.pausedAt } : {}),
+    ...(timing.abandonedAt ? { abandonedAt: timing.abandonedAt } : {}),
+  };
+}
+
+function deriveOperationalStateForStage(stage: MissionLifecycleTimingStage): MissionOperationalTimingState {
+  if (stage === 'idle' || stage === 'briefing' || stage === 'ready') return 'waiting';
+  if (stage === 'observation') return 'quiet';
+  if (stage === 'authorization') return 'blocked';
+  if (stage === 'deployed') return 'active';
+  if (stage === 'return_to_base' || stage === 'debrief') return 'paused';
+  return 'idle';
+}
+
+function isMissionLifecycleStageEntry(value: unknown): value is MissionLifecycleStageEntry {
+  if (value === null || typeof value !== 'object') return false;
+  const entry = value as Partial<MissionLifecycleStageEntry>;
+  return isMissionLifecycleTimingStage(entry.stage) && typeof entry.enteredAt === 'string';
+}
+
+function isMissionLifecycleTimingStage(value: unknown): value is MissionLifecycleTimingStage {
+  return value === 'idle'
+    || value === 'briefing'
+    || value === 'ready'
+    || value === 'observation'
+    || value === 'authorization'
+    || value === 'deployed'
+    || value === 'return_to_base'
+    || value === 'debrief'
+    || value === 'archived';
+}
+
+function isMissionOperationalTimingState(value: unknown): value is MissionOperationalTimingState {
+  return value === 'idle'
+    || value === 'waiting'
+    || value === 'quiet'
+    || value === 'active'
+    || value === 'paused'
+    || value === 'blocked'
+    || value === 'abandoned';
 }
 
 function removeEmptyValues<T extends Record<string, unknown>>(input: T): T {
