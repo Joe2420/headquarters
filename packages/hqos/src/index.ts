@@ -22,6 +22,7 @@ export * from './HeadquartersPriorityEngine';
 export * from './HeadquartersAttentionRequest';
 export * from './HeadquartersAttentionRequestAdapters';
 export * from './LivingHeadquartersOrchestrator';
+export * from './HeadquartersInterruptionSession';
 export * from './MissionEventReader';
 export * from './MissionTimelineBuilder';
 export * from './MissionTimelineExport';
