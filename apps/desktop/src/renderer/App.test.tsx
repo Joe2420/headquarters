@@ -45,6 +45,7 @@ import {
   buildDoctrineDiffPreview,
   buildMissionLifecycleSteps,
   buildMissionContextLookup,
+  buildInstitutionalHealthModel,
   buildMissionCommandSidebarModel,
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
@@ -278,6 +279,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Next Action');
     expect(html).toContain('Intelligence');
     expect(html).toContain('Guardian / Doctrine');
+    expect(html).toContain('Institutional Health');
     expect(html).toContain('Outcome State');
     expect(html).toContain('Technical diagnostics');
     expect(html).toContain('Database');
@@ -323,6 +325,8 @@ describe('Desktop shell', () => {
     expect(model.guardian.state).toBe('secure');
     expect(model.nextAction.label).toBe('Complete Observation');
     expect(model.intelligence.missingRequiredFieldCount).toBe(missionIntelligence.missingEvidence.length);
+    expect(model.institutionalHealth.dimensions).toHaveLength(8);
+    expect(model.institutionalHealth.dimensions.map((dimension) => dimension.label)).toContain('Mission Integrity');
   });
 
   it('lets Guardian lockout override the mission command sidebar next action', () => {
@@ -360,6 +364,118 @@ describe('Desktop shell', () => {
     expect(model.lifecycleProgress.find((stage) => stage.state === 'blocked')?.id).toBe('war-room');
     expect(model.doctrine.pendingCandidateCount).toBe(2);
     expect(model.outcomeState).toBe('at risk');
+    expect(model.institutionalHealth.overallState).toBe('critical');
+    expect(model.institutionalHealth.summary).toContain('immediate recovery');
+  });
+
+  it('derives transparent institutional health without profit or prediction inputs', () => {
+    const archivedMission: ActiveMission = {
+      id: 'mission-health-001',
+      campaign: 'Process First',
+      objective: 'Execute only if evidence forms',
+      condition: 'Archived',
+      commandAuthority: 'Professional command',
+      currentState: 'archived',
+      createdAt: '2026-07-04T10:00:00.000Z',
+      missionContext: {
+        missionId: 'mission-health-001',
+        briefing: {
+          missionObjective: 'Execute only if evidence forms',
+          market: 'ES',
+          marketEnvironment: 'range',
+          highImpactNews: 'none',
+          personalReadiness: 'focused',
+          riskParameters: '1%',
+          successCriteria: 'no trade unless plan appears',
+        },
+        observation: {
+          observedDirection: 'sideways',
+          marketStructure: 'range',
+          volume: 'normal',
+          liquidityNotes: 'resting above range high',
+          keyLevels: '5520 and 5500',
+          directionalHypothesis: 'wait for range break',
+          invalidationEvidence: 'failed acceptance above range',
+          operationalSummary: 'range remains intact',
+        },
+        commanderNotes: [],
+        contradictionFlags: [],
+        readiness: {
+          briefingComplete: true,
+          observationComplete: true,
+          warRoomReady: true,
+          debriefReady: true,
+        },
+      },
+    };
+    const missionIntelligence = buildDesktopMissionIntelligencePackage(archivedMission, {
+      behaviorSummary: 'Waited until evidence appeared.',
+      disciplineNotes: 'Risk boundary held.',
+      lesson: 'No trade was acceptable.',
+    });
+    const health = buildInstitutionalHealthModel({
+      missionState: 'archived',
+      missionIntelligence,
+      guardian: {
+        state: 'secure',
+        highestAlert: 'Guardian secure. No active restriction.',
+      },
+      doctrine: {
+        activeProtectiveRule: 'No authorization without invalidation.',
+        pendingCandidateCount: 0,
+        relevance: 'Protective rule was available for this operation.',
+      },
+      startupStatus: {
+        state: 'ready',
+        database: { connected: true },
+        migrations: { applied: [], skipped: ['001-initial'] },
+      },
+      nextAction: {
+        label: 'Mission Archived',
+        description: 'This mission lifecycle is complete.',
+        buttonLabel: 'Archived',
+        disabled: true,
+      },
+    });
+
+    expect(health.overallState).toBe('degraded');
+    expect(health.dimensions.find((dimension) => dimension.id === 'evidence-quality')?.state).toBe('stable');
+    expect(health.dimensions.find((dimension) => dimension.id === 'academy-progress')?.state).toBe('stable');
+    expect(JSON.stringify(health)).not.toMatch(/profit|loss|pnl/i);
+  });
+
+  it('marks institutional health degraded when mission evidence is missing', () => {
+    const mission: ActiveMission = {
+      id: 'mission-health-002',
+      campaign: 'Thin Context',
+      objective: 'Observe first',
+      condition: 'Observation',
+      commandAuthority: 'Professional command',
+      currentState: 'observation',
+      createdAt: '2026-07-04T10:00:00.000Z',
+    };
+    const missionIntelligence = buildDesktopMissionIntelligencePackage(mission);
+    const model = buildMissionCommandSidebarModel({
+      mission,
+      currentRoom: 'observation',
+      selectedView: 'chat',
+      nextAction: getMissionNextAction(mission),
+      missionIntelligence,
+      guardianAlerts: [],
+      doctrineCandidateCount: 0,
+      protectiveRule: '',
+      startupStatus: {
+        state: 'ready',
+        database: { connected: true },
+        migrations: { applied: [], skipped: ['001-initial'] },
+      },
+    });
+
+    expect(model.institutionalHealth.overallState).toBe('degraded');
+    expect(model.institutionalHealth.dimensions.find((dimension) => dimension.id === 'mission-integrity')).toMatchObject({
+      state: 'degraded',
+      explanation: 'Required mission evidence is not complete.',
+    });
   });
 
   it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {

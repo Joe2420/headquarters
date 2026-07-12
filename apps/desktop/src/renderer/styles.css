@@ -3791,6 +3791,57 @@ dd {
   color: #ffd88d;
 }
 
+.mission-command-section [data-health-state] {
+  color: #bbffd0;
+  text-transform: uppercase;
+}
+
+.mission-command-section [data-health-state="forming"] {
+  color: #9fc6ff;
+}
+
+.mission-command-section [data-health-state="degraded"] {
+  color: #ffd88d;
+}
+
+.mission-command-section [data-health-state="critical"] {
+  color: #ff8f8f;
+}
+
+.institutional-health-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.institutional-health-item {
+  border: 1px solid rgba(130, 175, 165, 0.18);
+  background: rgba(4, 10, 11, 0.36);
+  padding: 0.48rem 0.55rem;
+}
+
+.institutional-health-item summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  cursor: pointer;
+  color: #dcece5;
+  font-size: 0.78rem;
+}
+
+.institutional-health-item p,
+.institutional-health-item li {
+  color: #aab7c1;
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.institutional-health-item ul {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.45rem 0 0;
+  padding-left: 1rem;
+}
+
 .technical-diagnostics {
   border-top: 1px solid rgba(130, 175, 165, 0.2);
   padding-top: 0.75rem;
