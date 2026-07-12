@@ -7,6 +7,8 @@ import {
   getPriorityCountBySeverity,
   type HeadquartersPriorityItem,
   buildInstitutionalHealthSnapshot,
+  buildCommanderRelationshipDialogue,
+  buildCommanderRelationshipSnapshot,
   getCompletedLifecycleStages as getProjectedCompletedLifecycleStages,
   getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
   getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
@@ -17,6 +19,7 @@ import {
   projectMissionLifecycle,
   type HealthDimension as HqosHealthDimension,
   type InstitutionalHealthState as HqosInstitutionalHealthState,
+  type RelationshipSnapshot,
   type MissionEvaluation,
   type MissionEvaluationVerdict,
   type OperationalConsequence as HqosOperationalConsequence,
@@ -1852,6 +1855,42 @@ function MissionCommandSidebar({
               </ul>
             </details>
           ))}
+        </div>
+      </section>
+
+      <section className="mission-command-section" aria-label="Commander assessment">
+        <h3>Commander Assessment</h3>
+        <strong>{model.commanderAssessment.currentFocus}</strong>
+        <p>{model.commanderAssessment.summary}</p>
+        <dl className="mission-command-summary">
+          <div>
+            <dt>Confidence</dt>
+            <dd>{model.commanderAssessment.commanderConfidence}</dd>
+          </div>
+          <div>
+            <dt>Recent Milestone</dt>
+            <dd>{model.commanderAssessment.recentMilestone}</dd>
+          </div>
+        </dl>
+        <div className="institutional-health-list">
+          <details className="institutional-health-item">
+            <summary>
+              <span>Strengths</span>
+              <strong>{model.commanderAssessment.currentStrengths.length}</strong>
+            </summary>
+            <ul>
+              {model.commanderAssessment.currentStrengths.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </details>
+          <details className="institutional-health-item">
+            <summary>
+              <span>Needs Attention</span>
+              <strong>{model.commanderAssessment.needsAttention.length}</strong>
+            </summary>
+            <ul>
+              {model.commanderAssessment.needsAttention.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </details>
         </div>
       </section>
 
@@ -8685,6 +8724,17 @@ export interface InstitutionalHealthModel {
   readonly dimensions: readonly InstitutionalHealthDimension[];
 }
 
+export interface CommanderAssessmentModel {
+  readonly summary: string;
+  readonly currentStrengths: readonly string[];
+  readonly currentFocus: string;
+  readonly improvingBehaviors: readonly string[];
+  readonly needsAttention: readonly string[];
+  readonly recentMilestone: string;
+  readonly commanderConfidence: string;
+  readonly evidence: readonly string[];
+}
+
 export interface OperationalConsequence {
   readonly id: string;
   readonly category: OperationalConsequenceCategory;
@@ -8740,6 +8790,7 @@ export interface MissionCommandSidebarModel {
     readonly relevance: string;
   };
   readonly institutionalHealth: InstitutionalHealthModel;
+  readonly commanderAssessment: CommanderAssessmentModel;
   readonly consequences: readonly OperationalConsequence[];
   readonly finalEvaluation: MissionFinalEvaluation;
   readonly outcomeState: MissionCommandOutcomeState;
@@ -8980,6 +9031,27 @@ export function buildMissionCommandSidebarModel(input: {
       ? 'Doctrine review is available for this operation.'
       : 'No current doctrine review is blocking mission flow.',
   };
+  const institutionalHealth = buildInstitutionalHealthModel({
+    missionState,
+    missionIntelligence: input.missionIntelligence,
+    guardian,
+    doctrine,
+    startupStatus: input.startupStatus,
+    nextAction: input.nextAction,
+  });
+  const consequences = buildOperationalConsequences({
+    missionState,
+    missionIntelligence: input.missionIntelligence,
+    guardian,
+    doctrine,
+    nextAction: input.nextAction,
+  });
+  const finalEvaluation = buildMissionFinalEvaluation({
+    missionState,
+    missionIntelligence: input.missionIntelligence,
+    guardian,
+    doctrine,
+  });
 
   return {
     missionIdentity: {
@@ -9008,27 +9080,19 @@ export function buildMissionCommandSidebarModel(input: {
     },
     guardian,
     doctrine,
-    institutionalHealth: buildInstitutionalHealthModel({
+    institutionalHealth,
+    commanderAssessment: buildCommanderAssessmentModel({
+      mission: input.mission,
       missionState,
       missionIntelligence: input.missionIntelligence,
       guardian,
       doctrine,
-      startupStatus: input.startupStatus,
-      nextAction: input.nextAction,
+      institutionalHealth,
+      consequences,
+      finalEvaluation,
     }),
-    consequences: buildOperationalConsequences({
-      missionState,
-      missionIntelligence: input.missionIntelligence,
-      guardian,
-      doctrine,
-      nextAction: input.nextAction,
-    }),
-    finalEvaluation: buildMissionFinalEvaluation({
-      missionState,
-      missionIntelligence: input.missionIntelligence,
-      guardian,
-      doctrine,
-    }),
+    consequences,
+    finalEvaluation,
     outcomeState: buildMissionCommandOutcomeState(missionState, input.missionIntelligence, guardian.state),
   };
 }
@@ -9185,6 +9249,121 @@ function mapMissionIntelligenceConfidenceLevel(
 ): 'missing' | 'forming' | 'sufficient' | 'complete' | undefined {
   if (level === 'incomplete') return 'forming';
   return level;
+}
+
+export function buildCommanderAssessmentModel(input: {
+  readonly mission?: ActiveMission | undefined;
+  readonly missionState: MissionState | undefined;
+  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
+  readonly guardian: MissionCommandSidebarModel['guardian'];
+  readonly doctrine: MissionCommandSidebarModel['doctrine'];
+  readonly institutionalHealth: InstitutionalHealthModel;
+  readonly consequences: readonly OperationalConsequence[];
+  readonly finalEvaluation: MissionFinalEvaluation;
+}): CommanderAssessmentModel {
+  const snapshot = buildCommanderRelationshipSnapshot({
+    snapshotId: `desktop-relationship:${input.mission?.id ?? 'standby'}`,
+    operatorId: 'operator',
+    evaluatedAt: '2026-07-12T00:00:00.000Z',
+    missionEvaluations: [input.finalEvaluation],
+    missionContexts: input.mission
+      ? [{
+          missionId: input.mission.id,
+          missionState: input.missionState,
+          briefingComplete: input.missionIntelligence?.missionObjective !== undefined,
+          observationComplete: input.missionIntelligence?.observationSummary !== undefined,
+          authorizationEvidencePresent: input.missionIntelligence?.authorizationSummary !== undefined,
+          invalidationPresent: input.missionIntelligence?.invalidation !== undefined,
+          riskDeclared: input.missionIntelligence?.riskLimit !== undefined,
+          debriefComplete: input.missionIntelligence?.debriefSummary !== undefined,
+          emotionalState: input.missionIntelligence?.operatorReadiness,
+        }]
+      : [],
+    journalEntries: input.missionIntelligence?.debriefSummary
+      ? [{
+          id: `debrief:${input.missionIntelligence.missionId}`,
+          missionId: input.missionIntelligence.missionId,
+          behaviorSummary: input.missionIntelligence.debriefSummary,
+        }]
+      : [],
+    guardianAlerts: input.guardian.state === 'secure'
+      ? []
+      : [{
+          id: `guardian:${input.guardian.state}`,
+          missionId: input.mission?.id,
+          message: input.guardian.highestAlert,
+          priority: input.guardian.state === 'lockout' ? 'critical' : input.guardian.state === 'restriction' ? 'high' : 'medium',
+        }],
+    doctrineRecords: input.doctrine.activeProtectiveRule.startsWith('No protective rule')
+      ? []
+      : [{
+          id: `doctrine:${hashSidebarText(input.doctrine.activeProtectiveRule)}`,
+          missionId: input.mission?.id,
+          title: input.doctrine.activeProtectiveRule,
+          promoted: input.doctrine.pendingCandidateCount === 0,
+        }],
+    academyEvents: input.finalEvaluation.recognition.map((recognition, index) => ({
+      id: `recognition:${index}`,
+      missionId: input.mission?.id,
+      category: 'recognition',
+      title: recognition,
+    })),
+  });
+
+  return mapRelationshipSnapshotToCommanderAssessment(snapshot, input.institutionalHealth, input.consequences);
+}
+
+function mapRelationshipSnapshotToCommanderAssessment(
+  snapshot: RelationshipSnapshot,
+  institutionalHealth: InstitutionalHealthModel,
+  consequences: readonly OperationalConsequence[],
+): CommanderAssessmentModel {
+  const focus = snapshot.relationship.profile.needsAttention[0];
+  const milestone = snapshot.relationship.profile.milestones[0];
+  const dialogue = buildCommanderRelationshipDialogue(snapshot);
+
+  return {
+    summary: snapshot.relationship.summary,
+    currentStrengths: fallbackList(
+      snapshot.relationship.profile.strengths.slice(0, 3).map((dimension) => dimension.title),
+      'No confirmed strength yet.',
+    ),
+    currentFocus: focus?.title ?? 'Continue building evidence',
+    improvingBehaviors: fallbackList(
+      snapshot.relationship.profile.dimensions
+        .filter((dimension) => dimension.trend === 'improving')
+        .map((dimension) => dimension.title),
+      'No improving trend confirmed yet.',
+    ),
+    needsAttention: fallbackList(
+      snapshot.relationship.profile.needsAttention.slice(0, 3).map((dimension) => dimension.title),
+      consequences.length > 0 ? consequences[0]!.cause : 'No behavior warning active.',
+    ),
+    recentMilestone: milestone?.title ?? 'No relationship milestone yet.',
+    commanderConfidence: formatCommanderRelationshipConfidence(snapshot, institutionalHealth),
+    evidence: fallbackList(
+      dialogue.flatMap((message) => message.evidenceIds),
+      snapshot.sourceEvidence[0]?.description ?? 'Relationship evidence is still forming.',
+    ),
+  };
+}
+
+function formatCommanderRelationshipConfidence(
+  snapshot: RelationshipSnapshot,
+  institutionalHealth: InstitutionalHealthModel,
+): string {
+  const evidenceCount = snapshot.sourceEvidence.length;
+  if (evidenceCount >= 10 && institutionalHealth.overallState !== 'critical') return 'High evidence confidence';
+  if (evidenceCount >= 3) return 'Forming evidence confidence';
+  return 'Limited evidence confidence';
+}
+
+function fallbackList(values: readonly string[], fallback: string): readonly string[] {
+  return values.length > 0 ? values : [fallback];
+}
+
+function hashSidebarText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-|-$/gu, '').slice(0, 48) || 'evidence';
 }
 
 function buildMissionCommandLifecycleProgress(

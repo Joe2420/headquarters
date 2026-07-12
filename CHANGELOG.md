@@ -1,3 +1,5 @@
+HQ-TASK-S47 - Added Commander relationship and behavioral intelligence model.
+
 HQ-TASK-S46 - Added authoritative Headquarters Institutional Health model.
 
 HQ-TASK-S45 - Added Sprint 45 operational consequences and recovery foundation.

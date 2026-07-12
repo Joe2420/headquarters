@@ -2,6 +2,7 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-S47 - Sprint 47 Commander Relationship and Behavioral Intelligence
 - HQ-TASK-S46 - Sprint 46 Headquarters Institutional Health Model
 - HQ-TASK-S45 - Sprint 45 Operational Consequences and Recovery
 - HQ-TASK-STABILIZATION - Commander Conversation and Lifecycle Consistency Stabilization

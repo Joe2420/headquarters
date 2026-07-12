@@ -283,6 +283,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Intelligence');
     expect(html).toContain('Guardian / Doctrine');
     expect(html).toContain('HEADQUARTERS CONDITION');
+    expect(html).toContain('Commander Assessment');
     expect(html).toContain('Operational Consequences');
     expect(html).toContain('Outcome State');
     expect(html).toContain('Final Evaluation');
@@ -482,6 +483,8 @@ describe('Desktop shell', () => {
     });
 
     expect(model.institutionalHealth.overallState).toBe('degraded');
+    expect(model.commanderAssessment.currentFocus).toBeTruthy();
+    expect(model.commanderAssessment.commanderConfidence).toMatch(/evidence confidence/u);
     expect(model.institutionalHealth.dimensions.find((dimension) => dimension.id === 'mission-integrity')).toMatchObject({
       state: 'degraded',
       explanation: 'Mission evaluation reports unresolved process failures.',
