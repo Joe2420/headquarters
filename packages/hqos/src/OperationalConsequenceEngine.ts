@@ -198,6 +198,7 @@ function deriveFromGuardian(input: OperationalConsequenceDerivationInput): reado
       sourceGuardianAlertId: alert.id,
       createdAt: input.evaluatedAt,
       activatedAt: input.evaluatedAt,
+      ...(alert.ruleId ? { metadata: { guardianRuleId: alert.ruleId } } : {}),
       recoveryRequirements: [{
         requirementId: `recovery:${input.missionId}:guardian:${alert.id}`,
         description: 'Review and resolve the Guardian condition.',

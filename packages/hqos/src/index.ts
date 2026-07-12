@@ -29,5 +29,6 @@ export * from './MissionEvaluationEngine';
 export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
 export * from './OperationalConsequenceRepository';
+export * from './GuardianConsequenceIntegration';
 export * from './HQOS';
 export * from './events';
