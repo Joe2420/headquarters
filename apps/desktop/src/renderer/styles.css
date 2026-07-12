@@ -3875,6 +3875,49 @@ dd {
   color: #ffe7a8;
 }
 
+.commander-interaction-controller {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: end;
+  color: #d8ffe2;
+}
+
+.commander-interaction-controller strong,
+.commander-interaction-controller span {
+  display: block;
+}
+
+.commander-interaction-controller strong {
+  color: #7bffa4;
+}
+
+.commander-interaction-controller span {
+  color: #9fc5aa;
+  font-size: 0.9rem;
+}
+
+.commander-interaction-controller__choices {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.commander-interaction-controller__choices button {
+  min-height: 34px;
+  border: 1px solid rgba(123, 255, 164, 0.24);
+  background: rgba(5, 25, 14, 0.86);
+  color: #d8ffe2;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.commander-interaction-controller__primary {
+  white-space: nowrap;
+}
+
 @media (max-width: 1100px) {
   .commander-workspace {
     grid-template-columns: 1fr;
