@@ -1,5 +1,6 @@
 import type { Mission } from '@headquarters/shared';
 import { describe, expect, it } from 'vitest';
+import { buildInstitutionalHealthSnapshot } from './InstitutionalHealthEngine';
 import {
   getBlockingPriority,
   getHeadquartersPriorities,
@@ -126,5 +127,28 @@ describe('HeadquartersPriorityEngine', () => {
     expect(getPriorityExplanation(top[0]!)).toContain(top[0]!.title);
     expect(counts.blocking).toBeGreaterThanOrEqual(2);
     expect(counts.informational).toBe(1);
+  });
+
+  it('creates blocking priorities from critical institutional health dimensions', () => {
+    const institutionalHealth = buildInstitutionalHealthSnapshot({
+      snapshotId: 'health:lockout',
+      evaluatedAt: '2026-07-12T12:00:00.000Z',
+      missionState: 'authorization',
+      guardian: { state: 'lockout', highestAlert: 'Guardian lockout active.' },
+      doctrine: { activeProtectiveRule: 'Wait for confirmation.', pendingCandidateCount: 0 },
+      archive: { persistenceReady: true, archiveRecordCount: 1 },
+      intelligence: { missingEvidenceCount: 0, contradictionCount: 0, confidenceLevel: 'complete', validatedEvidenceCount: 8 },
+      priority: { criticalPriorityCount: 1 },
+    });
+
+    const priority = getHighestPriority({
+      lifecycle: projectMissionLifecycle(mission),
+      institutionalHealth,
+    });
+
+    expect(priority.source).toBe('institutional-health');
+    expect(priority.severity).toBe('critical');
+    expect(priority.blocking).toBe(true);
+    expect(priority.recommendedRoom).toBe('war-room');
   });
 });

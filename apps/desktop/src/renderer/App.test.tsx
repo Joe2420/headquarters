@@ -282,7 +282,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Next Action');
     expect(html).toContain('Intelligence');
     expect(html).toContain('Guardian / Doctrine');
-    expect(html).toContain('Institutional Health');
+    expect(html).toContain('HEADQUARTERS CONDITION');
     expect(html).toContain('Operational Consequences');
     expect(html).toContain('Outcome State');
     expect(html).toContain('Final Evaluation');
@@ -370,7 +370,7 @@ describe('Desktop shell', () => {
     expect(model.doctrine.pendingCandidateCount).toBe(2);
     expect(model.outcomeState).toBe('at risk');
     expect(model.institutionalHealth.overallState).toBe('critical');
-    expect(model.institutionalHealth.summary).toContain('immediate recovery');
+    expect(model.institutionalHealth.summary).toContain('condition is critical');
     expect(model.consequences.find((consequence) => consequence.category === 'guardian' && consequence.severity === 'lockout')).toMatchObject({
       category: 'guardian',
       severity: 'lockout',
@@ -449,8 +449,8 @@ describe('Desktop shell', () => {
     });
 
     expect(health.overallState).toBe('degraded');
-    expect(health.dimensions.find((dimension) => dimension.id === 'evidence-quality')?.state).toBe('stable');
-    expect(health.dimensions.find((dimension) => dimension.id === 'academy-progress')?.state).toBe('stable');
+    expect(health.dimensions.find((dimension) => dimension.id === 'evidence-quality')?.state).toBe('healthy');
+    expect(health.dimensions.find((dimension) => dimension.id === 'academy-development')?.state).toBe('healthy');
     expect(JSON.stringify(health)).not.toMatch(/profit|loss|pnl/i);
   });
 
@@ -484,7 +484,7 @@ describe('Desktop shell', () => {
     expect(model.institutionalHealth.overallState).toBe('degraded');
     expect(model.institutionalHealth.dimensions.find((dimension) => dimension.id === 'mission-integrity')).toMatchObject({
       state: 'degraded',
-      explanation: 'Required mission evidence is not complete.',
+      explanation: 'Mission evaluation reports unresolved process failures.',
     });
     expect(model.consequences.find((consequence) => consequence.id.includes('incomplete-debrief'))).toMatchObject({
       severity: 'restriction',

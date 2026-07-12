@@ -1,5 +1,6 @@
 export * from './CommanderDashboard';
 export * from './DailyBriefing';
+export * from './InstitutionalHealthBriefing';
 export * from './MissionPlanning';
 export * from './MonthlyReview';
 export * from './Objectives';

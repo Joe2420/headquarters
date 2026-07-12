@@ -1,4 +1,5 @@
 import type { MissionLifecycleProjection, MissionLifecycleRoom } from './MissionLifecycleProjection';
+import type { HealthDimension, InstitutionalHealthSnapshot } from './InstitutionalHealth';
 
 export type HeadquartersPrioritySeverity = 'critical' | 'blocking' | 'immediate' | 'pending' | 'informational';
 export type HeadquartersPriorityUrgency = 'now' | 'next' | 'soon' | 'later';
@@ -10,6 +11,7 @@ export type HeadquartersPrioritySource =
   | 'archive'
   | 'academy'
   | 'intelligence'
+  | 'institutional-health'
   | 'system';
 
 export interface HeadquartersPriorityEvidenceRef {
@@ -76,6 +78,7 @@ export interface HeadquartersPriorityInput {
   readonly intelligence?: IntelligencePrioritySignal | undefined;
   readonly reviewAvailable?: boolean | undefined;
   readonly archiveMilestoneCount?: number | undefined;
+  readonly institutionalHealth?: InstitutionalHealthSnapshot | undefined;
   readonly detectedAt?: string | undefined;
 }
 
@@ -112,6 +115,7 @@ export function getHeadquartersPriorities(input: HeadquartersPriorityInput): rea
     ...buildJournalPriorities(input),
     ...buildReviewPriorities(input),
     ...buildArchivePriorities(input),
+    ...buildInstitutionalHealthPriorities(input),
   ].filter((priority) => !priority.resolved)).sort(comparePriorities);
 }
 
@@ -307,6 +311,39 @@ function buildArchivePriorities(input: HeadquartersPriorityInput): HeadquartersP
     detectedAt: input.detectedAt ?? defaultDetectedAt,
     resolved: false,
   }];
+}
+
+function buildInstitutionalHealthPriorities(input: HeadquartersPriorityInput): HeadquartersPriorityItem[] {
+  return (input.institutionalHealth?.dimensions ?? [])
+    .filter((dimension) => dimension.state === 'critical' || dimension.state === 'degraded')
+    .map((dimension) => ({
+      id: `priority:institutional-health:${dimension.id}`,
+      source: 'institutional-health',
+      type: 'institutional_health',
+      title: `${dimension.title} requires attention`,
+      explanation: dimension.explanation.why,
+      severity: dimension.state === 'critical' ? 'critical' : 'blocking',
+      urgency: dimension.state === 'critical' ? 'now' : 'next',
+      lifecycleRelevance: 'current',
+      blocking: dimension.state === 'critical',
+      recommendedRoom: getRoomForHealthDimension(dimension),
+      recommendedAction: `Review ${dimension.title}`,
+      evidenceReferences: dimension.supportingEvidence.map((evidenceItem) => ({
+        id: evidenceItem.id,
+        source: 'institutional-health',
+      })),
+      detectedAt: input.detectedAt ?? input.institutionalHealth?.evaluatedAt ?? defaultDetectedAt,
+      resolved: false,
+    } satisfies HeadquartersPriorityItem));
+}
+
+function getRoomForHealthDimension(dimension: HealthDimension): MissionLifecycleRoom {
+  if (dimension.id === 'guardian-stability' || dimension.id === 'operational-readiness') return 'war-room';
+  if (dimension.id === 'doctrine-coverage') return 'mission-room';
+  if (dimension.id === 'academy-development') return 'command-center';
+  if (dimension.id === 'archive-integrity') return 'archive';
+  if (dimension.id === 'intelligence-completeness' || dimension.id === 'evidence-quality') return 'observation-room';
+  return 'mission-room';
 }
 
 function buildStandbyPriority(input: HeadquartersPriorityInput): HeadquartersPriorityItem {
