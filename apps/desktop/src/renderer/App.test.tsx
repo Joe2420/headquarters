@@ -47,6 +47,7 @@ import {
   buildMissionContextLookup,
   buildInstitutionalHealthModel,
   buildMissionCommandSidebarModel,
+  buildOperationalConsequences,
   buildVisibleMissionLifecycleSteps,
   buildDesktopMissionTimelineEntries,
   advanceMissionFromCommanderContinue,
@@ -280,6 +281,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Intelligence');
     expect(html).toContain('Guardian / Doctrine');
     expect(html).toContain('Institutional Health');
+    expect(html).toContain('Operational Consequences');
     expect(html).toContain('Outcome State');
     expect(html).toContain('Technical diagnostics');
     expect(html).toContain('Database');
@@ -366,6 +368,11 @@ describe('Desktop shell', () => {
     expect(model.outcomeState).toBe('at risk');
     expect(model.institutionalHealth.overallState).toBe('critical');
     expect(model.institutionalHealth.summary).toContain('immediate recovery');
+    expect(model.consequences.find((consequence) => consequence.id === 'guardian-lockout')).toMatchObject({
+      category: 'guardian',
+      severity: 'lockout',
+      recoveryCondition: 'Resolve or acknowledge the Guardian condition before requesting further authorization.',
+    });
   });
 
   it('derives transparent institutional health without profit or prediction inputs', () => {
@@ -476,6 +483,84 @@ describe('Desktop shell', () => {
       state: 'degraded',
       explanation: 'Required mission evidence is not complete.',
     });
+    expect(model.consequences.find((consequence) => consequence.id === 'intelligence-missing-evidence')).toMatchObject({
+      category: 'intelligence',
+      severity: 'caution',
+      recoveryCondition: 'Answer the missing Commander questions or revise the mission context.',
+    });
+  });
+
+  it('builds deterministic operational consequences with explicit recovery paths', () => {
+    const mission: ActiveMission = {
+      id: 'mission-consequence-001',
+      campaign: 'Rule Boundary',
+      objective: 'Authorization requires evidence',
+      condition: 'Authorization',
+      commandAuthority: 'Professional command',
+      currentState: 'authorization',
+      createdAt: '2026-07-04T10:00:00.000Z',
+    };
+    const missionIntelligence = buildDesktopMissionIntelligencePackage(mission);
+    const consequences = buildOperationalConsequences({
+      missionState: 'authorization',
+      missionIntelligence,
+      guardian: {
+        state: 'warning',
+        highestAlert: 'Risk state is monitored from approved inputs only.',
+      },
+      doctrine: {
+        activeProtectiveRule: 'No protective rule declared for current authorization.',
+        pendingCandidateCount: 1,
+        relevance: 'Doctrine review is available for this operation.',
+      },
+      nextAction: getMissionNextAction(mission),
+    });
+
+    expect(consequences.map((consequence) => consequence.id)).toEqual([
+      'guardian-warning',
+      'intelligence-missing-evidence',
+      'doctrine-protective-rule-missing',
+      'doctrine-candidate-pending',
+    ]);
+    expect(consequences.every((consequence) => consequence.recoveryCondition.length > 0)).toBe(true);
+    expect(JSON.stringify(consequences)).not.toMatch(/profit|loss|pnl/i);
+  });
+
+  it('records archived growth evidence as a historical consequence without duplicating ids', () => {
+    const missionIntelligence = buildDesktopMissionIntelligencePackage({
+      id: 'mission-consequence-002',
+      campaign: 'Review Discipline',
+      objective: 'Close with evidence',
+      condition: 'Archived',
+      commandAuthority: 'Professional command',
+      currentState: 'archived',
+      createdAt: '2026-07-04T10:00:00.000Z',
+    }, {
+      behaviorSummary: 'Waited for confirmation.',
+      disciplineNotes: 'No risk boundary breach.',
+      lesson: 'Patience prevented forced entry.',
+    });
+    const consequences = buildOperationalConsequences({
+      missionState: 'archived',
+      missionIntelligence,
+      guardian: {
+        state: 'secure',
+        highestAlert: 'Guardian secure. No active restriction.',
+      },
+      doctrine: {
+        activeProtectiveRule: 'No authorization without invalidation.',
+        pendingCandidateCount: 0,
+        relevance: 'No current doctrine review is blocking mission flow.',
+      },
+    });
+
+    expect(consequences.find((consequence) => consequence.id === 'academy-growth-evidence-ready')).toMatchObject({
+      category: 'academy',
+      severity: 'notice',
+      duration: 'historical',
+      recoveryCondition: 'No recovery required. Preserve the evidence in the archive.',
+    });
+    expect(new Set(consequences.map((consequence) => consequence.id)).size).toBe(consequences.length);
   });
 
   it('renders Sprint 16 atmosphere surfaces around Commander guidance', () => {
