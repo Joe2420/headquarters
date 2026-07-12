@@ -506,7 +506,7 @@ dd {
   overflow-wrap: anywhere;
   word-break: break-word;
   color: #63ff7e;
-  font-size: 0.95rem;
+  font-size: 1.02rem;
   line-height: 1.48;
 }
 
@@ -551,7 +551,7 @@ dd {
   background: rgba(0, 0, 0, 0.72);
   color: #7dff95;
   font-family: "Cascadia Mono", "Consolas", monospace;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   padding: 0 0.65rem;
   outline: none;
   box-shadow: inset 0 0 16px rgba(52, 255, 105, 0.04);
@@ -3807,6 +3807,14 @@ dd {
 .mission-command-section [data-health-state] {
   color: #bbffd0;
   text-transform: uppercase;
+}
+
+.mission-command-section [data-health-state="excellent"] {
+  color: #7dffb1;
+}
+
+.mission-command-section [data-health-state="healthy"] {
+  color: #bbffd0;
 }
 
 .mission-command-section [data-health-state="forming"] {

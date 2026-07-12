@@ -6,6 +6,7 @@ import {
   getHighestPriority,
   getPriorityCountBySeverity,
   type HeadquartersPriorityItem,
+  buildInstitutionalHealthSnapshot,
   getCompletedLifecycleStages as getProjectedCompletedLifecycleStages,
   getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
   getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
@@ -14,6 +15,8 @@ import {
   getOutstandingRecoveryRequirements,
   isOperationalConsequenceBlocking,
   projectMissionLifecycle,
+  type HealthDimension as HqosHealthDimension,
+  type InstitutionalHealthState as HqosInstitutionalHealthState,
   type MissionEvaluation,
   type MissionEvaluationVerdict,
   type OperationalConsequence as HqosOperationalConsequence,
@@ -1829,8 +1832,8 @@ function MissionCommandSidebar({
         <p>{model.doctrine.relevance}</p>
       </section>
 
-      <section className="mission-command-section" aria-label="Institutional health">
-        <h3>Institutional Health</h3>
+      <section className="mission-command-section" aria-label="Headquarters condition">
+        <h3>HEADQUARTERS CONDITION</h3>
         <strong data-health-state={model.institutionalHealth.overallState}>{model.institutionalHealth.overallState}</strong>
         <p>{model.institutionalHealth.summary}</p>
         <div className="institutional-health-list">
@@ -1841,6 +1844,7 @@ function MissionCommandSidebar({
                 <strong data-health-state={dimension.state}>{dimension.state}</strong>
               </summary>
               <p>{dimension.explanation}</p>
+              <h4>Evidence</h4>
               <ul>
                 {dimension.evidence.map((evidence) => (
                   <li key={evidence}>{evidence}</li>
@@ -8661,7 +8665,7 @@ export interface MissionNextAction {
 export type MissionCommandSidebarStageState = 'completed' | 'active' | 'available' | 'locked' | 'blocked';
 export type MissionCommandGuardianState = 'secure' | 'warning' | 'restriction' | 'lockout';
 export type MissionCommandOutcomeState = 'not evaluated' | 'on course' | 'at risk' | 'completed';
-export type InstitutionalHealthState = 'stable' | 'forming' | 'degraded' | 'critical';
+export type InstitutionalHealthState = HqosInstitutionalHealthState;
 export type OperationalConsequenceCategory = 'process' | 'guardian' | 'intelligence' | 'doctrine' | 'academy' | 'commander';
 export type OperationalConsequenceSeverity = 'notice' | 'caution' | 'restriction' | 'lockout';
 export type OperationalConsequenceDuration = 'temporary' | 'session' | 'historical';
@@ -9119,375 +9123,68 @@ export function buildInstitutionalHealthModel(input: {
   readonly startupStatus?: StartupStatus | undefined;
   readonly nextAction?: MissionNextAction | undefined;
 }): InstitutionalHealthModel {
-  const dimensions: readonly InstitutionalHealthDimension[] = [
-    buildOperationalReadinessHealth(input),
-    buildMissionIntegrityHealth(input),
-    buildIntelligenceCompletenessHealth(input.missionIntelligence),
-    buildEvidenceQualityHealth(input.missionIntelligence),
-    buildBehavioralStabilityHealth(input),
-    buildGuardianStabilityHealth(input.guardian),
-    buildDoctrineCoverageHealth(input),
-    buildAcademyProgressHealth(input),
-  ];
-  const overallState = getWorstInstitutionalHealthState(dimensions.map((dimension) => dimension.state));
+  const missionId = input.missionIntelligence?.missionId ?? 'mission:active';
+  const evaluatedAt = '2026-07-12T00:00:00.000Z';
+  const missionEvaluation = buildMissionFinalEvaluation({
+    missionId,
+    missionState: input.missionState,
+    missionIntelligence: input.missionIntelligence,
+    guardian: input.guardian,
+    doctrine: input.doctrine,
+    evaluatedAt,
+  });
+  const snapshot = buildInstitutionalHealthSnapshot({
+    snapshotId: `desktop-health:${missionId}`,
+    evaluatedAt,
+    missionState: input.missionState,
+    missionEvaluation,
+    guardian: input.guardian,
+    doctrine: input.doctrine,
+    academy: {
+      growthEvidenceCount: input.missionIntelligence?.debriefSummary ? 1 : 0,
+      recognitionAvailable: input.missionState === 'archived' && Boolean(input.missionIntelligence?.debriefSummary),
+    },
+    archive: {
+      persistenceReady: input.startupStatus?.state !== 'failed',
+      archiveRecordCount: input.missionState === 'archived' ? 1 : 0,
+    },
+    intelligence: {
+      missingEvidenceCount: input.missionIntelligence?.missingEvidence.length ?? 0,
+      contradictionCount: input.missionIntelligence?.contradictions.length ?? 0,
+      confidenceLevel: mapMissionIntelligenceConfidenceLevel(input.missionIntelligence?.confidence.level),
+      validatedEvidenceCount: input.missionIntelligence === undefined
+        ? 0
+        : Object.values(input.missionIntelligence).filter((value) => typeof value === 'string' && value.trim().length > 0).length,
+    },
+    priority: {
+      blockingPriorityCount: input.nextAction?.disabled ? 1 : 0,
+      criticalPriorityCount: input.guardian.state === 'lockout' ? 1 : 0,
+    },
+    startupReady: input.startupStatus?.state !== 'failed',
+  });
 
   return {
-    summary: getInstitutionalHealthSummary(overallState),
-    overallState,
-    dimensions,
+    summary: snapshot.summary,
+    overallState: snapshot.overallState,
+    dimensions: snapshot.dimensions.map(mapHqosHealthDimensionToSidebar),
   };
 }
 
-function buildOperationalReadinessHealth(input: {
-  readonly missionState: MissionState | undefined;
-  readonly guardian: MissionCommandSidebarModel['guardian'];
-  readonly startupStatus?: StartupStatus | undefined;
-  readonly nextAction?: MissionNextAction | undefined;
-}): InstitutionalHealthDimension {
-  if (input.startupStatus?.state === 'failed' || input.startupStatus?.database.connected === false) {
-    return createInstitutionalHealthDimension(
-      'operational-readiness',
-      'Operational Readiness',
-      'critical',
-      'Headquarters infrastructure is not ready for normal operation.',
-      ['Startup or database evidence reports a failure.'],
-    );
-  }
-
-  if (input.guardian.state === 'lockout') {
-    return createInstitutionalHealthDimension(
-      'operational-readiness',
-      'Operational Readiness',
-      'critical',
-      'Guardian lockout prevents normal operational movement.',
-      [input.guardian.highestAlert],
-    );
-  }
-
-  if (input.nextAction?.disabled) {
-    return createInstitutionalHealthDimension(
-      'operational-readiness',
-      'Operational Readiness',
-      'degraded',
-      'The current primary action is blocked.',
-      [input.nextAction.description],
-    );
-  }
-
-  if (input.missionState === undefined) {
-    return createInstitutionalHealthDimension(
-      'operational-readiness',
-      'Operational Readiness',
-      'forming',
-      'Headquarters is standing by until the operator creates a mission.',
-      ['No active mission lifecycle is present.'],
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'operational-readiness',
-    'Operational Readiness',
-    'stable',
-    'Headquarters can support the current operational step.',
-    ['Infrastructure is available.', `Lifecycle stage: ${formatMissionStateForDisplay(input.missionState)}.`],
-  );
-}
-
-function buildMissionIntegrityHealth(input: {
-  readonly missionState: MissionState | undefined;
-  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
-}): InstitutionalHealthDimension {
-  if (input.missionState === undefined) {
-    return createInstitutionalHealthDimension(
-      'mission-integrity',
-      'Mission Integrity',
-      'forming',
-      'Mission integrity can be evaluated after a mission exists.',
-      ['No active mission record is selected.'],
-    );
-  }
-
-  if (input.missionIntelligence && input.missionIntelligence.contradictions.length > 0) {
-    return createInstitutionalHealthDimension(
-      'mission-integrity',
-      'Mission Integrity',
-      'degraded',
-      'Mission evidence contains unresolved contradictions.',
-      [`${input.missionIntelligence.contradictions.length} contradiction(s) require review.`],
-    );
-  }
-
-  if (input.missionIntelligence && input.missionIntelligence.missingEvidence.length > 0) {
-    return createInstitutionalHealthDimension(
-      'mission-integrity',
-      'Mission Integrity',
-      'degraded',
-      'Required mission evidence is not complete.',
-      [`${input.missionIntelligence.missingEvidence.length} evidence field(s) missing.`],
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'mission-integrity',
-    'Mission Integrity',
-    'stable',
-    'Lifecycle and required evidence are internally consistent.',
-    [`Lifecycle stage: ${formatMissionStateForDisplay(input.missionState)}.`],
-  );
-}
-
-function buildIntelligenceCompletenessHealth(missionPackage?: MissionIntelligencePackage): InstitutionalHealthDimension {
-  if (!missionPackage) {
-    return createInstitutionalHealthDimension(
-      'intelligence-completeness',
-      'Intelligence Completeness',
-      'forming',
-      'Mission intelligence has not been assembled yet.',
-      ['No mission intelligence package is available.'],
-    );
-  }
-
-  if (missionPackage.confidence.level === 'complete' || missionPackage.confidence.level === 'sufficient') {
-    return createInstitutionalHealthDimension(
-      'intelligence-completeness',
-      'Intelligence Completeness',
-      'stable',
-      'Mission context coverage is sufficient for current decisions.',
-      missionPackage.confidence.reasons,
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'intelligence-completeness',
-    'Intelligence Completeness',
-    missionPackage.confidence.level === 'forming' ? 'forming' : 'degraded',
-    'Mission context still needs evidence before it should guide high-risk decisions.',
-    missionPackage.confidence.reasons,
-  );
-}
-
-function buildEvidenceQualityHealth(missionPackage?: MissionIntelligencePackage): InstitutionalHealthDimension {
-  if (!missionPackage) {
-    return createInstitutionalHealthDimension(
-      'evidence-quality',
-      'Evidence Quality',
-      'forming',
-      'Evidence quality is awaiting operator context.',
-      ['No traceable mission evidence is present yet.'],
-    );
-  }
-
-  if (missionPackage.contradictions.length > 0) {
-    return createInstitutionalHealthDimension(
-      'evidence-quality',
-      'Evidence Quality',
-      'degraded',
-      'Contradictions reduce evidence reliability.',
-      [`${missionPackage.contradictions.length} contradiction(s) remain unresolved.`],
-    );
-  }
-
-  if (missionPackage.confidence.level === 'complete') {
-    return createInstitutionalHealthDimension(
-      'evidence-quality',
-      'Evidence Quality',
-      'stable',
-      'Evidence is specific, complete, and traceable enough for the current mission.',
-      ['All required mission intelligence fields are present.'],
-    );
-  }
-
-  if (missionPackage.confidence.level === 'sufficient') {
-    return createInstitutionalHealthDimension(
-      'evidence-quality',
-      'Evidence Quality',
-      'stable',
-      'Evidence is sufficient for operational guidance.',
-      missionPackage.confidence.reasons,
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'evidence-quality',
-    'Evidence Quality',
-    'degraded',
-    'Evidence remains incomplete or too thin for strong operational reliance.',
-    missionPackage.confidence.reasons,
-  );
-}
-
-function buildBehavioralStabilityHealth(input: {
-  readonly guardian: MissionCommandSidebarModel['guardian'];
-  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
-}): InstitutionalHealthDimension {
-  if (input.guardian.state === 'lockout' || input.guardian.state === 'restriction') {
-    return createInstitutionalHealthDimension(
-      'behavioral-stability',
-      'Behavioral Stability',
-      'degraded',
-      'Guardian evidence indicates behavior needs containment before progression.',
-      [input.guardian.highestAlert],
-    );
-  }
-
-  if (input.missionIntelligence?.debriefSummary) {
-    return createInstitutionalHealthDimension(
-      'behavioral-stability',
-      'Behavioral Stability',
-      'stable',
-      'Behavior evidence has been reviewed in debrief.',
-      [input.missionIntelligence.debriefSummary],
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'behavioral-stability',
-    'Behavioral Stability',
-    'forming',
-    'Behavioral stability is being evaluated from mission process evidence.',
-    ['No Guardian restriction is currently active.'],
-  );
-}
-
-function buildGuardianStabilityHealth(guardian: MissionCommandSidebarModel['guardian']): InstitutionalHealthDimension {
-  if (guardian.state === 'lockout') {
-    return createInstitutionalHealthDimension(
-      'guardian-stability',
-      'Guardian Stability',
-      'critical',
-      'Guardian has locked operational progression.',
-      [guardian.highestAlert],
-    );
-  }
-
-  if (guardian.state === 'restriction') {
-    return createInstitutionalHealthDimension(
-      'guardian-stability',
-      'Guardian Stability',
-      'degraded',
-      'Guardian restriction requires resolution or acknowledgement.',
-      [guardian.highestAlert],
-    );
-  }
-
-  if (guardian.state === 'warning') {
-    return createInstitutionalHealthDimension(
-      'guardian-stability',
-      'Guardian Stability',
-      'forming',
-      'Guardian is monitoring a warning condition.',
-      [guardian.highestAlert],
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'guardian-stability',
-    'Guardian Stability',
-    'stable',
-    'Guardian reports no active restriction.',
-    [guardian.highestAlert],
-  );
-}
-
-function buildDoctrineCoverageHealth(input: {
-  readonly missionState: MissionState | undefined;
-  readonly doctrine: MissionCommandSidebarModel['doctrine'];
-}): InstitutionalHealthDimension {
-  const protectiveRuleMissing = input.doctrine.activeProtectiveRule.startsWith('No protective rule');
-  const protectiveRuleRequired = input.missionState === 'authorization' || input.missionState === 'deployed';
-
-  if (protectiveRuleRequired && protectiveRuleMissing) {
-    return createInstitutionalHealthDimension(
-      'doctrine-coverage',
-      'Doctrine Coverage',
-      'degraded',
-      'Authorization lacks an active protective doctrine rule.',
-      ['War Room decisions require a protective rule before they are institutionally sound.'],
-    );
-  }
-
-  if (input.doctrine.pendingCandidateCount > 0) {
-    return createInstitutionalHealthDimension(
-      'doctrine-coverage',
-      'Doctrine Coverage',
-      'forming',
-      'Doctrine coverage is improving but pending review remains.',
-      [`${input.doctrine.pendingCandidateCount} doctrine candidate(s) await review.`],
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'doctrine-coverage',
-    'Doctrine Coverage',
-    protectiveRuleMissing ? 'forming' : 'stable',
-    protectiveRuleMissing
-      ? 'Doctrine is available but no current protective rule has been declared.'
-      : 'Protective doctrine is available for the current mission.',
-    [input.doctrine.activeProtectiveRule],
-  );
-}
-
-function buildAcademyProgressHealth(input: {
-  readonly missionState: MissionState | undefined;
-  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
-}): InstitutionalHealthDimension {
-  if (input.missionState === 'archived' && input.missionIntelligence?.debriefSummary) {
-    return createInstitutionalHealthDimension(
-      'academy-progress',
-      'Academy Progress',
-      'stable',
-      'Archived debrief evidence can support growth recognition.',
-      [input.missionIntelligence.debriefSummary],
-    );
-  }
-
-  if (input.missionIntelligence?.debriefSummary) {
-    return createInstitutionalHealthDimension(
-      'academy-progress',
-      'Academy Progress',
-      'forming',
-      'Debrief evidence exists and can become growth evidence after closure.',
-      [input.missionIntelligence.debriefSummary],
-    );
-  }
-
-  return createInstitutionalHealthDimension(
-    'academy-progress',
-    'Academy Progress',
-    'forming',
-    'Academy progress requires approved behavior evidence, not outcome alone.',
-    ['No final behavior evidence is ready for recognition.'],
-  );
-}
-
-function createInstitutionalHealthDimension(
-  id: string,
-  label: string,
-  state: InstitutionalHealthState,
-  explanation: string,
-  evidence: readonly string[],
-): InstitutionalHealthDimension {
+function mapHqosHealthDimensionToSidebar(dimension: HqosHealthDimension): InstitutionalHealthDimension {
   return {
-    id,
-    label,
-    state,
-    explanation,
-    evidence: evidence.length > 0 ? evidence : ['No evidence recorded.'],
+    id: dimension.id,
+    label: dimension.title,
+    state: dimension.state,
+    explanation: dimension.explanation.why,
+    evidence: dimension.supportingEvidence.map((evidenceItem) => evidenceItem.description),
   };
 }
 
-function getWorstInstitutionalHealthState(states: readonly InstitutionalHealthState[]): InstitutionalHealthState {
-  if (states.includes('critical')) return 'critical';
-  if (states.includes('degraded')) return 'degraded';
-  if (states.includes('forming')) return 'forming';
-  return 'stable';
-}
-
-function getInstitutionalHealthSummary(state: InstitutionalHealthState): string {
-  if (state === 'critical') return 'Headquarters requires immediate recovery before normal progression.';
-  if (state === 'degraded') return 'Headquarters can operate, but process integrity requires attention.';
-  if (state === 'forming') return 'Headquarters is assembling enough evidence to judge institutional condition.';
-  return 'Headquarters process integrity is stable for the current operation.';
+function mapMissionIntelligenceConfidenceLevel(
+  level: MissionIntelligencePackage['confidence']['level'] | undefined,
+): 'missing' | 'forming' | 'sufficient' | 'complete' | undefined {
+  if (level === 'incomplete') return 'forming';
+  return level;
 }
 
 function buildMissionCommandLifecycleProgress(

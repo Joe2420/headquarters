@@ -1,3 +1,5 @@
+HQ-TASK-S46 - Added authoritative Headquarters Institutional Health model.
+
 HQ-TASK-S45 - Added Sprint 45 operational consequences and recovery foundation.
 
 HQ-TASK-STABILIZATION - Stabilized Commander conversation ownership and mission lifecycle consistency.
