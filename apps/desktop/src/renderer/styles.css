@@ -279,10 +279,11 @@ dd {
 }
 
 .commander-chat-stage {
+  --commander-chat-frame-height: clamp(760px, calc(100vh - 8rem), 980px);
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: min(920px, calc(100vh - 2rem));
+  min-height: var(--commander-chat-frame-height);
   align-content: start;
   background:
     radial-gradient(circle at 18% 0%, rgba(109, 236, 149, 0.08), transparent 34%),
@@ -352,7 +353,11 @@ dd {
 }
 
 .commander-chat-stage .commander-shell {
-  min-height: min(920px, calc(100vh - 2rem));
+  height: var(--commander-chat-frame-height);
+  min-height: var(--commander-chat-frame-height);
+  max-height: var(--commander-chat-frame-height);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .commander-shell-interrupted {
@@ -388,9 +393,11 @@ dd {
 .commander-transmission-console {
   position: relative;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  grid-template-rows: auto minmax(390px, 1fr) auto auto minmax(0, 220px);
   gap: 0.75rem;
-  height: clamp(920px, calc(100vh - 2.5rem), 1240px);
+  height: min(100%, var(--commander-chat-frame-height));
+  min-height: min(100%, var(--commander-chat-frame-height));
+  max-height: var(--commander-chat-frame-height);
   min-width: 0;
   padding: 0.85rem;
   border: 1px solid #315743;
@@ -779,6 +786,12 @@ dd {
 .commander-workflow-surface {
   display: grid;
   gap: 0.65rem;
+  min-height: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.25rem;
+  scrollbar-color: #34ff69 #020604;
 }
 
 .commander-workflow-card {

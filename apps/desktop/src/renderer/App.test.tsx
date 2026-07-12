@@ -129,9 +129,10 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.room-transition-layer::before');
     expect(styles).toContain('contain: layout paint');
     expect(styles).toContain('.operations-viewport > .room-transition-layer');
-    expect(styles).toContain('min-height: min(920px, calc(100vh - 2rem))');
+    expect(styles).toContain('--commander-chat-frame-height: clamp(760px, calc(100vh - 8rem), 980px)');
     expect(styles).toContain('.commander-chat-stage .commander-shell');
-    expect(styles).toContain('height: clamp(920px, calc(100vh - 2.5rem), 1240px)');
+    expect(styles).toContain('grid-template-rows: auto minmax(390px, 1fr) auto auto minmax(0, 220px)');
+    expect(styles).toContain('max-height: 220px');
     expect(styles).toContain('.skip-link:focus-visible');
   });
 
