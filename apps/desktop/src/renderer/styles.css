@@ -3842,6 +3842,53 @@ dd {
   padding-left: 1rem;
 }
 
+.operational-consequence-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.operational-consequence-list li {
+  display: grid;
+  gap: 0.4rem;
+  border-left: 2px solid rgba(159, 198, 255, 0.74);
+  background: rgba(4, 10, 11, 0.42);
+  padding: 0.55rem 0.65rem;
+}
+
+.operational-consequence-list li[data-consequence-severity="caution"] {
+  border-left-color: #ffd88d;
+}
+
+.operational-consequence-list li[data-consequence-severity="restriction"],
+.operational-consequence-list li[data-consequence-severity="lockout"] {
+  border-left-color: #ff8f8f;
+}
+
+.operational-consequence-list strong {
+  color: #f2fff8;
+}
+
+.operational-consequence-list p {
+  margin: 0;
+  color: #aab7c1;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.operational-consequence-list dl {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.operational-consequence-list dl div {
+  display: grid;
+  gap: 0.12rem;
+}
+
 .technical-diagnostics {
   border-top: 1px solid rgba(130, 175, 165, 0.2);
   padding-top: 0.75rem;

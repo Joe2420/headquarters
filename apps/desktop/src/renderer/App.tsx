@@ -1831,6 +1831,36 @@ function MissionCommandSidebar({
         </div>
       </section>
 
+      <section className="mission-command-section" aria-label="Operational consequences">
+        <h3>Operational Consequences</h3>
+        {model.consequences.length === 0 ? (
+          <p>No active consequence. Continue following the declared process.</p>
+        ) : (
+          <ul className="operational-consequence-list">
+            {model.consequences.map((consequence) => (
+              <li key={consequence.id} data-consequence-severity={consequence.severity}>
+                <strong>{consequence.cause}</strong>
+                <p>{consequence.effect}</p>
+                <dl>
+                  <div>
+                    <dt>Evidence</dt>
+                    <dd>{consequence.evidenceReference}</dd>
+                  </div>
+                  <div>
+                    <dt>Recovery</dt>
+                    <dd>{consequence.recoveryCondition}</dd>
+                  </div>
+                  <div>
+                    <dt>Duration</dt>
+                    <dd>{consequence.duration}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="mission-command-section" aria-label="Mission outcome state">
         <h3>Outcome State</h3>
         <strong>{model.outcomeState}</strong>
@@ -8529,6 +8559,9 @@ export type MissionCommandSidebarStageState = 'completed' | 'active' | 'availabl
 export type MissionCommandGuardianState = 'secure' | 'warning' | 'restriction' | 'lockout';
 export type MissionCommandOutcomeState = 'not evaluated' | 'on course' | 'at risk' | 'completed';
 export type InstitutionalHealthState = 'stable' | 'forming' | 'degraded' | 'critical';
+export type OperationalConsequenceCategory = 'process' | 'guardian' | 'intelligence' | 'doctrine' | 'academy' | 'commander';
+export type OperationalConsequenceSeverity = 'notice' | 'caution' | 'restriction' | 'lockout';
+export type OperationalConsequenceDuration = 'temporary' | 'session' | 'historical';
 
 export interface InstitutionalHealthDimension {
   readonly id: string;
@@ -8542,6 +8575,17 @@ export interface InstitutionalHealthModel {
   readonly summary: string;
   readonly overallState: InstitutionalHealthState;
   readonly dimensions: readonly InstitutionalHealthDimension[];
+}
+
+export interface OperationalConsequence {
+  readonly id: string;
+  readonly category: OperationalConsequenceCategory;
+  readonly severity: OperationalConsequenceSeverity;
+  readonly cause: string;
+  readonly effect: string;
+  readonly evidenceReference: string;
+  readonly duration: OperationalConsequenceDuration;
+  readonly recoveryCondition: string;
 }
 
 export interface MissionCommandSidebarStage {
@@ -8586,6 +8630,7 @@ export interface MissionCommandSidebarModel {
     readonly relevance: string;
   };
   readonly institutionalHealth: InstitutionalHealthModel;
+  readonly consequences: readonly OperationalConsequence[];
   readonly outcomeState: MissionCommandOutcomeState;
 }
 
@@ -8860,8 +8905,153 @@ export function buildMissionCommandSidebarModel(input: {
       startupStatus: input.startupStatus,
       nextAction: input.nextAction,
     }),
+    consequences: buildOperationalConsequences({
+      missionState,
+      missionIntelligence: input.missionIntelligence,
+      guardian,
+      doctrine,
+      nextAction: input.nextAction,
+    }),
     outcomeState: buildMissionCommandOutcomeState(missionState, input.missionIntelligence, guardian.state),
   };
+}
+
+export function buildOperationalConsequences(input: {
+  readonly missionState: MissionState | undefined;
+  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
+  readonly guardian: MissionCommandSidebarModel['guardian'];
+  readonly doctrine: MissionCommandSidebarModel['doctrine'];
+  readonly nextAction?: MissionNextAction | undefined;
+}): readonly OperationalConsequence[] {
+  const consequences: OperationalConsequence[] = [];
+
+  if (input.guardian.state === 'lockout' || input.guardian.state === 'restriction') {
+    consequences.push({
+      id: `guardian-${input.guardian.state}`,
+      category: 'guardian',
+      severity: input.guardian.state === 'lockout' ? 'lockout' : 'restriction',
+      cause: input.guardian.state === 'lockout' ? 'Guardian lockout active' : 'Guardian restriction active',
+      effect: 'Mission progression is contained until Guardian recovery conditions are satisfied.',
+      evidenceReference: input.guardian.highestAlert,
+      duration: 'temporary',
+      recoveryCondition: 'Resolve or acknowledge the Guardian condition before requesting further authorization.',
+    });
+  } else if (input.guardian.state === 'warning') {
+    consequences.push({
+      id: 'guardian-warning',
+      category: 'guardian',
+      severity: 'caution',
+      cause: 'Guardian warning active',
+      effect: 'Commander guidance becomes more conservative while the warning remains active.',
+      evidenceReference: input.guardian.highestAlert,
+      duration: 'session',
+      recoveryCondition: 'Continue the mission without violating the monitored boundary.',
+    });
+  }
+
+  if (input.nextAction?.disabled) {
+    consequences.push({
+      id: 'process-next-action-blocked',
+      category: 'process',
+      severity: 'restriction',
+      cause: 'Primary action blocked',
+      effect: 'The mission cannot advance through the normal next action.',
+      evidenceReference: input.nextAction.description,
+      duration: 'temporary',
+      recoveryCondition: 'Complete the required current-room evidence before retrying the action.',
+    });
+  }
+
+  if (input.missionIntelligence && input.missionIntelligence.missingEvidence.length > 0) {
+    const missingLabels = input.missionIntelligence.missingEvidence.slice(0, 3).map((item) => item.label).join(', ');
+    consequences.push({
+      id: 'intelligence-missing-evidence',
+      category: 'intelligence',
+      severity: 'caution',
+      cause: 'Mission evidence incomplete',
+      effect: 'Intelligence confidence remains limited until required context is supplied.',
+      evidenceReference: `${input.missionIntelligence.missingEvidence.length} missing field(s): ${missingLabels}`,
+      duration: 'temporary',
+      recoveryCondition: 'Answer the missing Commander questions or revise the mission context.',
+    });
+  }
+
+  if (input.missionIntelligence && input.missionIntelligence.contradictions.length > 0) {
+    consequences.push({
+      id: 'intelligence-contradiction',
+      category: 'intelligence',
+      severity: 'restriction',
+      cause: 'Unresolved contradiction',
+      effect: 'Commander should challenge or slow progression until the contradiction is resolved.',
+      evidenceReference: `${input.missionIntelligence.contradictions.length} contradiction(s) recorded.`,
+      duration: 'temporary',
+      recoveryCondition: 'Resolve the contradiction by revising the conflicting mission evidence.',
+    });
+  }
+
+  const protectiveRuleMissing = input.doctrine.activeProtectiveRule.startsWith('No protective rule');
+  if ((input.missionState === 'authorization' || input.missionState === 'deployed') && protectiveRuleMissing) {
+    consequences.push({
+      id: 'doctrine-protective-rule-missing',
+      category: 'doctrine',
+      severity: 'restriction',
+      cause: 'Protective rule missing',
+      effect: 'Authorization quality is degraded because no doctrine boundary protects the decision.',
+      evidenceReference: input.doctrine.activeProtectiveRule,
+      duration: 'temporary',
+      recoveryCondition: 'State a protective rule or promote applicable doctrine before proceeding.',
+    });
+  }
+
+  if (input.doctrine.pendingCandidateCount > 0) {
+    consequences.push({
+      id: 'doctrine-candidate-pending',
+      category: 'doctrine',
+      severity: 'notice',
+      cause: 'Doctrine review pending',
+      effect: 'Doctrine remains available for later review without blocking the active mission.',
+      evidenceReference: `${input.doctrine.pendingCandidateCount} doctrine candidate(s) pending.`,
+      duration: 'historical',
+      recoveryCondition: 'Review, promote, revise, or reject the pending doctrine candidate.',
+    });
+  }
+
+  if ((input.missionState === 'return_to_base' || input.missionState === 'debrief') && !input.missionIntelligence?.debriefSummary) {
+    consequences.push({
+      id: 'process-debrief-missing',
+      category: 'process',
+      severity: 'caution',
+      cause: 'Debrief evidence missing',
+      effect: 'Archive quality and Academy recognition remain limited until behavior evidence is recorded.',
+      evidenceReference: 'No debrief summary is present for this mission.',
+      duration: 'temporary',
+      recoveryCondition: 'Complete the debrief with behavior, discipline, and lesson evidence.',
+    });
+  }
+
+  if (input.missionState === 'archived' && input.missionIntelligence?.debriefSummary) {
+    consequences.push({
+      id: 'academy-growth-evidence-ready',
+      category: 'academy',
+      severity: 'notice',
+      cause: 'Growth evidence available',
+      effect: 'Academy can use the completed debrief as evidence for future recognition.',
+      evidenceReference: input.missionIntelligence.debriefSummary,
+      duration: 'historical',
+      recoveryCondition: 'No recovery required. Preserve the evidence in the archive.',
+    });
+  }
+
+  return dedupeOperationalConsequences(consequences);
+}
+
+function dedupeOperationalConsequences(consequences: readonly OperationalConsequence[]): readonly OperationalConsequence[] {
+  const seen = new Set<string>();
+  return consequences.filter((consequence) => {
+    if (seen.has(consequence.id)) return false;
+    seen.add(consequence.id);
+    return true;
+  });
 }
 
 export function buildInstitutionalHealthModel(input: {
