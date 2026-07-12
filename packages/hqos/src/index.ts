@@ -25,5 +25,6 @@ export * from './MissionTimelineExport';
 export * from './MissionTimelineQuery';
 export * from './MissionTimelineSnapshotBuilder';
 export * from './MissionArchiveSummary';
+export * from './MissionEvaluationEngine';
 export * from './HQOS';
 export * from './events';

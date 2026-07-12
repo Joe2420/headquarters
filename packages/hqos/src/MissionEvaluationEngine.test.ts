@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildMissionEvaluation, type MissionEvaluationInput } from './MissionEvaluationEngine';
-import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
+import type { MissionEvaluationEvidence } from './MissionEvaluationEngine';
 
 describe('MissionEvaluationEngine', () => {
   it('creates a deterministic mission evaluation with all required dimensions', () => {
@@ -69,7 +69,7 @@ describe('MissionEvaluationEngine', () => {
   });
 });
 
-const completeMissionIntelligence: MissionIntelligencePackage = {
+const completeMissionIntelligence: MissionEvaluationEvidence = {
   missionId: 'mission-evaluation-engine-001',
   missionName: 'Evaluation Engine Mission',
   currentState: 'archived',
@@ -88,14 +88,8 @@ const completeMissionIntelligence: MissionIntelligencePackage = {
   importantLevels: '18600 and 18520',
   directionalHypothesis: 'Long only after expansion.',
   invalidation: 'Back inside range.',
-  confidence: {
-    score: 100,
-    level: 'complete',
-    reasons: ['All mission intelligence fields present'],
-  },
   contradictions: [],
   missingEvidence: [],
-  commanderNotes: [],
   guardianNotes: [],
   observationSummary: 'Evidence supported patience before authorization.',
   authorizationSummary: 'Decision approved | Rule and invalidation present.',

@@ -9,7 +9,10 @@ import {
   getCompletedLifecycleStages as getProjectedCompletedLifecycleStages,
   getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
   getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
+  buildMissionEvaluation,
   projectMissionLifecycle,
+  type MissionEvaluation,
+  type MissionEvaluationVerdict,
   type MissionLifecycleProjection,
   type MissionTimelineExportEntryDTO,
 } from '@headquarters/hqos';
@@ -168,11 +171,6 @@ import {
   buildMissionIntelligencePackage,
   type MissionIntelligencePackage,
 } from './MissionIntelligencePackage';
-import {
-  buildMissionEvaluation,
-  type MissionEvaluation,
-  type MissionEvaluationVerdict,
-} from './MissionEvaluationEngine';
 import { buildCommanderBehaviorProfile } from './CommanderBehaviorProfile';
 import {
   buildHeadquartersEvents,

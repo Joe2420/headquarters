@@ -1,5 +1,4 @@
 import type { MissionState } from '@headquarters/shared';
-import type { MissionIntelligencePackage } from './MissionIntelligencePackage';
 
 export type MissionEvaluationVerdict =
   | 'Exceptional Process'
@@ -43,10 +42,45 @@ export interface MissionEvaluationDoctrineInput {
   readonly relevance: string;
 }
 
+export interface MissionEvaluationMissingEvidence {
+  readonly field: string;
+  readonly label: string;
+  readonly room: 'ready-room' | 'observation' | 'war-room' | 'debrief' | 'archive';
+}
+
+export interface MissionEvaluationEvidence {
+  readonly missionId: string;
+  readonly missionName?: string | undefined;
+  readonly currentState?: string | undefined;
+  readonly missionObjective?: string | undefined;
+  readonly market?: string | undefined;
+  readonly session?: string | undefined;
+  readonly marketEnvironment?: string | undefined;
+  readonly economicEvents?: string | undefined;
+  readonly riskLimit?: string | undefined;
+  readonly operatorReadiness?: string | undefined;
+  readonly successCriteria?: string | undefined;
+  readonly trend?: string | undefined;
+  readonly structure?: string | undefined;
+  readonly liquidity?: string | undefined;
+  readonly volume?: string | undefined;
+  readonly importantLevels?: string | undefined;
+  readonly directionalHypothesis?: string | undefined;
+  readonly invalidation?: string | undefined;
+  readonly missingEvidence: readonly MissionEvaluationMissingEvidence[];
+  readonly contradictions: readonly unknown[];
+  readonly guardianNotes: readonly string[];
+  readonly observationSummary?: string | undefined;
+  readonly authorizationSummary?: string | undefined;
+  readonly debriefSummary?: string | undefined;
+  readonly missionResult?: string | undefined;
+  readonly archiveReference?: string | undefined;
+}
+
 export interface MissionEvaluationInput {
   readonly missionId?: string | undefined;
   readonly missionState: MissionEvaluationMissionState | undefined;
-  readonly missionIntelligence?: MissionIntelligencePackage | undefined;
+  readonly missionIntelligence?: MissionEvaluationEvidence | undefined;
   readonly guardian: MissionEvaluationGuardianInput;
   readonly doctrine: MissionEvaluationDoctrineInput;
   readonly journalEntryCount?: number | undefined;
@@ -218,7 +252,7 @@ function buildMissionDisciplineDimension(input: {
   return dimension('mission-discipline', 'Mission Discipline', input.guardianClean ? 'strong' : 'weak', ['Lifecycle sequence reached archive.'], input.guardianClean ? [] : ['Guardian restriction affected discipline.'], ['Mission state archived.'], input.guardianClean ? 'Preserve the same lifecycle discipline.' : 'Repair the breached operational boundary.');
 }
 
-function buildObservationQualityDimension(missionPackage: MissionIntelligencePackage | undefined): MissionEvaluationDimension {
+function buildObservationQualityDimension(missionPackage: MissionEvaluationEvidence | undefined): MissionEvaluationDimension {
   if (missionPackage === undefined) {
     return dimension('observation-quality', 'Observation Quality', 'incomplete', [], ['Observation evidence is missing.'], [], 'Capture visible market evidence before authorization.');
   }
@@ -247,7 +281,7 @@ function buildObservationQualityDimension(missionPackage: MissionIntelligencePac
 }
 
 function buildAuthorizationQualityDimension(input: {
-  readonly missionPackage: MissionIntelligencePackage | undefined;
+  readonly missionPackage: MissionEvaluationEvidence | undefined;
   readonly authorizationEvidence: boolean;
   readonly protectiveRuleMissing: boolean;
   readonly guardianClean: boolean;
@@ -272,7 +306,7 @@ function buildAuthorizationQualityDimension(input: {
 }
 
 function buildRiskDisciplineDimension(input: {
-  readonly missionPackage: MissionIntelligencePackage | undefined;
+  readonly missionPackage: MissionEvaluationEvidence | undefined;
   readonly riskDeclared: boolean;
   readonly guardian: MissionEvaluationGuardianInput;
 }): MissionEvaluationDimension {
@@ -291,7 +325,7 @@ function buildRiskDisciplineDimension(input: {
   );
 }
 
-function buildDebriefQualityDimension(missionPackage: MissionIntelligencePackage | undefined): MissionEvaluationDimension {
+function buildDebriefQualityDimension(missionPackage: MissionEvaluationEvidence | undefined): MissionEvaluationDimension {
   const complete = hasText(missionPackage?.debriefSummary);
   return dimension(
     'debrief-quality',
@@ -304,7 +338,7 @@ function buildDebriefQualityDimension(missionPackage: MissionIntelligencePackage
   );
 }
 
-function buildJournalQualityDimension(journalEntryCount: number, missionPackage: MissionIntelligencePackage | undefined): MissionEvaluationDimension {
+function buildJournalQualityDimension(journalEntryCount: number, missionPackage: MissionEvaluationEvidence | undefined): MissionEvaluationDimension {
   const hasJournalEvidence = journalEntryCount > 0 || hasText(missionPackage?.debriefSummary);
   return dimension(
     'journal-quality',
@@ -338,7 +372,7 @@ function buildDoctrineContributionDimension(
 
 function buildAcademyGrowthDimension(
   growth: AcademyGrowthOutcome,
-  missionPackage: MissionIntelligencePackage | undefined,
+  missionPackage: MissionEvaluationEvidence | undefined,
 ): MissionEvaluationDimension {
   return dimension(
     'academy-growth',
