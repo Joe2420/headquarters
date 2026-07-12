@@ -164,8 +164,11 @@ describe('CommanderExperience', () => {
     expect(source).toContain('commander-transmitted-text');
     expect(source).toContain('? <span className="commander-transmitted-text"');
     expect(source).toContain('commander-transmitted-text commander-transmitted-text-active');
-    expect(styles).toContain('height: clamp(920px, calc(100vh - 2.5rem), 1240px)');
-    expect(styles).toContain('grid-template-rows: auto minmax(0, 1fr) auto auto auto');
+    expect(styles).toContain('--commander-chat-frame-height: clamp(760px, calc(100vh - 8rem), 980px)');
+    expect(styles).toContain('height: min(100%, var(--commander-chat-frame-height))');
+    expect(styles).toContain('grid-template-rows: auto minmax(390px, 1fr) auto auto minmax(0, 220px)');
+    expect(styles).toContain('.commander-workflow-surface');
+    expect(styles).toContain('max-height: 220px');
     expect(styles).toContain('.commander-transmitted-text-active::after');
     expect(styles).toContain('content: "_"');
   });
