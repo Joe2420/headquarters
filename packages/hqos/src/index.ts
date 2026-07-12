@@ -19,6 +19,7 @@ export * from './MissionCommandPersistedExecutionPipeline';
 export * from './MissionLifecyclePersistence';
 export * from './MissionLifecycleProjection';
 export * from './HeadquartersPriorityEngine';
+export * from './HeadquartersAttentionRequest';
 export * from './MissionEventReader';
 export * from './MissionTimelineBuilder';
 export * from './MissionTimelineExport';
