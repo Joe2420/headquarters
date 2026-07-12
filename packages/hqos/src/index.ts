@@ -30,5 +30,6 @@ export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
 export * from './OperationalConsequenceRepository';
 export * from './GuardianConsequenceIntegration';
+export * from './OperationalConsequenceSelectors';
 export * from './HQOS';
 export * from './events';
