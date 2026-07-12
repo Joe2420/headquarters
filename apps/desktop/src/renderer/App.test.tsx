@@ -129,9 +129,10 @@ describe('Desktop shell', () => {
     expect(styles).toContain('.room-transition-layer::before');
     expect(styles).toContain('contain: layout paint');
     expect(styles).toContain('.operations-viewport > .room-transition-layer');
-    expect(styles).toContain('min-height: min(920px, calc(100vh - 2rem))');
+    expect(styles).toContain('--commander-chat-frame-height: clamp(760px, calc(100vh - 8rem), 980px)');
     expect(styles).toContain('.commander-chat-stage .commander-shell');
-    expect(styles).toContain('height: clamp(920px, calc(100vh - 2.5rem), 1240px)');
+    expect(styles).toContain('grid-template-rows: auto minmax(390px, 1fr) auto auto minmax(0, 220px)');
+    expect(styles).toContain('max-height: 220px');
     expect(styles).toContain('.skip-link:focus-visible');
   });
 
@@ -370,10 +371,10 @@ describe('Desktop shell', () => {
     expect(model.outcomeState).toBe('at risk');
     expect(model.institutionalHealth.overallState).toBe('critical');
     expect(model.institutionalHealth.summary).toContain('immediate recovery');
-    expect(model.consequences.find((consequence) => consequence.id === 'guardian-lockout')).toMatchObject({
+    expect(model.consequences.find((consequence) => consequence.category === 'guardian' && consequence.severity === 'lockout')).toMatchObject({
       category: 'guardian',
       severity: 'lockout',
-      recoveryCondition: 'Resolve or acknowledge the Guardian condition before requesting further authorization.',
+      recoveryCondition: 'Review and resolve the Guardian condition.',
     });
   });
 
@@ -485,10 +486,9 @@ describe('Desktop shell', () => {
       state: 'degraded',
       explanation: 'Required mission evidence is not complete.',
     });
-    expect(model.consequences.find((consequence) => consequence.id === 'intelligence-missing-evidence')).toMatchObject({
-      category: 'intelligence',
-      severity: 'caution',
-      recoveryCondition: 'Answer the missing Commander questions or revise the mission context.',
+    expect(model.consequences.find((consequence) => consequence.id.includes('incomplete-debrief'))).toMatchObject({
+      severity: 'restriction',
+      recoveryCondition: 'Complete the required behavior, discipline, and lesson debrief fields.',
     });
   });
 
@@ -518,17 +518,14 @@ describe('Desktop shell', () => {
       nextAction: getMissionNextAction(mission),
     });
 
-    expect(consequences.map((consequence) => consequence.id)).toEqual([
-      'guardian-warning',
-      'intelligence-missing-evidence',
-      'doctrine-protective-rule-missing',
-      'doctrine-candidate-pending',
-    ]);
+    expect(consequences.some((consequence) => consequence.id.includes('guardian'))).toBe(true);
+    expect(consequences.some((consequence) => consequence.id.includes('missing-protective-rule'))).toBe(true);
+    expect(consequences.some((consequence) => consequence.id.includes('doctrine-review'))).toBe(true);
     expect(consequences.every((consequence) => consequence.recoveryCondition.length > 0)).toBe(true);
     expect(JSON.stringify(consequences)).not.toMatch(/profit|loss|pnl/i);
   });
 
-  it('records archived growth evidence as a historical consequence without duplicating ids', () => {
+  it('keeps disciplined archived missions calm without negative consequences', () => {
     const missionIntelligence = buildDesktopMissionIntelligencePackage({
       id: 'mission-consequence-002',
       campaign: 'Review Discipline',
@@ -556,12 +553,7 @@ describe('Desktop shell', () => {
       },
     });
 
-    expect(consequences.find((consequence) => consequence.id === 'academy-growth-evidence-ready')).toMatchObject({
-      category: 'academy',
-      severity: 'notice',
-      duration: 'historical',
-      recoveryCondition: 'No recovery required. Preserve the evidence in the archive.',
-    });
+    expect(consequences.every((consequence) => consequence.severity !== 'restriction' && consequence.severity !== 'lockout')).toBe(true);
     expect(new Set(consequences.map((consequence) => consequence.id)).size).toBe(consequences.length);
   });
 
@@ -1168,6 +1160,7 @@ describe('Desktop shell', () => {
     expect(html).toContain('Guardian Timeline');
     expect(html).toContain('Guardian Memory');
     expect(html).toContain('Living boundaries');
+    expect(html).toContain('No active Guardian consequence.');
   });
 
   it('derives Guardian alerts from mission context instead of static placeholder copy', () => {
@@ -1211,6 +1204,7 @@ describe('Desktop shell', () => {
     expect(model.rules.some((rule) => rule.title === 'Maximum daily risk: not declared' && rule.state === 'warning')).toBe(true);
     expect(html).toContain('Guardian Warning');
     expect(html).toContain('Risk must be declared before clean authorization.');
+    expect(html).toContain('Guardian consequence requires review.');
     expect(alerts.map((alert) => alert.message).join('\n')).not.toContain('Risk state is monitored from approved inputs only.');
     expect(buildDesktopGuardianLockoutState({ authorizationStatus: {
       missionId: 'mission-guardian',

@@ -10,9 +10,13 @@ import {
   getCurrentLifecycleStage as getProjectedCurrentLifecycleStage,
   getPrimaryLifecycleAction as getProjectedPrimaryLifecycleAction,
   buildMissionEvaluation,
+  deriveOperationalConsequences,
+  getOutstandingRecoveryRequirements,
+  isOperationalConsequenceBlocking,
   projectMissionLifecycle,
   type MissionEvaluation,
   type MissionEvaluationVerdict,
+  type OperationalConsequence as HqosOperationalConsequence,
   type MissionLifecycleProjection,
   type MissionTimelineExportEntryDTO,
 } from '@headquarters/hqos';
@@ -1871,6 +1875,7 @@ function MissionCommandSidebar({
                     <dd>{consequence.duration}</dd>
                   </div>
                 </dl>
+                <button type="button">Review Consequence</button>
               </li>
             ))}
           </ul>
@@ -6854,6 +6859,14 @@ export function GuardianRoom({
             ))}
           </ul>
         </section>
+
+        <section className="guardian-alert-panel" aria-label="Guardian Consequence Recovery">
+          <p className="section-label">Operational Effect</p>
+          <h3>{alerts.some((alert) => alert.priority !== 'low') ? 'Guardian consequence requires review.' : 'No active Guardian consequence.'}</h3>
+          <p>{alerts.some((alert) => alert.priority !== 'low')
+            ? 'Commander will explain the material consequence. Review the alert evidence before requesting further authorization.'
+            : 'Guardian remains available without restricting the current mission.'}</p>
+        </section>
       </section>
     </div>
   );
@@ -9025,126 +9038,44 @@ export function buildOperationalConsequences(input: {
   readonly doctrine: MissionCommandSidebarModel['doctrine'];
   readonly nextAction?: MissionNextAction | undefined;
 }): readonly OperationalConsequence[] {
-  const consequences: OperationalConsequence[] = [];
+  const missionId = input.missionIntelligence?.missionId ?? 'mission:active';
+  const evaluation = buildMissionFinalEvaluation({
+    missionId,
+    missionState: input.missionState,
+    missionIntelligence: input.missionIntelligence,
+    guardian: input.guardian,
+    doctrine: input.doctrine,
+    evaluatedAt: '2026-07-12T00:00:00.000Z',
+  });
+  const guardianAlerts = input.guardian.state === 'secure'
+    ? []
+    : [{
+        id: `desktop-${input.guardian.state}`,
+        level: input.guardian.state === 'lockout' ? 'lockout' as const : input.guardian.state === 'restriction' ? 'warning' as const : 'caution' as const,
+        title: input.guardian.state === 'lockout' ? 'Guardian lockout active' : 'Guardian condition active',
+        message: input.guardian.highestAlert,
+      }];
+  const result = deriveOperationalConsequences({
+    missionId,
+    evaluatedAt: '2026-07-12T00:00:00.000Z',
+    missionEvaluation: evaluation,
+    guardianAlerts,
+    doctrine: {
+      protectiveRuleMissing: input.doctrine.activeProtectiveRule.startsWith('No protective rule'),
+      ...(input.doctrine.pendingCandidateCount > 0 ? { pendingDoctrineReviewId: `desktop-doctrine:${input.doctrine.pendingCandidateCount}` } : {}),
+    },
+    persistence: input.nextAction?.disabled
+      ? {
+          id: 'desktop-next-action-blocked',
+          missionId,
+          failed: false,
+          message: input.nextAction.description,
+          recoverable: true,
+        }
+      : undefined,
+  });
 
-  if (input.guardian.state === 'lockout' || input.guardian.state === 'restriction') {
-    consequences.push({
-      id: `guardian-${input.guardian.state}`,
-      category: 'guardian',
-      severity: input.guardian.state === 'lockout' ? 'lockout' : 'restriction',
-      cause: input.guardian.state === 'lockout' ? 'Guardian lockout active' : 'Guardian restriction active',
-      effect: 'Mission progression is contained until Guardian recovery conditions are satisfied.',
-      evidenceReference: input.guardian.highestAlert,
-      duration: 'temporary',
-      recoveryCondition: 'Resolve or acknowledge the Guardian condition before requesting further authorization.',
-    });
-  } else if (input.guardian.state === 'warning') {
-    consequences.push({
-      id: 'guardian-warning',
-      category: 'guardian',
-      severity: 'caution',
-      cause: 'Guardian warning active',
-      effect: 'Commander guidance becomes more conservative while the warning remains active.',
-      evidenceReference: input.guardian.highestAlert,
-      duration: 'session',
-      recoveryCondition: 'Continue the mission without violating the monitored boundary.',
-    });
-  }
-
-  if (input.nextAction?.disabled) {
-    consequences.push({
-      id: 'process-next-action-blocked',
-      category: 'process',
-      severity: 'restriction',
-      cause: 'Primary action blocked',
-      effect: 'The mission cannot advance through the normal next action.',
-      evidenceReference: input.nextAction.description,
-      duration: 'temporary',
-      recoveryCondition: 'Complete the required current-room evidence before retrying the action.',
-    });
-  }
-
-  if (input.missionIntelligence && input.missionIntelligence.missingEvidence.length > 0) {
-    const missingLabels = input.missionIntelligence.missingEvidence.slice(0, 3).map((item) => item.label).join(', ');
-    consequences.push({
-      id: 'intelligence-missing-evidence',
-      category: 'intelligence',
-      severity: 'caution',
-      cause: 'Mission evidence incomplete',
-      effect: 'Intelligence confidence remains limited until required context is supplied.',
-      evidenceReference: `${input.missionIntelligence.missingEvidence.length} missing field(s): ${missingLabels}`,
-      duration: 'temporary',
-      recoveryCondition: 'Answer the missing Commander questions or revise the mission context.',
-    });
-  }
-
-  if (input.missionIntelligence && input.missionIntelligence.contradictions.length > 0) {
-    consequences.push({
-      id: 'intelligence-contradiction',
-      category: 'intelligence',
-      severity: 'restriction',
-      cause: 'Unresolved contradiction',
-      effect: 'Commander should challenge or slow progression until the contradiction is resolved.',
-      evidenceReference: `${input.missionIntelligence.contradictions.length} contradiction(s) recorded.`,
-      duration: 'temporary',
-      recoveryCondition: 'Resolve the contradiction by revising the conflicting mission evidence.',
-    });
-  }
-
-  const protectiveRuleMissing = input.doctrine.activeProtectiveRule.startsWith('No protective rule');
-  if ((input.missionState === 'authorization' || input.missionState === 'deployed') && protectiveRuleMissing) {
-    consequences.push({
-      id: 'doctrine-protective-rule-missing',
-      category: 'doctrine',
-      severity: 'restriction',
-      cause: 'Protective rule missing',
-      effect: 'Authorization quality is degraded because no doctrine boundary protects the decision.',
-      evidenceReference: input.doctrine.activeProtectiveRule,
-      duration: 'temporary',
-      recoveryCondition: 'State a protective rule or promote applicable doctrine before proceeding.',
-    });
-  }
-
-  if (input.doctrine.pendingCandidateCount > 0) {
-    consequences.push({
-      id: 'doctrine-candidate-pending',
-      category: 'doctrine',
-      severity: 'notice',
-      cause: 'Doctrine review pending',
-      effect: 'Doctrine remains available for later review without blocking the active mission.',
-      evidenceReference: `${input.doctrine.pendingCandidateCount} doctrine candidate(s) pending.`,
-      duration: 'historical',
-      recoveryCondition: 'Review, promote, revise, or reject the pending doctrine candidate.',
-    });
-  }
-
-  if ((input.missionState === 'return_to_base' || input.missionState === 'debrief') && !input.missionIntelligence?.debriefSummary) {
-    consequences.push({
-      id: 'process-debrief-missing',
-      category: 'process',
-      severity: 'caution',
-      cause: 'Debrief evidence missing',
-      effect: 'Archive quality and Academy recognition remain limited until behavior evidence is recorded.',
-      evidenceReference: 'No debrief summary is present for this mission.',
-      duration: 'temporary',
-      recoveryCondition: 'Complete the debrief with behavior, discipline, and lesson evidence.',
-    });
-  }
-
-  if (input.missionState === 'archived' && input.missionIntelligence?.debriefSummary) {
-    consequences.push({
-      id: 'academy-growth-evidence-ready',
-      category: 'academy',
-      severity: 'notice',
-      cause: 'Growth evidence available',
-      effect: 'Academy can use the completed debrief as evidence for future recognition.',
-      evidenceReference: input.missionIntelligence.debriefSummary,
-      duration: 'historical',
-      recoveryCondition: 'No recovery required. Preserve the evidence in the archive.',
-    });
-  }
-
-  return dedupeOperationalConsequences(consequences);
+  return dedupeOperationalConsequences(result.candidates.map(mapHqosConsequenceToSidebarConsequence));
 }
 
 function dedupeOperationalConsequences(consequences: readonly OperationalConsequence[]): readonly OperationalConsequence[] {
@@ -9154,6 +9085,30 @@ function dedupeOperationalConsequences(consequences: readonly OperationalConsequ
     seen.add(consequence.id);
     return true;
   });
+}
+
+function mapHqosConsequenceToSidebarConsequence(consequence: HqosOperationalConsequence): OperationalConsequence {
+  const recovery = getOutstandingRecoveryRequirements(consequence)[0];
+  return {
+    id: consequence.consequenceId,
+    category: consequence.category === 'persistence' || consequence.category === 'lifecycle'
+      ? 'process'
+      : consequence.category === 'guardian'
+        ? 'guardian'
+        : consequence.category === 'intelligence'
+          ? 'intelligence'
+          : consequence.category === 'doctrine'
+            ? 'doctrine'
+            : consequence.category === 'academy'
+              ? 'academy'
+              : 'commander',
+    severity: consequence.severity === 'informational' ? 'notice' : consequence.severity,
+    cause: consequence.title,
+    effect: consequence.effect,
+    evidenceReference: consequence.evidenceReferences.map((reference) => `${reference.source}:${reference.id}`).join(', ') || consequence.explanation,
+    duration: consequence.status === 'resolved' ? 'historical' : isOperationalConsequenceBlocking(consequence) ? 'temporary' : 'session',
+    recoveryCondition: recovery?.description ?? 'No recovery required. Preserve the historical evidence.',
+  };
 }
 
 export function buildInstitutionalHealthModel(input: {
