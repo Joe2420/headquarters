@@ -154,6 +154,8 @@ const transitionVariants: Record<CommanderShellRoomId, TransitionVariant> = {
     commanderDeparture: 'Proceeding to Journal.',
     commanderArrival: 'Write before memory changes.',
     soundEvents,
+    videoSrc: '/transitions/journal-room.mp4',
+    durationMs: 4400,
   },
   doctrine: {
     room: 'doctrine',

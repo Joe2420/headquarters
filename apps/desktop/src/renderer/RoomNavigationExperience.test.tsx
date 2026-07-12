@@ -168,6 +168,7 @@ describe('RoomNavigationExperience', () => {
     expect(getTransitionVariant('war-room').videoSrc).toBe('/transitions/war-room.mp4');
     expect(getTransitionVariant('debrief').videoSrc).toBe('/transitions/debrief-theater.mp4');
     expect(getTransitionVariant('archive').videoSrc).toBe('/transitions/archive-vault.mp4');
+    expect(getTransitionVariant('journal').videoSrc).toBe('/transitions/journal-room.mp4');
     expect(getTransitionVariant('archive').videoStartSeconds).toBe(1);
     expect(getTransitionVariant('command').durationMs).toBe(4400);
     expect(getTransitionVariant('ready-room').durationMs).toBe(4400);
@@ -296,6 +297,17 @@ describe('RoomNavigationExperience', () => {
     expect(debriefHtml).toContain('src="/transitions/debrief-theater.mp4"');
     expect(debriefHtml).toContain('transition-scene-video-only');
     expect(debriefHtml).not.toContain("Let's understand what happened.");
+  });
+
+  it('renders the Journal as a video-only transition', () => {
+    const journalHtml = renderToStaticMarkup(
+      <RoomTransitionLayer transition={createRoomTransition('command', 'journal')} />,
+    );
+
+    expect(journalHtml).toContain('src="/transitions/journal-room.mp4"');
+    expect(journalHtml).toContain('transition-scene-video-only');
+    expect(journalHtml).not.toContain('class="transition-journal-desk"');
+    expect(journalHtml).not.toContain('Write before memory changes.');
   });
 
   it('creates a locked transition queue while the cinematic transition owns control', () => {
