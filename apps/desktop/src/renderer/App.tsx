@@ -116,7 +116,11 @@ import {
 } from './CommanderMissionBriefing';
 import {
   createEmptyMissionContext,
+  getMissionLifecycleStageEnteredAt,
+  normalizeMissionOperationalTiming,
+  recordMissionLifecycleStageEntry,
   snapshotMissionContext,
+  updateMissionOperationalTiming,
   updateMissionContextBriefing,
   updateMissionContextObservation,
   updateMissionContextReadiness,
@@ -182,6 +186,8 @@ import {
 import {
   createDeployedMissionCheckIn,
   createDeployedMissionPresence,
+  canRecordDeployedCheckIn,
+  markDeployedPlanConcluded,
   type DeployedMissionCheckIn,
 } from './MissionDeployedCheckIns';
 import {
@@ -803,6 +809,7 @@ export function App() {
         const deployedMission = await declareDesktopDeployment(mission);
         setActiveMission(deployedMission);
         setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        await saveDesktopMissionContext(deployedMission);
         setRoomTransition(createAuthorizationTransition('war-room'));
       }
       return;
@@ -823,6 +830,7 @@ export function App() {
       setMissionDebrief(result.debrief);
       setActiveMission(result.mission);
       setMissionHistory((history) => upsertMissionHistory(history, result.mission));
+      await saveDesktopMissionContext(result.mission);
       setCommanderBehaviorSummary('');
       setCommanderDisciplineNotes('');
       setCommanderLesson('');
@@ -839,6 +847,7 @@ export function App() {
       if (archiveSummary) setArchivedMissionSummaries((summaries) => [...summaries, archiveSummary]);
       setActiveMission(getActiveMissionAfterMissionChange(archivedMission));
       setMissionHistory((history) => upsertMissionHistory(history, archivedMission));
+      await saveDesktopMissionContext(archivedMission);
       setCommanderWorkflowNotice('Mission archived.');
       return;
     }
@@ -848,6 +857,7 @@ export function App() {
     if (advancedMission) {
       setActiveMission(advancedMission);
       setMissionHistory((history) => upsertMissionHistory(history, advancedMission));
+      await saveDesktopMissionContext(advancedMission);
       setCommanderWorkflowNotice('');
       startDoorTransferForMissionRoomChange(mission, advancedMission);
     }
@@ -929,18 +939,27 @@ export function App() {
   }
 
   async function handleMissionCreated(mission: ActiveMission) {
+    const timedMission = {
+      ...mission,
+      missionContext: recordMissionLifecycleStageEntry(
+        mission.missionContext ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt }),
+        parseMissionState(mission.currentState) ?? 'idle',
+        { enteredAt: mission.createdAt },
+      ),
+    };
     setMissionPersistenceStatus((status) => markMissionSavePending(status, mission.id, 'Mission creation persistence in progress.'));
-    setActiveMission(mission);
-    setMissionHistory((history) => upsertMissionHistory(history, mission));
+    setActiveMission(timedMission);
+    setMissionHistory((history) => upsertMissionHistory(history, timedMission));
+    await saveDesktopMissionContext(timedMission);
     setMissionPersistenceStatus(markMissionSaveSucceeded(mission.id));
-    setArchiveWrite(createArchiveWritePlaceholder(mission));
+    setArchiveWrite(createArchiveWritePlaceholder(timedMission));
     setAuthorizationStatus(undefined);
     setMissionDebrief(undefined);
     setArchiveSummary(undefined);
     setCommanderMissionCodename('');
     setCommanderMissionObjective('');
     setCommanderWorkflowNotice('');
-    startDoorTransferToMissionRoom(mission, { fromRoom: 'command', missionAccepted: true });
+    startDoorTransferToMissionRoom(timedMission, { fromRoom: 'command', missionAccepted: true });
   }
 
   async function handleAbortMission() {
@@ -1027,6 +1046,17 @@ export function App() {
       .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
       .at(-1);
     const now = new Date().toISOString();
+    const checkInPermission = canRecordDeployedCheckIn({
+      lastCheckInAt: lastCheckIn?.createdAt ?? activeMission.missionContext?.timing?.lastCheckInAt,
+      now,
+      commanderQuestionPending: commanderQuestionFlowActive,
+    });
+
+    if (!checkInPermission.allowed) {
+      return checkInPermission.reason === 'commander_question_pending'
+        ? 'Commander question is pending. Answer Commander before reporting another deployed check-in.'
+        : 'Check-in received too recently. Continue quiet execution unless a material condition changes.';
+    }
 
     const checkIn = createDeployedMissionCheckIn({
       missionId: activeMission.id,
@@ -1046,6 +1076,20 @@ export function App() {
 
     setMissionPersistenceStatus((status) => markMissionSavePending(status, activeMission.id, 'Deployment check-in persistence in progress.'));
     setDeployedCheckIns((current) => [...current, checkIn]);
+    const timedMission = {
+      ...activeMission,
+      missionContext: updateMissionOperationalTiming(
+        activeMission.missionContext ?? createEmptyMissionContext(activeMission.id, { createdAt: activeMission.createdAt }),
+        {
+          lastCheckInAt: checkIn.createdAt,
+          operationalState: checkIn.status === 'deployed_stable' ? 'quiet' : 'active',
+        },
+        { updatedAt: checkIn.createdAt },
+      ),
+    };
+    setActiveMission(timedMission);
+    setMissionHistory((history) => upsertMissionHistory(history, timedMission));
+    void saveDesktopMissionContext(timedMission);
     setMissionPersistenceStatus(markMissionSaveSucceeded(activeMission.id));
     setCommanderWorkflowNotice(lastCheckIn ? 'Mission check-in updated.' : 'Mission check-in recorded.');
 
@@ -1242,6 +1286,7 @@ export function App() {
         const deployedMission = await declareDesktopDeployment(activeMission);
         setActiveMission(deployedMission);
         setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        await saveDesktopMissionContext(deployedMission);
         setCommanderOperatorJustification('');
         setCommanderInvalidation('');
         setCommanderProtectiveRule('');
@@ -1269,6 +1314,7 @@ export function App() {
         const deployedMission = await declareDesktopDeployment(activeMission);
         setActiveMission(deployedMission);
         setMissionHistory((history) => upsertMissionHistory(history, deployedMission));
+        await saveDesktopMissionContext(deployedMission);
         setCommanderOperatorJustification('');
         setCommanderInvalidation('');
         setCommanderProtectiveRule('');
@@ -1281,7 +1327,33 @@ export function App() {
 
     if (currentCommanderRoom === 'war-room' && currentState === 'deployed') {
       if (isPlanConcludedTransmission(message) || shouldContinue) {
-        await handleCommanderContinue();
+        const now = new Date().toISOString();
+        const conclusion = markDeployedPlanConcluded({
+          missionId: activeMission.id,
+          previous: deployedCheckIns,
+          createdAt: now,
+        });
+        if (conclusion) setDeployedCheckIns((current) => [...current, conclusion]);
+        const concludedMission = {
+          ...activeMission,
+          missionContext: updateMissionOperationalTiming(
+            activeMission.missionContext ?? createEmptyMissionContext(activeMission.id, { createdAt: activeMission.createdAt }),
+            {
+              planConcludedAt: now,
+              lastCheckInAt: now,
+              operationalState: 'paused',
+            },
+            { updatedAt: now },
+          ),
+        };
+        setActiveMission(concludedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, concludedMission));
+        await saveDesktopMissionContext(concludedMission);
+        const returnedMission = await requestDesktopReturnToBase(concludedMission);
+        setActiveMission(returnedMission);
+        setMissionHistory((history) => upsertMissionHistory(history, returnedMission));
+        await saveDesktopMissionContext(returnedMission);
+        startDoorTransferForMissionRoomChange(concludedMission, returnedMission);
         return 'Plan concluded. Return to base is active; debrief before archive.';
       }
 
@@ -1478,6 +1550,7 @@ export function App() {
                     missionPersistenceStatus={missionPersistenceStatus}
                     missionDebrief={missionDebrief}
                     notice={commanderWorkflowNotice}
+                    commanderQuestionPending={commanderQuestionFlowActive}
                     missionCodename={commanderMissionCodename}
                     missionObjective={commanderMissionObjective}
                     operatorJustification={commanderOperatorJustification}
@@ -1691,6 +1764,7 @@ function CommanderWorkflowSurface({
   missionPersistenceStatus,
   missionDebrief,
   notice,
+  commanderQuestionPending,
   missionCodename,
   missionObjective,
   operatorJustification,
@@ -1723,6 +1797,7 @@ function CommanderWorkflowSurface({
   readonly missionPersistenceStatus: MissionPersistenceStatus;
   readonly missionDebrief?: MissionDebrief | undefined;
   readonly notice: string;
+  readonly commanderQuestionPending: boolean;
   readonly missionCodename: string;
   readonly missionObjective: string;
   readonly operatorJustification: string;
@@ -1757,6 +1832,9 @@ function CommanderWorkflowSurface({
       riskLimit: activeMission.missionContext?.briefing.riskParameters,
       currentVisibleCondition: activeMission.missionContext?.observation.operationalSummary,
       createdAt: activeMission.createdAt,
+      deployedAt: getMissionLifecycleStageEnteredAt(activeMission.missionContext, 'deployed'),
+      commanderQuestionPending,
+      planConcludedAt: activeMission.missionContext?.timing?.planConcludedAt,
       checkIns: deployedCheckIns,
     })
     : undefined;
@@ -1882,6 +1960,8 @@ function CommanderWorkflowSurface({
           <dl>
             <dt>Status</dt>
             <dd>{deployedPresence.deploymentStatus.replaceAll('_', ' ')}</dd>
+            <dt>Timing State</dt>
+            <dd>{deployedPresence.operationalState}</dd>
             <dt>Authorization</dt>
             <dd>{deployedPresence.authorizationReasoning}</dd>
             <dt>Invalidation</dt>
@@ -1893,6 +1973,7 @@ function CommanderWorkflowSurface({
             <dt>Elapsed</dt>
             <dd>{deployedPresence.elapsedLabel}</dd>
           </dl>
+          <p className="muted">{deployedPresence.checkInGuidance}</p>
           <form className="deployed-check-in-form" aria-label="Report deployed mission change" onSubmit={handleDeployedReport}>
             <label>
               <span>Report Change</span>
@@ -4918,7 +4999,21 @@ function MissionNextActionPanel({
     }
 
     if (currentState === 'deployed') {
-      onMissionChanged?.(await requestDesktopReturnToBase(activeMission));
+      const now = new Date().toISOString();
+      const concludedMission = {
+        ...activeMission,
+        missionContext: updateMissionOperationalTiming(
+          activeMission.missionContext ?? createEmptyMissionContext(activeMission.id, { createdAt: activeMission.createdAt }),
+          {
+            planConcludedAt: now,
+            lastCheckInAt: now,
+            operationalState: 'paused',
+          },
+          { updatedAt: now },
+        ),
+      };
+      await saveDesktopMissionContext(concludedMission);
+      onMissionChanged?.(await requestDesktopReturnToBase(concludedMission));
       return;
     }
 
@@ -7870,10 +7965,15 @@ export function mapMissionRecordToActiveMission(
   const missionContext = previousMission?.missionContext
     ?? persistedMissionContext
     ?? createEmptyMissionContext(mission.id, { createdAt: mission.createdAt });
+  const timedMissionContext = recordMissionLifecycleStageEntry(
+    missionContext,
+    mission.state,
+    { enteredAt: mission.updatedAt ?? mission.createdAt },
+  );
   const briefingContext = previousMission?.briefingContext
-    ?? buildBriefingContextFromMissionContext(missionContext);
+    ?? buildBriefingContextFromMissionContext(timedMissionContext);
   const observationContext = previousMission?.observationContext
-    ?? buildObservationContextFromMissionContext(missionContext);
+    ?? buildObservationContextFromMissionContext(timedMissionContext);
 
   return {
     id: mission.id,
@@ -7885,7 +7985,7 @@ export function mapMissionRecordToActiveMission(
     createdAt: mission.createdAt,
     ...(Object.keys(briefingContext).length > 0 ? { briefingContext } : {}),
     ...(Object.keys(observationContext).length > 0 ? { observationContext } : {}),
-    missionContext,
+    missionContext: timedMissionContext,
   };
 }
 
@@ -7901,6 +8001,7 @@ export function parsePersistedMissionContext(record: PersistedMissionContextReco
   try {
     const parsed = JSON.parse(record.contextJson) as Partial<MissionContext>;
     if (parsed === null || typeof parsed !== 'object' || parsed.missionId !== record.missionId) return undefined;
+    const timing = normalizeMissionOperationalTiming(parsed.timing);
 
     return {
       missionId: record.missionId,
@@ -7914,6 +8015,7 @@ export function parsePersistedMissionContext(record: PersistedMissionContextReco
         warRoomReady: parsed.readiness?.warRoomReady === true,
         debriefReady: parsed.readiness?.debriefReady === true,
       },
+      ...(timing ? { timing } : {}),
       ...(typeof parsed.createdAt === 'string' ? { createdAt: parsed.createdAt } : {}),
       ...(typeof parsed.updatedAt === 'string' ? { updatedAt: parsed.updatedAt } : {}),
     };

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  canRecordDeployedCheckIn,
   createDeployedMissionCheckIn,
   createDeployedMissionPresence,
+  markDeployedPlanConcluded,
   shouldThrottleDeployedCheckIn,
 } from './MissionDeployedCheckIns';
 
@@ -16,6 +18,7 @@ describe('MissionDeployedCheckIns', () => {
       riskLimit: '1%',
       currentVisibleCondition: 'Price is holding above structure.',
       createdAt: '2026-07-10T10:00:00.000Z',
+      deployedAt: '2026-07-10T10:04:00.000Z',
       now: '2026-07-10T10:07:00.000Z',
     });
 
@@ -24,7 +27,9 @@ describe('MissionDeployedCheckIns', () => {
       deploymentStatus: 'deployed_stable',
       activeInvalidation: 'Back below VWAP.',
       riskLimit: '1%',
-      elapsedLabel: '7 minutes deployed',
+      elapsedLabel: '3 minutes deployed',
+      operationalState: 'quiet',
+      checkInGuidance: 'No check-in required. Observation silence remains valid work unless conditions change.',
     });
   });
 
@@ -82,5 +87,28 @@ describe('MissionDeployedCheckIns', () => {
       now: '2026-07-10T10:03:00.000Z',
       throttleMs: 120000,
     })).toBe(false);
+  });
+
+  it('blocks check-ins while Commander has a pending question', () => {
+    expect(canRecordDeployedCheckIn({
+      lastCheckInAt: '2026-07-10T10:00:00.000Z',
+      now: '2026-07-10T10:03:00.000Z',
+      commanderQuestionPending: true,
+    })).toEqual({ allowed: false, reason: 'commander_question_pending' });
+  });
+
+  it('records explicit plan conclusion before Return to Base', () => {
+    const conclusion = markDeployedPlanConcluded({
+      missionId: 'mission-001',
+      createdAt: '2026-07-10T10:20:00.000Z',
+    });
+
+    expect(conclusion).toMatchObject({
+      missionId: 'mission-001',
+      status: 'return_requested',
+      visibleCondition: 'Plan concluded by operator.',
+      planValidity: 'Plan concluded.',
+      createdAt: '2026-07-10T10:20:00.000Z',
+    });
   });
 });
