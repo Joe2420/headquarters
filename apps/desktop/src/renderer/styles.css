@@ -3838,6 +3838,43 @@ dd {
   gap: 0.35rem;
 }
 
+.commander-purpose-message {
+  display: grid;
+  gap: 0.5rem;
+  border-left: 3px solid #58ff84;
+  background: linear-gradient(90deg, rgba(32, 255, 100, 0.08), rgba(32, 255, 100, 0.02));
+  padding: 0.85rem 1rem;
+  color: #5dff88;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  text-shadow: 0 0 8px rgba(78, 255, 126, 0.28);
+}
+
+.commander-purpose-message h3 {
+  margin: 0;
+  color: #9effb7;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.commander-purpose-message[data-message-purpose="warning"],
+.commander-purpose-message[data-message-purpose="interruption"] {
+  border-left-color: #ff6262;
+  background: linear-gradient(90deg, rgba(255, 98, 98, 0.12), rgba(32, 255, 100, 0.02));
+  color: #ffd0d0;
+}
+
+.commander-purpose-message[data-message-purpose="transition"] {
+  border-left-color: #88bbff;
+  color: #c9e1ff;
+}
+
+.commander-purpose-message[data-message-purpose="recognition"],
+.commander-purpose-message[data-message-purpose="acknowledgement"] {
+  border-left-color: #ffd36c;
+  color: #ffe7a8;
+}
+
 @media (max-width: 1100px) {
   .commander-workspace {
     grid-template-columns: 1fr;
