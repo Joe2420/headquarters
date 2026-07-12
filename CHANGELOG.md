@@ -1,3 +1,5 @@
+HQ-TASK-S50 - Added Mission Replay and After-Action Review system foundation.
+
 HQ-TASK-S49 - Added Live Mission Command workspace consolidation.
 
 HQ-TASK-S48 - Added Living Headquarters orchestration engine for evidence-backed attention requests.
