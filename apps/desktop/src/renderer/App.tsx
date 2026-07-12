@@ -133,13 +133,19 @@ import type { CommanderShellRoomId } from './CommanderShell';
 import {
   RoomTransitionLayer,
   buildMissionCompassSteps,
+  completeRoomTransferPlan,
   createAuthorizationTransition,
   createMissionAcceptedTransition,
+  createRoomTransferPlan,
   createRoomTransition,
   getTransitionDurationMs,
   mapCommanderRoomToNavigationTarget,
   parseMissionNavigationState,
+  resolveRoomTransferDestinationView,
+  shouldCollapseRoomTransfer,
+  shouldReplayRoomTransfer,
   type TransitionController,
+  type RoomTransferPlan,
   type RoomTransitionState,
 } from './RoomNavigationExperience';
 import {
@@ -490,6 +496,8 @@ export function App() {
   const [doctrineReviewDecisions, setDoctrineReviewDecisions] = useState<DoctrineReviewRecord[]>([]);
   const [acknowledgedCommanderInterruptions, setAcknowledgedCommanderInterruptions] = useState<string[]>([]);
   const [roomTransition, setRoomTransition] = useState<RoomTransitionState | undefined>();
+  const [activeRoomTransfer, setActiveRoomTransfer] = useState<RoomTransferPlan | undefined>();
+  const [completedRoomTransferKeys, setCompletedRoomTransferKeys] = useState<string[]>([]);
   const [commanderOperatorJustification, setCommanderOperatorJustification] = useState('');
   const [commanderInvalidation, setCommanderInvalidation] = useState('');
   const [commanderProtectiveRule, setCommanderProtectiveRule] = useState('');
@@ -872,12 +880,6 @@ export function App() {
   }
 
   function handleEnterCommanderChat() {
-    if (roomTransferTimeoutRef.current !== undefined) {
-      window.clearTimeout(roomTransferTimeoutRef.current);
-      roomTransferTimeoutRef.current = undefined;
-    }
-
-    setRoomTransition(undefined);
     setActiveOperationsView('chat');
   }
 
@@ -887,15 +889,35 @@ export function App() {
       readonly openRoomAfter?: boolean;
       readonly fromRoom?: CommanderShellRoomId;
       readonly transition?: RoomTransitionState;
+      readonly reason?: string;
     } = {},
   ) {
-    if (roomTransition !== undefined) return;
-
     const fromRoom = options.fromRoom ?? currentCommanderRoom;
     const targetRoom = mapNavigationRoomToCommanderRoom(room);
+    const transition = options.transition ?? createDoorOpeningTransition(fromRoom, targetRoom);
+    const destinationSelectedView = resolveRoomTransferDestinationView({
+      currentView: activeOperationsView,
+      requiresRoomInteraction: options.openRoomAfter,
+    });
+    const transferPlan = createRoomTransferPlan({
+      fromRoom,
+      toRoom: targetRoom,
+      lifecycleStage: parseMissionState(activeMission?.currentState),
+      reason: options.reason ?? getRoomTransferReason(fromRoom, targetRoom, activeMission),
+      destinationSelectedView,
+      transition,
+    });
+
+    if (shouldCollapseRoomTransfer(activeRoomTransfer, transferPlan)) return;
 
     if (fromRoom === targetRoom && room === activeRoom) {
       if (options.openRoomAfter) setActiveOperationsView('room');
+      return;
+    }
+
+    if (!shouldReplayRoomTransfer(transferPlan, completedRoomTransferKeys)) {
+      setActiveRoom(room);
+      setActiveOperationsView(destinationSelectedView);
       return;
     }
 
@@ -903,12 +925,16 @@ export function App() {
       window.clearTimeout(roomTransferTimeoutRef.current);
     }
 
-    const transition = options.transition ?? createDoorOpeningTransition(fromRoom, targetRoom);
+    setActiveRoomTransfer(transferPlan);
     setRoomTransition(transition);
 
     roomTransferTimeoutRef.current = window.setTimeout(() => {
       setActiveRoom(room);
-      if (options.openRoomAfter) setActiveOperationsView('room');
+      setActiveOperationsView(transferPlan.destinationSelectedView);
+      setCompletedRoomTransferKeys((keys) => (
+        keys.includes(transferPlan.replayKey) ? keys : [...keys, transferPlan.replayKey]
+      ));
+      setActiveRoomTransfer(completeRoomTransferPlan(transferPlan));
       roomTransferTimeoutRef.current = undefined;
     }, getTransitionRoomLoadDelayMs(isReducedMotionPreferred(), transition.controller));
   }
@@ -1470,7 +1496,13 @@ export function App() {
         </nav>
 
         <main id="main-content" className="shell-main">
-          <section className="operations-viewport" aria-label="Operations viewport" data-active-operations-view={activeOperationsView}>
+          <section
+            className="operations-viewport"
+            aria-label="Operations viewport"
+            data-active-operations-view={activeOperationsView}
+            data-room-transfer-state={activeRoomTransfer?.completionState ?? 'idle'}
+            data-room-transfer-destination={activeRoomTransfer?.toRoom ?? currentCommanderRoom}
+          >
             <div className="operations-view-tabs" role="tablist" aria-label="Operations view">
               <button
                 type="button"
@@ -9257,6 +9289,18 @@ function isReducedMotionPreferred(): boolean {
 
 function getTransitionRoomLoadDelayMs(reducedMotion: boolean, controller?: TransitionController): number {
   return Math.round(getTransitionDurationMs(reducedMotion, controller) * 0.62);
+}
+
+function getRoomTransferReason(
+  fromRoom: CommanderShellRoomId,
+  toRoom: CommanderShellRoomId,
+  mission?: ActiveMission,
+): string {
+  const missionState = parseMissionState(mission?.currentState);
+
+  if (fromRoom === toRoom) return 'Room view confirmation.';
+  if (missionState === undefined) return 'Operator navigation request.';
+  return `Lifecycle ${missionState} recommends ${formatRoomLabel(toRoom)}.`;
 }
 
 function findNextTransmissionFieldIndex(message: string, start: number): number {
