@@ -1676,20 +1676,23 @@ export function App() {
                     ));
                   }}
                 />
-                <AmbientStatusStrip input={{
-                  hqos: formatHqosStatus(startupStatus),
-                  archive: formatArchiveViewerStatus(archivedMissionSummaries),
-                  mission: formatMissionDetailState(activeMission),
-                  guardian: guardianStatus,
-                  currentRoom: currentRoomLabel,
-                }} />
-                <section className="headquarters-operating-environment" aria-label="Living Headquarters OS">
-                  <CommandChairOperatingConsole state={operatingEnvironment.commandChair} />
-                  <HeadquartersBroadcastFeed items={operatingEnvironment.broadcast} />
-                  <OperationalNotifications notifications={operatingEnvironment.notifications} />
-                  <HeadquartersServiceActivityPanel services={operatingEnvironment.services} />
-                  <LiveOperationalTimeline entries={operatingEnvironment.timeline} />
-                </section>
+                <details className="commander-supporting-context">
+                  <summary>Headquarters activity</summary>
+                  <AmbientStatusStrip input={{
+                    hqos: formatHqosStatus(startupStatus),
+                    archive: formatArchiveViewerStatus(archivedMissionSummaries),
+                    mission: formatMissionDetailState(activeMission),
+                    guardian: guardianStatus,
+                    currentRoom: currentRoomLabel,
+                  }} />
+                  <section className="headquarters-operating-environment" aria-label="Living Headquarters OS">
+                    <CommandChairOperatingConsole state={operatingEnvironment.commandChair} />
+                    <HeadquartersBroadcastFeed items={operatingEnvironment.broadcast} />
+                    <OperationalNotifications notifications={operatingEnvironment.notifications} />
+                    <HeadquartersServiceActivityPanel services={operatingEnvironment.services} />
+                    <LiveOperationalTimeline entries={operatingEnvironment.timeline} />
+                  </section>
+                </details>
               </section>
             </div>
 

@@ -3777,6 +3777,25 @@ dd {
   padding: 0.85rem;
 }
 
+.commander-supporting-context {
+  margin: 0.8rem 1rem 1rem;
+  border: 1px solid rgba(123, 255, 164, 0.12);
+  background: rgba(1, 10, 7, 0.58);
+  color: #9fc5aa;
+}
+
+.commander-supporting-context summary {
+  cursor: pointer;
+  padding: 0.7rem 0.85rem;
+  color: #9effb7;
+  font-weight: 800;
+}
+
+.commander-supporting-context[open] {
+  max-height: 22rem;
+  overflow: hidden auto;
+}
+
 .commander-workspace__conversation {
   display: flex;
   flex: 1 1 auto;
