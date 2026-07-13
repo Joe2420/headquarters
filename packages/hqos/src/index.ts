@@ -51,6 +51,7 @@ export * from './GuardianProtection';
 export * from './GuardianCapitalProtection';
 export * from './GuardianJudgmentReserve';
 export * from './GuardianSuccessProtocol';
+export * from './GuardianProtectionEngine';
 export * from './OperationalConsequenceSelectors';
 export * from './OperationalRecoveryService';
 export * from './InstitutionalHealth';
