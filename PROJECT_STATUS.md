@@ -2,6 +2,7 @@
 
 ## Completed Foundation Tasks
 
+- HQ-TASK-S51 - Sprint 51 Headquarters Intelligence Graph and Cross-Mission Analytics
 - HQ-TASK-S50 - Sprint 50 Mission Replay and After-Action Review System
 - HQ-TASK-S49 - Sprint 49 Live Mission Command Workspace
 - HQ-TASK-S48 - Sprint 48 Living Headquarters Orchestration Engine

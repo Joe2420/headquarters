@@ -1,3 +1,5 @@
+HQ-TASK-S51 - Added Headquarters Intelligence Graph and cross-mission analytics foundation.
+
 HQ-TASK-S50 - Added Mission Replay and After-Action Review system foundation.
 
 HQ-TASK-S49 - Added Live Mission Command workspace consolidation.

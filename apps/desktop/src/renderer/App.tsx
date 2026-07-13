@@ -231,6 +231,7 @@ import {
 import { buildMissionJournalLink } from './MissionJournalIntegration';
 import { buildCommanderWorkspaceSnapshot, type CommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
 import { LiveMissionCommandRail } from './LiveMissionCommandRail';
+import { IntelligenceRoomExperience } from './IntelligenceRoomExperience';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -6972,6 +6973,7 @@ export function IntelligenceCenterRoom({
         <p className="muted">Deterministic classification preserves raw journal evidence and does not alter source entries.</p>
       </section>
       <section className="command-center-panels" aria-label="Intelligence workspace">
+        <IntelligenceRoomExperience insights={[]} similarMissions={[]} trends={[]} />
         <IntelligenceDashboardPanel dashboard={dashboard} />
         <section className="journal-panel" aria-label="Journal classification summary">
           <p className="section-label">Classification</p>

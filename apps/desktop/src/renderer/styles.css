@@ -1840,6 +1840,36 @@ dd {
   background: #0f1317;
 }
 
+.intelligence-room-experience {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.2fr) repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+
+.intelligence-room-experience .intelligence-brief {
+  border-color: rgba(74, 206, 255, 0.42);
+  background:
+    linear-gradient(135deg, rgba(15, 70, 98, 0.32), rgba(4, 15, 22, 0.9)),
+    rgba(5, 12, 18, 0.9);
+}
+
+.intelligence-room-experience dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+}
+
+.intelligence-room-experience dt {
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.intelligence-room-experience dd {
+  margin: 0;
+}
+
 .mission-ceremony {
   display: grid;
   gap: 0.25rem;
