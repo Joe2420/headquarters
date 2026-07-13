@@ -50,6 +50,8 @@ describe('CommanderWorkspaceLayout', () => {
 
     expect(html).toContain('class="commander-workspace"');
     expect(html).toContain('data-workspace-mode="active"');
+    expect(html).toContain('aria-label="Commander mission header"');
+    expect(html).toContain('aria-label="Commander conversation viewport"');
     expect(html).toContain('Commander transmission');
     expect(html).toContain('Lifecycle rail');
     expect(html).toContain('Secondary details');
@@ -66,5 +68,26 @@ describe('CommanderWorkspaceLayout', () => {
     );
 
     expect(html).not.toContain('commander-workspace__secondary');
+  });
+
+  it('renders standby without exposing the internal mission id as the title', () => {
+    const html = renderToStaticMarkup(
+      <CommanderWorkspaceLayout
+        snapshot={{
+          ...snapshot,
+          mode: 'standby',
+          missionId: undefined,
+          activeStage: 'missionCreation',
+          currentRoom: 'command-center',
+          recommendedRoom: 'command-center',
+        }}
+        commander={<div>Commander transmission</div>}
+        commandRail={<div>Lifecycle rail</div>}
+      />,
+    );
+
+    expect(html).toContain('Headquarters Standby');
+    expect(html).toContain('No active mission');
+    expect(html).not.toContain('mission-1');
   });
 });

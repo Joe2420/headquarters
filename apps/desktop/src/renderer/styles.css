@@ -3732,6 +3732,7 @@ dd {
   gap: 1rem;
   min-height: min(920px, calc(100vh - 8rem));
   height: min(920px, calc(100vh - 8rem));
+  overflow: hidden;
 }
 
 .commander-workspace__primary,
@@ -3754,7 +3755,8 @@ dd {
 
 .commander-workspace__rail {
   grid-area: rail;
-  overflow: auto;
+  min-height: 0;
+  overflow: hidden auto;
   padding: 1rem;
 }
 
@@ -3773,6 +3775,60 @@ dd {
   border-top: 1px solid rgba(123, 255, 164, 0.16);
   background: linear-gradient(180deg, rgba(1, 10, 7, 0.72), rgba(1, 10, 7, 0.96));
   padding: 0.85rem;
+}
+
+.commander-workspace__conversation {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden auto;
+}
+
+.commander-mission-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(123, 255, 164, 0.16);
+  background: rgba(1, 10, 7, 0.94);
+  padding: 0.8rem 1rem;
+}
+
+.commander-mission-header h2 {
+  margin: 0;
+  color: #d8ffe2;
+  font-size: 1rem;
+}
+
+.commander-mission-header dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: end;
+  margin: 0;
+}
+
+.commander-mission-header div {
+  min-width: 5.5rem;
+}
+
+.commander-mission-header dt {
+  color: #75b48b;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.commander-mission-header dd {
+  margin: 0.15rem 0 0;
+  color: #f2fff8;
+  font-weight: 800;
+}
+
+.commander-mission-header [data-header-state="blocked"] dd {
+  color: #ffb7b7;
 }
 
 .live-mission-command-rail {
@@ -4165,11 +4221,19 @@ dd {
       "primary"
       "rail"
       "secondary";
-    height: auto;
+    height: min(960px, calc(100vh - 7rem));
   }
 
   .commander-workspace__rail {
     max-height: 22rem;
+  }
+
+  .commander-mission-header {
+    grid-template-columns: 1fr;
+  }
+
+  .commander-mission-header dl {
+    justify-content: start;
   }
 }
 
