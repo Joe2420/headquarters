@@ -286,7 +286,8 @@ describe('Desktop shell', () => {
     expect(html).toContain('Commander Assessment');
     expect(html).toContain('Operational Consequences');
     expect(html).toContain('Outcome State');
-    expect(html).toContain('Final Evaluation');
+    expect(html).not.toContain('Final Evaluation');
+    expect(html).toContain('Evaluation appears after Debrief and Archive context are ready.');
     expect(html).toContain('Technical diagnostics');
     expect(html).toContain('Database');
   });

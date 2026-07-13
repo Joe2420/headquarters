@@ -1,3 +1,5 @@
+HQ-TASK-S53 - Redesigned Commander command center information architecture and workspace experience.
+
 HQ-TASK-S52 - Added Guardian Intervention and Capital Protection foundation.
 
 HQ-TASK-S51 - Added Headquarters Intelligence Graph and cross-mission analytics foundation.

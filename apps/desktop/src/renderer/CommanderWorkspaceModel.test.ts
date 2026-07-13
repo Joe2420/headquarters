@@ -4,6 +4,7 @@ import type {
   HeadquartersPriorityItem,
   MissionLifecycleProjection,
   MissionLifecycleRoom,
+  OperationalConsequence,
 } from '@headquarters/hqos';
 import { buildCommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
 
@@ -91,6 +92,32 @@ const request = (input: Partial<HeadquartersAttentionRequest> = {}): Headquarter
   ...input,
 });
 
+const consequence = (input: Partial<OperationalConsequence> = {}): OperationalConsequence => ({
+  consequenceId: 'consequence-1',
+  missionId: 'mission-1',
+  category: 'process',
+  type: 'incomplete_debrief',
+  severity: 'restriction',
+  status: 'active',
+  title: 'Debrief incomplete',
+  explanation: 'Mission evidence must be reviewed before another operation begins.',
+  cause: 'Debrief was not completed.',
+  effect: 'Headquarters keeps the next operation held until review is complete.',
+  createdAt: '2026-07-13T00:00:00.000Z',
+  evidenceReferences: [{ id: 'debrief-1', source: 'debrief' }],
+  recoveryRequirements: [{
+    requirementId: 'recovery-1',
+    description: 'Debrief submitted.',
+    type: 'complete_debrief',
+    completionState: 'pending',
+    evidenceRequired: true,
+    evidenceReferences: [],
+  }],
+  resolutionEvidence: [],
+  metadata: {},
+  ...input,
+});
+
 describe('CommanderWorkspaceModel', () => {
   it('uses lifecycle action as the active workspace primary action', () => {
     const snapshot = buildCommanderWorkspaceSnapshot({
@@ -152,5 +179,21 @@ describe('CommanderWorkspaceModel', () => {
 
     expect(snapshot.mode).toBe('archived');
     expect(snapshot.currentRoom).toBe('archive');
+  });
+
+  it('does not surface stale mission-scoped consequences while Headquarters is standing by', () => {
+    const snapshot = buildCommanderWorkspaceSnapshot({
+      lifecycle: standbyLifecycle(),
+      highestPriority: priority({
+        id: 'priority:mission:create-mission',
+        recommendedRoom: 'mission-room',
+        recommendedAction: 'Create Mission',
+      }),
+      operationalConsequences: [consequence()],
+    });
+
+    expect(snapshot.mode).toBe('standby');
+    expect(snapshot.blockers).toEqual([]);
+    expect(snapshot.evidenceCount).toBe(1);
   });
 });
