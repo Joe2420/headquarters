@@ -57,6 +57,7 @@ export * from './GuardianRecoveryProtocol';
 export * from './GuardianProtectionHistory';
 export * from './OperationalConsequenceSelectors';
 export * from './OperationalRecoveryService';
+export * from './JournalRecord';
 export * from './InstitutionalHealth';
 export * from './InstitutionalHealthExplanationEngine';
 export * from './InstitutionalHealthTrendEngine';
