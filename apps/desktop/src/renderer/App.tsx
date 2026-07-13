@@ -6577,11 +6577,11 @@ export function buildGuardianRoomModel(input: GuardianRoomModelInput = {}): Guar
   const riskBoundary = hasMissionContextText(briefing?.riskParameters) ? briefing?.riskParameters.trim() : 'not declared';
   const readiness = briefing?.personalReadiness?.trim().toLowerCase();
   const riskyReadiness = parseGuardianReadinessRisk(readiness);
-  const reservePercent = lockout.status === 'locked'
-    ? 12
-    : riskyReadiness === undefined
-      ? 82
-      : Math.max(20, 100 - riskyReadiness * 9);
+  const reserveState = lockout.status === 'locked'
+    ? 'Depleted'
+    : riskyReadiness !== undefined && riskyReadiness >= 7
+      ? 'Reduced'
+      : 'Stable';
   const hasWarning = alerts.some((alert) => alert.priority === 'medium' || alert.priority === 'high' || alert.priority === 'critical');
   const highestAlert = alerts.find((alert) => alert.priority === 'critical')
     ?? alerts.find((alert) => alert.priority === 'high')
@@ -6600,11 +6600,11 @@ export function buildGuardianRoomModel(input: GuardianRoomModelInput = {}): Guar
       reason: lockout.status === 'locked' ? lockout.explanation : 'No intervention required. Operator behavior remains within doctrine.',
     },
     judgmentReserve: {
-      available: `${reservePercent}%`,
+      available: reserveState,
       fatigue: riskyReadiness !== undefined && riskyReadiness >= 7 ? 'Elevated' : 'Low',
       confidence: hasWarning ? 'Constrained' : 'Normal',
       emotion: riskyReadiness !== undefined && riskyReadiness >= 7 ? 'Compromised' : 'Stable',
-      recommendation: reservePercent < 40
+      recommendation: reserveState === 'Depleted' || reserveState === 'Reduced'
         ? 'Decision quality compromised. Commander recommends ending operations or journaling before authorization.'
         : 'Judgment reserve is sufficient. Monitoring continues.',
     },
