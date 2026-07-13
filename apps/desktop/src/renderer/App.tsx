@@ -231,6 +231,8 @@ import {
 import { buildMissionJournalLink } from './MissionJournalIntegration';
 import { buildCommanderWorkspaceSnapshot, type CommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
 import { LiveMissionCommandRail } from './LiveMissionCommandRail';
+import { CommanderWorkspaceLayout } from './CommanderWorkspaceLayout';
+import { HeadquartersContextSurface, type HeadquartersContextSection } from './HeadquartersContextSurface';
 import { IntelligenceRoomExperience } from './IntelligenceRoomExperience';
 import { buildWarRoomGuardianProtection } from './WarRoomGuardianProtection';
 
@@ -1554,13 +1556,16 @@ export function App() {
         </nav>
 
         <main id="main-content" className="shell-main">
-          <section
-            className="operations-viewport"
-            aria-label="Operations viewport"
-            data-active-operations-view={activeOperationsView}
-            data-room-transfer-state={activeRoomTransfer?.completionState ?? 'idle'}
-            data-room-transfer-destination={activeRoomTransfer?.toRoom ?? currentCommanderRoom}
-          >
+          <CommanderWorkspaceLayout
+            snapshot={commanderWorkspaceSnapshot}
+            commander={(
+              <section
+                className="operations-viewport"
+                aria-label="Operations viewport"
+                data-active-operations-view={activeOperationsView}
+                data-room-transfer-state={activeRoomTransfer?.completionState ?? 'idle'}
+                data-room-transfer-destination={activeRoomTransfer?.toRoom ?? currentCommanderRoom}
+              >
             <div className="operations-view-tabs" role="tablist" aria-label="Operations view">
               <button
                 type="button"
@@ -1749,12 +1754,20 @@ export function App() {
                 )}
               </section>
             </div>
-          </section>
-
-          <MissionCommandSidebar
-            model={missionCommandSidebar}
-            startupStatus={startupStatus}
-            workspaceSnapshot={commanderWorkspaceSnapshot}
+              </section>
+            )}
+            commandRail={(
+              <MissionCommandSidebar
+                model={missionCommandSidebar}
+                startupStatus={startupStatus}
+                workspaceSnapshot={commanderWorkspaceSnapshot}
+              />
+            )}
+            secondaryContext={(
+              <HeadquartersContextSurface
+                sections={buildCommanderWorkspaceContextSections(missionCommandSidebar, startupStatus)}
+              />
+            )}
           />
         </main>
       </div>
@@ -1771,9 +1784,13 @@ function MissionCommandSidebar({
   readonly startupStatus: StartupStatus;
   readonly workspaceSnapshot: CommanderWorkspaceSnapshot;
 }) {
+  const highestConsequence = model.consequences[0];
+  const showEvaluation = model.outcomeState !== 'not evaluated' || model.finalEvaluation.classification !== 'Incomplete';
+
   return (
-    <aside className="status-panel mission-command-sidebar" aria-label="Live mission command sidebar" aria-live="polite">
+    <aside className="mission-command-sidebar" aria-label="Live mission command sidebar" aria-live="polite">
       <LiveMissionCommandRail snapshot={workspaceSnapshot} />
+
       <p className="section-label">Mission Command</p>
       <h2>{model.missionIdentity.codename}</h2>
       <p className="mission-command-objective">{model.missionIdentity.objective}</p>
@@ -1797,7 +1814,39 @@ function MissionCommandSidebar({
         </div>
       </dl>
 
-      <section className="mission-command-section" aria-label="Lifecycle progress">
+      <section className="mission-command-section mission-command-next-action" aria-label="Next action">
+        <h3>Next Action</h3>
+        <strong>{model.nextAction.label}</strong>
+        <span>{model.nextAction.destinationRoom}</span>
+        <p>{model.nextAction.explanation}</p>
+      </section>
+
+      {highestConsequence ? (
+        <section className="mission-command-section mission-command-blocker" aria-label="Highest active blocker">
+          <h3>Highest Blocker</h3>
+          <strong>{highestConsequence.cause}</strong>
+          <p>{highestConsequence.effect}</p>
+          <button type="button">Review Recovery Action</button>
+        </section>
+      ) : null}
+
+      <section className="mission-command-section" aria-label="Guardian and doctrine status">
+        <h3>Guardian / Doctrine</h3>
+        <dl className="mission-command-summary">
+          <div>
+            <dt>Guardian</dt>
+            <dd data-guardian-state={model.guardian.state}>{formatGuardianRailState(model.guardian.state)}</dd>
+          </div>
+          <div>
+            <dt>Doctrine</dt>
+            <dd>{model.doctrine.pendingCandidateCount > 0 ? 'Review pending' : 'No pending review'}</dd>
+          </div>
+        </dl>
+        <p>{formatRailSummary(model.doctrine.relevance)}</p>
+      </section>
+
+      <details className="mission-command-section mission-command-detail" aria-label="Lifecycle progress">
+        <summary>Lifecycle detail</summary>
         <h3>Lifecycle Progress</h3>
         <ol className="mission-command-rail">
           {model.lifecycleProgress.map((stage) => (
@@ -1808,16 +1857,10 @@ function MissionCommandSidebar({
             </li>
           ))}
         </ol>
-      </section>
+      </details>
 
-      <section className="mission-command-section mission-command-next-action" aria-label="Next action">
-        <h3>Next Action</h3>
-        <strong>{model.nextAction.label}</strong>
-        <span>{model.nextAction.destinationRoom}</span>
-        <p>{model.nextAction.explanation}</p>
-      </section>
-
-      <section className="mission-command-section" aria-label="Mission intelligence status">
+      <details className="mission-command-section mission-command-detail" aria-label="Mission intelligence status">
+        <summary>Mission Intelligence detail</summary>
         <h3>Intelligence</h3>
         <dl className="mission-command-summary">
           <div>
@@ -1837,32 +1880,10 @@ function MissionCommandSidebar({
             <dd>{model.intelligence.contradictionState}</dd>
           </div>
         </dl>
-      </section>
+      </details>
 
-      <section className="mission-command-section" aria-label="Guardian and doctrine status">
-        <h3>Guardian / Doctrine</h3>
-        <dl className="mission-command-summary">
-          <div>
-            <dt>Guardian</dt>
-            <dd data-guardian-state={model.guardian.state}>{model.guardian.state}</dd>
-          </div>
-          <div>
-            <dt>Highest Alert</dt>
-            <dd>{model.guardian.highestAlert}</dd>
-          </div>
-          <div>
-            <dt>Protective Rule</dt>
-            <dd>{model.doctrine.activeProtectiveRule}</dd>
-          </div>
-          <div>
-            <dt>Doctrine Candidates</dt>
-            <dd>{model.doctrine.pendingCandidateCount}</dd>
-          </div>
-        </dl>
-        <p>{model.doctrine.relevance}</p>
-      </section>
-
-      <section className="mission-command-section" aria-label="Headquarters condition">
+      <details className="mission-command-section mission-command-detail" aria-label="Headquarters condition">
+        <summary>Supporting systems</summary>
         <h3>HEADQUARTERS CONDITION</h3>
         <strong data-health-state={model.institutionalHealth.overallState}>{model.institutionalHealth.overallState}</strong>
         <p>{model.institutionalHealth.summary}</p>
@@ -1883,9 +1904,10 @@ function MissionCommandSidebar({
             </details>
           ))}
         </div>
-      </section>
+      </details>
 
-      <section className="mission-command-section" aria-label="Commander assessment">
+      <details className="mission-command-section mission-command-detail" aria-label="Commander assessment">
+        <summary>Commander learning</summary>
         <h3>Commander Assessment</h3>
         <strong>{model.commanderAssessment.currentFocus}</strong>
         <p>{model.commanderAssessment.summary}</p>
@@ -1919,9 +1941,10 @@ function MissionCommandSidebar({
             </ul>
           </details>
         </div>
-      </section>
+      </details>
 
-      <section className="mission-command-section" aria-label="Operational consequences">
+      <details className="mission-command-section mission-command-detail" aria-label="Operational consequences">
+        <summary>Operational consequence history</summary>
         <h3>Operational Consequences</h3>
         {model.consequences.length === 0 ? (
           <p>No active consequence. Continue following the declared process.</p>
@@ -1950,14 +1973,16 @@ function MissionCommandSidebar({
             ))}
           </ul>
         )}
-      </section>
+      </details>
 
       <section className="mission-command-section" aria-label="Mission outcome state">
         <h3>Outcome State</h3>
         <strong>{model.outcomeState}</strong>
       </section>
 
-      <section className="mission-command-section mission-final-evaluation" aria-label="Mission final evaluation">
+      {showEvaluation ? (
+      <details className="mission-command-section mission-final-evaluation mission-command-detail" aria-label="Mission final evaluation">
+        <summary>Mission evaluation detail</summary>
         <h3>Final Evaluation</h3>
         <strong>{model.finalEvaluation.classification}</strong>
         <p>{model.finalEvaluation.commanderVerdict}</p>
@@ -2014,7 +2039,8 @@ function MissionCommandSidebar({
             ))}
           </ul>
         </details>
-      </section>
+      </details>
+      ) : null}
 
       <details className="technical-diagnostics">
         <summary>Technical diagnostics</summary>
@@ -2041,6 +2067,94 @@ function MissionCommandSidebar({
       </details>
     </aside>
   );
+}
+
+function buildCommanderWorkspaceContextSections(
+  model: MissionCommandSidebarModel,
+  startupStatus: StartupStatus,
+): readonly HeadquartersContextSection[] {
+  return [
+    {
+      id: 'mission-record',
+      title: 'Mission Record',
+      items: [{
+        id: 'mission-record-summary',
+        title: model.missionIdentity.codename,
+        room: model.currentStation.room,
+        summary: `${model.missionIdentity.state}. ${model.missionIdentity.objective}`,
+      }],
+    },
+    {
+      id: 'supporting-systems',
+      title: 'Supporting Systems',
+      items: [
+        {
+          id: 'institutional-health',
+          title: `Institutional Health: ${model.institutionalHealth.overallState}`,
+          summary: model.institutionalHealth.summary,
+        },
+        {
+          id: 'commander-learning',
+          title: `Coaching focus: ${model.commanderAssessment.currentFocus}`,
+          summary: model.commanderAssessment.summary,
+        },
+        {
+          id: 'doctrine',
+          title: model.doctrine.pendingCandidateCount > 0 ? 'Doctrine review pending' : 'Doctrine stable',
+          room: 'Doctrine',
+          summary: formatRailSummary(model.doctrine.relevance),
+        },
+      ],
+    },
+    {
+      id: 'history',
+      title: 'History and Evaluation',
+      items: [
+        {
+          id: 'outcome-state',
+          title: `Outcome: ${formatRailSummary(model.outcomeState)}`,
+          summary: model.finalEvaluation.classification === 'Incomplete'
+            ? 'Evaluation appears after Debrief and Archive context are ready.'
+            : model.finalEvaluation.commanderVerdict,
+        },
+        ...model.consequences.slice(0, 2).map((consequence) => ({
+          id: consequence.id,
+          title: consequence.cause,
+          summary: consequence.effect,
+        })),
+      ],
+    },
+    {
+      id: 'diagnostics',
+      title: 'Diagnostics',
+      advanced: true,
+      items: [
+        {
+          id: 'hqos',
+          title: `HQOS ${formatHqosStatus(startupStatus)}`,
+          summary: formatStartupRecoveryGuidance(startupStatus),
+        },
+        {
+          id: 'database',
+          title: `Database ${formatDatabaseStatus(startupStatus)}`,
+          summary: `Migrations ${formatMigrationStatus(startupStatus)}. Startup ${formatStartupPerformanceStatus(startupStatus)}.`,
+        },
+      ],
+    },
+  ];
+}
+
+function formatGuardianRailState(state: MissionCommandGuardianState): string {
+  if (state === 'secure') return 'Secure';
+  if (state === 'lockout') return 'Lockout';
+  return state.charAt(0).toUpperCase() + state.slice(1);
+}
+
+function formatRailSummary(value: string): string {
+  return value
+    .replace(/[_:]+/gu, ' ')
+    .replace(/\s+/gu, ' ')
+    .trim();
 }
 
 export type CommanderContinueMode = 'advance-mission' | 'navigate-room' | 'stay-in-room';
