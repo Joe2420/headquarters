@@ -36,6 +36,7 @@ export * from './MissionReplayComparisonEngine';
 export * from './HeadquartersIntelligenceGraph';
 export * from './HeadquartersIntelligenceGraphBuilder';
 export * from './IntelligenceNormalization';
+export * from './CrossMissionPatternEngine';
 export * from './MissionEvaluationEngine';
 export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
