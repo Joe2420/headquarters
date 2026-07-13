@@ -25,6 +25,9 @@ import {
   type OperationalConsequence as HqosOperationalConsequence,
   type MissionLifecycleProjection,
   type MissionTimelineExportEntryDTO,
+  buildJournalReflectionPlan,
+  buildJournalWorkflowSnapshot,
+  createJournalRecord as createHqosJournalRecord,
 } from '@headquarters/hqos';
 import {
   buildArchiveDashboard,
@@ -229,6 +232,7 @@ import {
   type CommanderGuardianAlertLine,
 } from './CommanderGuardianAlerts';
 import { buildMissionJournalLink } from './MissionJournalIntegration';
+import { getPrimaryCommanderJournalPrompt } from './CommanderJournalDialogue';
 import { buildCommanderWorkspaceSnapshot, type CommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
 import { LiveMissionCommandRail } from './LiveMissionCommandRail';
 import { CommanderWorkspaceLayout } from './CommanderWorkspaceLayout';
@@ -6090,6 +6094,12 @@ export function JournalRoom({
     searchText,
     searchResultCount: searchResult.total,
   });
+  const journalCommanderPrompt = buildJournalRoomCommanderPrompt({
+    activeJournalStep,
+    latestEntry: journalEntries[0],
+    activeMission,
+    missionJournalLinkStatus: missionJournalLink?.status,
+  });
 
   async function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -6191,7 +6201,7 @@ export function JournalRoom({
         <section className="journal-commander-office" aria-label="Journal Commander prompt">
           <p className="section-label">Commander</p>
           <h3>Good. Tell me everything.</h3>
-          <p>{getJournalCommanderPrompt(activeJournalStep)}</p>
+          <p>{journalCommanderPrompt}</p>
           <blockquote>{journalIntelligence.dailyQuestion}</blockquote>
         </section>
 
@@ -8421,6 +8431,64 @@ export function getJournalCommanderPrompt(step: JournalWorkflowStepId): string {
   if (step === 'timeline') return 'Read the journal as a story, not a table.';
   if (step === 'search') return 'Commander Memory finds similar records when memory is unreliable.';
   return 'Journal writes. Archive stores. Send only completed evidence forward.';
+}
+
+export function buildJournalRoomCommanderPrompt({
+  activeJournalStep,
+  latestEntry,
+  activeMission,
+  missionJournalLinkStatus,
+}: {
+  readonly activeJournalStep: JournalWorkflowStepId;
+  readonly latestEntry: JournalEntry | undefined;
+  readonly activeMission: ActiveMission | undefined;
+  readonly missionJournalLinkStatus: string | undefined;
+}): string {
+  const record = latestEntry
+    ? createHqosJournalRecord({
+      journalId: latestEntry.id,
+      recordType: activeJournalStep === 'trade-review' ? 'trade_review' : activeJournalStep === 'reflection' ? 'daily_reflection' : 'raw_entry',
+      title: latestEntry.entryDate,
+      rawContent: latestEntry.rawContent,
+      createdAt: latestEntry.createdAt,
+      author: 'operator',
+      ...(activeMission ? { missionId: activeMission.id } : {}),
+      source: latestEntry.source === 'production_export' ? 'imported_legacy_record' : 'operator_manual',
+      immutableSourceMetadata: {
+        legacySource: latestEntry.source,
+        classificationStatus: latestEntry.classificationStatus,
+      },
+    })
+    : undefined;
+  const workflow = buildJournalWorkflowSnapshot({
+    activeRecord: record,
+    ...(record ? { persistenceState: 'recorded' } : {}),
+  });
+  const reflectionPlan = record
+    ? buildJournalReflectionPlan({
+      reflectionId: `reflection:${record.journalId}:${activeJournalStep}`,
+      mode: activeJournalStep === 'trade-review'
+        ? 'trade_review'
+        : activeJournalStep === 'reflection'
+          ? 'daily_reflection'
+          : 'quick_capture',
+      sourceRecordId: record.journalId,
+      linkedMissionId: record.missionId,
+      knownContext: activeMission ? [{
+        dimension: 'what_happened',
+        summary: `Mission ${activeMission.campaign} is already linked.`,
+        source: 'mission',
+      }] : [],
+    })
+    : undefined;
+
+  const prompt = getPrimaryCommanderJournalPrompt({
+    workflow,
+    reflectionPlan,
+    returnRoom: missionJournalLinkStatus,
+  });
+
+  return prompt;
 }
 
 export function createLocalMission(
