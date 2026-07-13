@@ -1888,6 +1888,9 @@ describe('Desktop shell', () => {
     expect(html).toContain('What almost made you abandon your plan?');
     expect(html).toContain('aria-label="Commander log"');
     expect(html).toContain('Transmit Log');
+    expect(html).toContain('aria-label="Journal inbox priorities"');
+    expect(html).toContain('Reflection Queue');
+    expect(html).toContain('aria-label="Journal context rail"');
     expect(html).toContain('aria-label="Commander journal intelligence"');
     expect(html).toContain('Journal Analysis');
     expect(html).toContain('aria-current="step"');

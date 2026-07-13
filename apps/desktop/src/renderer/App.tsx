@@ -25,6 +25,9 @@ import {
   type OperationalConsequence as HqosOperationalConsequence,
   type MissionLifecycleProjection,
   type MissionTimelineExportEntryDTO,
+  buildJournalReflectionPlan,
+  buildJournalWorkflowSnapshot,
+  createJournalRecord as createHqosJournalRecord,
 } from '@headquarters/hqos';
 import {
   buildArchiveDashboard,
@@ -94,7 +97,6 @@ import {
   type TradingPlanDoctrineReference,
 } from '@headquarters/doctrine';
 import {
-  archiveJournalEntry,
   buildJournalTimeline,
   createDailyReflection,
   createGrowthEvent,
@@ -229,6 +231,7 @@ import {
   type CommanderGuardianAlertLine,
 } from './CommanderGuardianAlerts';
 import { buildMissionJournalLink } from './MissionJournalIntegration';
+import { getPrimaryCommanderJournalPrompt } from './CommanderJournalDialogue';
 import { buildCommanderWorkspaceSnapshot, type CommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
 import { LiveMissionCommandRail } from './LiveMissionCommandRail';
 import { CommanderWorkspaceLayout } from './CommanderWorkspaceLayout';
@@ -6090,6 +6093,12 @@ export function JournalRoom({
     searchText,
     searchResultCount: searchResult.total,
   });
+  const journalCommanderPrompt = buildJournalRoomCommanderPrompt({
+    activeJournalStep,
+    latestEntry: journalEntries[0],
+    activeMission,
+    missionJournalLinkStatus: missionJournalLink?.status,
+  });
 
   async function handleJournalEntrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -6191,8 +6200,18 @@ export function JournalRoom({
         <section className="journal-commander-office" aria-label="Journal Commander prompt">
           <p className="section-label">Commander</p>
           <h3>Good. Tell me everything.</h3>
-          <p>{getJournalCommanderPrompt(activeJournalStep)}</p>
+          <p>{journalCommanderPrompt}</p>
           <blockquote>{journalIntelligence.dailyQuestion}</blockquote>
+        </section>
+
+        <section className="journal-panel journal-inbox-priorities" aria-label="Journal inbox priorities">
+          <p className="section-label">Inbox</p>
+          <h3>Reflection Queue</h3>
+          <ol>
+            <li>Blocking recovery reflections appear first.</li>
+            <li>{activeMission ? `Mission follow-up: ${activeMission.campaign}` : 'No active mission follow-up.'}</li>
+            <li>{journalEntries.length > 0 ? 'Recent Journal evidence is ready for review.' : 'Write first; extraction waits.'}</li>
+          </ol>
         </section>
 
         <form className="journal-command-log-form" aria-label="Commander log" onSubmit={handleJournalEntrySubmit}>
@@ -6292,7 +6311,14 @@ export function JournalRoom({
           onArchiveJournalEntry={onArchiveJournalEntry}
           />
         ) : null}
-        <JournalIntelligencePanel model={journalIntelligence} timeline={timeline} />
+        <aside className="journal-context-rail" aria-label="Journal context rail">
+          <section className="journal-panel" aria-label="Known Journal context">
+            <p className="section-label">Known Context</p>
+            <h3>{missionJournalLink?.codename ?? 'No linked mission'}</h3>
+            <p className="muted">{missionJournalLink?.status ?? 'Journal evidence can stand alone until it is linked deliberately.'}</p>
+          </section>
+          <JournalIntelligencePanel model={journalIntelligence} timeline={timeline} />
+        </aside>
       </section>
     </div>
   );
@@ -7373,30 +7399,18 @@ function JournalSearchPanel({
 function JournalArchivePanel({
   journalEntries,
   archivedJournalEntries,
-  onArchiveJournalEntry,
 }: {
   journalEntries: JournalEntry[];
   archivedJournalEntries: ArchivedJournalEntry[];
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
 }) {
-  function handleArchiveFirstEntry() {
-    const entry = journalEntries[0];
-    if (entry === undefined) return;
-
-    onArchiveJournalEntry(archiveJournalEntry(entry, {
-      classificationStatus: entry.classificationStatus,
-      tags: ['desktop-review'],
-    }));
-  }
-
   return (
     <section className="journal-panel" aria-label="Journal archive link">
       <p className="section-label">Archive Link</p>
-      <h3>Send completed evidence to Archive</h3>
-      <button className="secondary-action" type="button" onClick={handleArchiveFirstEntry} disabled={journalEntries.length === 0}>
-        Send First Entry To Archive
-      </button>
+      <h3>Archived Journal Evidence</h3>
+      <p className="muted">Archive remains read-only here. Journal evidence moves to Archive only through an approved review path.</p>
       <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
+      <p className="muted">{formatJournalCount(journalEntries.length, 'active journal record', 'active journal records')} remain available for review.</p>
     </section>
   );
 }
@@ -8421,6 +8435,64 @@ export function getJournalCommanderPrompt(step: JournalWorkflowStepId): string {
   if (step === 'timeline') return 'Read the journal as a story, not a table.';
   if (step === 'search') return 'Commander Memory finds similar records when memory is unreliable.';
   return 'Journal writes. Archive stores. Send only completed evidence forward.';
+}
+
+export function buildJournalRoomCommanderPrompt({
+  activeJournalStep,
+  latestEntry,
+  activeMission,
+  missionJournalLinkStatus,
+}: {
+  readonly activeJournalStep: JournalWorkflowStepId;
+  readonly latestEntry: JournalEntry | undefined;
+  readonly activeMission: ActiveMission | undefined;
+  readonly missionJournalLinkStatus: string | undefined;
+}): string {
+  const record = latestEntry
+    ? createHqosJournalRecord({
+      journalId: latestEntry.id,
+      recordType: activeJournalStep === 'trade-review' ? 'trade_review' : activeJournalStep === 'reflection' ? 'daily_reflection' : 'raw_entry',
+      title: latestEntry.entryDate,
+      rawContent: latestEntry.rawContent,
+      createdAt: latestEntry.createdAt,
+      author: 'operator',
+      ...(activeMission ? { missionId: activeMission.id } : {}),
+      source: latestEntry.source === 'production_export' ? 'imported_legacy_record' : 'operator_manual',
+      immutableSourceMetadata: {
+        legacySource: latestEntry.source,
+        classificationStatus: latestEntry.classificationStatus,
+      },
+    })
+    : undefined;
+  const workflow = buildJournalWorkflowSnapshot({
+    activeRecord: record,
+    ...(record ? { persistenceState: 'recorded' } : {}),
+  });
+  const reflectionPlan = record
+    ? buildJournalReflectionPlan({
+      reflectionId: `reflection:${record.journalId}:${activeJournalStep}`,
+      mode: activeJournalStep === 'trade-review'
+        ? 'trade_review'
+        : activeJournalStep === 'reflection'
+          ? 'daily_reflection'
+          : 'quick_capture',
+      sourceRecordId: record.journalId,
+      linkedMissionId: record.missionId,
+      knownContext: activeMission ? [{
+        dimension: 'what_happened',
+        summary: `Mission ${activeMission.campaign} is already linked.`,
+        source: 'mission',
+      }] : [],
+    })
+    : undefined;
+
+  const prompt = getPrimaryCommanderJournalPrompt({
+    workflow,
+    reflectionPlan,
+    returnRoom: missionJournalLinkStatus,
+  });
+
+  return prompt;
 }
 
 export function createLocalMission(

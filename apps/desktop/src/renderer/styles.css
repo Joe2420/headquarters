@@ -3279,13 +3279,15 @@ dd {
 
 .journal-command-log-layout {
   display: grid;
-  grid-template-columns: minmax(18rem, 0.85fr) minmax(24rem, 1.35fr);
+  grid-template-columns: minmax(17rem, 0.72fr) minmax(24rem, 1.35fr) minmax(17rem, 0.78fr);
   gap: 1rem;
   align-items: start;
 }
 
 .journal-commander-office,
 .journal-command-log-form,
+.journal-inbox-priorities,
+.journal-context-rail,
 .journal-intelligence-panel {
   display: grid;
   gap: 0.8rem;
@@ -3303,7 +3305,28 @@ dd {
   top: 1rem;
 }
 
+.journal-inbox-priorities {
+  position: sticky;
+  top: 11rem;
+}
+
+.journal-inbox-priorities ol {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.15rem;
+  color: #d9e7ff;
+}
+
+.journal-context-rail {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 8rem);
+  overflow: hidden auto;
+}
+
 .journal-commander-office h3,
+.journal-inbox-priorities h3,
 .journal-command-log-form h3,
 .journal-intelligence-panel h3 {
   margin: 0;
