@@ -97,7 +97,6 @@ import {
   type TradingPlanDoctrineReference,
 } from '@headquarters/doctrine';
 import {
-  archiveJournalEntry,
   buildJournalTimeline,
   createDailyReflection,
   createGrowthEvent,
@@ -6205,6 +6204,16 @@ export function JournalRoom({
           <blockquote>{journalIntelligence.dailyQuestion}</blockquote>
         </section>
 
+        <section className="journal-panel journal-inbox-priorities" aria-label="Journal inbox priorities">
+          <p className="section-label">Inbox</p>
+          <h3>Reflection Queue</h3>
+          <ol>
+            <li>Blocking recovery reflections appear first.</li>
+            <li>{activeMission ? `Mission follow-up: ${activeMission.campaign}` : 'No active mission follow-up.'}</li>
+            <li>{journalEntries.length > 0 ? 'Recent Journal evidence is ready for review.' : 'Write first; extraction waits.'}</li>
+          </ol>
+        </section>
+
         <form className="journal-command-log-form" aria-label="Commander log" onSubmit={handleJournalEntrySubmit}>
           <p className="section-label">Write</p>
           <h3>What happened today?</h3>
@@ -6302,7 +6311,14 @@ export function JournalRoom({
           onArchiveJournalEntry={onArchiveJournalEntry}
           />
         ) : null}
-        <JournalIntelligencePanel model={journalIntelligence} timeline={timeline} />
+        <aside className="journal-context-rail" aria-label="Journal context rail">
+          <section className="journal-panel" aria-label="Known Journal context">
+            <p className="section-label">Known Context</p>
+            <h3>{missionJournalLink?.codename ?? 'No linked mission'}</h3>
+            <p className="muted">{missionJournalLink?.status ?? 'Journal evidence can stand alone until it is linked deliberately.'}</p>
+          </section>
+          <JournalIntelligencePanel model={journalIntelligence} timeline={timeline} />
+        </aside>
       </section>
     </div>
   );
@@ -7383,30 +7399,18 @@ function JournalSearchPanel({
 function JournalArchivePanel({
   journalEntries,
   archivedJournalEntries,
-  onArchiveJournalEntry,
 }: {
   journalEntries: JournalEntry[];
   archivedJournalEntries: ArchivedJournalEntry[];
   onArchiveJournalEntry: (record: ArchivedJournalEntry) => void;
 }) {
-  function handleArchiveFirstEntry() {
-    const entry = journalEntries[0];
-    if (entry === undefined) return;
-
-    onArchiveJournalEntry(archiveJournalEntry(entry, {
-      classificationStatus: entry.classificationStatus,
-      tags: ['desktop-review'],
-    }));
-  }
-
   return (
     <section className="journal-panel" aria-label="Journal archive link">
       <p className="section-label">Archive Link</p>
-      <h3>Send completed evidence to Archive</h3>
-      <button className="secondary-action" type="button" onClick={handleArchiveFirstEntry} disabled={journalEntries.length === 0}>
-        Send First Entry To Archive
-      </button>
+      <h3>Archived Journal Evidence</h3>
+      <p className="muted">Archive remains read-only here. Journal evidence moves to Archive only through an approved review path.</p>
       <p className="muted">{formatJournalCount(archivedJournalEntries.length, 'archived journal entry', 'archived journal entries')}</p>
+      <p className="muted">{formatJournalCount(journalEntries.length, 'active journal record', 'active journal records')} remain available for review.</p>
     </section>
   );
 }
