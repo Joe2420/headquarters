@@ -232,6 +232,7 @@ import { buildMissionJournalLink } from './MissionJournalIntegration';
 import { buildCommanderWorkspaceSnapshot, type CommanderWorkspaceSnapshot } from './CommanderWorkspaceModel';
 import { LiveMissionCommandRail } from './LiveMissionCommandRail';
 import { IntelligenceRoomExperience } from './IntelligenceRoomExperience';
+import { buildWarRoomGuardianProtection } from './WarRoomGuardianProtection';
 
 type StartupState = 'loading' | 'ready' | 'failed';
 export type DesktopShellPhase = 'security-checkpoint' | 'command-center';
@@ -4164,9 +4165,14 @@ function buildWarRoomDecisionModel({
   const observation = activeMission?.missionContext?.observation;
   const score = missionIntelligencePackage?.confidence.score ?? 0;
   const level = missionIntelligencePackage?.confidence.level ?? 'incomplete';
-  const guardianBlocked = lockout.status === 'locked' || alerts.some((alert) => alert.priority === 'critical');
   const guardianWarnings = alerts.filter((alert) => alert.priority === 'high' || alert.priority === 'medium');
   const authorizationApproved = authorizationStatus?.decision === 'approved';
+  const guardianProtection = buildWarRoomGuardianProtection({
+    alerts,
+    lockout,
+    authorizationApproved,
+    recoveryCleared: authorizationStatus?.decision === 'approved' && guardianWarnings.length === 0,
+  });
 
   return {
     missionName: activeMission?.campaign ?? 'No active mission',
@@ -4177,12 +4183,12 @@ function buildWarRoomDecisionModel({
     risk: formatMissionContextDisplay(briefing?.riskParameters),
     confidenceScore: score,
     confidenceLevel: level,
-    guardianVerdict: guardianBlocked ? 'Deployment denied.' : guardianWarnings.length > 0 ? 'Proceed only with restrictions.' : 'No restriction. Proceed.',
+    guardianVerdict: guardianProtection.verdict,
     guardianItems: [
       { label: hasContent(briefing?.riskParameters ?? '') ? 'Risk inside declared limit' : 'Risk boundary missing', status: hasContent(briefing?.riskParameters ?? '') ? 'clear' : 'blocked' },
       { label: formatGuardianSessionReview(briefing?.marketEnvironment), status: guardianWarnings.length > 0 ? 'warning' : 'clear' },
       { label: hasContent(briefing?.personalReadiness ?? '') ? 'Emotional state declared' : 'Readiness not declared', status: hasContent(briefing?.personalReadiness ?? '') ? 'clear' : 'warning' },
-      { label: guardianBlocked ? 'Guardian lockout active' : 'Guardian monitoring active', status: guardianBlocked ? 'blocked' : 'clear' },
+      ...guardianProtection.guardianItems,
     ],
     doctrineStatus: missionIntelligencePackage?.missingEvidence.length ? 'Review required' : 'Ready',
     deploymentStatus: authorizationApproved ? 'Deployment Authorized' : 'Deployment NOT AUTHORIZED',
@@ -4197,7 +4203,7 @@ function buildWarRoomDecisionModel({
       buildWarRoomEvidenceItem('Risk', briefing?.riskParameters),
       buildWarRoomEvidenceItem('Invalidation', observation?.invalidationEvidence),
       buildWarRoomEvidenceItem('Emotion', briefing?.personalReadiness),
-      { label: 'Guardian', detail: guardianBlocked ? 'Blocked' : guardianWarnings.length > 0 ? 'Warnings present' : 'Clear', status: guardianBlocked ? 'warning' : guardianWarnings.length > 0 ? 'warning' : 'clear' },
+      { label: 'Guardian', detail: guardianProtection.authorizationEligibility.replaceAll('_', ' '), status: guardianProtection.authorizationEligibility === 'blocked' ? 'warning' : guardianProtection.authorizationEligibility === 'extra_confirmation_required' ? 'warning' : 'clear' },
       ...contradictions.map((contradiction) => ({ label: 'Contradiction', detail: contradiction.message, status: 'warning' as const })),
     ],
     confidenceReasons: buildWarRoomConfidenceReasons(missionIntelligencePackage, guardianWarnings.length),
@@ -6577,11 +6583,11 @@ export function buildGuardianRoomModel(input: GuardianRoomModelInput = {}): Guar
   const riskBoundary = hasMissionContextText(briefing?.riskParameters) ? briefing?.riskParameters.trim() : 'not declared';
   const readiness = briefing?.personalReadiness?.trim().toLowerCase();
   const riskyReadiness = parseGuardianReadinessRisk(readiness);
-  const reservePercent = lockout.status === 'locked'
-    ? 12
-    : riskyReadiness === undefined
-      ? 82
-      : Math.max(20, 100 - riskyReadiness * 9);
+  const reserveState = lockout.status === 'locked'
+    ? 'Depleted'
+    : riskyReadiness !== undefined && riskyReadiness >= 7
+      ? 'Reduced'
+      : 'Stable';
   const hasWarning = alerts.some((alert) => alert.priority === 'medium' || alert.priority === 'high' || alert.priority === 'critical');
   const highestAlert = alerts.find((alert) => alert.priority === 'critical')
     ?? alerts.find((alert) => alert.priority === 'high')
@@ -6600,11 +6606,11 @@ export function buildGuardianRoomModel(input: GuardianRoomModelInput = {}): Guar
       reason: lockout.status === 'locked' ? lockout.explanation : 'No intervention required. Operator behavior remains within doctrine.',
     },
     judgmentReserve: {
-      available: `${reservePercent}%`,
+      available: reserveState,
       fatigue: riskyReadiness !== undefined && riskyReadiness >= 7 ? 'Elevated' : 'Low',
       confidence: hasWarning ? 'Constrained' : 'Normal',
       emotion: riskyReadiness !== undefined && riskyReadiness >= 7 ? 'Compromised' : 'Stable',
-      recommendation: reservePercent < 40
+      recommendation: reserveState === 'Depleted' || reserveState === 'Reduced'
         ? 'Decision quality compromised. Commander recommends ending operations or journaling before authorization.'
         : 'Judgment reserve is sufficient. Monitoring continues.',
     },

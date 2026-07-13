@@ -1,3 +1,5 @@
+HQ-TASK-S52 - Added Guardian Intervention and Capital Protection foundation.
+
 HQ-TASK-S51 - Added Headquarters Intelligence Graph and cross-mission analytics foundation.
 
 HQ-TASK-S50 - Added Mission Replay and After-Action Review system foundation.
