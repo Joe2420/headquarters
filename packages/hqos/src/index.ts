@@ -64,6 +64,7 @@ export * from './JournalKnowledgeExtractionEngine';
 export * from './JournalReviewApproval';
 export * from './JournalMissionReplayIntegration';
 export * from './JournalDoctrineIntegration';
+export * from './JournalGrowthRelationshipIntegration';
 export * from './InstitutionalHealth';
 export * from './InstitutionalHealthExplanationEngine';
 export * from './InstitutionalHealthTrendEngine';
