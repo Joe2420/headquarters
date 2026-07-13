@@ -40,6 +40,7 @@ export * from './CrossMissionPatternEngine';
 export * from './IntelligenceTrendEngine';
 export * from './HeadquartersIntelligenceInsightEngine';
 export * from './MissionHistoricalRelevance';
+export * from './IntelligencePriorityIntegration';
 export * from './MissionEvaluationEngine';
 export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
