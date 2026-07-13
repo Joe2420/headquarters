@@ -71,9 +71,12 @@ export interface CommanderWorkspaceModelInput {
 export function buildCommanderWorkspaceSnapshot(
   input: CommanderWorkspaceModelInput,
 ): CommanderWorkspaceSnapshot {
+  const missionScopedConsequences = shouldShowMissionScopedEvidence(input.lifecycle)
+    ? (input.operationalConsequences ?? [])
+    : [];
   const actionableAttention = (input.attentionRequests ?? [])
     .filter((request) => request.status !== 'resolved' && request.status !== 'dismissed');
-  const blockingConsequences = (input.operationalConsequences ?? [])
+  const blockingConsequences = missionScopedConsequences
     .filter((consequence) => consequence.status !== 'resolved' && (
       consequence.severity === 'restriction' || consequence.severity === 'lockout'
     ));
@@ -103,7 +106,7 @@ export function buildCommanderWorkspaceSnapshot(
       lifecycle: input.lifecycle,
       attentionRequests: actionableAttention,
       blockers,
-      operationalConsequences: input.operationalConsequences ?? [],
+      operationalConsequences: missionScopedConsequences,
     }),
     missionId: input.lifecycle.missionId,
     activeStage: input.lifecycle.activeStage,
@@ -128,8 +131,12 @@ export function buildCommanderWorkspaceSnapshot(
       summary: input.relationship?.relationship.summary ?? 'Commander relationship evidence is still forming.',
       confidence: formatRelationshipConfidence(input.relationship),
     },
-    evidenceCount: countWorkspaceEvidence(input),
+    evidenceCount: countWorkspaceEvidence(input, missionScopedConsequences),
   };
+}
+
+function shouldShowMissionScopedEvidence(lifecycle: MissionLifecycleProjection): boolean {
+  return lifecycle.missionCompletionState !== 'standby' && lifecycle.missionCompletionState !== 'complete';
 }
 
 function getCommanderWorkspaceMode(input: {
@@ -196,12 +203,15 @@ function getWorkspacePrimaryAction(
   };
 }
 
-function countWorkspaceEvidence(input: CommanderWorkspaceModelInput): number {
+function countWorkspaceEvidence(
+  input: CommanderWorkspaceModelInput,
+  operationalConsequences: readonly OperationalConsequence[],
+): number {
   return input.highestPriority.evidenceReferences.length
     + (input.attentionRequests ?? []).flatMap((request) => request.evidenceReferences).length
     + (input.institutionalHealth?.sourceEvidence.length ?? 0)
     + (input.relationship?.sourceEvidence.length ?? 0)
-    + (input.operationalConsequences ?? []).flatMap((consequence) => consequence.evidenceReferences).length;
+    + operationalConsequences.flatMap((consequence) => consequence.evidenceReferences).length;
 }
 
 function formatRelationshipConfidence(snapshot: RelationshipSnapshot | undefined): string {
