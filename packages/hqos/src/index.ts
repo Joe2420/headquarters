@@ -39,6 +39,7 @@ export * from './IntelligenceNormalization';
 export * from './CrossMissionPatternEngine';
 export * from './IntelligenceTrendEngine';
 export * from './HeadquartersIntelligenceInsightEngine';
+export * from './MissionHistoricalRelevance';
 export * from './MissionEvaluationEngine';
 export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
