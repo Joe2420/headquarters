@@ -47,6 +47,7 @@ export * from './OperationalConsequence';
 export * from './OperationalConsequenceEngine';
 export * from './OperationalConsequenceRepository';
 export * from './GuardianConsequenceIntegration';
+export * from './GuardianProtection';
 export * from './OperationalConsequenceSelectors';
 export * from './OperationalRecoveryService';
 export * from './InstitutionalHealth';
