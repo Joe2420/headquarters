@@ -67,6 +67,7 @@ export * from './JournalDoctrineIntegration';
 export * from './JournalGrowthRelationshipIntegration';
 export * from './JournalGuardianRecoveryIntegration';
 export * from './JournalQueries';
+export * from './JournalWorkflowRepository';
 export * from './InstitutionalHealth';
 export * from './InstitutionalHealthExplanationEngine';
 export * from './InstitutionalHealthTrendEngine';
